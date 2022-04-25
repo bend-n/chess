@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Grid.gd" type="Script" id=1]
+
+[node name="World" type="Node2D"]
+
+[node name="Grid" type="Node2D" parent="."]
+script = ExtResource( 1 )
+board_color1 = Color( 0.870588, 0.890196, 0.901961, 1 )
+board_color2 = Color( 0.54902, 0.635294, 0.678431, 1 )
+
+[node name="Background" type="Node2D" parent="Grid"]
