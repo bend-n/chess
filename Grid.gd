@@ -1,4 +1,5 @@
 extends Node2D
+class_name Grid
 
 export var PIECE_SET = "california"
 
@@ -146,27 +147,29 @@ func print_matrix_pretty(mat = matrix):
 func check_for_circle(position: Vector2):
 	return background_matrix[position.x][position.y].circle.visible
 
-func check_for_frame(position:Vector2):
+
+func check_for_frame(position: Vector2):
 	if !matrix[position.y][position.x]:
 		return false
 	return matrix[position.y][position.x].frame.visible
 
+
 func square_clicked(position: Vector2):
 	var spot = matrix[position.y][position.x]
-	if !spot or !spot.white: # spot is not a tile or spot is not white
+	if !spot or !spot.white:  # spot is not a tile or spot is not white
 		if !last_clicked:  # last clicked is null, so this is pointless
 			return
-		if check_for_circle(position): # see if theres a circle at the position
-			last_clicked.moveto(position) # if there is, move there
-		if check_for_frame(position): # takeable
-			last_clicked.take(matrix[position.y][position.x]) # eat
-		last_clicked.clear_clicked() # remove the circles
-		last_clicked = null # set it to null
-	elif last_clicked != spot: # we got a new piece (or pawn) clicked
-		if last_clicked: # remove the circles
+		if check_for_circle(position):  # see if theres a circle at the position
+			last_clicked.moveto(position)  # if there is, move there
+		if check_for_frame(position):  # takeable
+			last_clicked.take(matrix[position.y][position.x])  # eat
+		last_clicked.clear_clicked()  # remove the circles
+		last_clicked = null  # set it to null
+	elif last_clicked != spot:  # we got a new piece (or pawn) clicked
+		if last_clicked:  # remove the circles
 			last_clicked.clear_clicked()
-		last_clicked = spot # set it to the new spot
-		spot.clicked() # tell the piece shit happeend
+		last_clicked = spot  # set it to the new spot
+		spot.clicked()  # tell the piece shit happeend
 
 
 func clear_circles():
@@ -174,6 +177,7 @@ func clear_circles():
 		for j in range(8):
 			var square = background_matrix[i][j]
 			square.set_circle(false)
+
 
 func clear_frames():
 	for i in range(8):

@@ -7,6 +7,8 @@ var realname = "pawn"
 var has_moved = false
 var sprite
 
+var black_holder
+
 onready var colorrect = $ColorRect
 onready var frame = $Frame
 
@@ -18,22 +20,22 @@ func _ready():
 	colorrect.rect_size = Globals.grid.piece_size
 
 
-	
-	
 func clicked():
 	colorrect.show()
 	create_circles()
 	print(realname, " was clicked")
-	
 
-func clear_clicked(): # TODO: fix this shit
+
+func clear_clicked():  # TODO: fix this shit
 	colorrect.hide()
 	Globals.grid.clear_circles()
 	Globals.grid.clear_frames()
-	
-func move(newpos: Vector2): # dont use directly; use moveto
+
+
+func move(newpos: Vector2):  # dont use directly; use moveto
 	has_moved = true
 	global_position = newpos * Globals.grid.piece_size
+
 
 func moveto(position):
 	Globals.grid.matrix[real_position.y][real_position.x] = null
@@ -45,13 +47,29 @@ func moveto(position):
 func pos_around(around_vector):
 	return real_position + around_vector
 
+
+func all_dirs():
+	return [
+		Vector2.UP,
+		Vector2.DOWN,
+		Vector2.LEFT,
+		Vector2.RIGHT,
+		Vector2(1, 1),
+		Vector2(1, -1),
+		Vector2(-1, 1),
+		Vector2(-1, -1)
+	]
+
+
 func create_circles():
 	# for motion
 	match realname:
 		"pawn":
-			var carry = [pos_around(Vector2.UP)]
-			if !has_moved:
-				carry.append(pos_around(Vector2(0, -2)))
+			var carry = (
+				[pos_around(Vector2.UP)]
+				if has_moved
+				else [pos_around(Vector2.UP), pos_around(Vector2.UP * 2)]
+			)
 			set_circle(carry)
 			# deal with the take logic
 			carry = []
@@ -60,48 +78,107 @@ func create_circles():
 				i = clamp_vector(i)
 				if i == null:
 					continue
-				var pos = Globals.grid.matrix[i.y][i.x]
-				if pos and !pos.white:
-					carry.append(i)
-			print("takeable: ", carry)
+				carry.append(i)
 			set_circle(carry, "take")
 		"king":
-			var carry = [pos_around(Vector2.UP), pos_around(Vector2.DOWN), pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
-			# add diagonals
-			carry.append(pos_around(Vector2(-1, -1)))
-			carry.append(pos_around(Vector2(1, -1)))
-			carry.append(pos_around(Vector2(-1, 1)))
-			carry.append(pos_around(Vector2(1, 1)))
+			var carry = [
+				pos_around(Vector2.UP),
+				pos_around(Vector2.DOWN),
+				pos_around(Vector2.LEFT),
+				pos_around(Vector2.RIGHT),
+				pos_around(Vector2(1, 1)),
+				pos_around(Vector2(1, -1)),
+				pos_around(Vector2(-1, 1)),
+				pos_around(Vector2(-1, -1))
+			]
 			set_circle(carry)
-			set_circle(carry, "take") # king ez
+			set_circle(carry, "take")  # king ez
+		"knight":
+			var carry = [
+				pos_around(Vector2(-2, -1)),
+				pos_around(Vector2(-2, 1)),
+				pos_around(Vector2(2, -1)),
+				pos_around(Vector2(2, 1)),
+				pos_around(Vector2(-1, -2)),
+				pos_around(Vector2(1, -2)),
+				pos_around(Vector2(-1, 2)),
+				pos_around(Vector2(1, 2))
+			]
+			set_circle(carry)
+			set_circle(carry, "take")
+		"rook":
+			var carry = traverse(all_dirs().slice(0, 4))
+			set_circle(carry)
+			set_circle(carry, "take")
+		"bishop":
+			var carry = traverse(all_dirs().slice(4, 8))
+			set_circle(carry)
+			set_circle(carry, "take")
+		"queen":
+			var carry = traverse(all_dirs())
+			set_circle(carry)
+			set_circle(carry, "take")
 
-func set_circle(positions: Array, type: = "move"):
+
+func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
+	var carry = []
+	for i in arr:
+		black_holder = false
+		var pos = real_position
+		while true:
+			pos = pos + i
+			pos = clamp_vector(pos)
+			if !traverse_helper(pos):
+				break
+			carry.append(pos)
+	black_holder = false
+	return carry
+
+
+func traverse_helper(pos):
+	if pos == null:
+		return null
+	pos = at_pos(pos)
+	if pos:
+		if !pos.white and !black_holder:
+			black_holder = true
+			return true
+		return null
+	return true
+
+
+func at_pos(vector):
+	return Globals.grid.matrix[vector.y][vector.x]
+
+
+func set_circle(positions: Array, type := "move"):
 	for i in range(len(positions)):
 		var pos = clamp_vector(positions[i])
 		if pos == null:
 			continue
-		var spot = Globals.grid.matrix[pos.y][pos.x]
-		if spot and type == "move":
-			continue
+		var spot = at_pos(pos)
 		if type == "move":
-			# print("creating move circle at", pos)
+			if spot:
+				continue
 			Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)
 		elif type == "take":
-			print("creating take circle at", pos)
 			if spot and !spot.white:
 				spot.set_frame(true)
+
 
 func set_frame(boolean):
 	frame.visible = boolean
 
-func clamp_vector(vector :Vector2):
+
+func clamp_vector(vector: Vector2):
 	if vector.y < 0 or vector.y > 7 or vector.x < 0 or vector.x > 7:
 		return null
 	vector.x = clamp(vector.x, 0, 7)
 	vector.y = clamp(vector.y, 0, 7)
 	return vector
 
-func take(piece:Piece):
+
+func take(piece: Piece):
 	var piecepos = piece.real_position
 	piece.queue_free()
 	moveto(piecepos)
