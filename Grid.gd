@@ -21,7 +21,7 @@ func init_matrix():
 	for i in range(8):
 		matrix.append([])
 		for _j in range(8):
-			matrix[i].append(0)
+			matrix[i].append(null)
 	add_pieces()
 
 
@@ -145,10 +145,10 @@ func print_matrix_pretty(mat = matrix):
 		for i in range(8):
 			var c = r[i]
 			var ender = ", " if i < 7 else ""
-			if typeof(c) != TYPE_INT:
+			if c:
 				row += c.realname + ender
 			else:
-				row += "0" + ender
+				row += "null" + ender
 		print(row + "],")
 	print("]")
 
@@ -161,12 +161,18 @@ func _ready():
 
 func square_clicked(position: Vector2):
 	var spot = matrix[position.y][position.x]
-	if typeof(spot) == TYPE_INT:
-		if typeof(Globals.last_clicked) == TYPE_INT: # its 0
+	if !spot:
+		print("spot isnt null")
+		if !Globals.last_clicked: # its null
+			print("last clicked is null")
 			return
+		print("last clicked wasnt null")
 		Globals.last_clicked.spot(position)
-		Globals.last_clicked = 0
-	elif typeof(Globals.last_clicked) != typeof(spot) or Globals.last_clicked != spot:
+		Globals.last_clicked = null
+	elif Globals.last_clicked != spot:
+		print("last clicked is different")
+		if Globals.last_clicked:
+			Globals.last_clicked.spot(null)
 		Globals.last_clicked = spot
 		spot.clicked()
 

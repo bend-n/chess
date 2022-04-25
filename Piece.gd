@@ -16,7 +16,8 @@ func clicked():
 
 func spot(position):
 	colorrect.hide()
-	print("spot ", position)
+	if position:
+		print("spot ", position)
 
 func _ready():
 	colorrect.rect_size = Globals.piece_size
