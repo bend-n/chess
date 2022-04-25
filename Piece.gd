@@ -42,15 +42,17 @@ func create_circles():
 	# for motion
 	match realname:
 		"pawn":
-			var carray = [real_position - Vector2(0, 1)]
+			var carry = [real_position - Vector2(0, 1)]
 			if !has_moved:
-				carray.append(real_position - Vector2(0, 2))
-			set_circle(carray)
+				carry.append(real_position - Vector2(0, 2))
+			set_circle(carry)
 
 
 func set_circle(positions: Array):
 	for i in range(len(positions)):
 		var pos = positions[i]
 		if Globals.grid.matrix[pos.y][pos.x]:
+			print(Globals.grid.matrix[pos.y][pos.x], " is in the way")
 			continue
+		print("creating circle at", pos)
 		Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)
