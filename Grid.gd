@@ -82,12 +82,8 @@ func add_pieces():
 
 func add_pawns():
 	for i in range(8):
-		matrix[1][i] = instance_piece_at_position(
-			Vector2(i, 1), "pawn", ASSETS_PATH + "bP.png", false
-		)
-		matrix[6][i] = instance_piece_at_position(
-			Vector2(i, 6), "pawn", ASSETS_PATH + "wP.png", true
-		)
+		matrix[1][i] = instance_piece_at_position(Vector2(i, 1), "pawn", ASSETS_PATH + "bP.png", false)
+		matrix[6][i] = instance_piece_at_position(Vector2(i, 6), "pawn", ASSETS_PATH + "wP.png", true)
 
 
 func add_rooks():
@@ -98,23 +94,15 @@ func add_rooks():
 
 
 func add_knights():
-	matrix[0][1] = instance_piece_at_position(
-		Vector2(1, 0), "knight", ASSETS_PATH + "bN.png", false
-	)
-	matrix[0][6] = instance_piece_at_position(
-		Vector2(6, 0), "knight", ASSETS_PATH + "bN.png", false
-	)
+	matrix[0][1] = instance_piece_at_position(Vector2(1, 0), "knight", ASSETS_PATH + "bN.png", false)
+	matrix[0][6] = instance_piece_at_position(Vector2(6, 0), "knight", ASSETS_PATH + "bN.png", false)
 	matrix[7][1] = instance_piece_at_position(Vector2(1, 7), "knight", ASSETS_PATH + "wN.png", true)
 	matrix[7][6] = instance_piece_at_position(Vector2(6, 7), "knight", ASSETS_PATH + "wN.png", true)
 
 
 func add_bishops():
-	matrix[0][2] = instance_piece_at_position(
-		Vector2(2, 0), "bishop", ASSETS_PATH + "bB.png", false
-	)
-	matrix[0][5] = instance_piece_at_position(
-		Vector2(5, 0), "bishop", ASSETS_PATH + "bB.png", false
-	)
+	matrix[0][2] = instance_piece_at_position(Vector2(2, 0), "bishop", ASSETS_PATH + "bB.png", false)
+	matrix[0][5] = instance_piece_at_position(Vector2(5, 0), "bishop", ASSETS_PATH + "bB.png", false)
 	matrix[7][2] = instance_piece_at_position(Vector2(2, 7), "bishop", ASSETS_PATH + "wB.png", true)
 	matrix[7][5] = instance_piece_at_position(Vector2(5, 7), "bishop", ASSETS_PATH + "wB.png", true)
 
