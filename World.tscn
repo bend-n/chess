@@ -8,6 +8,5 @@
 script = ExtResource( 1 )
 board_color1 = Color( 0.870588, 0.890196, 0.901961, 1 )
 board_color2 = Color( 0.54902, 0.635294, 0.678431, 1 )
-overlay_color = Color( 0.2, 0.345098, 0.188235, 0.592157 )
 
 [node name="Background" type="Node2D" parent="Grid"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Piece.gd" type="Script" id=1]
 [ext_resource path="res://assets/california/wP.png" type="Texture" id=2]
+[ext_resource path="res://frame.png" type="Texture" id=3]
 
 [node name="Piece" type="Node2D"]
 script = ExtResource( 1 )
@@ -15,3 +16,8 @@ color = Color( 0.2, 0.345098, 0.188235, 0.592157 )
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 50, 50 )
 texture = ExtResource( 2 )
+
+[node name="Frame" type="Sprite" parent="."]
+visible = false
+position = Vector2( 50, 50 )
+texture = ExtResource( 3 )
