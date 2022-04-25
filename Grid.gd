@@ -21,7 +21,7 @@ func init_matrix():
 	for i in range(8):
 		matrix.append([])
 		for _j in range(8):
-			matrix[i].append()
+			matrix[i].append(0)
 	add_pieces()
 
 
@@ -165,7 +165,7 @@ func square_clicked(position: Vector2):
 		if typeof(Globals.last_clicked) == TYPE_INT: # its 0
 			return
 		Globals.last_clicked.spot(position)
-		Globals.last_clicked = null
+		Globals.last_clicked = 0
 	elif typeof(Globals.last_clicked) != typeof(spot) or Globals.last_clicked != spot:
 		Globals.last_clicked = spot
 		spot.clicked()
