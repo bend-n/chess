@@ -8,8 +8,6 @@ var has_moved = false
 var sprite
 var frameon
 
-
-
 onready var tween = $Tween
 onready var colorrect = $ColorRect
 onready var frame = $Frame
@@ -160,7 +158,7 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 				break
 			if at_pos(pos) != null:
 				carry.append(pos)
-				break;
+				break
 			carry.append(pos)
 	return carry
 
@@ -207,8 +205,9 @@ func take(piece: Piece):
 	var piecepos = piece.real_position
 	piece.queue_free()
 	moveto(piecepos)
-	
-func set_frame(value, real=true):
+
+
+func set_frame(value, real = true):
 	frameon = value
 	if real:
 		frame.visible = value
