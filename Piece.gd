@@ -6,6 +6,7 @@ var white := true
 var realname = "pawn"
 var has_moved = false
 var sprite
+var frameon
 
 
 
@@ -206,3 +207,6 @@ func take(piece: Piece):
 	var piecepos = piece.real_position
 	piece.queue_free()
 	moveto(piecepos)
+	
+func set_frame(frame):
+	frameon = frame	
