@@ -6,8 +6,8 @@ var white := true
 var realname = "pawn"
 var has_moved = false
 var sprite
-var frameon = false
-var black_holder
+
+
 
 onready var tween = $Tween
 onready var colorrect = $ColorRect
@@ -107,8 +107,7 @@ func create_circles(real = true):
 			if !white:
 				takes = [pos_around(Vector2(-1, 1)), pos_around(Vector2(1, 1))]
 			for i in takes:
-				i = check_bounds(i)
-				if !i:
+				if not is_on_board(i):
 					continue
 				carry.append(i)
 			if real:
@@ -156,27 +155,13 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 		var pos = real_position
 		while true:
 			pos = pos + i
-			pos = check_bounds(pos)
-			if blocking(pos):
+			if not is_on_board(pos):
 				break
+			if at_pos(pos) != null:
+				carry.append(pos)
+				break;
 			carry.append(pos)
-	pd(carry, realname == "queen")
 	return carry
-
-
-func blocking(pos):
-	if black_holder:
-		black_holder = false
-		return true
-	if pos == null: # its null
-		return true
-	var piece = at_pos(pos) # get the piece at pos
-	if piece: # it isnt null
-		if piece.white != Globals.turn and !black_holder: # other team
-			black_holder = true # store a variable so we can have one black thing
-			return false
-		return true
-	return false # it is null
 
 
 func at_pos(vector):
@@ -185,8 +170,8 @@ func at_pos(vector):
 
 func set_circle(positions: Array, type := "move", real = true):
 	for i in range(len(positions)):
-		var pos = check_bounds(positions[i])
-		if !pos:
+		var pos = positions[i]
+		if not is_on_board(pos):
 			continue
 		var spot = at_pos(pos)
 		if type == "move":
@@ -211,16 +196,10 @@ func pd(string, toprint):
 		print(string)
 
 
-func set_frame(boolean, real = true):
-	frameon = boolean
-	if real:
-		frame.visible = boolean
-
-
-func check_bounds(vector: Vector2):
+func is_on_board(vector: Vector2) -> bool:
 	if vector.y < 0 or vector.y > 7 or vector.x < 0 or vector.x > 7:
-		return null
-	return vector
+		return false
+	return true
 
 
 func take(piece: Piece):
