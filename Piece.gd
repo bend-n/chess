@@ -208,5 +208,7 @@ func take(piece: Piece):
 	piece.queue_free()
 	moveto(piecepos)
 	
-func set_frame(frame):
-	frameon = frame	
+func set_frame(value, real=true):
+	frameon = value
+	if real:
+		frame.visible = value
