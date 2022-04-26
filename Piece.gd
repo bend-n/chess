@@ -6,7 +6,7 @@ var white := true
 var realname = "pawn"
 var has_moved = false
 var sprite
-
+var frameon = false
 var black_holder
 
 onready var tween = $Tween
@@ -55,6 +55,7 @@ func moveto(position):
 	move(position)
 	Globals.turn = not Globals.turn
 	Globals.turns += 1
+	Events.emit_signal("turn_over")
 
 
 func pos_around(around_vector):
@@ -74,7 +75,16 @@ func all_dirs():
 	]
 
 
-func create_circles():
+func reality(carry, real):
+	if real:
+		set_circle(carry)
+		set_circle(carry, "take")
+	else:
+		var result = set_circle(carry, "take", false)
+		return result  # checking if king is takeable
+
+
+func create_circles(real = true):
 	# for motion
 	match realname:
 		"pawn":
@@ -89,18 +99,22 @@ func create_circles():
 					if has_moved
 					else [pos_around(Vector2.DOWN), pos_around(Vector2.DOWN * 2)]
 				)
-			set_circle(carry)
+			if real:
+				set_circle(carry)
 			# deal with the take logic
 			carry = []
 			var takes = [pos_around(Vector2(-1, -1)), pos_around(Vector2(1, -1))]
 			if !white:
 				takes = [pos_around(Vector2(-1, 1)), pos_around(Vector2(1, 1))]
 			for i in takes:
-				i = clamp_vector(i)
-				if i == null:
+				i = check_bounds(i)
+				if !i:
 					continue
 				carry.append(i)
-			set_circle(carry, "take")
+			if real:
+				set_circle(carry, "take")
+			else:
+				return set_circle(carry, "take", false)
 		"king":
 			var carry = [
 				pos_around(Vector2.UP),
@@ -112,8 +126,7 @@ func create_circles():
 				pos_around(Vector2(-1, 1)),
 				pos_around(Vector2(-1, -1))
 			]
-			set_circle(carry)
-			set_circle(carry, "take")  # king ez
+			return reality(carry, real)
 		"knight":
 			var carry = [
 				pos_around(Vector2(-2, -1)),
@@ -125,20 +138,16 @@ func create_circles():
 				pos_around(Vector2(-1, 2)),
 				pos_around(Vector2(1, 2))
 			]
-			set_circle(carry)
-			set_circle(carry, "take")
+			return reality(carry, real)
 		"rook":
 			var carry = traverse(all_dirs().slice(0, 4))
-			set_circle(carry)
-			set_circle(carry, "take")
+			return reality(carry, real)
 		"bishop":
 			var carry = traverse(all_dirs().slice(4, 8))
-			set_circle(carry)
-			set_circle(carry, "take")
+			return reality(carry, real)
 		"queen":
 			var carry = traverse(all_dirs())
-			set_circle(carry)
-			set_circle(carry, "take")
+			return reality(carry, real)
 
 
 func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
@@ -148,34 +157,35 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 		var pos = real_position
 		while true:
 			pos = pos + i
-			pos = clamp_vector(pos)
-			if !traverse_helper(pos):
+			pos = check_bounds(pos)
+			if blocking(pos):
 				break
 			carry.append(pos)
 	black_holder = false
+	pd(carry, realname == "queen")
 	return carry
 
 
-func traverse_helper(pos):
-	if pos == null:
-		return null
-	pos = at_pos(pos)
-	if pos:
-		if pos.white != Globals.turn and !black_holder:
-			black_holder = true
-			return true
-		return null
-	return true
+func blocking(pos):
+	if pos == null: # its null
+		return true
+	var piece = at_pos(pos) # get the piece at pos
+	if piece: # it isnt null
+		if piece.white != Globals.turn and !black_holder: # other team
+			black_holder = true # store a variable so we can have one black thing
+			return false
+		return true
+	return false # it is null
 
 
 func at_pos(vector):
 	return Globals.grid.matrix[vector.y][vector.x]
 
 
-func set_circle(positions: Array, type := "move"):
+func set_circle(positions: Array, type := "move", real = true):
 	for i in range(len(positions)):
-		var pos = clamp_vector(positions[i])
-		if pos == null:
+		var pos = check_bounds(positions[i])
+		if !pos:
 			continue
 		var spot = at_pos(pos)
 		if type == "move":
@@ -183,19 +193,32 @@ func set_circle(positions: Array, type := "move"):
 				continue
 			Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)
 		elif type == "take":
-			if spot and spot.white != Globals.turn:
+			var team = Globals.turn if real else !Globals.turn
+			if spot and spot.white != team:
 				spot.set_frame(true)
+				if spot.realname == "king":
+					if real:
+						printerr("shit")
+					else:
+						print("chec")
+						return true
+	return false
 
 
-func set_frame(boolean):
-	frame.visible = boolean
+func pd(string, toprint):
+	if toprint:
+		print(string)
 
 
-func clamp_vector(vector: Vector2):
+func set_frame(boolean, real = true):
+	frameon = boolean
+	if real:
+		frame.visible = boolean
+
+
+func check_bounds(vector: Vector2):
 	if vector.y < 0 or vector.y > 7 or vector.x < 0 or vector.x > 7:
 		return null
-	vector.x = clamp(vector.x, 0, 7)
-	vector.y = clamp(vector.y, 0, 7)
 	return vector
 
 

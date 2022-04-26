@@ -2,6 +2,7 @@ extends ColorRect
 
 var realname = "Square"
 var real_position = Vector2()
+var circle_on = false
 
 onready var area = $Squarea
 onready var areacollisionshape = $Squarea/CollisionShape2D
@@ -23,5 +24,7 @@ func _on_Squarea_input_event(_viewport: Node, event: InputEvent, _shape_idx: int
 		emit_signal("clicked", real_position)
 
 
-func set_circle(boolean: bool):
-	circle.visible = boolean
+func set_circle(boolean: bool, real = true):
+	circle_on = boolean
+	if real:
+		circle.visible = boolean
