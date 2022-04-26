@@ -20,9 +20,10 @@ var matrix = []
 var background_matrix = []
 var last_clicked
 
+onready var piece_sets = walk_dir()
+
 
 func _ready():
-	print(PIECE_SET)
 	Globals.grid = self
 	init_board()
 	init_matrix()
@@ -40,6 +41,7 @@ func check_in_check(real = true):
 		for j in range(0, 8):
 			var spot = matrix[i][j]
 			if spot and spot.white != Globals.turn:  # enemie
+				print("checking", spot.realname)
 				if matrix[i][j].create_circles(false):
 					Globals.in_check = true
 					Globals.checking_piece = matrix[i][j]
@@ -61,13 +63,12 @@ func init_matrix():
 	add_pieces()
 
 
-func instance_piece_at_position(position: Vector2, name: String, sprite: String, white: bool = true):
+func make_piece(position: Vector2, name: String, sprite: String, white: bool = true): # make peace
 	var piece = Piece.instance()
 	piece.sprite = piece.get_node("Sprite")
 	piece.sprite.texture = load(sprite)
 	piece.real_position = position
-	position *= piece_size
-	piece.global_position = position
+	piece.global_position = position * piece_size
 	piece.realname = name
 	piece.name = name
 	piece.white = white
@@ -103,39 +104,39 @@ func add_pieces():
 
 func add_pawns():
 	for i in range(8):
-		matrix[1][i] = instance_piece_at_position(Vector2(i, 1), "pawn", ASSETS_PATH + "bP.png", false)
-		matrix[6][i] = instance_piece_at_position(Vector2(i, 6), "pawn", ASSETS_PATH + "wP.png", true)
+		matrix[1][i] = make_piece(Vector2(i, 1), "pawn", ASSETS_PATH + "bP.png", false)
+		matrix[6][i] = make_piece(Vector2(i, 6), "pawn", ASSETS_PATH + "wP.png", true)
 
 
 func add_rooks():
-	matrix[0][0] = instance_piece_at_position(Vector2(0, 0), "rook", ASSETS_PATH + "bR.png", false)
-	matrix[0][7] = instance_piece_at_position(Vector2(7, 0), "rook", ASSETS_PATH + "bR.png", false)
-	matrix[7][0] = instance_piece_at_position(Vector2(0, 7), "rook", ASSETS_PATH + "wR.png", true)
-	matrix[7][7] = instance_piece_at_position(Vector2(7, 7), "rook", ASSETS_PATH + "wR.png", true)
+	matrix[0][0] = make_piece(Vector2(0, 0), "rook", ASSETS_PATH + "bR.png", false)
+	matrix[0][7] = make_piece(Vector2(7, 0), "rook", ASSETS_PATH + "bR.png", false)
+	matrix[7][0] = make_piece(Vector2(0, 7), "rook", ASSETS_PATH + "wR.png", true)
+	matrix[7][7] = make_piece(Vector2(7, 7), "rook", ASSETS_PATH + "wR.png", true)
 
 
 func add_knights():
-	matrix[0][1] = instance_piece_at_position(Vector2(1, 0), "knight", ASSETS_PATH + "bN.png", false)
-	matrix[0][6] = instance_piece_at_position(Vector2(6, 0), "knight", ASSETS_PATH + "bN.png", false)
-	matrix[7][1] = instance_piece_at_position(Vector2(1, 7), "knight", ASSETS_PATH + "wN.png", true)
-	matrix[7][6] = instance_piece_at_position(Vector2(6, 7), "knight", ASSETS_PATH + "wN.png", true)
+	matrix[0][1] = make_piece(Vector2(1, 0), "knight", ASSETS_PATH + "bN.png", false)
+	matrix[0][6] = make_piece(Vector2(6, 0), "knight", ASSETS_PATH + "bN.png", false)
+	matrix[7][1] = make_piece(Vector2(1, 7), "knight", ASSETS_PATH + "wN.png", true)
+	matrix[7][6] = make_piece(Vector2(6, 7), "knight", ASSETS_PATH + "wN.png", true)
 
 
 func add_bishops():
-	matrix[0][2] = instance_piece_at_position(Vector2(2, 0), "bishop", ASSETS_PATH + "bB.png", false)
-	matrix[0][5] = instance_piece_at_position(Vector2(5, 0), "bishop", ASSETS_PATH + "bB.png", false)
-	matrix[7][2] = instance_piece_at_position(Vector2(2, 7), "bishop", ASSETS_PATH + "wB.png", true)
-	matrix[7][5] = instance_piece_at_position(Vector2(5, 7), "bishop", ASSETS_PATH + "wB.png", true)
+	matrix[0][2] = make_piece(Vector2(2, 0), "bishop", ASSETS_PATH + "bB.png", false)
+	matrix[0][5] = make_piece(Vector2(5, 0), "bishop", ASSETS_PATH + "bB.png", false)
+	matrix[7][2] = make_piece(Vector2(2, 7), "bishop", ASSETS_PATH + "wB.png", true)
+	matrix[7][5] = make_piece(Vector2(5, 7), "bishop", ASSETS_PATH + "wB.png", true)
 
 
 func add_queens():
-	matrix[0][3] = instance_piece_at_position(Vector2(3, 0), "queen", ASSETS_PATH + "bQ.png", false)
-	matrix[7][3] = instance_piece_at_position(Vector2(3, 7), "queen", ASSETS_PATH + "wQ.png", true)
+	matrix[0][3] = make_piece(Vector2(3, 0), "queen", ASSETS_PATH + "bQ.png", false)
+	matrix[7][3] = make_piece(Vector2(3, 7), "queen", ASSETS_PATH + "wQ.png", true)
 
 
 func add_kings():
-	matrix[0][4] = instance_piece_at_position(Vector2(4, 0), "king", ASSETS_PATH + "bK.png", false)
-	matrix[7][4] = instance_piece_at_position(Vector2(4, 7), "king", ASSETS_PATH + "wK.png", true)
+	matrix[0][4] = make_piece(Vector2(4, 0), "king", ASSETS_PATH + "bK.png", false)
+	matrix[7][4] = make_piece(Vector2(4, 7), "king", ASSETS_PATH + "wK.png", true)
 
 
 func print_matrix_pretty(mat = matrix):
@@ -199,3 +200,21 @@ func clear_frames():
 func _input(event):
 	if event.is_action("debug"):
 		print_matrix_pretty()
+
+
+func walk_dir(path = "res://assets"):
+	var folders = []
+	var dir = Directory.new()
+	if dir.open(path) == OK:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if dir.current_is_dir():
+				if file_name == "." or file_name == "..":
+					file_name = dir.get_next()
+					continue
+				folders.append(file_name)
+			file_name = dir.get_next()
+	else:
+		printerr("An error occurred when trying to access the path " + path)
+	return folders
