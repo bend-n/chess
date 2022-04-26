@@ -140,19 +140,18 @@ func add_kings():
 
 
 func print_matrix_pretty(mat = matrix):
-	print("[")
-	for r in mat:
-		var row = "	["
+	for j in range(len(mat)):
+		var r = mat[j]
+		var row = str(8 - j) + " "
 		for i in range(8):
 			var c = r[i]
-			var ender = ", " if i < 7 else ""
+			var ender = " " if i < 7 else ""
 			if c:
 				row += c.shortname + ender
 			else:
-				row += "NA" + ender
-		print(row + "],")
-	print("]")
-
+				row += "00" + ender
+		print(row)
+	print("  a  b  c  d  e  f  g  h")
 
 func check_for_circle(position: Vector2):
 	return background_matrix[position.x][position.y].circle_on
