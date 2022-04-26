@@ -3,8 +3,8 @@ class_name Grid
 
 export var PIECE_SET = "california"
 
-export(Color) var board_color1 = Color.white
-export(Color) var board_color2 = Color.black
+export(Color) var board_color1 = Color(0.870588, 0.890196, 0.901961)
+export(Color) var board_color2 = Color(0.54902, 0.635294, 0.678431)
 export(Color) var overlay_color = Color(0.2, 0.345098, 0.188235, 0.592157)
 
 onready var background = $Background
@@ -145,7 +145,7 @@ func check_for_frame(position: Vector2):
 
 func square_clicked(position: Vector2):
 	var spot = matrix[position.y][position.x]
-	if !spot or !spot.white:  # spot is not a tile or spot is not white
+	if !spot or spot.white != Globals.turn:  # spot is not a tile or spot is not turn color
 		if !last_clicked:  # last clicked is null, so this is pointless
 			return
 		if check_for_circle(position):  # see if theres a circle at the position

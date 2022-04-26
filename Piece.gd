@@ -42,6 +42,8 @@ func moveto(position):
 	Globals.grid.matrix[position.y][position.x] = self
 	real_position = position
 	move(position)
+	Globals.turn = not Globals.turn
+	Globals.turns += 1
 
 
 func pos_around(around_vector):
@@ -49,31 +51,22 @@ func pos_around(around_vector):
 
 
 func all_dirs():
-	return [
-		Vector2.UP,
-		Vector2.DOWN,
-		Vector2.LEFT,
-		Vector2.RIGHT,
-		Vector2(1, 1),
-		Vector2(1, -1),
-		Vector2(-1, 1),
-		Vector2(-1, -1)
-	]
+	return [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT, Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
 
 
 func create_circles():
 	# for motion
 	match realname:
 		"pawn":
-			var carry = (
-				[pos_around(Vector2.UP)]
-				if has_moved
-				else [pos_around(Vector2.UP), pos_around(Vector2.UP * 2)]
-			)
+			var carry = [pos_around(Vector2.UP)] if has_moved else [pos_around(Vector2.UP), pos_around(Vector2.UP * 2)]
+			if !white:
+				carry = ([pos_around(Vector2.DOWN)] if has_moved else [pos_around(Vector2.DOWN), pos_around(Vector2.DOWN * 2)])
 			set_circle(carry)
 			# deal with the take logic
 			carry = []
 			var takes = [pos_around(Vector2(-1, -1)), pos_around(Vector2(1, -1))]
+			if !white:
+				takes = [pos_around(Vector2(-1, 1)), pos_around(Vector2(1, 1))]
 			for i in takes:
 				i = clamp_vector(i)
 				if i == null:
@@ -140,7 +133,7 @@ func traverse_helper(pos):
 		return null
 	pos = at_pos(pos)
 	if pos:
-		if !pos.white and !black_holder:
+		if pos.white != Globals.turn and !black_holder:
 			black_holder = true
 			return true
 		return null
@@ -162,7 +155,7 @@ func set_circle(positions: Array, type := "move"):
 				continue
 			Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)
 		elif type == "take":
-			if spot and !spot.white:
+			if spot and spot.white != Globals.turn:
 				spot.set_frame(true)
 
 
