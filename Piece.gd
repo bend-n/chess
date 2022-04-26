@@ -153,7 +153,6 @@ func create_circles(real = true):
 func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 	var carry = []
 	for i in arr:
-		black_holder = false
 		var pos = real_position
 		while true:
 			pos = pos + i
@@ -161,12 +160,14 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 			if blocking(pos):
 				break
 			carry.append(pos)
-	black_holder = false
 	pd(carry, realname == "queen")
 	return carry
 
 
 func blocking(pos):
+	if black_holder:
+		black_holder = false
+		return true
 	if pos == null: # its null
 		return true
 	var piece = at_pos(pos) # get the piece at pos
