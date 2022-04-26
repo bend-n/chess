@@ -94,12 +94,12 @@ func all_dirs():
 	]
 
 
-func reality(carry, real):
+func reality(circle_array, real):
 	if real:
-		set_circle(carry)
-		set_circle(carry, "take")
+		set_circle(circle_array)
+		set_circle(circle_array, "take")
 	else:
-		var result = set_circle(carry, "take", false)
+		var result = set_circle(circle_array, "take", false)
 		return result  # checking if king is takeable
 
 
@@ -107,34 +107,34 @@ func create_circles(real = true):
 	# for motion
 	match realname:
 		"pawn":
-			var carry = (
+			var circle_array = (
 				[pos_around(Vector2.UP)]
 				if has_moved
 				else [pos_around(Vector2.UP), pos_around(Vector2.UP * 2)]
 			)
 			if !white:
-				carry = (
+				circle_array = (
 					[pos_around(Vector2.DOWN)]
 					if has_moved
 					else [pos_around(Vector2.DOWN), pos_around(Vector2.DOWN * 2)]
 				)
 			if real:
-				set_circle(carry)
+				set_circle(circle_array)
 			# deal with the take logic
-			carry = []
+			circle_array = []
 			var takes = [pos_around(Vector2(-1, -1)), pos_around(Vector2(1, -1))]
 			if !white:
 				takes = [pos_around(Vector2(-1, 1)), pos_around(Vector2(1, 1))]
 			for i in takes:
 				if not is_on_board(i):
 					continue
-				carry.append(i)
+				circle_array.append(i)
 			if real:
-				set_circle(carry, "take")
+				set_circle(circle_array, "take")
 			else:
-				return set_circle(carry, "take", false)
+				return set_circle(circle_array, "take", false)
 		"king":
-			var carry = [
+			var circle_array = [
 				pos_around(Vector2.UP),
 				pos_around(Vector2.DOWN),
 				pos_around(Vector2.LEFT),
@@ -144,9 +144,9 @@ func create_circles(real = true):
 				pos_around(Vector2(-1, 1)),
 				pos_around(Vector2(-1, -1))
 			]
-			return reality(carry, real)
+			return reality(circle_array, real)
 		"knight":
-			var carry = [
+			var circle_array = [
 				pos_around(Vector2(-2, -1)),
 				pos_around(Vector2(-2, 1)),
 				pos_around(Vector2(2, -1)),
@@ -156,26 +156,26 @@ func create_circles(real = true):
 				pos_around(Vector2(-1, 2)),
 				pos_around(Vector2(1, 2))
 			]
-			return reality(carry, real)
+			return reality(circle_array, real)
 		"rook":
-			var carry = traverse(all_dirs().slice(0, 4))
-			return reality(carry, real)
+			var circle_array = traverse(all_dirs().slice(0, 4))
+			return reality(circle_array, real)
 		"bishop":
-			var carry = traverse(all_dirs().slice(4, 8))
-			return reality(carry, real)
+			var circle_array = traverse(all_dirs().slice(4, 8))
+			return reality(circle_array, real)
 		"queen":
 			# debug with queen
 			print("queen here!")
 			print("my real position is")
 			print(real_position)
-			var carry = traverse(all_dirs())
-			var check_king = reality(carry, real)
+			var circle_array = traverse(all_dirs())
+			var check_king = reality(circle_array, real)
 			print("yes" if check_king else "no")
 			return check_king
 
 
 func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
-	var carry = []
+	var circle_array = []
 	for i in arr:
 		var pos = real_position
 		while true:
@@ -183,10 +183,10 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 			if not is_on_board(pos):
 				break
 			if at_pos(pos) != null:
-				carry.append(pos)
+				circle_array.append(pos)
 				break
-			carry.append(pos)
-	return carry
+			circle_array.append(pos)
+	return circle_array
 
 
 func at_pos(vector):
