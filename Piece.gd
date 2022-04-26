@@ -179,7 +179,7 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 	for i in arr:
 		var pos = real_position
 		while true:
-			pos = pos + i
+			pos += i
 			if not is_on_board(pos):
 				break
 			if at_pos(pos) != null:
@@ -193,42 +193,53 @@ func at_pos(vector):
 	return Globals.grid.matrix[vector.y][vector.x]
 
 
+func create_move_circles(spot, pos):
+	if spot:  # if there is a piece at the spot
+		return false  # we cant move onto a piece
+	if checkcheck(pos):  # if moving to position fixes the check or were not in check
+		Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)  # make the move circle
+
+
+func create_take_circles(spot, real):  # create take circles
+	var team = Globals.turn if real else !Globals.turn  # is your team, or, if testing with !real, opponents team
+	if spot and spot.white != team:  # if spot is not null and is not your team
+		if Globals.in_check and spot != Globals.checking_piece:  # if you are in check and the spot is not the piece that is checking you
+			return  # it isnt going to fix the check, so return
+		spot.set_frame(real)  # turn on the little take frame on the piece, to show its takeable
+		if spot.realname == "king":  # if the piece is a king
+			if real:  # and its not a test
+				printerr("shit")  # we fucked up
+			else:
+				return true  # it is a test for if in check, so return true
+	return false  # nothing happened, so return false
+
+
 func set_circle(positions: Array, type := "move", real = true):
-	for i in range(len(positions)):
-		var pos = positions[i]
-		if not is_on_board(pos):
-			continue
-		var spot = at_pos(pos)
-		if type == "move":
-			if spot:
-				continue
-			if checkcheck(pos):
-				Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)
-		elif type == "take":
-			var team = Globals.turn if real else !Globals.turn
-			if spot and spot.white != team:
-				if Globals.in_check and spot != Globals.checking_piece:
-					return
-				spot.set_frame(true)
-				if spot.realname == "king":
-					if real:
-						printerr("shit")
-					else:
-						return true
-	return false
+	for pos in positions:
+		if not is_on_board(pos):  # check if the position is on the boards
+			continue  # if it isnt, continue
+
+		var spot = at_pos(pos)  # get the piece at the position
+		if type == "move":  # if the type is move
+			if !create_move_circles(spot, pos):  # create the move circles
+				continue  # if the spot is not null, continue instead of creating circles
+		elif type == "take":  # if the type is take
+			if create_take_circles(spot, real) == true and !real:  # if the king is in check, return true
+				return true
+	return false  # if nothing happened, return false
 
 
 func checkcheck(pos):
-	if Globals.in_check:
-		var mat = Globals.grid.matrix.duplicate(true)
-		moveto(pos, false)
+	if Globals.in_check:  # if you are in check
+		var mat = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
+		moveto(pos, false)  # move to the position
 		print("moved " + realname + " to " + str(pos))
-		var retu = true
-		if !Globals.grid.check_in_check(false):
-			print("did not fix check")
-			retu = false
-		Globals.grid.print_matrix_pretty(mat)
-		Globals.grid.matrix = mat
+		var retu = true  # return true by default
+		if !Globals.grid.check_in_check(false):  # if you are still in check
+			print("did not fix check")  # sadge
+			retu = false  # return false, but fix the matrix first
+		Globals.grid.print_matrix_pretty(mat)  # print the matrix
+		Globals.grid.matrix = mat  # revert changes on the matrix
 		return retu
 	return true
 
