@@ -26,6 +26,16 @@ func _ready():
 	Globals.grid = self
 	init_board()
 	init_matrix()
+	Events.connect("turn_over", self, "_on_turn_over")
+
+
+func _on_turn_over():
+	for i in range(0, 8):
+		for j in range(0, 8):
+			var spot = matrix[i][j]
+			if spot and spot.white != Globals.turn:  # enemie
+				if matrix[i][j].create_circles(false):
+					print("woaw")
 
 
 func _exit_tree():
@@ -68,7 +78,6 @@ func init_board():
 			background.add_child(square)
 			square.connect("clicked", self, "square_clicked")
 			background_matrix[i].append(square)
-	print_matrix_pretty(background_matrix)
 
 
 func add_pieces():
@@ -134,13 +143,13 @@ func print_matrix_pretty(mat = matrix):
 
 
 func check_for_circle(position: Vector2):
-	return background_matrix[position.x][position.y].circle.visible
+	return background_matrix[position.x][position.y].circle_on
 
 
 func check_for_frame(position: Vector2):
 	if !matrix[position.y][position.x]:
 		return false
-	return matrix[position.y][position.x].frame.visible
+	return matrix[position.y][position.x].frameon
 
 
 func square_clicked(position: Vector2):
@@ -174,3 +183,8 @@ func clear_frames():
 			var square = matrix[i][j]
 			if square:
 				square.set_frame(false)
+
+
+func _input(event):
+	if event.is_action("debug"):
+		print_matrix_pretty()
