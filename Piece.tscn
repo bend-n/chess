@@ -21,3 +21,5 @@ texture = ExtResource( 2 )
 visible = false
 position = Vector2( 50, 50 )
 texture = ExtResource( 3 )
+
+[node name="Tween" type="Tween" parent="."]

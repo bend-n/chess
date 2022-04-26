@@ -9,6 +9,7 @@ var sprite
 
 var black_holder
 
+onready var tween = $Tween
 onready var colorrect = $ColorRect
 onready var frame = $Frame
 
@@ -34,7 +35,17 @@ func clear_clicked():  # TODO: fix this shit
 
 func move(newpos: Vector2):  # dont use directly; use moveto
 	has_moved = true
-	global_position = newpos * Globals.grid.piece_size
+	tween.interpolate_property(
+		self,
+		"global_position",
+		global_position,
+		newpos * Globals.grid.piece_size,
+		0.5,
+		Tween.TRANS_BACK,
+		Tween.EASE_IN_OUT
+	)
+	tween.start()
+	# global_position = newpos * Globals.grid.piece_size
 
 
 func moveto(position):
@@ -51,16 +62,33 @@ func pos_around(around_vector):
 
 
 func all_dirs():
-	return [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT, Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
+	return [
+		Vector2.UP,
+		Vector2.DOWN,
+		Vector2.LEFT,
+		Vector2.RIGHT,
+		Vector2(1, 1),
+		Vector2(1, -1),
+		Vector2(-1, 1),
+		Vector2(-1, -1)
+	]
 
 
 func create_circles():
 	# for motion
 	match realname:
 		"pawn":
-			var carry = [pos_around(Vector2.UP)] if has_moved else [pos_around(Vector2.UP), pos_around(Vector2.UP * 2)]
+			var carry = (
+				[pos_around(Vector2.UP)]
+				if has_moved
+				else [pos_around(Vector2.UP), pos_around(Vector2.UP * 2)]
+			)
 			if !white:
-				carry = ([pos_around(Vector2.DOWN)] if has_moved else [pos_around(Vector2.DOWN), pos_around(Vector2.DOWN * 2)])
+				carry = (
+					[pos_around(Vector2.DOWN)]
+					if has_moved
+					else [pos_around(Vector2.DOWN), pos_around(Vector2.DOWN * 2)]
+				)
 			set_circle(carry)
 			# deal with the take logic
 			carry = []
