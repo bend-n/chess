@@ -6,6 +6,5 @@
 
 [node name="Grid" type="Node2D" parent="."]
 script = ExtResource( 1 )
-board_color1 = Color( 0.870588, 0.890196, 0.901961, 1 )
 
 [node name="Background" type="Node2D" parent="Grid"]

@@ -4,11 +4,10 @@ class_name Piece, "res://assets/california/wP.png"
 var real_position = Vector2.ZERO
 var white := true
 var realname = "pawn"
+var shortname = ""
 var has_moved = false
 var sprite
 var frameon
-
-
 
 onready var tween = $Tween
 onready var colorrect = $ColorRect
@@ -20,6 +19,24 @@ func _ready():
 	frame.modulate = Globals.grid.overlay_color
 	colorrect.color = Globals.grid.overlay_color
 	colorrect.rect_size = Globals.grid.piece_size
+	var wh = "w" if white else "b"
+	shortname = short_name().to_lower() + wh.to_upper()
+
+
+func short_name():
+	match realname:
+		"pawn":
+			return "P"
+		"rook":
+			return "R"
+		"knight":
+			return "N"
+		"bishop":
+			return "B"
+		"queen":
+			return "Q"
+		"king":
+			return "K"
 
 
 func clicked():
@@ -49,14 +66,15 @@ func move(newpos: Vector2):  # dont use directly; use moveto
 	# global_position = newpos * Globals.grid.piece_size
 
 
-func moveto(position):
+func moveto(position, real = true):
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[position.y][position.x] = self
-	real_position = position
-	move(position)
-	Globals.turn = not Globals.turn
-	Globals.turns += 1
-	Events.emit_signal("turn_over")
+	if real:
+		real_position = position
+		move(position)
+		Globals.turn = not Globals.turn
+		Globals.turns += 1
+		Events.emit_signal("turn_over")
 
 
 func pos_around(around_vector):
@@ -160,7 +178,7 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 				break
 			if at_pos(pos) != null:
 				carry.append(pos)
-				break;
+				break
 			carry.append(pos)
 	return carry
 
@@ -178,18 +196,35 @@ func set_circle(positions: Array, type := "move", real = true):
 		if type == "move":
 			if spot:
 				continue
-			Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)
+			if checkcheck(pos):
+				Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)
 		elif type == "take":
 			var team = Globals.turn if real else !Globals.turn
 			if spot and spot.white != team:
+				if Globals.in_check and spot != Globals.checking_piece:
+					return
 				spot.set_frame(true)
 				if spot.realname == "king":
 					if real:
 						printerr("shit")
 					else:
-						print("chec")
 						return true
 	return false
+
+
+func checkcheck(pos):
+	if Globals.in_check:
+		var mat = Globals.grid.matrix.duplicate(true)
+		moveto(pos, false)
+		print("moved " + realname + " to " + str(pos))
+		var retu = true
+		if !Globals.grid.check_in_check(false):
+			print("did not fix check")
+			retu = false
+		Globals.grid.print_matrix_pretty(mat)
+		Globals.grid.matrix = mat
+		return retu
+	return true
 
 
 func pd(string, toprint):
@@ -197,7 +232,7 @@ func pd(string, toprint):
 		print(string)
 
 
-func is_on_board(vector: Vector2) -> bool:
+func is_on_board(vector: Vector2):  #-> bool: my syntax highlight doesnt like return annotation
 	if vector.y < 0 or vector.y > 7 or vector.x < 0 or vector.x > 7:
 		return false
 	return true
@@ -207,8 +242,9 @@ func take(piece: Piece):
 	var piecepos = piece.real_position
 	piece.queue_free()
 	moveto(piecepos)
-	
-func set_frame(value, real=true):
+
+
+func set_frame(value, real = true):
 	frameon = value
 	if real:
 		frame.visible = value

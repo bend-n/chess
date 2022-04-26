@@ -30,12 +30,23 @@ func _ready():
 
 
 func _on_turn_over():
+	Globals.checking_piece = null
+	Globals.in_check = false
+	check_in_check()
+
+
+func check_in_check(real = true):
 	for i in range(0, 8):
 		for j in range(0, 8):
 			var spot = matrix[i][j]
 			if spot and spot.white != Globals.turn:  # enemie
 				if matrix[i][j].create_circles(false):
-					print("woaw")
+					Globals.in_check = true
+					Globals.checking_piece = matrix[i][j]
+					print("check")
+					if !real:
+						return true
+	return false
 
 
 func _exit_tree():
@@ -135,9 +146,9 @@ func print_matrix_pretty(mat = matrix):
 			var c = r[i]
 			var ender = ", " if i < 7 else ""
 			if c:
-				row += c.realname + ender
+				row += c.shortname + ender
 			else:
-				row += "null" + ender
+				row += "NA" + ender
 		print(row + "],")
 	print("]")
 
