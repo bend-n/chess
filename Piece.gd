@@ -164,8 +164,14 @@ func create_circles(real = true):
 			var carry = traverse(all_dirs().slice(4, 8))
 			return reality(carry, real)
 		"queen":
+			# debug with queen
+			print("queen here!")
+			print("my real position is")
+			print(real_position)
 			var carry = traverse(all_dirs())
-			return reality(carry, real)
+			var check_king = reality(carry, real)
+			print("yes" if check_king else "no")
+			return check_king
 
 
 func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
