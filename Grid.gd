@@ -24,82 +24,80 @@ onready var piece_sets = walk_dir()
 
 
 func _ready():
-	Globals.grid = self
-	init_board()
-	init_matrix()
-	Events.connect("turn_over", self, "_on_turn_over")
+	Globals.grid = self  # tell the globals that this is the grid
+	init_board()  # create the tile squares
+	init_matrix()  # create the pieces
+	Events.connect("turn_over", self, "_on_turn_over")  # listen for turn_over events
 
 
 func _on_turn_over():
-	Globals.checking_piece = null
-	Globals.in_check = false
-	check_in_check()
+	Globals.checking_piece = null  # reset checking_piece
+	Globals.in_check = false  # reset in_check
+	check_in_check()  # check if in_check
 
 
-func check_in_check(real = true):
-	for i in range(0, 8):
-		for j in range(0, 8):
-			var spot = matrix[i][j]
+func check_in_check():  # check if in_check
+	for i in range(0, 8):  # for each row
+		for j in range(0, 8):  # for each column
+			var spot = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
-				print("checking", spot.realname)
-				if matrix[i][j].create_circles(false):
-					Globals.in_check = true
-					Globals.checking_piece = matrix[i][j]
-					print("check")
-					if !real:
-						return true
-	return false
+				print("checking", spot.realname)  # print the piece
+				if matrix[i][j].create_circles(false):  # if it can take the king
+					Globals.in_check = true  # set in_check
+					Globals.checking_piece = matrix[i][j]  # set checking_piece
+					print("check")  # print the check
+					return true
+	return false  # not in check
 
 
 func _exit_tree():
-	Globals.grid = null
+	Globals.grid = null  # reset the globals grid when leaving tree
 
 
-func init_matrix():
-	for i in range(8):
-		matrix.append([])
-		for _j in range(8):
-			matrix[i].append(null)
-	add_pieces()
+func init_matrix():  # create the matrix
+	for i in range(8):  # for each row
+		matrix.append([])  # add a row
+		for _j in range(8):  # for each column
+			matrix[i].append(null)  # add a square
+	add_pieces()  # add the pieces
 
 
-func make_piece(position: Vector2, name: String, sprite: String, white: bool = true): # make peace
-	var piece = Piece.instance()
-	piece.sprite = piece.get_node("Sprite")
-	piece.sprite.texture = load(sprite)
-	piece.real_position = position
-	piece.global_position = position * piece_size
-	piece.realname = name
-	piece.name = name
-	piece.white = white
-	add_child(piece)
-	return piece
+func make_piece(position: Vector2, name: String, sprite: String, white: bool = true):  # make peace
+	var piece = Piece.instance()  # create a piece
+	piece.sprite = piece.get_node("Sprite")  # get the sprite
+	piece.sprite.texture = load(sprite)  # set the sprite
+	piece.real_position = position  # set the real position
+	piece.global_position = position * piece_size  # set the global position
+	piece.realname = name  # set the real name
+	piece.name = name  # set the name
+	piece.white = white  # set its team
+	add_child(piece)  # add the piece to the grid
+	return piece  # return the piece
 
 
-func init_board():
-	for i in range(8):
-		background_matrix.append([])
-		for j in range(8):
-			# var square = ColorRect.new()
-			var square = Square.instance()
-			square.rect_size = piece_size
-			square.rect_position = Vector2(i, j) * piece_size
-			square.realname = "square_" + str(i) + "_" + str(j)
-			square.color = board_color1 if (i + j) % 2 == 0 else board_color2
-			square.real_position = Vector2(i, j)
-			background.add_child(square)
-			square.connect("clicked", self, "square_clicked")
-			background_matrix[i].append(square)
+func init_board():  # create the board
+	for i in range(8):  # for each row
+		background_matrix.append([])  # add a row
+		for j in range(8):  # for each column
+			var square = Square.instance()  # create a square
+			square.rect_size = piece_size  # set the size
+			square.rect_position = Vector2(i, j) * piece_size  # set the position
+			square.realname = "square_" + str(i) + "_" + str(j)  # set the real name
+			square.color = board_color1 if (i + j) % 2 == 0 else board_color2  # set the color
+			square.real_position = Vector2(i, j)  # set the real position
+			background.add_child(square)  # add the square to the background
+			square.connect("clicked", self, "square_clicked")  # connect the clicked event
+			background_matrix[i].append(square)  # add the square to the background matrix
 
 
-func add_pieces():
+func add_pieces():  # add the pieces
 	add_pawns()
 	add_rooks()
 	add_knights()
 	add_bishops()
 	add_queens()
 	add_kings()
-	print_matrix_pretty()
+	print_matrix_pretty()  # print the matrix
 
 
 func add_pawns():
@@ -139,32 +137,33 @@ func add_kings():
 	matrix[7][4] = make_piece(Vector2(4, 7), "king", ASSETS_PATH + "wK.png", true)
 
 
-func print_matrix_pretty(mat = matrix):
-	for j in range(len(mat)):
-		var r = mat[j]
-		var row = str(8 - j) + " "
-		for i in range(8):
-			var c = r[i]
-			var ender = " " if i < 7 else ""
-			if c:
-				row += c.shortname + ender
-			else:
-				row += "00" + ender
-		print(row)
-	print("  a  b  c  d  e  f  g  h")
+func print_matrix_pretty(mat = matrix):  # print the matrix
+	for j in range(len(mat)):  # for each row
+		var r = mat[j]  # get the row
+		var row = str(8 - j) + " "  # init the string
+		for i in range(8):  # for each column
+			var c = r[i]  # get the column
+			var ender = " " if i < 7 else ""  # set the end string
+			if c:  # if there is a piece
+				row += c.shortname + ender  # add the shortname
+			else:  # if there is no piece
+				row += "00" + ender  # add 00
+		print(row)  # print the string
+	print("  a  b  c  d  e  f  g  h")  # print the column names
 
-func check_for_circle(position: Vector2):
+
+func check_for_circle(position: Vector2):  # check for a circle, validating movement
 	return background_matrix[position.x][position.y].circle_on
 
 
-func check_for_frame(position: Vector2):
-	if !matrix[position.y][position.x]:
-		return false
-	return matrix[position.y][position.x].frameon
+func check_for_frame(position: Vector2):  # check for a frame, validating taking
+	if !matrix[position.y][position.x]:  # if there is no piece
+		return false  # return false
+	return matrix[position.y][position.x].frameon  # return if the frame is on
 
 
-func square_clicked(position: Vector2):
-	var spot = matrix[position.y][position.x]
+func square_clicked(position: Vector2):  # square clicked
+	var spot = matrix[position.y][position.x]  # get the spot
 	if !spot or spot.white != Globals.turn:  # spot is not a tile or spot is not turn color
 		if !last_clicked:  # last clicked is null, so this is pointless
 			return
@@ -181,39 +180,39 @@ func square_clicked(position: Vector2):
 		spot.clicked()  # tell the piece shit happeend
 
 
-func clear_circles():
-	for i in range(8):
-		for j in range(8):
-			var square = background_matrix[i][j]
-			square.set_circle(false)
+func clear_circles():  # clear the circles
+	for i in range(8):  # for each row
+		for j in range(8):  # for each column
+			var square = background_matrix[i][j]  # get the square
+			square.set_circle(false)  # set the circle to false
 
 
-func clear_frames():
-	for i in range(8):
-		for j in range(8):
-			var square = matrix[i][j]
-			if square:
-				square.set_frame(false)
+func clear_frames():  # clear the frames
+	for i in range(8):  # for each row
+		for j in range(8):  # for each column
+			var square = matrix[i][j]  # get the square
+			if square:  # if there is a piece
+				square.set_frame(false)  # set the frame to false
 
 
-func _input(event):
-	if event.is_action("debug"):
-		print_matrix_pretty()
+func _input(event):  # input
+	if event.is_action("debug"):  # if debug
+		print_matrix_pretty()  # print the matrix
 
 
-func walk_dir(path = "res://assets"):
-	var folders = []
-	var dir = Directory.new()
-	if dir.open(path) == OK:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "":
-			if dir.current_is_dir():
-				if file_name == "." or file_name == "..":
-					file_name = dir.get_next()
+func walk_dir(path = "res://assets"):  # walk the directory, finding the asset packs
+	var folders = []  # init the folders
+	var dir = Directory.new()  # init the directory
+	if dir.open(path) == OK:  # open the directory
+		dir.list_dir_begin()  # list the directory
+		var file_name = dir.get_next()  # get the next file
+		while file_name != "":  # while there is a file
+			if dir.current_is_dir():  # if the current is a directory
+				if file_name == "." or file_name == "..":  # if it is a dot or dot dot
+					file_name = dir.get_next()  # get the next file
 					continue
-				folders.append(file_name)
-			file_name = dir.get_next()
+				folders.append(file_name)  # add the folder
+			file_name = dir.get_next()  # get the next file
 	else:
-		printerr("An error occurred when trying to access the path " + path)
-	return folders
+		printerr("An error occurred when trying to access the path " + path)  # print the error
+	return folders  # return the folders
