@@ -53,7 +53,7 @@ texture={
 "compress/normal_map": 0,
 "detect_3d": false,
 "flags/anisotropic": false,
-"flags/filter": false,
+"flags/filter": true,
 "flags/mipmaps": false,
 "flags/repeat": 0,
 "flags/srgb": 2,

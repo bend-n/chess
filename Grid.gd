@@ -9,7 +9,7 @@ export(Color) var overlay_color = Color(0.2, 0.345098, 0.188235, 0.592157)
 
 onready var background = $Background
 
-var ASSETS_PATH = "res://assets/" + PIECE_SET + "/"
+onready var ASSETS_PATH = "res://assets/" + PIECE_SET + "/"
 
 const Piece = preload("res://Piece.tscn")
 const Square = preload("res://Square.tscn")
@@ -22,6 +22,7 @@ var last_clicked
 
 
 func _ready():
+	print(PIECE_SET)
 	Globals.grid = self
 	init_board()
 	init_matrix()
