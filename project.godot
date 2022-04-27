@@ -9,19 +9,55 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Piece",
+"class": "Bishop",
+"language": "GDScript",
+"path": "res://pieces/Bishop.gd"
+}, {
 "base": "Node2D",
 "class": "Grid",
 "language": "GDScript",
 "path": "res://Grid.gd"
 }, {
+"base": "Piece",
+"class": "King",
+"language": "GDScript",
+"path": "res://pieces/King.gd"
+}, {
+"base": "Piece",
+"class": "Knight",
+"language": "GDScript",
+"path": "res://pieces/Knight.gd"
+}, {
+"base": "Piece",
+"class": "Pawn",
+"language": "GDScript",
+"path": "res://pieces/Pawn.gd"
+}, {
 "base": "Node2D",
 "class": "Piece",
 "language": "GDScript",
-"path": "res://Piece.gd"
+"path": "res://pieces/Piece.gd"
+}, {
+"base": "Piece",
+"class": "Queen",
+"language": "GDScript",
+"path": "res://pieces/Queen.gd"
+}, {
+"base": "Piece",
+"class": "Rook",
+"language": "GDScript",
+"path": "res://pieces/Rook.gd"
 } ]
 _global_script_class_icons={
+"Bishop": "",
 "Grid": "",
-"Piece": "res://assets/california/wP.png"
+"King": "",
+"Knight": "",
+"Pawn": "",
+"Piece": "res://assets/california/wP.png",
+"Queen": "",
+"Rook": ""
 }
 
 [application]
