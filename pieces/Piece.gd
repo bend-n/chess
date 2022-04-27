@@ -112,10 +112,10 @@ func get_attacks():  # @Override
 	return final
 
 
-func can_check_king(king):
+func can_attack_piece(piece):
 	check_spots_check = false
-	for attack in get_attacks():
-		if at_pos(attack) == king:
+	for pos in get_attacks():
+		if at_pos(pos) == piece:
 			check_spots_check = true
 			return true
 	check_spots_check = true
@@ -140,16 +140,13 @@ func set_circle(positions: Array, type := "move"):
 
 
 func checkcheck(pos):  # moves to position, then checks if your king is in check
-	if Globals.in_check:  # if you are in check
-		var mat = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
-		moveto(pos, false)  # move to the position
-		var retu = false  # return true by default
-		if Globals.grid.check_in_check():  # if you are still in check
-			retu = true  # return false, but fix the matrix first
-		# Globals.grid.print_matrix_pretty(mat)  # print the matrix
+	var mat = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
+	moveto(pos, false)  # move to the position
+	if Globals.grid.check_in_check():  # if you are still in check# Globals.grid.print_matrix_pretty(mat)  # print the matrix
 		Globals.grid.matrix = mat  # revert changes on the matrix
-		return retu
-	return false
+		return true # return in check
+	Globals.grid.matrix = mat  # revert changes on the matrix
+	return false # return not in check
 
 
 func is_on_board(vector: Vector2):

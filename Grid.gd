@@ -41,13 +41,12 @@ func check_in_check():  # check if in_check
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
-				if matrix[i][j].can_check_king(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
+				if matrix[i][j].can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
 					Globals.in_check = true  # set in_check
 					Globals.checking_piece = matrix[i][j]  # set checking_piece
 					print("check by " + spot.shortname)  # print the check
-					return true
-	return false  # not in check
-
+					return true # stop at the first check found
+	return false
 
 func _exit_tree():
 	Globals.grid = null  # reset the globals grid when leaving tree
