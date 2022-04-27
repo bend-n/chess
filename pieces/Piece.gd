@@ -87,12 +87,12 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 				break
 
 			if at_pos(pos) != null:  # only one black
-				if check_spots_check:
-					if checkcheck(pos):
-						circle_array.append(pos)
-						break
-					break
+				# if check_spots_check:
+				# 	if checkcheck(pos):
+				circle_array.append(pos)
 				break
+				# 	break
+				# break
 			if check_spots_check:
 				if !checkcheck(pos):
 					continue
@@ -112,15 +112,16 @@ func get_attacks():  # @Override
 	var moves = get_moves()  # assumes the attacks are same as moves
 	var final = []
 	for i in moves:
-		if at_pos(i) != null and at_pos(i).white != white:
-			final.append(i)
+		if at_pos(i) != null:
+			if at_pos(i).white != white:  # attack ze enemie
+				final.append(i)
 	return final
 
 
 func can_check_king(king):
 	check_spots_check = false
-	for attackable in get_attacks():
-		if at_pos(attackable) == king:
+	for attack in get_attacks():
+		if at_pos(attack) == king:
 			check_spots_check = true
 			return true
 	check_spots_check = true
