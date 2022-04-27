@@ -3,24 +3,14 @@ class_name King
 
 
 func get_moves():
-	var moves = [
-		pos_around(Vector2.UP),
-		pos_around(Vector2.DOWN),
-		pos_around(Vector2.LEFT),
-		pos_around(Vector2.RIGHT),
-		pos_around(Vector2(1, 1)),
-		pos_around(Vector2(1, -1)),
-		pos_around(Vector2(-1, 1)),
-		pos_around(Vector2(-1, -1))
-	]
-	var final = []
-	for i in moves:
-		if is_on_board(i):
-			if check_spots_check:
-				if !checkcheck(i):
-					continue
-			final.append(i)
-	return final
+	var moves = []
+	for i in all_dirs():
+		var spot = pos_around(i)
+		if is_on_board(spot):
+			if check_spots_check and checkcheck(spot):
+				continue
+			moves.append(spot)
+	return moves
 
 
 func _ready():
