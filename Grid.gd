@@ -45,8 +45,9 @@ func check_in_check():  # check if in_check
 					Globals.in_check = true  # set in_check
 					Globals.checking_piece = matrix[i][j]  # set checking_piece
 					print("check by " + spot.shortname)  # print the check
-					return true # stop at the first check found
+					return true  # stop at the first check found
 	return false
+
 
 func _exit_tree():
 	Globals.grid = null  # reset the globals grid when leaving tree
