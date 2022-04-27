@@ -16,9 +16,8 @@ func get_moves():
 	var final = []
 	for i in moves:
 		if is_on_board(i):
-			if check_spots_check:
-				if !checkcheck(i):
-					continue
+			if check_spots_check and checkcheck(i):
+				continue
 			final.append(i)
 	return final
 

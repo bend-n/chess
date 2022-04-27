@@ -85,17 +85,11 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 			pos += i
 			if !is_on_board(pos):
 				break
-
 			if at_pos(pos) != null:  # only one black
-				# if check_spots_check:
-				# 	if checkcheck(pos):
 				circle_array.append(pos)
 				break
-				# 	break
-				# break
-			if check_spots_check:
-				if !checkcheck(pos):
-					continue
+			if check_spots_check and checkcheck(pos):
+				continue
 			circle_array.append(pos)
 	return circle_array
 
@@ -145,19 +139,17 @@ func set_circle(positions: Array, type := "move"):
 			create_take_circles(spot)  # if the king is in check, return true
 
 
-func checkcheck(pos):  # moves to position, then checks if your king is not in check
+func checkcheck(pos):  # moves to position, then checks if your king is in check
 	if Globals.in_check:  # if you are in check
 		var mat = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
 		moveto(pos, false)  # move to the position
-		print("moved " + shortname + " to " + str(pos))
-		var retu = true  # return true by default
+		var retu = false  # return true by default
 		if Globals.grid.check_in_check():  # if you are still in check
-			print("did not fix check")  # sadge
-			retu = false  # return false, but fix the matrix first
+			retu = true  # return false, but fix the matrix first
 		# Globals.grid.print_matrix_pretty(mat)  # print the matrix
 		Globals.grid.matrix = mat  # revert changes on the matrix
 		return retu
-	return true
+	return false
 
 
 func is_on_board(vector: Vector2):
