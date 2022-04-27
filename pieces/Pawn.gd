@@ -13,7 +13,7 @@ func get_moves():
 		if at_pos(point) == null:
 			if i == 1 and has_moved or at_pos(pos_around(points[0] * whiteint)) != null:
 				continue
-			if check_spots_check and checkcheck(point):
+			if check_spots_check and Globals.in_check and checkcheck(point):
 				continue
 			if is_on_board(point):
 				moves.append(point)
