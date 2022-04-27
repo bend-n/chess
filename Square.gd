@@ -1,6 +1,5 @@
 extends ColorRect
 
-var realname = "Square"
 var real_position = Vector2()
 var circle_on = false
 

@@ -41,11 +41,10 @@ func check_in_check():  # check if in_check
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
-				print("checking", spot.realname)  # print the piece
-				if matrix[i][j].create_circles(false):  # if it can take the king
+				if matrix[i][j].can_check_king(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
 					Globals.in_check = true  # set in_check
 					Globals.checking_piece = matrix[i][j]  # set checking_piece
-					print("check")  # print the check
+					print("check by " + spot.shortname)  # print the check
 					return true
 	return false  # not in check
 
@@ -62,14 +61,13 @@ func init_matrix():  # create the matrix
 	add_pieces()  # add the pieces
 
 
-func make_piece(position: Vector2, name: String, sprite: String, white: bool = true):  # make peace
+func make_piece(position: Vector2, script: String, sprite: String, white: bool = true):  # make peace
 	var piece = Piece.instance()  # create a piece
+	piece.script = load(script)  # set the script
 	piece.sprite = piece.get_node("Sprite")  # get the sprite
 	piece.sprite.texture = load(sprite)  # set the sprite
 	piece.real_position = position  # set the real position
 	piece.global_position = position * piece_size  # set the global position
-	piece.realname = name  # set the real name
-	piece.name = name  # set the name
 	piece.white = white  # set its team
 	add_child(piece)  # add the piece to the grid
 	return piece  # return the piece
@@ -82,7 +80,7 @@ func init_board():  # create the board
 			var square = Square.instance()  # create a square
 			square.rect_size = piece_size  # set the size
 			square.rect_position = Vector2(i, j) * piece_size  # set the position
-			square.realname = "square_" + str(i) + "_" + str(j)  # set the real name
+			square.name = "square_" + str(i) + "_" + str(j)  # set the real name
 			square.color = board_color1 if (i + j) % 2 == 0 else board_color2  # set the color
 			square.real_position = Vector2(i, j)  # set the real position
 			background.add_child(square)  # add the square to the background
@@ -102,39 +100,41 @@ func add_pieces():  # add the pieces
 
 func add_pawns():
 	for i in range(8):
-		matrix[1][i] = make_piece(Vector2(i, 1), "pawn", ASSETS_PATH + "bP.png", false)
-		matrix[6][i] = make_piece(Vector2(i, 6), "pawn", ASSETS_PATH + "wP.png", true)
+		matrix[1][i] = make_piece(Vector2(i, 1), "res://pieces/Pawn.gd", ASSETS_PATH + "bP.png", false)
+		matrix[6][i] = make_piece(Vector2(i, 6), "res://pieces/Pawn.gd", ASSETS_PATH + "wP.png", true)
 
 
 func add_rooks():
-	matrix[0][0] = make_piece(Vector2(0, 0), "rook", ASSETS_PATH + "bR.png", false)
-	matrix[0][7] = make_piece(Vector2(7, 0), "rook", ASSETS_PATH + "bR.png", false)
-	matrix[7][0] = make_piece(Vector2(0, 7), "rook", ASSETS_PATH + "wR.png", true)
-	matrix[7][7] = make_piece(Vector2(7, 7), "rook", ASSETS_PATH + "wR.png", true)
+	matrix[0][0] = make_piece(Vector2(0, 0), "res://pieces/Rook.gd", ASSETS_PATH + "bR.png", false)
+	matrix[0][7] = make_piece(Vector2(7, 0), "res://pieces/Rook.gd", ASSETS_PATH + "bR.png", false)
+	matrix[7][0] = make_piece(Vector2(0, 7), "res://pieces/Rook.gd", ASSETS_PATH + "wR.png", true)
+	matrix[7][7] = make_piece(Vector2(7, 7), "res://pieces/Rook.gd", ASSETS_PATH + "wR.png", true)
 
 
 func add_knights():
-	matrix[0][1] = make_piece(Vector2(1, 0), "knight", ASSETS_PATH + "bN.png", false)
-	matrix[0][6] = make_piece(Vector2(6, 0), "knight", ASSETS_PATH + "bN.png", false)
-	matrix[7][1] = make_piece(Vector2(1, 7), "knight", ASSETS_PATH + "wN.png", true)
-	matrix[7][6] = make_piece(Vector2(6, 7), "knight", ASSETS_PATH + "wN.png", true)
+	matrix[0][1] = make_piece(Vector2(1, 0), "res://pieces/Knight.gd", ASSETS_PATH + "bN.png", false)
+	matrix[0][6] = make_piece(Vector2(6, 0), "res://pieces/Knight.gd", ASSETS_PATH + "bN.png", false)
+	matrix[7][1] = make_piece(Vector2(1, 7), "res://pieces/Knight.gd", ASSETS_PATH + "wN.png", true)
+	matrix[7][6] = make_piece(Vector2(6, 7), "res://pieces/Knight.gd", ASSETS_PATH + "wN.png", true)
 
 
 func add_bishops():
-	matrix[0][2] = make_piece(Vector2(2, 0), "bishop", ASSETS_PATH + "bB.png", false)
-	matrix[0][5] = make_piece(Vector2(5, 0), "bishop", ASSETS_PATH + "bB.png", false)
-	matrix[7][2] = make_piece(Vector2(2, 7), "bishop", ASSETS_PATH + "wB.png", true)
-	matrix[7][5] = make_piece(Vector2(5, 7), "bishop", ASSETS_PATH + "wB.png", true)
+	matrix[0][2] = make_piece(Vector2(2, 0), "res://pieces/Bishop.gd", ASSETS_PATH + "bB.png", false)
+	matrix[0][5] = make_piece(Vector2(5, 0), "res://pieces/Bishop.gd", ASSETS_PATH + "bB.png", false)
+	matrix[7][2] = make_piece(Vector2(2, 7), "res://pieces/Bishop.gd", ASSETS_PATH + "wB.png", true)
+	matrix[7][5] = make_piece(Vector2(5, 7), "res://pieces/Bishop.gd", ASSETS_PATH + "wB.png", true)
 
 
 func add_queens():
-	matrix[0][3] = make_piece(Vector2(3, 0), "queen", ASSETS_PATH + "bQ.png", false)
-	matrix[7][3] = make_piece(Vector2(3, 7), "queen", ASSETS_PATH + "wQ.png", true)
+	matrix[0][3] = make_piece(Vector2(3, 0), "res://pieces/Queen.gd", ASSETS_PATH + "bQ.png", false)
+	matrix[7][3] = make_piece(Vector2(3, 7), "res://pieces/Queen.gd", ASSETS_PATH + "wQ.png", true)
 
 
 func add_kings():
-	matrix[0][4] = make_piece(Vector2(4, 0), "king", ASSETS_PATH + "bK.png", false)
-	matrix[7][4] = make_piece(Vector2(4, 7), "king", ASSETS_PATH + "wK.png", true)
+	matrix[0][4] = make_piece(Vector2(4, 0), "res://pieces/King.gd", ASSETS_PATH + "bK.png", false)
+	matrix[7][4] = make_piece(Vector2(4, 7), "res://pieces/King.gd", ASSETS_PATH + "wK.png", true)
+	Globals.white_king = matrix[7][4]  # set the white king
+	Globals.black_king = matrix[0][4]  # set the black king
 
 
 func print_matrix_pretty(mat = matrix):  # print the matrix
@@ -167,10 +167,12 @@ func square_clicked(position: Vector2):  # square clicked
 	if !spot or spot.white != Globals.turn:  # spot is not a tile or spot is not turn color
 		if !last_clicked:  # last clicked is null, so this is pointless
 			return
-		if check_for_circle(position):  # see if theres a circle at the position
-			last_clicked.moveto(position)  # if there is, move there
 		if check_for_frame(position):  # takeable
 			last_clicked.take(matrix[position.y][position.x])  # eat
+			turn_over()
+		if check_for_circle(position):  # see if theres a circle at the position
+			last_clicked.moveto(position)  # if there is, move there
+			turn_over()
 		last_clicked.clear_clicked()  # remove the circles
 		last_clicked = null  # set it to null
 	elif last_clicked != spot:  # we got a new piece (or pawn) clicked
@@ -180,19 +182,20 @@ func square_clicked(position: Vector2):  # square clicked
 		spot.clicked()  # tell the piece shit happeend
 
 
-func clear_circles():  # clear the circles
+func turn_over():
+	Globals.turn = not Globals.turn
+	Globals.turns += 1
+	Events.emit_signal("turn_over")
+
+
+func clear_fx():  # clear the circles
 	for i in range(8):  # for each row
 		for j in range(8):  # for each column
 			var square = background_matrix[i][j]  # get the square
 			square.set_circle(false)  # set the circle to false
-
-
-func clear_frames():  # clear the frames
-	for i in range(8):  # for each row
-		for j in range(8):  # for each column
-			var square = matrix[i][j]  # get the square
-			if square:  # if there is a piece
-				square.set_frame(false)  # set the frame to false
+			var piece = matrix[i][j]  # get the piece
+			if piece:  # if there is a piece
+				piece.set_frame(false)  # clear the frame
 
 
 func _input(event):  # input
