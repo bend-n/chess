@@ -76,7 +76,7 @@ func all_dirs():
 	]
 
 
-func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
+func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):  # TODO: get this system to work with taking pieces
 	var circle_array = []
 	for i in arr:
 		var pos = real_position
@@ -87,7 +87,7 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 			if at_pos(pos) != null:  # only one black
 				circle_array.append(pos)
 				break
-			if check_spots_check and Globals.in_check and checkcheck(pos):
+			if check_spots_check and checkcheck(pos):
 				print(checkcheck(pos))
 				continue
 			circle_array.append(pos)
@@ -144,9 +144,9 @@ func checkcheck(pos):  # moves to position, then checks if your king is in check
 	moveto(pos, false)  # move to the position
 	if Globals.grid.check_in_check():  # if you are still in check
 		Globals.grid.matrix = mat  # revert changes on the matrix
-		return false
+		return true
 	Globals.grid.matrix = mat  # revert changes on the matrix
-	return true
+	return false
 
 
 func is_on_board(vector: Vector2):
