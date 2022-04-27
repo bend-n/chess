@@ -49,7 +49,6 @@ func move(newpos: Vector2):  # dont use directly; use moveto
 	)
 	anim.play("Move")
 	tween.start()
-	# global_position = newpos * Globals.grid.piece_size
 
 
 func moveto(position, real = true):
@@ -88,7 +87,8 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 			if at_pos(pos) != null:  # only one black
 				circle_array.append(pos)
 				break
-			if check_spots_check and checkcheck(pos):
+			if check_spots_check and Globals.in_check and checkcheck(pos):
+				print(checkcheck(pos))
 				continue
 			circle_array.append(pos)
 	return circle_array
@@ -142,11 +142,11 @@ func set_circle(positions: Array, type := "move"):
 func checkcheck(pos):  # moves to position, then checks if your king is in check
 	var mat = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
 	moveto(pos, false)  # move to the position
-	if Globals.grid.check_in_check():  # if you are still in check# Globals.grid.print_matrix_pretty(mat)  # print the matrix
+	if Globals.grid.check_in_check():  # if you are still in check
 		Globals.grid.matrix = mat  # revert changes on the matrix
-		return true # return in check
+		return false
 	Globals.grid.matrix = mat  # revert changes on the matrix
-	return false # return not in check
+	return true
 
 
 func is_on_board(vector: Vector2):
