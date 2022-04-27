@@ -41,6 +41,8 @@ func check_in_check():  # check if in_check
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
+				if spot.shortname == "qW":
+					print("going through white queen")
 				if matrix[i][j].can_check_king(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
 					Globals.in_check = true  # set in_check
 					Globals.checking_piece = matrix[i][j]  # set checking_piece
