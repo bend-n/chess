@@ -38,7 +38,6 @@ func clear_clicked():
 
 
 func move(newpos: Vector2):  # dont use directly; use moveto
-	has_moved = true
 	tween.interpolate_property(
 		self,
 		"global_position",
@@ -58,6 +57,7 @@ func moveto(position, real = true):
 	if real:
 		real_position = position
 		move(position)
+		has_moved = true
 
 
 func pos_around(around_vector):
@@ -96,7 +96,7 @@ func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
 	return circle_array
 
 
-func at_pos(vector):
+func at_pos(vector: Vector2):
 	return Globals.grid.matrix[vector.y][vector.x]
 
 
@@ -174,6 +174,8 @@ func take(piece: Piece):
 
 
 func took():  # called when piece is taken
+	print(shortname, "was killed")
+	Globals.grid.matrix[real_position.y][real_position.x] = null
 	anim.play("Take")
 
 

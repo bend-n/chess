@@ -222,6 +222,15 @@ func handle_move(position):
 				castle_data[1].moveto(castle_data[2])
 				turn_over()
 				return
+	if last_clicked is Pawn and last_clicked.enpassant:
+		print(last_clicked.enpassant)
+		for i in range(len(last_clicked.enpassant)):
+			var en_passant_data = last_clicked.enpassant[i]
+			if en_passant_data[0] == position:
+				en_passant_data[1].took()  # kill the unfortunate
+				last_clicked.passant(en_passant_data[0])
+				turn_over()
+				return
 	last_clicked.moveto(position)
 	turn_over()
 
