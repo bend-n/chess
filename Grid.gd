@@ -23,7 +23,7 @@ var last_clicked
 onready var piece_sets = walk_dir()
 
 
-func _ready():
+func _ready():  # TODO: add checkmates
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
@@ -168,6 +168,7 @@ func square_clicked(position: Vector2):  # square clicked
 		if !last_clicked:  # last clicked is null, so this is pointless
 			return
 		if check_for_frame(position):  # takeable
+			print("EATING " + last_clicked.shortname + " AT " + str(position))  # print the move
 			last_clicked.take(matrix[position.y][position.x])  # eat
 			turn_over()
 		if check_for_circle(position):  # see if theres a circle at the position

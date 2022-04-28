@@ -1,3 +1,3 @@
-![img](https://github.com/bend-n/chess/blob/main/assets/california/wP.png)
+![img](https://github.com/bend-n/chess/blob/main/icon.png)
 
 completly works (real)
