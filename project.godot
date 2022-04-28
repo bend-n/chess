@@ -50,14 +50,14 @@ _global_script_classes=[ {
 "path": "res://pieces/Rook.gd"
 } ]
 _global_script_class_icons={
-"Bishop": "",
+"Bishop": "res://assets/california/wB.png",
 "Grid": "",
-"King": "",
-"Knight": "",
-"Pawn": "",
+"King": "res://assets/california/wK.png",
+"Knight": "res://assets/california/wN.png",
+"Pawn": "res://assets/california/wP.png",
 "Piece": "res://assets/california/wP.png",
-"Queen": "",
-"Rook": ""
+"Queen": "res://assets/california/wQ.png",
+"Rook": "res://assets/california/wR.png"
 }
 
 [application]
@@ -67,7 +67,9 @@ config/description="pog"
 run/main_scene="res://World.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chess"
-config/icon="res://assets/california/wP.png"
+boot_splash/image="res://icon.png"
+boot_splash/bg_color=Color( 0.309804, 0.309804, 0.309804, 0.313726 )
+config/icon="res://icon.png"
 
 [autoload]
 

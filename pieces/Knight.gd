@@ -1,5 +1,5 @@
-class_name Knight
 extends Piece
+class_name Knight, "res://assets/california/wN.png"
 
 
 func get_moves():
@@ -16,6 +16,8 @@ func get_moves():
 	var final = []
 	for i in moves:
 		if is_on_board(i):
+			if no_enemys and at_pos(i):
+				continue
 			if check_spots_check and checkcheck(i):
 				continue
 			final.append(i)
