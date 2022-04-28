@@ -23,7 +23,7 @@ var last_clicked
 onready var piece_sets = walk_dir()
 
 
-func _ready():  # TODO: add checkmates
+func _ready():  # TODO: add draws
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
@@ -33,10 +33,17 @@ func _ready():  # TODO: add checkmates
 func _on_turn_over():
 	Globals.checking_piece = null  # reset checking_piece
 	Globals.in_check = false  # reset in_check
-	check_in_check()  # check if in_check
+	check_in_check(true)  # check if in_check
+	if Globals.in_check and is_check_mate():
+		var winner = "black" if Globals.turn else "white"
+		print(winner, " won the game in ", Globals.turns(winner), " turns!")
+		print("the board:")
+		print_matrix_pretty()
+		yield(get_tree().create_timer(5), "timeout")
+		get_tree().reload_current_scene()
 
 
-func check_in_check():  # check if in_check
+func check_in_check(prin = false):  # check if in_check
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
@@ -44,9 +51,20 @@ func check_in_check():  # check if in_check
 				if matrix[i][j].can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
 					Globals.in_check = true  # set in_check
 					Globals.checking_piece = matrix[i][j]  # set checking_piece
-					print("check by " + spot.shortname)  # print the check
+					if prin:
+						print("check by " + spot.shortname)  # print the check
 					return true  # stop at the first check found
 	return false
+
+
+func is_check_mate():
+	for i in range(0, 8):  # for each row
+		for j in range(0, 8):  # for each column
+			var spot = matrix[i][j]  # get the square
+			if spot and spot.white == Globals.turn:  # fren
+				if spot.can_move():
+					return false
+	return true
 
 
 func _exit_tree():
@@ -168,7 +186,6 @@ func square_clicked(position: Vector2):  # square clicked
 		if !last_clicked:  # last clicked is null, so this is pointless
 			return
 		if check_for_frame(position):  # takeable
-			print("EATING " + last_clicked.shortname + " AT " + str(position))  # print the move
 			last_clicked.take(matrix[position.y][position.x])  # eat
 			turn_over()
 		if check_for_circle(position):  # see if theres a circle at the position
@@ -184,8 +201,8 @@ func square_clicked(position: Vector2):  # square clicked
 
 
 func turn_over():
+	Globals.add_turn()
 	Globals.turn = not Globals.turn
-	Globals.turns += 1
 	Events.emit_signal("turn_over")
 
 

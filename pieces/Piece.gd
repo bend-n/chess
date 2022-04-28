@@ -100,6 +100,11 @@ func at_pos(vector):
 	return Globals.grid.matrix[vector.y][vector.x]
 
 
+func can_move():  # checks if you can legally move
+	if get_moves().size() != 0 or get_attacks().size() != 0:
+		return true
+
+
 func get_moves():  # @Override
 	pass
 
@@ -140,7 +145,6 @@ func set_circle(positions: Array, type := "move"):
 	for pos in positions:
 		var spot = at_pos(pos)  # get the piece at the position
 		if type == "move":
-			print(shortname, " can move to ", pos)
 			create_move_circles(pos)  # create the move circle
 		elif type == "take":
 			create_take_circles(spot)  # if the king is in check, return true
