@@ -48,10 +48,10 @@ func check_in_check(prin = false):  # check if in_check
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
-				if matrix[i][j].can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
-					Globals.in_check = true  # set in_check
-					Globals.checking_piece = matrix[i][j]  # set checking_piece
+				if spot.can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
 					if prin:
+						Globals.in_check = true  # set in_check
+						Globals.checking_piece = spot  # set checking_piece
 						print("check by " + spot.shortname)  # print the check
 					return true  # stop at the first check found
 	return false
@@ -155,19 +155,33 @@ func add_kings():
 	Globals.black_king = matrix[0][4]  # set the black king
 
 
+const topper_header = "┏━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┓"
+const middle_header = "┣━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━┫"
+const middish_heads = "┗━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━┫"
+const bottom_header = "┗━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛"
+const smaller_heads = "    ┗━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛"
+const letter_header = "    ┃  a ┃  b ┃  c ┃  d ┃  e ┃  f ┃  g ┃  h ┃"
+const ender = " ┃ "
+
+
 func print_matrix_pretty(mat = matrix):  # print the matrix
 	for j in range(len(mat)):  # for each row
 		var r = mat[j]  # get the row
-		var row = str(8 - j) + " "  # init the string
+		if j == 0:
+			print(topper_header)  # print the top border
+		else:
+			print(middle_header)  # print the middle border
+		var row = "┃ " + str(8 - j) + " ┃ "  # init the string
 		for i in range(8):  # for each column
 			var c = r[i]  # get the column
-			var ender = " " if i < 7 else ""  # set the end string
 			if c:  # if there is a piece
 				row += c.shortname + ender  # add the shortname
 			else:  # if there is no piece
 				row += "00" + ender  # add 00
 		print(row)  # print the string
-	print("  a  b  c  d  e  f  g  h")  # print the column names
+	print(middish_heads)
+	print(letter_header)
+	print(smaller_heads)
 
 
 func check_for_circle(position: Vector2):  # check for a circle, validating movement
@@ -189,8 +203,7 @@ func square_clicked(position: Vector2):  # square clicked
 			last_clicked.take(matrix[position.y][position.x])  # eat
 			turn_over()
 		if check_for_circle(position):  # see if theres a circle at the position
-			last_clicked.moveto(position)  # if there is, move there
-			turn_over()
+			handle_move(position)  # move
 		last_clicked.clear_clicked()  # remove the circles
 		last_clicked = null  # set it to null
 	elif last_clicked != spot:  # we got a new piece (or pawn) clicked
@@ -198,6 +211,19 @@ func square_clicked(position: Vector2):  # square clicked
 			last_clicked.clear_clicked()
 		last_clicked = spot  # set it to the new spot
 		spot.clicked()  # tell the piece shit happeend
+
+
+func handle_move(position):
+	if last_clicked is King and last_clicked.can_castle:
+		for i in range(len(last_clicked.can_castle)):
+			var castle_data = last_clicked.can_castle[i]
+			if castle_data[0] == position:
+				last_clicked.castle(castle_data[0])
+				castle_data[1].moveto(castle_data[2])
+				turn_over()
+				return
+	last_clicked.moveto(position)
+	turn_over()
 
 
 func turn_over():

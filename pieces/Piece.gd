@@ -103,6 +103,7 @@ func at_pos(vector):
 func can_move():  # checks if you can legally move
 	if get_moves().size() != 0 or get_attacks().size() != 0:
 		return true
+	return false
 
 
 func get_moves():  # @Override

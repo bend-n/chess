@@ -26,4 +26,4 @@ func get_moves():
 
 func _ready():
 	._ready()
-	shortname = "k" + team
+	shortname = "n" + team
