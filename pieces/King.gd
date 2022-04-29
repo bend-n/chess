@@ -20,31 +20,24 @@ func get_moves():
 	return moves
 
 
-func moveto(position, real = true, take = false):
-	if real:  # assign metadata for threefold repetition draw check
-		castleing()
-		if can_castle.size() > 0:
-			for i in can_castle:
-				if i[3] == "O-O-O":
-					if white:
-						Globals.grid.matrix[8].wccl = true
-					else:
-						Globals.grid.matrix[8].bccl = true
+func just_before_over():  # assign metadata for threefold repetition draw check
+	castleing()
+	if can_castle.size() > 0:
+		for i in can_castle:
+			if i[3] == "O-O-O":
+				if white:
+					Globals.grid.matrix[8].wccl = true
 				else:
-					if white:
-						Globals.grid.matrix[8].wccr = true
-					else:
-						Globals.grid.matrix[8].wccr = true
-		else:
-			if white:
-				Globals.grid.matrix[8].wccl = false
-				Globals.grid.matrix[8].wccr = false
+					Globals.grid.matrix[8].bccl = true
 			else:
-				Globals.grid.matrix[8].bccl = false
-				Globals.grid.matrix[8].bccr = false
-	if Input.is_action_pressed("ui_down") and real:
-		breakpoint
-	.moveto(position, real, take)
+				if white:
+					Globals.grid.matrix[8].wccr = true
+				else:
+					Globals.grid.matrix[8].bccr = true
+
+
+func _ready():
+	Events.connect("just_before_turn_over", self, "just_before_over")
 
 
 func castleing():
@@ -53,6 +46,8 @@ func castleing():
 	var rook_motion = [pos_around(Vector2.RIGHT), pos_around(Vector2.LEFT)]
 	var king_moveto_spots = [Vector2.RIGHT, Vector2.LEFT]  # O-O  and O-O-O respectivel
 	for i in range(len(rooks)):
+		if !is_on_board(rooks[i]):
+			continue
 		var rook = at_pos(rooks[i])
 		if !rook is Rook:
 			continue
