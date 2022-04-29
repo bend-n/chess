@@ -55,7 +55,7 @@ func _ready():
 
 func can_move():  # checks if you can legally move
 	castle_check = false
-	var can = can_move()
+	var can = .can_move()
 	castle_check = true
 	return can
 
