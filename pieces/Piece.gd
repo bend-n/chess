@@ -43,7 +43,7 @@ func move(newpos: Vector2):  # dont use directly; use moveto
 		"global_position",
 		global_position,
 		newpos * Globals.grid.piece_size,
-		0.5,
+		0.3,
 		Tween.TRANS_BACK,
 		Tween.EASE_IN_OUT
 	)
@@ -57,6 +57,7 @@ func moveto(position, real = true):
 	if real:
 		real_position = position
 		move(position)
+		SoundFx.play("Move")
 		has_moved = true
 
 
@@ -174,6 +175,7 @@ func take(piece: Piece):
 
 
 func took():  # called when piece is taken
+	SoundFx.play("Capture")
 	print(shortname, "was killed")
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	anim.play("Take")

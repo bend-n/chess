@@ -23,7 +23,7 @@ var last_clicked
 onready var piece_sets = walk_dir()
 
 
-func _ready():  # TODO: add draws
+func _ready():  # TODO: repetition draw
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
@@ -34,13 +34,23 @@ func _on_turn_over():
 	Globals.checking_piece = null  # reset checking_piece
 	Globals.in_check = false  # reset in_check
 	check_in_check(true)  # check if in_check
-	if Globals.in_check and is_check_mate():
-		var winner = "black" if Globals.turn else "white"
-		print(winner, " won the game in ", Globals.turns(winner), " turns!")
-		print("the board:")
-		print_matrix_pretty()
-		yield(get_tree().create_timer(5), "timeout")
-		get_tree().reload_current_scene()
+	if can_move():
+		if Globals.in_check:
+			var winner = "black" if Globals.turn else "white"
+			print(winner, " won the game in ", Globals.turns(winner), " turns!")
+			print("the board:")
+			SoundFx.play("Victory")
+			print_matrix_pretty()
+			yield(get_tree().create_timer(5), "timeout")
+			get_tree().reload_current_scene()
+			SoundFx.play("Victory")
+		else:
+			print("stalemate")
+			SoundFx.play("Draw")
+			print_matrix_pretty()
+			yield(get_tree().create_timer(5), "timeout")
+			get_tree().reload_current_scene()
+			SoundFx.play("Victory")
 
 
 func check_in_check(prin = false):  # check if in_check
@@ -53,11 +63,12 @@ func check_in_check(prin = false):  # check if in_check
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
 						print("check by " + spot.shortname)  # print the check
+						SoundFx.play("Check")
 					return true  # stop at the first check found
 	return false
 
 
-func is_check_mate():
+func can_move():
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
@@ -113,7 +124,6 @@ func add_pieces():  # add the pieces
 	add_bishops()
 	add_queens()
 	add_kings()
-	print_matrix_pretty()  # print the matrix
 
 
 func add_pawns():
@@ -254,6 +264,11 @@ func clear_fx():  # clear the circles
 func _input(event):  # input
 	if event.is_action("debug"):  # if debug
 		print_matrix_pretty()  # print the matrix
+	if event.is_action("kill"):
+		if last_clicked:
+			last_clicked.took()  # kill the piece
+			last_clicked = null
+			clear_fx()  # clear the circles
 
 
 func walk_dir(path = "res://assets"):  # walk the directory, finding the asset packs
