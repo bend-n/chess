@@ -7,10 +7,6 @@ export(Color) var board_color1 = Color(0.870588, 0.890196, 0.901961)
 export(Color) var board_color2 = Color(0.54902, 0.635294, 0.678431)
 export(Color) var overlay_color = Color(0.2, 0.345098, 0.188235, 0.592157)
 
-onready var background = $Background
-
-onready var ASSETS_PATH = "res://assets/" + PIECE_SET + "/"
-
 const Piece = preload("res://Piece.tscn")
 const Square = preload("res://Square.tscn")
 
@@ -21,29 +17,26 @@ const default_metadata = {
 	"bccl": false,  # black can castle left
 	"bccr": false,  # black can castle right
 	"turn": true,  # true = white, false = black
-	"wccp": [],  # white can enpassant
-	"bccp": [],  # black can enpassant
+	"wcep": [],  # white can enpassant
+	"bcep": [],  # black can enpassant
 }
 
 var matrix = []
 var background_matrix = []
 var history_matrixes: Dictionary = {}
+
 var last_clicked
 
+onready var background = $Background
+onready var ASSETS_PATH = "res://assets/" + PIECE_SET + "/"
 onready var piece_sets = walk_dir()
 
 
-func _ready():  # TODO: fill in wccp and bccp
+func _ready():
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
 	Events.connect("turn_over", self, "_on_turn_over")  # listen for turn_over events
-	# visualize the board
-	# for y in range(8):
-	# 	var strin = ""
-	# 	for x in range(8):
-	# 		strin += background_matrix[x][y].get_string() + " "
-	# 	print(strin)
 
 
 func threefoldrepetition():
@@ -56,28 +49,34 @@ func threefoldrepetition():
 func mat2str(mat = matrix):
 	var string = ""
 	for y in range(8):
+		string += "\n"
 		for x in range(8):
 			var spot = mat[y][x]
 			if spot:
 				string += spot.mininame
 			else:
 				string += "*"
+		string += "\n"
 	for i in mat[8].keys():  # store the metadata
 		var thing = mat[8][i]
 		string += i + "=" + str(thing)
+		if default_metadata[i] != thing:
+			string += "!"
+		string += "\n"
 	return string
 
 
 func _on_turn_over():
 	var matstr = mat2str()
+	# print(matstr)
 	if !history_matrixes.has(matstr):
 		history_matrixes[matstr] = 1
 	else:
 		history_matrixes[matstr] += 1
-		matrix[8].turn = Globals.turn
 	Globals.checking_piece = null  # reset checking_piece
 	Globals.in_check = false  # reset in_check
 	matrix[8] = default_metadata.duplicate()  # add the metadata to the matrix
+	matrix[8].turn = Globals.turn
 	check_in_check(true)  # check if in_check
 	if !can_move():
 		print("what")
@@ -302,6 +301,7 @@ func handle_move(position):
 
 
 func turn_over():
+	Events.emit_signal("just_before_turn_over")
 	Globals.add_turn()
 	Globals.turn = not Globals.turn
 	Events.emit_signal("turn_over")
