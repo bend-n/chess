@@ -15,26 +15,72 @@ const Piece = preload("res://Piece.tscn")
 const Square = preload("res://Square.tscn")
 
 const piece_size = Vector2(100, 100)
+const default_metadata = {
+	"wccl": false,  # white can castle left
+	"wccr": false,  # white can castle right
+	"bccl": false,  # black can castle left
+	"bccr": false,  # black can castle right
+	"turn": true,  # true = white, false = black
+	"wccp": [],  # white can enpassant
+	"bccp": [],  # black can enpassant
+}
 
 var matrix = []
 var background_matrix = []
+var history_matrixes: Dictionary = {}
 var last_clicked
 
 onready var piece_sets = walk_dir()
 
 
-func _ready():  # TODO: repetition draw
+func _ready():  # TODO: fill in wccp and bccp
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
 	Events.connect("turn_over", self, "_on_turn_over")  # listen for turn_over events
+	# visualize the board
+	# for y in range(8):
+	# 	var strin = ""
+	# 	for x in range(8):
+	# 		strin += background_matrix[x][y].get_string() + " "
+	# 	print(strin)
+
+
+func threefoldrepetition():
+	for i in history_matrixes.values():
+		if i >= 3:
+			return true
+	return false
+
+
+func mat2str(mat = matrix):
+	var string = ""
+	for y in range(8):
+		for x in range(8):
+			var spot = mat[y][x]
+			if spot:
+				string += spot.mininame
+			else:
+				string += "*"
+	for i in mat[8].keys():  # store the metadata
+		var thing = mat[8][i]
+		string += i + "=" + str(thing)
+	return string
 
 
 func _on_turn_over():
+	var matstr = mat2str()
+	if !history_matrixes.has(matstr):
+		history_matrixes[matstr] = 1
+	else:
+		history_matrixes[matstr] += 1
+		matrix[8].turn = Globals.turn
 	Globals.checking_piece = null  # reset checking_piece
 	Globals.in_check = false  # reset in_check
+	matrix[8] = default_metadata.duplicate()  # add the metadata to the matrix
 	check_in_check(true)  # check if in_check
-	if can_move():
+	if !can_move():
+		print("what")
 		if Globals.in_check:
 			var winner = "black" if Globals.turn else "white"
 			print(winner, " won the game in ", Globals.turns(winner), " turns!")
@@ -46,11 +92,18 @@ func _on_turn_over():
 			SoundFx.play("Victory")
 		else:
 			print("stalemate")
-			SoundFx.play("Draw")
-			print_matrix_pretty()
-			yield(get_tree().create_timer(5), "timeout")
-			get_tree().reload_current_scene()
-			SoundFx.play("Victory")
+			drawed()
+	elif threefoldrepetition():
+		print("draw by threefold repetition")
+		drawed()
+
+
+func drawed():
+	SoundFx.play("Draw")
+	print_matrix_pretty()
+	yield(get_tree().create_timer(5), "timeout")
+	get_tree().reload_current_scene()
+	SoundFx.play("Victory")
 
 
 func check_in_check(prin = false):  # check if in_check
@@ -62,7 +115,6 @@ func check_in_check(prin = false):  # check if in_check
 					if prin:
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
-						print("check by " + spot.shortname)  # print the check
 						SoundFx.play("Check")
 					return true  # stop at the first check found
 	return false
@@ -74,8 +126,8 @@ func can_move():
 			var spot = matrix[i][j]  # get the square
 			if spot and spot.white == Globals.turn:  # fren
 				if spot.can_move():
-					return false
-	return true
+					return true
+	return false
 
 
 func _exit_tree():
@@ -87,6 +139,7 @@ func init_matrix():  # create the matrix
 		matrix.append([])  # add a row
 		for _j in range(8):  # for each column
 			matrix[i].append(null)  # add a square
+	matrix.append(default_metadata.duplicate())  # metadata for threefold repetition check
 	add_pieces()  # add the pieces
 
 
@@ -124,6 +177,7 @@ func add_pieces():  # add the pieces
 	add_bishops()
 	add_queens()
 	add_kings()
+	print_matrix_pretty()
 
 
 func add_pawns():
@@ -165,17 +219,17 @@ func add_kings():
 	Globals.black_king = matrix[0][4]  # set the black king
 
 
-const topper_header = "┏━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┓"
-const middle_header = "┣━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━┫"
-const middish_heads = "┗━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━┫"
-const bottom_header = "┗━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛"
-const smaller_heads = "    ┗━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛"
-const letter_header = "    ┃  a ┃  b ┃  c ┃  d ┃  e ┃  f ┃  g ┃  h ┃"
+const topper_header = "┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓"
+const middle_header = "┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+const middish_heads = "┗━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+const bottom_header = "┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
+const smaller_heads = "    ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
+const letter_header = "    ┃ a ┃ b ┃ c ┃ d ┃ e ┃ f ┃ g ┃ h ┃"
 const ender = " ┃ "
 
 
 func print_matrix_pretty(mat = matrix):  # print the matrix
-	for j in range(len(mat)):  # for each row
+	for j in range(8):  # for each row
 		var r = mat[j]  # get the row
 		if j == 0:
 			print(topper_header)  # print the top border
@@ -185,9 +239,9 @@ func print_matrix_pretty(mat = matrix):  # print the matrix
 		for i in range(8):  # for each column
 			var c = r[i]  # get the column
 			if c:  # if there is a piece
-				row += c.shortname + ender  # add the shortname
+				row += c.mininame + ender  # add the shortname
 			else:  # if there is no piece
-				row += "00" + ender  # add 00
+				row += " " + ender  # add 00
 		print(row)  # print the string
 	print(middish_heads)
 	print(letter_header)
@@ -228,8 +282,10 @@ func handle_move(position):
 		for i in range(len(last_clicked.can_castle)):
 			var castle_data = last_clicked.can_castle[i]
 			if castle_data[0] == position:
-				last_clicked.castle(castle_data[0])
+				Utils.add_move(last_clicked.castle(castle_data[0]))
+				castle_data[1].override_moveto = true
 				castle_data[1].moveto(castle_data[2])
+				castle_data[1].override_moveto = false
 				turn_over()
 				return
 	if last_clicked is Pawn and last_clicked.enpassant:
@@ -262,13 +318,15 @@ func clear_fx():  # clear the circles
 
 
 func _input(event):  # input
-	if event.is_action("debug"):  # if debug
+	if event.is_action_released("debug"):  # if debug
 		print_matrix_pretty()  # print the matrix
-	if event.is_action("kill"):
+	if event.is_action_released("kill"):
 		if last_clicked:
 			last_clicked.took()  # kill the piece
 			last_clicked = null
 			clear_fx()  # clear the circles
+	if event.is_action_released("fullscreen"):
+		OS.window_fullscreen = !OS.window_fullscreen
 
 
 func walk_dir(path = "res://assets"):  # walk the directory, finding the asset packs

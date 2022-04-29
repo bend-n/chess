@@ -4,12 +4,14 @@ class_name Piece, "res://assets/california/wP.png"
 var real_position = Vector2.ZERO
 var white := true
 var shortname = ""
+var mininame = "♙"
 var has_moved = false
 var sprite
 var frameon
 var team = "w"
 var check_spots_check = true
 var no_enemys = false
+var override_moveto = false
 
 onready var tween = $Tween
 onready var anim = $AnimationPlayer
@@ -18,7 +20,9 @@ onready var frame = $Frame
 
 
 func _ready():
-	team = "W" if white else "B"
+	var tmp = Utils.get_node_name(self)
+	mininame = tmp[0]
+	shortname = tmp[1]
 	frame.position = Globals.grid.piece_size / 2
 	frame.modulate = Globals.grid.overlay_color
 	colorrect.color = Globals.grid.overlay_color
@@ -29,12 +33,25 @@ func clicked():
 	colorrect.show()
 	set_circle(get_moves())
 	set_circle(get_attacks(), "take")
-	print(shortname, " was clicked")
 
 
 func clear_clicked():
 	colorrect.hide()
 	Globals.grid.clear_fx()
+
+
+func algebraic_take_notation(position):
+	var starter = shortname if shortname != "p" else to_algebraic(real_position)[0]
+	return starter + "x" + to_algebraic(position)
+
+
+func algebraic_move_notation(position):
+	var starter = shortname if shortname != "p" else ""
+	return starter + to_algebraic(position)
+
+
+func to_algebraic(position):
+	return Globals.grid.background_matrix[position.x][position.y].get_string()
 
 
 func move(newpos: Vector2):  # dont use directly; use moveto
@@ -51,10 +68,15 @@ func move(newpos: Vector2):  # dont use directly; use moveto
 	tween.start()
 
 
-func moveto(position, real = true):
+func moveto(position, real = true, take = false):
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[position.y][position.x] = self
 	if real:
+		if !override_moveto:
+			if !take:
+				Utils.add_move(algebraic_move_notation(position))
+			else:
+				Utils.add_move(algebraic_take_notation(position))
 		real_position = position
 		move(position)
 		SoundFx.play("Move")
@@ -171,12 +193,11 @@ func is_on_board(vector: Vector2):
 func take(piece: Piece):
 	clear_clicked()
 	piece.took()
-	moveto(piece.real_position)
+	moveto(piece.real_position, true, true)
 
 
 func took():  # called when piece is taken
 	SoundFx.play("Capture")
-	print(shortname, "was killed")
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	anim.play("Take")
 

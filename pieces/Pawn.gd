@@ -8,7 +8,7 @@ var just_set = false
 var enpassant = []
 
 
-func moveto(position, real = true):
+func moveto(position, real = true, take = false):
 	# check if 2 step
 	if real and !twostepfirstmove and !has_moved:
 		if white and real_position.y - position.y == 2:
@@ -17,7 +17,7 @@ func moveto(position, real = true):
 		if !white and position.y - real_position.y == 2:
 			twostepfirstmove = true
 			just_set = true
-	.moveto(position, real)
+	.moveto(position, real, take)
 
 
 func _on_turn_over():
@@ -97,4 +97,3 @@ func en_passant(type: String = "moves"):  # in passing
 func _ready():
 	Events.connect("turn_over", self, "_on_turn_over")
 	._ready()
-	shortname = "p" + team
