@@ -20,6 +20,33 @@ func get_moves():
 	return moves
 
 
+func moveto(position, real = true, take = false):
+	if real:  # assign metadata for threefold repetition draw check
+		castleing()
+		if can_castle.size() > 0:
+			for i in can_castle:
+				if i[3] == "O-O-O":
+					if white:
+						Globals.grid.matrix[8].wccl = true
+					else:
+						Globals.grid.matrix[8].bccl = true
+				else:
+					if white:
+						Globals.grid.matrix[8].wccr = true
+					else:
+						Globals.grid.matrix[8].wccr = true
+		else:
+			if white:
+				Globals.grid.matrix[8].wccl = false
+				Globals.grid.matrix[8].wccr = false
+			else:
+				Globals.grid.matrix[8].bccl = false
+				Globals.grid.matrix[8].bccr = false
+	if Input.is_action_pressed("ui_down") and real:
+		breakpoint
+	.moveto(position, real, take)
+
+
 func castleing():
 	var moves = []
 	var rooks = [pos_around(Vector2.RIGHT * 3), pos_around(Vector2.LEFT * 4)]
@@ -38,19 +65,25 @@ func castleing():
 			continue
 		if checkcheck(posx2) or checkcheck(pos):
 			continue
-		can_castle.append([posx2, rook, rook_motion[i]])
+		can_castle.append([posx2, rook, rook_motion[i], "O-O-O" if i == 1 else "O-O"])
 		moves.append(posx2)
 	return moves
 
 
 func castle(position):
+	var return_string = ""
+	if can_castle.size() == 1:
+		return_string = can_castle[0][3]
+	else:
+		for i in can_castle:
+			if i[0] == position:
+				return_string = i[3]
+				break
+	override_moveto = true
 	can_castle.clear()
 	moveto(position)
-
-
-func _ready():
-	._ready()
-	shortname = "k" + team
+	override_moveto = false
+	return return_string
 
 
 func can_move():  # checks if you can legally move

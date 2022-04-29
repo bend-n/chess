@@ -22,8 +22,3 @@ func get_moves():
 				continue
 			final.append(i)
 	return final
-
-
-func _ready():
-	._ready()
-	shortname = "n" + team
