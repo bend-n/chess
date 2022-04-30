@@ -1,5 +1,5 @@
 extends Node2D
-class_name Piece, "res://assets/california/wP.png"
+class_name Piece, "res://assets/pieces/california/wP.png"
 
 var real_position = Vector2.ZERO
 var white := true

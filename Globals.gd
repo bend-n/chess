@@ -1,6 +1,7 @@
 extends Node
 
 var grid: Grid = null
+var piece_set = "california"
 var white_turns := 0
 var black_turns := 0
 var in_check = false
@@ -23,3 +24,7 @@ func add_turn():
 		white_turns += 1
 	else:
 		black_turns += 1
+
+
+func _ready():
+	VisualServer.set_default_clear_color(Color.black)

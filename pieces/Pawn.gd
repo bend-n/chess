@@ -1,5 +1,5 @@
 extends Piece
-class_name Pawn, "res://assets/california/wP.png"
+class_name Pawn, "res://assets/pieces/california/wP.png"
 
 onready var whiteint = 1 if white else -1
 
