@@ -8,3 +8,7 @@
 script = ExtResource( 1 )
 
 [node name="Background" type="Node2D" parent="Grid"]
+
+[node name="Pieces" type="Node2D" parent="Grid"]
+
+[node name="Foreground" type="CanvasLayer" parent="Grid"]
