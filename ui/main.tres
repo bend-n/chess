@@ -1,0 +1,37 @@
+[gd_resource type="Theme" load_steps=8 format=2]
+
+[ext_resource path="res://ui/verdana.tres" type="DynamicFont" id=1]
+[ext_resource path="res://ui/button.tres" type="StyleBox" id=2]
+[ext_resource path="res://assets/ui/whitespace.png" type="Texture" id=3]
+[ext_resource path="res://ui/buttonhover.tres" type="StyleBox" id=5]
+[ext_resource path="res://ui/flatblack.tres" type="StyleBox" id=7]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+
+[resource]
+default_font = ExtResource( 1 )
+Button/colors/font_color = Color( 1, 1, 1, 1 )
+Button/colors/font_color_focus = Color( 1, 1, 1, 1 )
+Button/colors/font_color_hover = Color( 0, 0, 0, 1 )
+Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
+Button/styles/disabled = SubResource( 2 )
+Button/styles/focus = ExtResource( 2 )
+Button/styles/hover = ExtResource( 5 )
+Button/styles/normal = ExtResource( 2 )
+Button/styles/pressed = ExtResource( 2 )
+OptionButton/colors/font_color = Color( 1, 1, 1, 1 )
+OptionButton/colors/font_color_focus = Color( 1, 1, 1, 1 )
+OptionButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
+OptionButton/colors/font_color_pressed = Color( 1, 1, 1, 1 )
+OptionButton/icons/arrow = ExtResource( 3 )
+PopupMenu/colors/font_color = Color( 1, 1, 1, 1 )
+PopupMenu/colors/font_color_accel = Color( 1, 1, 1, 0.8 )
+PopupMenu/colors/font_color_hover = Color( 1, 1, 1, 1 )
+PopupMenu/colors/font_color_separator = Color( 0.262745, 0.262745, 0.262745, 1 )
+PopupMenu/icons/radio_checked = ExtResource( 3 )
+PopupMenu/icons/radio_unchecked = ExtResource( 3 )
+PopupMenu/styles/hover = SubResource( 3 )
+PopupMenu/styles/panel = ExtResource( 7 )

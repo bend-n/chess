@@ -1,5 +1,5 @@
 extends Piece
-class_name Bishop, "res://assets/california/wB.png"
+class_name Bishop, "res://assets/pieces/california/wB.png"
 
 
 func get_moves():

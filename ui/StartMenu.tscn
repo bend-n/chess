@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://ui/main.tres" type="Theme" id=1]
+[ext_resource path="res://ui/StartMenu.gd" type="Script" id=2]
+[ext_resource path="res://ui/Settings.tscn" type="PackedScene" id=3]
+
+[node name="StartMenu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="MainButtons" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -192.0
+margin_top = -224.0
+margin_right = 196.0
+margin_bottom = 412.0
+
+[node name="multiplayer" type="Button" parent="MainButtons"]
+margin_left = 22.0
+margin_right = 366.0
+margin_bottom = 112.0
+size_flags_horizontal = 4
+text = "multiplayer"
+
+[node name="settings" type="Button" parent="MainButtons"]
+margin_left = 64.0
+margin_top = 116.0
+margin_right = 324.0
+margin_bottom = 228.0
+size_flags_horizontal = 4
+text = "settings"
+
+[node name="local" type="Button" parent="MainButtons"]
+margin_left = 107.0
+margin_top = 232.0
+margin_right = 280.0
+margin_bottom = 344.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_horizontal = 4
+text = "local"
+
+[node name="quit" type="Button" parent="MainButtons"]
+margin_left = 118.0
+margin_top = 348.0
+margin_right = 270.0
+margin_bottom = 460.0
+size_flags_horizontal = 4
+text = "exit"
+
+[node name="Settings" parent="." instance=ExtResource( 3 )]
+visible = false
+
+[connection signal="pressed" from="MainButtons/settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MainButtons/local" to="." method="_on_local_pressed"]
+[connection signal="pressed" from="MainButtons/quit" to="." method="_on_quit_pressed"]
