@@ -1,7 +1,7 @@
 extends Node2D
 class_name Grid
 
-export var PIECE_SET = "california"
+onready var PIECE_SET = Globals.piece_set
 
 export(Color) var board_color1 = Color(0.870588, 0.890196, 0.901961)
 export(Color) var board_color2 = Color(0.54902, 0.635294, 0.678431)
@@ -30,8 +30,7 @@ var history_matrixes: Dictionary = {}
 var last_clicked
 
 onready var background = $Background
-onready var ASSETS_PATH = "res://assets/" + PIECE_SET + "/"
-onready var piece_sets = walk_dir()
+onready var ASSETS_PATH = "res://assets/pieces/" + PIECE_SET + "/"
 onready var foreground = $Foreground
 onready var pieces = $Pieces
 
@@ -355,21 +354,3 @@ func _input(event):  # input
 			clear_fx()  # clear the circles
 	if event.is_action_released("fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
-
-
-func walk_dir(path = "res://assets"):  # walk the directory, finding the asset packs
-	var folders = []  # init the folders
-	var dir = Directory.new()  # init the directory
-	if dir.open(path) == OK:  # open the directory
-		dir.list_dir_begin()  # list the directory
-		var file_name = dir.get_next()  # get the next file
-		while file_name != "":  # while there is a file
-			if dir.current_is_dir():  # if the current is a directory
-				if file_name == "." or file_name == "..":  # if it is a dot or dot dot
-					file_name = dir.get_next()  # get the next file
-					continue
-				folders.append(file_name)  # add the folder
-			file_name = dir.get_next()  # get the next file
-	else:
-		printerr("An error occurred when trying to access the path " + path)  # print the error
-	return folders  # return the folders
