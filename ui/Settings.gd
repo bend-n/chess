@@ -11,7 +11,7 @@ func toggle(onoff):
 func _ready():
 	for i in piece_sets:
 		piece_set_button.add_icon_item(load("res://assets/pieces/" + i + "/wP.png"), i)
-	piece_set_button.selected = piece_sets.find("california")
+	piece_set_button.selected = 0
 
 
 func _input(event):
