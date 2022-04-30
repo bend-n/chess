@@ -1,5 +1,5 @@
 extends Piece
-class_name King, "res://assets/california/wK.png"
+class_name King, "res://assets/pieces/california/wK.png"
 
 var castle_check = true
 var can_castle = []

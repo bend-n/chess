@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://ui/main.tres" type="Theme" id=1]
+[ext_resource path="res://ui/Settings.gd" type="Script" id=2]
+[ext_resource path="res://assets/pieces/california/wP.png" type="Texture" id=3]
+
+[node name="Settings" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.862745 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect"]
+margin_left = 64.0
+margin_top = 64.0
+margin_right = 736.0
+margin_bottom = 752.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/HBoxContainer"]
+margin_right = 386.0
+margin_bottom = 688.0
+
+[node name="BackButton" type="Button" parent="ColorRect/HBoxContainer/VBoxContainer"]
+margin_right = 386.0
+margin_bottom = 112.0
+text = "back"
+
+[node name="PieceSet" type="OptionButton" parent="ColorRect/HBoxContainer/VBoxContainer"]
+margin_top = 116.0
+margin_right = 386.0
+margin_bottom = 272.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "piece set"
+icon = ExtResource( 3 )
+
+[connection signal="pressed" from="ColorRect/HBoxContainer/VBoxContainer/BackButton" to="." method="_on_BackButton_pressed"]
+[connection signal="item_selected" from="ColorRect/HBoxContainer/VBoxContainer/PieceSet" to="." method="_on_PieceSet_item_selected"]

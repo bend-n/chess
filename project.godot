@@ -54,8 +54,8 @@ _global_script_class_icons={
 "Grid": "",
 "King": "res://assets/california/wK.png",
 "Knight": "res://assets/california/wN.png",
-"Pawn": "res://assets/california/wP.png",
-"Piece": "res://assets/california/wP.png",
+"Pawn": "res://assets/pieces/california/wP.png",
+"Piece": "res://assets/pieces/california/wP.png",
 "Queen": "res://assets/california/wQ.png",
 "Rook": "res://assets/california/wR.png"
 }
@@ -64,7 +64,7 @@ _global_script_class_icons={
 
 config/name="chess"
 config/description="pog"
-run/main_scene="res://World.tscn"
+run/main_scene="res://ui/StartMenu.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chess"
 boot_splash/image="res://icon.png"

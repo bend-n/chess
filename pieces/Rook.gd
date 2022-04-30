@@ -1,5 +1,5 @@
 extends Piece
-class_name Rook, "res://assets/california/wR.png"
+class_name Rook, "res://assets/pieces/california/wR.png"
 
 
 func get_moves():
