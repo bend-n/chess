@@ -9,6 +9,8 @@ export(Color) var overlay_color = Color(0.2, 0.345098, 0.188235, 0.592157)
 
 const Piece = preload("res://Piece.tscn")
 const Square = preload("res://Square.tscn")
+const BottomLeftLabel = preload("res://ui/BottomLeftLabel.tscn")
+const TopRightLabel = preload("res://ui/TopRightLabel.tscn")
 
 const piece_size = Vector2(100, 100)
 const default_metadata = {
@@ -30,13 +32,39 @@ var last_clicked
 onready var background = $Background
 onready var ASSETS_PATH = "res://assets/" + PIECE_SET + "/"
 onready var piece_sets = walk_dir()
+onready var foreground = $Foreground
+onready var pieces = $Pieces
 
 
 func _ready():
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
+	init_labels()
 	Events.connect("turn_over", self, "_on_turn_over")  # listen for turn_over events
+
+
+func init_labels():
+	for i in range(8):
+		var letterslabel = BottomLeftLabel.instance()
+		letterslabel.rect_position.x = i * piece_size.x
+		letterslabel.rect_position.y = piece_size.y * 7
+		size_label(letterslabel, i)
+		letterslabel.get_node("Label").text = Utils.calculate_algebraic_position(
+			letterslabel.rect_position / piece_size
+		)[0]
+		foreground.add_child(letterslabel)
+		var numberslabel = TopRightLabel.instance()
+		numberslabel.rect_position.y = i * piece_size.x
+		numberslabel.rect_position.x = piece_size.x * 7
+		size_label(numberslabel, i)
+		numberslabel.get_node("Label").text = str(8 - i)
+		foreground.add_child(numberslabel)
+
+
+func size_label(label, i):
+	label.rect_size = piece_size
+	label.get_node("Label").add_color_override("font_color", board_color1 if i % 2 == 0 else board_color2)
 
 
 func threefoldrepetition():
@@ -150,7 +178,7 @@ func make_piece(position: Vector2, script: String, sprite: String, white: bool =
 	piece.real_position = position  # set the real position
 	piece.global_position = position * piece_size  # set the global position
 	piece.white = white  # set its team
-	add_child(piece)  # add the piece to the grid
+	pieces.add_child(piece)  # add the piece to the grid
 	return piece  # return the piece
 
 
