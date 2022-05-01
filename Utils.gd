@@ -50,10 +50,6 @@ func get_node_name(node):
 
 func walk_dir(path = "res://assets/pieces"):  # walk the directory, finding the asset packs
 	var folders := []  # init the folders
-	var favoritism := false
-	if path == "res://assets/pieces":  # put favorite on top
-		folders.append("california")
-		favoritism = true
 	var dir := Directory.new()  # init the directory
 	if dir.open(path) == OK:  # open the directory
 		dir.list_dir_begin()  # list the directory
@@ -62,9 +58,6 @@ func walk_dir(path = "res://assets/pieces"):  # walk the directory, finding the 
 			if dir.current_is_dir():  # if the current is a directory
 				if file_name == "." or file_name == "..":  # if it is a dot or dot dot
 					file_name = dir.get_next()  # get the next file
-					continue
-				if favoritism and file_name == "california":
-					file_name = dir.get_next()
 					continue
 				folders.append(file_name)  # add the folder
 			file_name = dir.get_next()  # get the next file

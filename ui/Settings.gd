@@ -6,12 +6,14 @@ onready var fullscreenbutton := $ColorRect/HBoxContainer/VBoxContainer2/Fullscre
 onready var vsyncbutton := $ColorRect/HBoxContainer/VBoxContainer2/VsyncButton
 onready var borderlessbutton := $ColorRect/HBoxContainer/VBoxContainer2/Borderless
 
-var settings := {"vsync": OS.vsync_enabled, "fullscreen": OS.window_fullscreen, "borderless": OS.window_borderless} setget set_settings
+onready var settings: Dictionary = SaveLoad.files["settings"]["data"] setget set_settings
 
 
 func set_settings(new_settings):
 	toggle_button_visuals(new_settings)
 	settings = new_settings
+	SaveLoad.files["settings"]["data"] = settings
+	SaveLoad.save("settings")
 
 
 func toggle(onoff):
@@ -28,7 +30,7 @@ func _ready():
 	toggle_button_visuals()
 	for i in piece_sets:
 		piece_set_button.add_icon_item(load("res://assets/pieces/" + i + "/wP.png"), i)
-	piece_set_button.selected = 0
+	piece_set_button.selected = piece_sets.find(settings.piece_set)
 
 
 func _input(event):
@@ -42,6 +44,7 @@ func _on_BackButton_pressed():
 
 func _on_PieceSet_item_selected(index):
 	Globals.piece_set = piece_sets[index]
+	self.settings.piece_set = piece_sets[index]
 
 
 func _on_VsyncButton_toggled(button_pressed: bool):
