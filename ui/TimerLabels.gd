@@ -27,6 +27,11 @@ func _ready():
 	colorrect.show_behind_parent = true
 	colorrect.color = Globals.grid.overlay_color
 	Events.connect("turn_over", self, "_on_turn_over")
+	Events.connect("game_over", self, "_on_game_over")
+
+
+func _on_game_over():
+	stop = true
 
 
 func _on_turn_over():
