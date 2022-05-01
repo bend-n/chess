@@ -1,9 +1,11 @@
 extends Node
 
-var turn_moves := "1. "
+var turn_moves: PoolStringArray = []
 var turns_moves := []
 
 var counter := 0
+
+signal newmove
 
 
 func _ready():
@@ -14,9 +16,8 @@ func _on_turn_over():
 	counter += 1
 	if counter >= 2:
 		counter = 0
-		print(turn_moves)
-		turns_moves.append(turn_moves)
-		turn_moves = str(Globals.white_turns + 1) + ". "
+		turns_moves.append(turn_moves.join(" "))
+		turn_moves.resize(0)
 
 
 func is_pawn(inode):
@@ -24,7 +25,11 @@ func is_pawn(inode):
 
 
 func add_move(move):
-	turn_moves = turn_moves + " " + move
+	if turn_moves.size() == 0:
+		turn_moves.append(str(Globals.white_turns + 1) + ". " + move)
+	else:
+		turn_moves.append(move)
+	emit_signal("newmove", turn_moves[-1])
 
 
 func calculate_algebraic_position(real_position):
