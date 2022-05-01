@@ -52,12 +52,12 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "Bishop": "res://assets/california/wB.png",
 "Grid": "",
-"King": "res://assets/california/wK.png",
-"Knight": "res://assets/california/wN.png",
+"King": "res://assets/pieces/california/wK.png",
+"Knight": "res://assets/pieces/california/wN.png",
 "Pawn": "res://assets/pieces/california/wP.png",
 "Piece": "res://assets/pieces/california/wP.png",
-"Queen": "res://assets/california/wQ.png",
-"Rook": "res://assets/california/wR.png"
+"Queen": "res://assets/pieces/california/wQ.png",
+"Rook": "res://assets/pieces/california/wR.png"
 }
 
 [application]
@@ -85,7 +85,7 @@ gdscript/warnings/return_value_discarded=false
 
 [display]
 
-window/size/width=800
+window/size/width=1200
 window/size/height=800
 window/stretch/mode="2d"
 window/stretch/aspect="keep"

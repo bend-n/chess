@@ -1,9 +1,11 @@
-[gd_resource type="Theme" load_steps=8 format=2]
+[gd_resource type="Theme" load_steps=10 format=2]
 
 [ext_resource path="res://ui/verdana.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/button.tres" type="StyleBox" id=2]
 [ext_resource path="res://assets/ui/whitespace.png" type="Texture" id=3]
+[ext_resource path="res://assets/ui/button.png" type="Texture" id=4]
 [ext_resource path="res://ui/buttonhover.tres" type="StyleBox" id=5]
+[ext_resource path="res://assets/ui/checkedbox.png" type="Texture" id=6]
 [ext_resource path="res://ui/flatblack.tres" type="StyleBox" id=7]
 
 [sub_resource type="StyleBoxEmpty" id=2]
@@ -22,6 +24,15 @@ Button/styles/focus = ExtResource( 2 )
 Button/styles/hover = ExtResource( 5 )
 Button/styles/normal = ExtResource( 2 )
 Button/styles/pressed = ExtResource( 2 )
+CheckBox/icons/checked = ExtResource( 6 )
+CheckBox/icons/checked_disabled = null
+CheckBox/icons/radio_checked = null
+CheckBox/icons/radio_checked_disabled = null
+CheckBox/icons/radio_unchecked = null
+CheckBox/icons/radio_unchecked_disabled = null
+CheckBox/icons/unchecked = ExtResource( 4 )
+CheckBox/icons/unchecked_disabled = null
+HBoxContainer/constants/separation = 15
 OptionButton/colors/font_color = Color( 1, 1, 1, 1 )
 OptionButton/colors/font_color_focus = Color( 1, 1, 1, 1 )
 OptionButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
@@ -35,3 +46,4 @@ PopupMenu/icons/radio_checked = ExtResource( 3 )
 PopupMenu/icons/radio_unchecked = ExtResource( 3 )
 PopupMenu/styles/hover = SubResource( 3 )
 PopupMenu/styles/panel = ExtResource( 7 )
+VBoxContainer/constants/separation = 15

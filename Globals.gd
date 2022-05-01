@@ -1,10 +1,10 @@
 extends Node
 
 var grid: Grid = null
-var piece_set = "california"
+var piece_set := "california"
 var white_turns := 0
 var black_turns := 0
-var in_check = false
+var in_check := false
 var checking_piece: Piece = null
 var white_king: King
 var black_king: King
