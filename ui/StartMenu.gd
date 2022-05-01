@@ -36,12 +36,10 @@ func _on_Timer_timeout():
 	clr.r = rand(clr.r)
 	clr.b = rand(clr.b)
 	clr.g = rand(clr.g)
-	tween.interpolate_property(
-		colorrect, "color", colorrect.color, clr, timer_length, Tween.TRANS_ELASTIC, Tween.EASE_IN_OUT
-	)
+	tween.interpolate_property(colorrect, "color", colorrect.color, clr, timer_length, Tween.TRANS_ELASTIC)
 	tween.start()
 	timer.start(timer_length)
 
 
 func rand(clr):
-	return rand_range(0, 1 - clr)
+	return clamp(clr + rand_range(0, .1) if randi() % 2 else clr - rand_range(0, .1), 0, 1)
