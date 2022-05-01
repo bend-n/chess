@@ -18,17 +18,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -400.0
 theme = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Back" type="ColorRect" parent="Holder"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0.141176, 0.141176, 0.141176, 1 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="VBox" type="VBoxContainer" parent="Holder/Back"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 custom_constants/separation = 50
 alignment = 1
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="BlackTime" type="Label" parent="Holder/Back/VBox"]
 margin_top = 251.0
@@ -39,6 +48,10 @@ text = "00:00.0"
 align = 1
 valign = 1
 script = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="ColorRect" type="ColorRect" parent="Holder/Back/VBox/BlackTime"]
 show_behind_parent = true
@@ -65,6 +78,10 @@ text = "00:00.0"
 align = 1
 valign = 1
 script = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 white = true
 
 [node name="ColorRect" type="ColorRect" parent="Holder/Back/VBox/WhiteTime"]
