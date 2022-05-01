@@ -4,3 +4,4 @@ extends Node
 signal turn_over
 signal just_before_turn_over  # called just before turn over
 signal outoftime  # called when the time is up
+signal game_over  # called when the game is over

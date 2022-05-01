@@ -121,6 +121,7 @@ func _on_turn_over():
 
 
 func drawed():
+	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	print_matrix_pretty()
 	yield(get_tree().create_timer(5), "timeout")
@@ -129,6 +130,7 @@ func drawed():
 
 
 func win(winner):
+	Events.emit_signal("game_over")
 	print(winner, " won the game in ", Globals.turns(winner), " turns!")
 	SoundFx.play("Victory")
 	print_matrix_pretty()
