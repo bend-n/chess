@@ -1,14 +1,14 @@
 extends Piece
 class_name King, "res://assets/pieces/california/wK.png"
 
-var castle_check = true
-var can_castle = []
+var castle_check := true
+var can_castle := []
 
 
 func get_moves():
-	var moves = []
+	var moves := []
 	for i in all_dirs():
-		var spot = pos_around(i)
+		var spot: Vector2 = pos_around(i)
 		if is_on_board(spot):
 			if no_enemys and at_pos(spot):
 				continue
@@ -41,10 +41,10 @@ func _ready():
 
 
 func castleing():
-	var moves = []
-	var rooks = [pos_around(Vector2.RIGHT * 3), pos_around(Vector2.LEFT * 4)]
-	var rook_motion = [pos_around(Vector2.RIGHT), pos_around(Vector2.LEFT)]
-	var king_moveto_spots = [Vector2.RIGHT, Vector2.LEFT]  # O-O  and O-O-O respectivel
+	var moves := []
+	var rooks := [pos_around(Vector2.RIGHT * 3), pos_around(Vector2.LEFT * 4)]
+	var rook_motion := [pos_around(Vector2.RIGHT), pos_around(Vector2.LEFT)]
+	var king_moveto_spots := [Vector2.RIGHT, Vector2.LEFT]  # O-O  and O-O-O respectivel
 	for i in range(len(rooks)):
 		if !is_on_board(rooks[i]):
 			continue
@@ -53,9 +53,9 @@ func castleing():
 			continue
 		if rook.has_moved:
 			continue
-		var direction = king_moveto_spots[i]
-		var posx2 = pos_around(direction * 2)
-		var pos = pos_around(direction)
+		var direction: Vector2 = king_moveto_spots[i]
+		var posx2: Vector2 = pos_around(direction * 2)
+		var pos: Vector2 = pos_around(direction)
 		if at_pos(posx2) or at_pos(pos):
 			continue
 		if checkcheck(posx2) or checkcheck(pos):
@@ -83,13 +83,13 @@ func castle(position):
 
 func can_move():  # checks if you can legally move
 	castle_check = false
-	var can = .can_move()
+	var can: bool = .can_move()
 	castle_check = true
 	return can
 
 
 func get_attacks():
 	castle_check = false
-	var final = .get_attacks()
+	var final: Array = .get_attacks()
 	castle_check = true
 	return final

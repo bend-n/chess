@@ -1,11 +1,11 @@
 extends Piece
 class_name Pawn, "res://assets/pieces/california/wP.png"
 
-onready var whiteint = 1 if white else -1
+onready var whiteint := 1 if white else -1
 
-var twostepfirstmove = false
-var just_set = false
-var enpassant = []
+var twostepfirstmove := false
+var just_set := false
+var enpassant := []
 
 
 func moveto(position, real = true, take = false):
@@ -29,10 +29,10 @@ func _on_turn_over():
 
 
 func get_moves():
-	var points = [Vector2.UP, Vector2.UP * 2]
-	var moves = []
+	var points := [Vector2.UP, Vector2.UP * 2]
+	var moves := []
 	for i in range(len(points)):
-		var point = points[i]
+		var point: Vector2 = points[i]
 		point *= whiteint
 		point = pos_around(point)
 		if at_pos(point) == null:
@@ -52,10 +52,10 @@ func passant(position):
 
 
 func get_attacks():
-	var points = [Vector2.UP + Vector2.RIGHT, Vector2.UP + Vector2.LEFT]
-	var moves = []
+	var points := [Vector2.UP + Vector2.RIGHT, Vector2.UP + Vector2.LEFT]
+	var moves := []
 	for i in range(len(points)):
-		var point = points[i]
+		var point: Vector2 = points[i]
 		point *= whiteint
 		point = pos_around(point)
 		if !is_on_board(point):
@@ -69,8 +69,8 @@ func get_attacks():
 
 
 func en_passant(turncheck = true):  # in passing
-	var passants = [pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
-	var moves = []
+	var passants := [pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
+	var moves := []
 	for i in passants:
 		if !is_on_board(i):
 			continue
@@ -87,7 +87,7 @@ func en_passant(turncheck = true):  # in passing
 			continue
 		if check_spots_check and checkcheck(i):
 			continue
-		var position = i + (Vector2.UP * whiteint)
+		var position: Vector2 = i + (Vector2.UP * whiteint)
 		if !at_pos(position):
 			moves.append(position)
 		enpassant.append([position, spot])
@@ -95,11 +95,11 @@ func en_passant(turncheck = true):  # in passing
 
 
 func _just_before_turn_over():
-	var had_a_enpassant = len(enpassant) > 0
+	var had_a_enpassant := len(enpassant) > 0
 	enpassant.clear()
 	if !had_a_enpassant:  # scuffed method to check if enpassant is possible
 		en_passant(false)
-	var temporary = []
+	var temporary := []
 	for i in enpassant:
 		temporary.append(i[0])
 	if !temporary:
