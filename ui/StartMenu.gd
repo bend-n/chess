@@ -4,6 +4,8 @@ const world = preload("res://World.tscn")
 
 export(float) var timer_length := 0.0
 
+export(Array, Color) var nice_colors
+
 onready var settings := $ColorRect/Settings
 onready var colorrect := $ColorRect
 onready var tween := $Tween
@@ -16,6 +18,7 @@ func _on_local_pressed():
 
 func _ready():
 	randomize()
+	colorrect.color = nice_colors[randi() % nice_colors.size()]
 	timer.start(timer_length)
 	_on_Timer_timeout()
 
@@ -29,14 +32,16 @@ func _on_settings_pressed():
 
 
 func _on_Timer_timeout():
+	var clr = nice_colors[randi() % nice_colors.size()]
+	clr.r = rand(clr.r)
+	clr.b = rand(clr.b)
+	clr.g = rand(clr.g)
 	tween.interpolate_property(
-		colorrect,
-		"color",
-		colorrect.color,
-		Color(rand_range(0, 1), rand_range(0, 1), rand_range(0, 1)),
-		timer_length,
-		Tween.TRANS_ELASTIC,
-		Tween.EASE_IN_OUT
+		colorrect, "color", colorrect.color, clr, timer_length, Tween.TRANS_ELASTIC, Tween.EASE_IN_OUT
 	)
 	tween.start()
 	timer.start(timer_length)
+
+
+func rand(clr):
+	return rand_range(0, 1 - clr)
