@@ -21,8 +21,8 @@ func _process(delta):
 
 
 func _ready():
-	whitelabel.time = 10
-	blacklabel.time = 10
+	whitelabel.time = 300
+	blacklabel.time = 300
 	Events.connect("turn_over", self, "turn_over")
 
 

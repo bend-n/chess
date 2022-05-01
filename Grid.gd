@@ -33,6 +33,7 @@ onready var background := $Background
 onready var ASSETS_PATH := "res://assets/pieces/" + PIECE_SET + "/"
 onready var foreground := $Foreground
 onready var pieces := $Pieces
+onready var status_label := $"../UI/Holder/Back/VBox/Status"
 
 
 func _ready():
@@ -98,7 +99,6 @@ func mat2str(mat = matrix):
 
 func _on_turn_over():
 	var matstr: String = mat2str()
-	# print(matstr)
 	if !history_matrixes.has(matstr):
 		history_matrixes[matstr] = 1
 	else:
@@ -109,21 +109,21 @@ func _on_turn_over():
 	matrix[8].turn = Globals.turn
 	check_in_check(true)  # check if in_check
 	if !can_move():
-		print("what")
 		if Globals.in_check:
-			win("black" if Globals.turn else "white")
+			var winner := "black" if Globals.turn else "white"
+			status_label.text = "%s won the game by checkmate" % winner
+			win(winner)
 		else:
-			print("stalemate")
+			status_label.text = "stalemate"
 			drawed()
 	elif threefoldrepetition():
-		print("draw by threefold repetition")
+		status_label.text = "draw by threefold repetition"
 		drawed()
 
 
 func drawed():
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
-	print_matrix_pretty()
 	yield(get_tree().create_timer(5), "timeout")
 	get_tree().reload_current_scene()
 	SoundFx.play("Victory")
@@ -133,7 +133,6 @@ func win(winner):
 	Events.emit_signal("game_over")
 	print(winner, " won the game in ", Globals.turns(winner), " turns!")
 	SoundFx.play("Victory")
-	print_matrix_pretty()
 	yield(get_tree().create_timer(5), "timeout")
 	get_tree().reload_current_scene()
 	SoundFx.play("Victory")
@@ -322,7 +321,6 @@ func handle_move(position):
 				turn_over()
 				return
 	if last_clicked is Pawn and last_clicked.enpassant:
-		print(last_clicked.enpassant)
 		for i in range(len(last_clicked.enpassant)):
 			var en_passant_data = last_clicked.enpassant[i]
 			if en_passant_data[0] == position:

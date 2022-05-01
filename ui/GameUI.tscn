@@ -1,10 +1,14 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/roboto.tres" type="DynamicFont" id=2]
-[ext_resource path="res://ui/TimerLabels.gd" type="Script" id=3]
+[ext_resource path="res://assets/ui/Roboto-Medium.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://ui/TimerLabels.gd" type="Script" id=4]
 [ext_resource path="res://ui/Timer.gd" type="Script" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 25
+font_data = ExtResource( 3 )
 
 [node name="UI" type="CanvasLayer"]
 
@@ -23,13 +27,13 @@ color = Color( 0.141176, 0.141176, 0.141176, 1 )
 [node name="VBox" type="VBoxContainer" parent="Holder/Back"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/separation = 100
+custom_constants/separation = 50
 alignment = 1
 
 [node name="BlackTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 267.0
+margin_top = 251.0
 margin_right = 400.0
-margin_bottom = 350.0
+margin_bottom = 334.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -44,15 +48,23 @@ margin_left = 72.0
 margin_right = -72.0
 color = Color( 0, 0, 0, 1 )
 
-[node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 450.0
+[node name="Status" type="Label" parent="Holder/Back/VBox"]
+margin_top = 384.0
 margin_right = 400.0
-margin_bottom = 533.0
+margin_bottom = 415.0
+custom_fonts/font = SubResource( 1 )
+align = 1
+autowrap = true
+
+[node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
+margin_top = 465.0
+margin_right = 400.0
+margin_bottom = 548.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
 valign = 1
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 white = true
 
 [node name="ColorRect" type="ColorRect" parent="Holder/Back/VBox/WhiteTime"]
