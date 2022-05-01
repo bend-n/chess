@@ -111,13 +111,13 @@ func _on_turn_over():
 	if !can_move():
 		if Globals.in_check:
 			var winner := "black" if Globals.turn else "white"
-			status_label.text = "%s won the game by checkmate" % winner
+			status_label.text("%s won the game by checkmate" % winner)
 			win(winner)
 		else:
-			status_label.text = "stalemate"
+			status_label.text("stalemate")
 			drawed()
 	elif threefoldrepetition():
-		status_label.text = "draw by threefold repetition"
+		status_label.text("draw by threefold repetition")
 		drawed()
 
 
