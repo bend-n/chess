@@ -1,9 +1,9 @@
 extends Node
 
 var turn_moves := "1. "
-var turns_moves = []
+var turns_moves := []
 
-var counter = 0
+var counter := 0
 
 
 func _ready():
@@ -28,9 +28,7 @@ func add_move(move):
 
 
 func calculate_algebraic_position(real_position):
-	var algebraic_string = char(65 + (real_position.x)).to_lower()
-	algebraic_string += str(8 - real_position.y)
-	return algebraic_string
+	return char(65 + (real_position.x)).to_lower() + str(8 - real_position.y)
 
 
 func get_node_name(node):
@@ -51,15 +49,15 @@ func get_node_name(node):
 
 
 func walk_dir(path = "res://assets/pieces"):  # walk the directory, finding the asset packs
-	var folders = []  # init the folders
-	var favoritism = false
+	var folders := []  # init the folders
+	var favoritism := false
 	if path == "res://assets/pieces":  # put favorite on top
 		folders.append("california")
 		favoritism = true
-	var dir = Directory.new()  # init the directory
+	var dir := Directory.new()  # init the directory
 	if dir.open(path) == OK:  # open the directory
 		dir.list_dir_begin()  # list the directory
-		var file_name = dir.get_next()  # get the next file
+		var file_name := dir.get_next()  # get the next file
 		while file_name != "":  # while there is a file
 			if dir.current_is_dir():  # if the current is a directory
 				if file_name == "." or file_name == "..":  # if it is a dot or dot dot
@@ -73,3 +71,16 @@ func walk_dir(path = "res://assets/pieces"):  # walk the directory, finding the 
 	else:
 		printerr("An error occurred when trying to access the path " + path)  # print the error
 	return folders  # return the folders
+
+
+func format_seconds(time: float, use_milliseconds: bool = false):
+	var minutes := time / 60
+	var seconds := fmod(time, 60)
+
+	if not use_milliseconds:
+		return "%02d:%02d" % [minutes, seconds]
+	return "%02d:%04.1f" % [minutes, seconds]
+
+
+func round_place(num, places):
+	return round(num * pow(10, places)) / pow(10, places)

@@ -1,19 +1,19 @@
 extends Node2D
 class_name Grid
 
-onready var PIECE_SET = Globals.piece_set
+onready var PIECE_SET: String = Globals.piece_set
 
-export(Color) var board_color1 = Color(0.870588, 0.890196, 0.901961)
-export(Color) var board_color2 = Color(0.54902, 0.635294, 0.678431)
-export(Color) var overlay_color = Color(0.2, 0.345098, 0.188235, 0.592157)
+export(Color) var board_color1 := Color(0.870588, 0.890196, 0.901961)
+export(Color) var board_color2 := Color(0.54902, 0.635294, 0.678431)
+export(Color) var overlay_color := Color(0.2, 0.345098, 0.188235, 0.592157)
 
 const Piece = preload("res://Piece.tscn")
 const Square = preload("res://Square.tscn")
 const BottomLeftLabel = preload("res://ui/BottomLeftLabel.tscn")
 const TopRightLabel = preload("res://ui/TopRightLabel.tscn")
 
-const piece_size = Vector2(100, 100)
-const default_metadata = {
+const piece_size := Vector2(100, 100)
+const default_metadata := {
 	"wccl": false,  # white can castle left
 	"wccr": false,  # white can castle right
 	"bccl": false,  # black can castle left
@@ -23,16 +23,16 @@ const default_metadata = {
 	"bcep": [],  # black can enpassant
 }
 
-var matrix = []
-var background_matrix = []
-var history_matrixes: Dictionary = {}
+var matrix := []
+var background_matrix := []
+var history_matrixes := {}
 
-var last_clicked
+var last_clicked = null
 
-onready var background = $Background
-onready var ASSETS_PATH = "res://assets/pieces/" + PIECE_SET + "/"
-onready var foreground = $Foreground
-onready var pieces = $Pieces
+onready var background := $Background
+onready var ASSETS_PATH := "res://assets/pieces/" + PIECE_SET + "/"
+onready var foreground := $Foreground
+onready var pieces := $Pieces
 
 
 func _ready():
@@ -41,11 +41,19 @@ func _ready():
 	init_matrix()  # create the pieces
 	init_labels()
 	Events.connect("turn_over", self, "_on_turn_over")  # listen for turn_over events
+	Events.connect("outoftime", self, "_on_outoftime")  # listen for timeout events
+
+
+func _on_outoftime(who):
+	if who == "white":
+		win("black")
+	else:
+		win("white")
 
 
 func init_labels():
 	for i in range(8):
-		var letterslabel = BottomLeftLabel.instance()
+		var letterslabel := BottomLeftLabel.instance()
 		letterslabel.rect_position.x = i * piece_size.x
 		letterslabel.rect_position.y = piece_size.y * 7
 		size_label(letterslabel, i)
@@ -53,7 +61,7 @@ func init_labels():
 			letterslabel.rect_position / piece_size
 		)[0]
 		foreground.add_child(letterslabel)
-		var numberslabel = TopRightLabel.instance()
+		var numberslabel := TopRightLabel.instance()
 		numberslabel.rect_position.y = i * piece_size.x
 		numberslabel.rect_position.x = piece_size.x * 7
 		size_label(numberslabel, i)
@@ -74,27 +82,22 @@ func threefoldrepetition():
 
 
 func mat2str(mat = matrix):
-	var string = ""
+	var string := ""
 	for y in range(8):
-		string += "\n"
 		for x in range(8):
 			var spot = mat[y][x]
 			if spot:
 				string += spot.mininame
 			else:
 				string += "*"
-		string += "\n"
 	for i in mat[8].keys():  # store the metadata
 		var thing = mat[8][i]
-		string += i + "=" + str(thing)
-		if default_metadata[i] != thing:
-			string += "!"
-		string += "\n"
+		string += i + str(thing)
 	return string
 
 
 func _on_turn_over():
-	var matstr = mat2str()
+	var matstr: String = mat2str()
 	# print(matstr)
 	if !history_matrixes.has(matstr):
 		history_matrixes[matstr] = 1
@@ -108,14 +111,7 @@ func _on_turn_over():
 	if !can_move():
 		print("what")
 		if Globals.in_check:
-			var winner = "black" if Globals.turn else "white"
-			print(winner, " won the game in ", Globals.turns(winner), " turns!")
-			print("the board:")
-			SoundFx.play("Victory")
-			print_matrix_pretty()
-			yield(get_tree().create_timer(5), "timeout")
-			get_tree().reload_current_scene()
-			SoundFx.play("Victory")
+			win("black" if Globals.turn else "white")
 		else:
 			print("stalemate")
 			drawed()
@@ -126,6 +122,15 @@ func _on_turn_over():
 
 func drawed():
 	SoundFx.play("Draw")
+	print_matrix_pretty()
+	yield(get_tree().create_timer(5), "timeout")
+	get_tree().reload_current_scene()
+	SoundFx.play("Victory")
+
+
+func win(winner):
+	print(winner, " won the game in ", Globals.turns(winner), " turns!")
+	SoundFx.play("Victory")
 	print_matrix_pretty()
 	yield(get_tree().create_timer(5), "timeout")
 	get_tree().reload_current_scene()
@@ -170,7 +175,7 @@ func init_matrix():  # create the matrix
 
 
 func make_piece(position: Vector2, script: String, sprite: String, white: bool = true):  # make peace
-	var piece = Piece.instance()  # create a piece
+	var piece := Piece.instance()  # create a piece
 	piece.script = load(script)  # set the script
 	piece.sprite = piece.get_node("Sprite")  # get the sprite
 	piece.sprite.texture = load(sprite)  # set the sprite
@@ -185,7 +190,7 @@ func init_board():  # create the board
 	for i in range(8):  # for each row
 		background_matrix.append([])  # add a row
 		for j in range(8):  # for each column
-			var square = Square.instance()  # create a square
+			var square := Square.instance()  # create a square
 			square.rect_size = piece_size  # set the size
 			square.rect_position = Vector2(i, j) * piece_size  # set the position
 			square.name = "square_" + str(i) + "_" + str(j)  # set the real name
@@ -352,5 +357,3 @@ func _input(event):  # input
 			last_clicked.took()  # kill the piece
 			last_clicked = null
 			clear_fx()  # clear the circles
-	if event.is_action_released("fullscreen"):
-		OS.window_fullscreen = !OS.window_fullscreen

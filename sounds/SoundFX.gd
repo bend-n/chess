@@ -2,7 +2,7 @@ extends Node
 
 const soundpath = "res://sounds/"
 
-var sounds = {
+var sounds := {
 	"Check": load(soundpath + "Check.ogg"),
 	"Error": load(soundpath + "Error.ogg"),
 	"Victory": load(soundpath + "Victory.ogg"),
@@ -12,7 +12,7 @@ var sounds = {
 	"Move": load(soundpath + "Move.ogg"),
 }
 
-onready var sound_players = get_children()
+onready var sound_players := get_children()
 
 
 func play(sound_string, pitch_scale = 1, volume_db = 0):

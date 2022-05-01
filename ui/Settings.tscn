@@ -16,28 +16,65 @@ anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0.862745 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ColorRect"]
-margin_left = 64.0
-margin_top = 64.0
-margin_right = 736.0
-margin_bottom = 752.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/HBoxContainer"]
-margin_right = 386.0
-margin_bottom = 688.0
+margin_left = 225.0
+margin_right = 591.0
+margin_bottom = 800.0
+alignment = 1
 
 [node name="BackButton" type="Button" parent="ColorRect/HBoxContainer/VBoxContainer"]
-margin_right = 386.0
-margin_bottom = 112.0
+margin_top = 261.0
+margin_right = 366.0
+margin_bottom = 367.0
 text = "back"
 
 [node name="PieceSet" type="OptionButton" parent="ColorRect/HBoxContainer/VBoxContainer"]
-margin_top = 116.0
-margin_right = 386.0
-margin_bottom = 272.0
+margin_top = 382.0
+margin_right = 366.0
+margin_bottom = 538.0
 focus_mode = 0
+custom_constants/hseparation = 3
 enabled_focus_mode = 0
 text = "piece set"
 icon = ExtResource( 3 )
 
+[node name="VBoxContainer2" type="VBoxContainer" parent="ColorRect/HBoxContainer"]
+margin_left = 606.0
+margin_right = 975.0
+margin_bottom = 800.0
+alignment = 1
+
+[node name="VsyncButton" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2"]
+margin_top = 175.0
+margin_right = 369.0
+margin_bottom = 315.0
+focus_mode = 0
+pressed = true
+enabled_focus_mode = 0
+text = "vsync"
+
+[node name="FullscreenButton" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2"]
+margin_top = 330.0
+margin_right = 369.0
+margin_bottom = 470.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "fullscreen"
+
+[node name="Borderless" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2"]
+margin_top = 485.0
+margin_right = 369.0
+margin_bottom = 625.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "borders"
+
 [connection signal="pressed" from="ColorRect/HBoxContainer/VBoxContainer/BackButton" to="." method="_on_BackButton_pressed"]
 [connection signal="item_selected" from="ColorRect/HBoxContainer/VBoxContainer/PieceSet" to="." method="_on_PieceSet_item_selected"]
+[connection signal="toggled" from="ColorRect/HBoxContainer/VBoxContainer2/VsyncButton" to="." method="_on_VsyncButton_toggled"]
+[connection signal="toggled" from="ColorRect/HBoxContainer/VBoxContainer2/FullscreenButton" to="." method="_on_FullscreenButton_toggled"]
+[connection signal="toggled" from="ColorRect/HBoxContainer/VBoxContainer2/Borderless" to="." method="_on_Borderless_toggled"]

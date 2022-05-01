@@ -1,26 +1,26 @@
 extends Node2D
 class_name Piece, "res://assets/pieces/california/wP.png"
 
-var real_position = Vector2.ZERO
+var real_position := Vector2.ZERO
 var white := true
-var shortname = ""
-var mininame = "♙"
-var has_moved = false
-var sprite
-var frameon
-var team = "w"
-var check_spots_check = true
-var no_enemys = false
-var override_moveto = false
+var shortname := ""
+var mininame := "♙"
+var has_moved := false
+var sprite: Sprite
+var frameon := false
+var team := "w"
+var check_spots_check := true
+var no_enemys := false
+var override_moveto := false
 
-onready var tween = $Tween
-onready var anim = $AnimationPlayer
-onready var colorrect = $ColorRect
-onready var frame = $Frame
+onready var tween := $Tween
+onready var anim := $AnimationPlayer
+onready var colorrect := $ColorRect
+onready var frame := $Frame
 
 
 func _ready():
-	var tmp = Utils.get_node_name(self)
+	var tmp: Array = Utils.get_node_name(self)
 	mininame = tmp[0]
 	shortname = tmp[1]
 	frame.position = Globals.grid.piece_size / 2
@@ -41,12 +41,12 @@ func clear_clicked():
 
 
 func algebraic_take_notation(position):
-	var starter = shortname if shortname != "p" else to_algebraic(real_position)[0]
+	var starter := shortname if shortname != "p" else to_algebraic(real_position)[0]
 	return starter + "x" + to_algebraic(position)
 
 
 func algebraic_move_notation(position):
-	var starter = shortname if shortname != "p" else ""
+	var starter := shortname if shortname != "p" else ""
 	return starter + to_algebraic(position)
 
 
@@ -68,7 +68,7 @@ func move(newpos: Vector2):  # dont use directly; use moveto
 	tween.start()
 
 
-func moveto(position, real = true, take = false):
+func moveto(position, real := true, take := false):
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[position.y][position.x] = self
 	if real:
@@ -100,10 +100,10 @@ func all_dirs():
 	]
 
 
-func traverse(arr = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
-	var circle_array = []
+func traverse(arr := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]):
+	var circle_array := []
 	for i in arr:
-		var pos = real_position
+		var pos := real_position
 		while true:
 			pos += i
 			if !is_on_board(pos):
@@ -135,8 +135,8 @@ func get_moves():  # @Override
 
 func get_attacks():  # @Override
 	no_enemys = false
-	var moves = get_moves()  # assumes the attacks are same as moves
-	var final = []
+	var moves: Array = get_moves()  # assumes the attacks are same as moves
+	var final := []
 	for i in moves:
 		if at_pos(i) != null:
 			if at_pos(i).white != white:  # attack ze enemie
@@ -175,7 +175,7 @@ func set_circle(positions: Array, type := "move"):
 
 
 func checkcheck(pos):  # moves to position, then checks if your king is in check
-	var mat = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
+	var mat: Array = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
 	moveto(pos, false)  # move to the position
 	if Globals.grid.check_in_check():  # if you are still in check
 		Globals.grid.matrix = mat  # revert changes on the matrix
