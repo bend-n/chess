@@ -10,6 +10,7 @@ onready var settings := $ColorRect/Settings
 onready var colorrect := $ColorRect
 onready var tween := $Tween
 onready var timer := $Timer
+onready var lobby := $ColorRect/Lobby
 
 
 func _ready():
@@ -43,3 +44,7 @@ func _on_Timer_timeout():
 	tween.interpolate_property(colorrect, "color", colorrect.color, clr, timer_length, Tween.TRANS_ELASTIC)
 	tween.start()
 	timer.start(timer_length)
+
+
+func _on_multiplayer_pressed():
+	lobby.toggle(true)
