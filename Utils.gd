@@ -1,3 +1,4 @@
+signal newmove
 extends Node
 
 var turn_moves: PoolStringArray = []
@@ -5,19 +6,9 @@ var turns_moves := []
 
 var counter := 0
 
-signal newmove
-
 
 func _ready():
 	Events.connect("turn_over", self, "_on_turn_over")
-
-
-func _on_turn_over():
-	counter += 1
-	if counter >= 2:
-		counter = 0
-		turns_moves.append(turn_moves.join(" "))
-		turn_moves.resize(0)
 
 
 func is_pawn(inode):
@@ -77,8 +68,15 @@ func format_seconds(time: float, use_milliseconds: bool = false):
 
 	if not use_milliseconds:
 		return "%02d:%02d" % [minutes, seconds]
-	return "%02d:%04.1f" % [minutes, seconds]
 
 
 func round_place(num, places):
 	return round(num * pow(10, places)) / pow(10, places)
+
+
+func _on_turn_over():
+	counter += 1
+	if counter >= 2:
+		counter = 0
+		turns_moves.append(turn_moves.join(" "))
+		turn_moves.resize(0)
