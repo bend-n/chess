@@ -6,13 +6,13 @@ var white := true
 var shortname := ""
 var mininame := "♙"
 var has_moved := false
-var sprite: Sprite
 var frameon := false
 var team := "w"
 var check_spots_check := true
 var no_enemys := false
 var override_moveto := false
 
+onready var sprite := $Sprite
 onready var tween := $Tween
 onready var anim := $AnimationPlayer
 onready var colorrect := $ColorRect
@@ -20,6 +20,8 @@ onready var frame := $Frame
 
 
 func _ready():
+	team = "w" if white else "b"
+	sprite.position = Globals.grid.piece_size / 2
 	var tmp: Array = Utils.get_node_name(self)
 	mininame = tmp[0]
 	shortname = tmp[1]
@@ -27,6 +29,11 @@ func _ready():
 	frame.modulate = Globals.grid.overlay_color
 	colorrect.color = Globals.grid.overlay_color
 	colorrect.rect_size = Globals.grid.piece_size
+	load_texture()
+
+
+func load_texture(path := "%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), shortname.to_upper()]):
+	sprite.texture = load(path)
 
 
 func clicked():
@@ -184,8 +191,8 @@ func checkcheck(pos):  # moves to position, then checks if your king is in check
 	return false
 
 
-func is_on_board(vector: Vector2):
-	if vector.y < 0 or vector.y > 7 or vector.x < 0 or vector.x > 7:  # limit the vector to the board
+func is_on_board(vector: Vector2):  # limit the vector to the board
+	if vector.y < 0 or vector.y > 7 or vector.x < 0 or vector.x > 7:
 		return false
 	return true
 
