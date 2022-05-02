@@ -20,7 +20,7 @@ func add_move(move):
 		turn_moves.append(str(Globals.white_turns + 1) + ". " + move)
 	else:
 		turn_moves.append(move)
-	emit_signal("newmove", turn_moves[-1])
+	emit_signal("newmove", move)
 
 
 func calculate_algebraic_position(real_position):

@@ -1,5 +1,107 @@
-[gd_scene format=2]
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://ui/main.tres" type="Theme" id=1]
+[ext_resource path="res://ui/Lobby.gd" type="Script" id=2]
+[ext_resource path="res://assets/ui/verdana-bold.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 30
+font_data = ExtResource( 3 )
 
 [node name="Lobby" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="Back" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.784314 )
+
+[node name="Center" type="CenterContainer" parent="Back"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="HBox" type="HBoxContainer" parent="Back/Center"]
+margin_left = 437.0
+margin_top = 189.0
+margin_right = 763.0
+margin_bottom = 611.0
+
+[node name="VBox" type="VBoxContainer" parent="Back/Center/HBox"]
+margin_right = 311.0
+margin_bottom = 422.0
+
+[node name="AddressLabel" type="Label" parent="Back/Center/HBox/VBox"]
+margin_right = 311.0
+margin_bottom = 50.0
+text = "address"
+
+[node name="Address" type="LineEdit" parent="Back/Center/HBox/VBox"]
+margin_top = 65.0
+margin_right = 311.0
+margin_bottom = 171.0
+focus_mode = 1
+text = "127.0.0.1"
+placeholder_text = "127.0.0.1"
+caret_blink = true
+caret_blink_speed = 0.35
+
+[node name="HBox" type="HBoxContainer" parent="Back/Center/HBox/VBox"]
+margin_top = 186.0
+margin_right = 311.0
+margin_bottom = 292.0
+
+[node name="HostButton" type="Button" parent="Back/Center/HBox/VBox/HBox"]
+margin_right = 154.0
+margin_bottom = 106.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "host"
+
+[node name="JoinButton" type="Button" parent="Back/Center/HBox/VBox/HBox"]
+margin_left = 169.0
+margin_right = 311.0
+margin_bottom = 106.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "join"
+
+[node name="StatusOK" type="Label" parent="Back/Center/HBox/VBox"]
+margin_top = 307.0
+margin_right = 311.0
+margin_bottom = 357.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+
+[node name="StatusFail" type="Label" parent="Back/Center/HBox/VBox"]
+margin_top = 372.0
+margin_right = 311.0
+margin_bottom = 422.0
+custom_colors/font_color = Color( 0.698039, 0.415686, 0.415686, 1 )
+
+[node name="VBox2" type="VBoxContainer" parent="Back/Center/HBox"]
+margin_left = 326.0
+margin_right = 326.0
+margin_bottom = 422.0
+
+[node name="Portforward" type="Label" parent="Back/Center/HBox/VBox2"]
+visible = false
+margin_right = 600.0
+margin_bottom = 161.0
+rect_min_size = Vector2( 600, 0 )
+custom_fonts/font = SubResource( 1 )
+text = "If you want non-LAN clients to connect,
+make sure the port 8910 in UDP
+is forwarded on your router."
+autowrap = true
+
+[node name="FindPublicIP" type="LinkButton" parent="Back/Center/HBox/VBox2"]
+visible = false
+margin_right = 295.0
+margin_bottom = 50.0
+text = "find public ip"
+
+[connection signal="pressed" from="Back/Center/HBox/VBox/HBox/HostButton" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="Back/Center/HBox/VBox/HBox/JoinButton" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Back/Center/HBox/VBox2/FindPublicIP" to="." method="_on_find_public_ip_pressed"]
