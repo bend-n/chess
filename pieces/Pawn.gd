@@ -9,6 +9,7 @@ var enpassant := []
 
 onready var whiteint := 1 if white else -1
 onready var sprites := []
+onready var darken = get_node("../../Darken")
 
 
 func _ready():
@@ -111,12 +112,14 @@ func promote(position, type):
 		take(at_pos(position))
 	else:
 		moveto(position)
+	darken.show()
 	for i in range(len(promotables)):
 		sprites[i].sprite.texture = load("%s%s%s" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]])
 		sprites[i].show()
 
 
 func handle_sprite_input_event(node):
+	darken.hide()
 	var script = piece(promotables[sprites.find(node)][0])
 	Globals.grid.make_piece(real_position, script, white)
 	Globals.grid.turn_over()
