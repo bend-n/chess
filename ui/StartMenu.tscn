@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://ui/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/StartMenu.gd" type="Script" id=2]
 [ext_resource path="res://ui/Settings.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ui/Lobby.tscn" type="PackedScene" id=4]
 
 [node name="StartMenu" type="Control"]
 anchor_right = 1.0
@@ -70,11 +71,15 @@ text = "exit"
 [node name="Settings" parent="ColorRect" instance=ExtResource( 3 )]
 visible = false
 
+[node name="Lobby" parent="ColorRect" instance=ExtResource( 4 )]
+visible = false
+
 [node name="Tween" type="Tween" parent="."]
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 
+[connection signal="pressed" from="ColorRect/MainButtons/multiplayer" to="." method="_on_multiplayer_pressed"]
 [connection signal="pressed" from="ColorRect/MainButtons/settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="ColorRect/MainButtons/local" to="." method="_on_local_pressed"]
 [connection signal="pressed" from="ColorRect/MainButtons/quit" to="." method="_on_quit_pressed"]

@@ -14,6 +14,12 @@
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 1, 1, 1, 1 )
+corner_detail = 20
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
@@ -41,6 +47,12 @@ ItemList/colors/font_color = Color( 1, 1, 1, 1 )
 ItemList/colors/font_color_selected = Color( 0.905882, 0.905882, 0.905882, 1 )
 ItemList/styles/bg = SubResource( 4 )
 ItemList/styles/bg_focus = ExtResource( 7 )
+LineEdit/colors/cursor_color = Color( 1, 1, 1, 1 )
+LineEdit/colors/font_color = Color( 1, 1, 1, 1 )
+LineEdit/colors/font_color_uneditable = Color( 1, 1, 1, 0.67451 )
+LineEdit/styles/focus = ExtResource( 2 )
+LineEdit/styles/normal = ExtResource( 2 )
+LineEdit/styles/read_only = ExtResource( 2 )
 OptionButton/colors/font_color = Color( 1, 1, 1, 1 )
 OptionButton/colors/font_color_focus = Color( 1, 1, 1, 1 )
 OptionButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
