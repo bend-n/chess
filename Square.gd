@@ -8,7 +8,7 @@ onready var area := $Squarea
 onready var areacollisionshape := $Squarea/CollisionShape2D
 onready var circle := $Circle
 
-signal clicked(real_position)
+signal clicked
 
 
 func _ready():
@@ -20,8 +20,8 @@ func _ready():
 	algebraic_string = Utils.calculate_algebraic_position(real_position)
 
 
-func _on_Squarea_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
-	if event is InputEventMouseButton:
+func _on_Squarea_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int):
+	if Input.is_action_just_pressed("click"):
 		emit_signal("clicked", real_position)
 
 

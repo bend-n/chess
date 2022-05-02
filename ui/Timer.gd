@@ -9,6 +9,12 @@ onready var whitelabel := $"../WhiteTime"
 onready var blacklabel := $"../BlackTime"
 
 
+func _ready():
+	whitelabel.time = 300
+	blacklabel.time = 300
+	Events.connect("turn_over", self, "turn_over")
+
+
 func _process(delta):
 	if !enabled:
 		return
@@ -18,12 +24,6 @@ func _process(delta):
 	else:
 		if !blacklabel.set_time(blacklabel.time - delta):
 			enabled = false
-
-
-func _ready():
-	whitelabel.time = 300
-	blacklabel.time = 300
-	Events.connect("turn_over", self, "turn_over")
 
 
 func turn_over():
