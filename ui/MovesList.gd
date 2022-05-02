@@ -1,7 +1,7 @@
 extends ItemList
+var tween: Tween
 
 onready var scrollbar = get_v_scroll()
-var tween: Tween
 
 
 func _ready():

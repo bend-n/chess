@@ -5,6 +5,10 @@ var castle_check := true
 var can_castle := []
 
 
+func _ready():
+	Events.connect("just_before_turn_over", self, "just_before_over")
+
+
 func get_moves():
 	var moves := []
 	for i in all_dirs():
@@ -34,10 +38,6 @@ func just_before_over():  # assign metadata for threefold repetition draw check
 					Globals.grid.matrix[8].wccr = true
 				else:
 					Globals.grid.matrix[8].bccr = true
-
-
-func _ready():
-	Events.connect("just_before_turn_over", self, "just_before_over")
 
 
 func castleing():

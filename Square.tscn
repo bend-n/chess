@@ -32,7 +32,7 @@ shader_param/color = Color( 0.431373, 0.584314, 0.388235, 0.639216 )
 [node name="Square" type="ColorRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -780.0
+margin_right = -1180.0
 margin_bottom = -780.0
 mouse_filter = 2
 script = ExtResource( 1 )

@@ -1,12 +1,13 @@
 extends Node2D
 class_name Grid
 
-onready var PIECE_SET: String = Globals.piece_set
-
-export(Color) var board_color1 := Color(0.870588, 0.890196, 0.901961)
-export(Color) var board_color2 := Color(0.54902, 0.635294, 0.678431)
-export(Color) var overlay_color := Color(0.2, 0.345098, 0.188235, 0.592157)
-
+const topper_header = "┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓"
+const middle_header = "┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+const middish_heads = "┗━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+const bottom_header = "┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
+const smaller_heads = "    ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
+const letter_header = "    ┃ a ┃ b ┃ c ┃ d ┃ e ┃ f ┃ g ┃ h ┃"
+const ender = " ┃ "  # for pretty prints
 const Piece = preload("res://Piece.tscn")
 const Square = preload("res://Square.tscn")
 const BottomLeftLabel = preload("res://ui/BottomLeftLabel.tscn")
@@ -23,14 +24,20 @@ const default_metadata := {
 	"bcep": [],  # black can enpassant
 }
 
+export(Color) var board_color1 := Color(0.870588, 0.890196, 0.901961)
+export(Color) var board_color2 := Color(0.54902, 0.635294, 0.678431)
+export(Color) var overlay_color := Color(0.2, 0.345098, 0.188235, 0.592157)
+
 var matrix := []
+var promoting = null
 var background_matrix := []
 var history_matrixes := {}
-
 var last_clicked = null
 
+onready var PIECE_SET: String = Globals.piece_set
+
 onready var background := $Background
-onready var ASSETS_PATH := "res://assets/pieces/" + PIECE_SET + "/"
+onready var ASSETS_PATH := "res://assets/pieces/%s/" % PIECE_SET
 onready var foreground := $Foreground
 onready var pieces := $Pieces
 onready var status_label := $"../UI/Holder/Back/VBox/Status"
@@ -40,16 +47,48 @@ func _ready():
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
-	init_labels()
+	init_labels()  # add the labels
 	Events.connect("turn_over", self, "_on_turn_over")  # listen for turn_over events
 	Events.connect("outoftime", self, "_on_outoftime")  # listen for timeout events
 
 
-func _on_outoftime(who):
-	if who == "white":
-		win("black")
-	else:
-		win("white")
+func _exit_tree():
+	Globals.grid = null  # reset the globals grid when leaving tree
+
+
+func _input(event):  # input
+	if event.is_action_released("debug"):  # if debug
+		print_matrix_pretty()  # print the matrix
+	if event.is_action_released("kill"):
+		if last_clicked and OS.is_debug_build():  # last clicked isnt null and were in debug
+			last_clicked.took()  # kill the piece
+			last_clicked = null
+			clear_fx()  # clear the circles
+
+
+func print_matrix_pretty(mat = matrix):  # print the matrix
+	for j in range(8):  # for each row
+		var r: Array = mat[j]  # get the row
+		if j == 0:
+			print(topper_header)  # print the top border
+		else:
+			print(middle_header)  # print the middle border
+		var row = "┃ %s ┃ " % str(8 - j)  # init the string
+		for i in range(8):  # for each column
+			var c = r[i]  # get the column
+			if c:  # if there is a piece
+				row += c.mininame + ender  # add the shortname
+			else:  # if there is no piece
+				row += " " + ender  # add 00
+		print(row)  # print the string
+	print("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
+
+
+func reload_sprites():
+	for i in range(8):
+		for j in range(8):
+			if matrix[i][j]:
+				matrix[i][j].load_texture()
 
 
 func init_labels():
@@ -97,30 +136,6 @@ func mat2str(mat = matrix):
 	return string
 
 
-func _on_turn_over():
-	var matstr: String = mat2str()
-	if !history_matrixes.has(matstr):
-		history_matrixes[matstr] = 1
-	else:
-		history_matrixes[matstr] += 1
-	Globals.checking_piece = null  # reset checking_piece
-	Globals.in_check = false  # reset in_check
-	matrix[8] = default_metadata.duplicate()  # add the metadata to the matrix
-	matrix[8].turn = Globals.turn
-	check_in_check(true)  # check if in_check
-	if !can_move():
-		if Globals.in_check:
-			var winner := "black" if Globals.turn else "white"
-			status_label.text("%s won the game by checkmate" % winner)
-			win(winner)
-		else:
-			status_label.text("stalemate")
-			drawed()
-	elif threefoldrepetition():
-		status_label.text("draw by threefold repetition")
-		drawed()
-
-
 func drawed():
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
@@ -162,10 +177,6 @@ func can_move():
 	return false
 
 
-func _exit_tree():
-	Globals.grid = null  # reset the globals grid when leaving tree
-
-
 func init_matrix():  # create the matrix
 	for i in range(8):  # for each row
 		matrix.append([])  # add a row
@@ -175,16 +186,14 @@ func init_matrix():  # create the matrix
 	add_pieces()  # add the pieces
 
 
-func make_piece(position: Vector2, script: String, sprite: String, white: bool = true):  # make peace
+func make_piece(position: Vector2, script: String, white: bool = true):  # make peace
 	var piece := Piece.instance()  # create a piece
 	piece.script = load(script)  # set the script
-	piece.sprite = piece.get_node("Sprite")  # get the sprite
-	piece.sprite.texture = load(sprite)  # set the sprite
 	piece.real_position = position  # set the real position
 	piece.global_position = position * piece_size  # set the global position
 	piece.white = white  # set its team
 	pieces.add_child(piece)  # add the piece to the grid
-	return piece  # return the piece
+	matrix[position.y][position.x] = piece
 
 
 func init_board():  # create the board
@@ -194,7 +203,6 @@ func init_board():  # create the board
 			var square := Square.instance()  # create a square
 			square.rect_size = piece_size  # set the size
 			square.rect_position = Vector2(i, j) * piece_size  # set the position
-			square.name = "square_" + str(i) + "_" + str(j)  # set the real name
 			square.color = board_color1 if (i + j) % 2 == 0 else board_color2  # set the color
 			square.real_position = Vector2(i, j)  # set the real position
 			background.add_child(square)  # add the square to the background
@@ -204,80 +212,50 @@ func init_board():  # create the board
 
 func add_pieces():  # add the pieces
 	add_pawns()
-	add_rooks()
-	add_knights()
-	add_bishops()
+	# add_rooks()
+	# add_knights()
+	# add_bishops()
 	add_queens()
 	add_kings()
-	print_matrix_pretty()
 
 
 func add_pawns():
 	for i in range(8):
-		matrix[1][i] = make_piece(Vector2(i, 1), "res://pieces/Pawn.gd", ASSETS_PATH + "bP.png", false)
-		matrix[6][i] = make_piece(Vector2(i, 6), "res://pieces/Pawn.gd", ASSETS_PATH + "wP.png", true)
+		make_piece(Vector2(i, 1), "res://pieces/Pawn.gd", false)
+		make_piece(Vector2(i, 6), "res://pieces/Pawn.gd", true)
 
 
 func add_rooks():
-	matrix[0][0] = make_piece(Vector2(0, 0), "res://pieces/Rook.gd", ASSETS_PATH + "bR.png", false)
-	matrix[0][7] = make_piece(Vector2(7, 0), "res://pieces/Rook.gd", ASSETS_PATH + "bR.png", false)
-	matrix[7][0] = make_piece(Vector2(0, 7), "res://pieces/Rook.gd", ASSETS_PATH + "wR.png", true)
-	matrix[7][7] = make_piece(Vector2(7, 7), "res://pieces/Rook.gd", ASSETS_PATH + "wR.png", true)
+	make_piece(Vector2(0, 0), "res://pieces/Rook.gd", false)
+	make_piece(Vector2(7, 0), "res://pieces/Rook.gd", false)
+	make_piece(Vector2(0, 7), "res://pieces/Rook.gd", true)
+	make_piece(Vector2(7, 7), "res://pieces/Rook.gd", true)
 
 
 func add_knights():
-	matrix[0][1] = make_piece(Vector2(1, 0), "res://pieces/Knight.gd", ASSETS_PATH + "bN.png", false)
-	matrix[0][6] = make_piece(Vector2(6, 0), "res://pieces/Knight.gd", ASSETS_PATH + "bN.png", false)
-	matrix[7][1] = make_piece(Vector2(1, 7), "res://pieces/Knight.gd", ASSETS_PATH + "wN.png", true)
-	matrix[7][6] = make_piece(Vector2(6, 7), "res://pieces/Knight.gd", ASSETS_PATH + "wN.png", true)
+	make_piece(Vector2(1, 0), "res://pieces/Knight.gd", false)
+	make_piece(Vector2(6, 0), "res://pieces/Knight.gd", false)
+	make_piece(Vector2(1, 7), "res://pieces/Knight.gd", true)
+	make_piece(Vector2(6, 7), "res://pieces/Knight.gd", true)
 
 
 func add_bishops():
-	matrix[0][2] = make_piece(Vector2(2, 0), "res://pieces/Bishop.gd", ASSETS_PATH + "bB.png", false)
-	matrix[0][5] = make_piece(Vector2(5, 0), "res://pieces/Bishop.gd", ASSETS_PATH + "bB.png", false)
-	matrix[7][2] = make_piece(Vector2(2, 7), "res://pieces/Bishop.gd", ASSETS_PATH + "wB.png", true)
-	matrix[7][5] = make_piece(Vector2(5, 7), "res://pieces/Bishop.gd", ASSETS_PATH + "wB.png", true)
+	make_piece(Vector2(2, 0), "res://pieces/Bishop.gd", false)
+	make_piece(Vector2(5, 0), "res://pieces/Bishop.gd", false)
+	make_piece(Vector2(2, 7), "res://pieces/Bishop.gd", true)
+	make_piece(Vector2(5, 7), "res://pieces/Bishop.gd", true)
 
 
 func add_queens():
-	matrix[0][3] = make_piece(Vector2(3, 0), "res://pieces/Queen.gd", ASSETS_PATH + "bQ.png", false)
-	matrix[7][3] = make_piece(Vector2(3, 7), "res://pieces/Queen.gd", ASSETS_PATH + "wQ.png", true)
+	make_piece(Vector2(3, 0), "res://pieces/Queen.gd", false)
+	make_piece(Vector2(3, 7), "res://pieces/Queen.gd", true)
 
 
 func add_kings():
-	matrix[0][4] = make_piece(Vector2(4, 0), "res://pieces/King.gd", ASSETS_PATH + "bK.png", false)
-	matrix[7][4] = make_piece(Vector2(4, 7), "res://pieces/King.gd", ASSETS_PATH + "wK.png", true)
+	make_piece(Vector2(4, 0), "res://pieces/King.gd", false)
+	make_piece(Vector2(4, 7), "res://pieces/King.gd", true)
 	Globals.white_king = matrix[7][4]  # set the white king
 	Globals.black_king = matrix[0][4]  # set the black king
-
-
-const topper_header = "┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓"
-const middle_header = "┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
-const middish_heads = "┗━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
-const bottom_header = "┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
-const smaller_heads = "    ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
-const letter_header = "    ┃ a ┃ b ┃ c ┃ d ┃ e ┃ f ┃ g ┃ h ┃"
-const ender = " ┃ "
-
-
-func print_matrix_pretty(mat = matrix):  # print the matrix
-	for j in range(8):  # for each row
-		var r = mat[j]  # get the row
-		if j == 0:
-			print(topper_header)  # print the top border
-		else:
-			print(middle_header)  # print the middle border
-		var row = "┃ " + str(8 - j) + " ┃ "  # init the string
-		for i in range(8):  # for each column
-			var c = r[i]  # get the column
-			if c:  # if there is a piece
-				row += c.mininame + ender  # add the shortname
-			else:  # if there is no piece
-				row += " " + ender  # add 00
-		print(row)  # print the string
-	print(middish_heads)
-	print(letter_header)
-	print(smaller_heads)
 
 
 func check_for_circle(position: Vector2):  # check for a circle, validating movement
@@ -291,22 +269,32 @@ func check_for_frame(position: Vector2):  # check for a frame, validating taking
 
 
 func square_clicked(position: Vector2):  # square clicked
+	if promoting != null:
+		return
 	var spot = matrix[position.y][position.x]  # get the spot
 	if !spot or spot.white != Globals.turn:  # spot is not a tile or spot is not turn color
-		if !last_clicked:  # last clicked is null, so this is pointless
+		if !is_instance_valid(last_clicked):  # last clicked is null, so this is pointless
 			return
 		if check_for_frame(position):  # takeable
-			last_clicked.take(matrix[position.y][position.x])  # eat
-			turn_over()
+			handle_take(position)
 		if check_for_circle(position):  # see if theres a circle at the position
 			handle_move(position)  # move
 		last_clicked.clear_clicked()  # remove the circles
 		last_clicked = null  # set it to null
 	elif last_clicked != spot:  # we got a new piece (or pawn) clicked
-		if last_clicked:  # remove the circles
+		if is_instance_valid(last_clicked):  # remove the circles
 			last_clicked.clear_clicked()
 		last_clicked = spot  # set it to the new spot
 		spot.clicked()  # tell the piece shit happeend
+
+
+func handle_take(position):
+	if last_clicked is Pawn:
+		var pawn = last_clicked
+		if check_promote(pawn, position, "take"):
+			return
+	last_clicked.take(matrix[position.y][position.x])  # eat
+	turn_over()
 
 
 func handle_move(position):
@@ -320,19 +308,32 @@ func handle_move(position):
 				castle_data[1].override_moveto = false
 				turn_over()
 				return
-	if last_clicked is Pawn and last_clicked.enpassant:
-		for i in range(len(last_clicked.enpassant)):
-			var en_passant_data = last_clicked.enpassant[i]
-			if en_passant_data[0] == position:
-				en_passant_data[1].took()  # kill the unfortunate
-				last_clicked.passant(en_passant_data[0])
-				turn_over()
-				return
+	if last_clicked is Pawn:
+		var pawn = last_clicked
+		if pawn.enpassant:
+			for i in range(len(pawn.enpassant)):
+				var en_passant_data = pawn.enpassant[i]
+				if en_passant_data[0] == position:
+					en_passant_data[1].took()  # kill the unfortunate
+					pawn.passant(en_passant_data[0])
+					turn_over()
+					return
+		if check_promote(pawn, position):
+			return
 	last_clicked.moveto(position)
 	turn_over()
 
 
+func check_promote(pawn, position, calltype: String = "move"):
+	if pawn.can_promote(position):
+		pawn.promote(position, calltype)
+		promoting = position
+		return true
+	return false
+
+
 func turn_over():
+	promoting = null
 	Events.emit_signal("just_before_turn_over")
 	Globals.add_turn()
 	Globals.turn = not Globals.turn
@@ -349,11 +350,32 @@ func clear_fx():  # clear the circles
 				piece.set_frame(false)  # clear the frame
 
 
-func _input(event):  # input
-	if event.is_action_released("debug"):  # if debug
-		print_matrix_pretty()  # print the matrix
-	if event.is_action_released("kill"):
-		if last_clicked:
-			last_clicked.took()  # kill the piece
-			last_clicked = null
-			clear_fx()  # clear the circles
+func _on_outoftime(who):
+	if who == "white":
+		win("black")
+	else:
+		win("white")
+
+
+func _on_turn_over():
+	var matstr: String = mat2str()
+	if !history_matrixes.has(matstr):
+		history_matrixes[matstr] = 1
+	else:
+		history_matrixes[matstr] += 1
+	Globals.checking_piece = null  # reset checking_piece
+	Globals.in_check = false  # reset in_check
+	matrix[8] = default_metadata.duplicate()  # add the metadata to the matrix
+	matrix[8].turn = Globals.turn
+	check_in_check(true)  # check if in_check
+	if !can_move():
+		if Globals.in_check:
+			var winner := "black" if Globals.turn else "white"
+			status_label.text("%s won the game by checkmate" % winner)
+			win(winner)
+		else:
+			status_label.text("stalemate")
+			drawed()
+	elif threefoldrepetition():
+		status_label.text("draw by threefold repetition")
+		drawed()

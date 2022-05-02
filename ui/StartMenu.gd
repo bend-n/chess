@@ -12,15 +12,19 @@ onready var tween := $Tween
 onready var timer := $Timer
 
 
-func _on_local_pressed():
-	get_tree().change_scene_to(world)
-
-
 func _ready():
 	randomize()
 	colorrect.color = nice_colors[randi() % nice_colors.size()]
 	timer.start(timer_length)
 	_on_Timer_timeout()
+
+
+func rand(clr):
+	return clamp(clr + rand_range(0, .1) if randi() % 2 else clr - rand_range(0, .1), 0, 1)
+
+
+func _on_local_pressed():
+	get_tree().change_scene_to(world)
 
 
 func _on_quit_pressed():
@@ -39,7 +43,3 @@ func _on_Timer_timeout():
 	tween.interpolate_property(colorrect, "color", colorrect.color, clr, timer_length, Tween.TRANS_ELASTIC)
 	tween.start()
 	timer.start(timer_length)
-
-
-func rand(clr):
-	return clamp(clr + rand_range(0, .1) if randi() % 2 else clr - rand_range(0, .1), 0, 1)
