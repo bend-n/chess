@@ -212,12 +212,11 @@ func init_board():  # create the board
 
 func add_pieces():  # add the pieces
 	add_pawns()
-	add_rooks()
-	add_knights()
-	add_bishops()
+	# add_rooks()
+	# add_knights()
+	# add_bishops()
 	add_queens()
 	add_kings()
-	print_matrix_pretty()
 
 
 func add_pawns():
