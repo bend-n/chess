@@ -140,7 +140,7 @@ func drawed():
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
-	get_tree().reload_current_scene()
+	get_parent().emit_signal("game_over")
 	SoundFx.play("Victory")
 
 
@@ -149,7 +149,7 @@ func win(winner):
 	print(winner, " won the game in ", Globals.turns(winner), " turns!")
 	SoundFx.play("Victory")
 	yield(get_tree().create_timer(5), "timeout")
-	get_tree().reload_current_scene()
+	get_parent().emit_signal("game_over")
 	SoundFx.play("Victory")
 
 
@@ -212,9 +212,9 @@ func init_board():  # create the board
 
 func add_pieces():  # add the pieces
 	add_pawns()
-	# add_rooks()
-	# add_knights()
-	# add_bishops()
+	add_rooks()
+	add_knights()
+	add_bishops()
 	add_queens()
 	add_kings()
 
