@@ -93,7 +93,7 @@ func fen() -> String:
 			var spot = Globals.grid.matrix[rank][file]
 			if spot == null:
 				empty += 1
-				if str(empty - 1) == pieces[-1]:
+				if pieces.size() > 0 and str(empty - 1) == pieces[-1]:
 					pieces[-1] = str(empty)
 				else:
 					pieces += str(empty)
