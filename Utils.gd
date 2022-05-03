@@ -81,8 +81,6 @@ func _on_turn_over() -> void:
 		counter = 0
 		turns_moves.append(turn_moves.join(" "))
 		turn_moves.resize(0)
-		var pgn = turns_moves.join(" ")
-		print(pgn)
 
 
 func fen() -> String:
