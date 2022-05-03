@@ -80,10 +80,8 @@ func castle(position) -> String:
 			if i[0] == position:
 				return_string = i[3]
 				break
-	override_moveto = true
 	can_castle.clear()
-	moveto(position)
-	override_moveto = false
+	moveto(position, true, false, true)
 	return return_string
 
 
