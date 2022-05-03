@@ -10,7 +10,6 @@ var frameon := false
 var team := "w"
 var check_spots_check := true
 var no_enemys := false
-var override_moveto := false
 
 onready var sprite := $Sprite
 onready var tween := $Tween
@@ -47,8 +46,9 @@ func clear_clicked() -> void:
 	Globals.grid.clear_fx()
 
 
-func algebraic_take_notation(position) -> String:
-	var starter := shortname if shortname != "p" else to_algebraic(real_position)[0]
+func algebraic_take_notation(position, startpos = real_position) -> String:
+	var starter := shortname if shortname != "p" else to_algebraic(startpos)[0]
+	print(starter)
 	return starter + "x" + to_algebraic(position)
 
 
@@ -75,7 +75,7 @@ func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.start()
 
 
-func moveto(position, real := true, take := false) -> void:
+func moveto(position, real := true, take := false, override_moveto = false) -> void:
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[position.y][position.x] = self
 	if real:
