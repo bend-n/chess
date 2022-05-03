@@ -7,6 +7,10 @@ var twostepfirstmove := false
 var just_set := false
 var enpassant := []
 
+var promoteposition := Vector2()
+var promotetake := false
+var promote_prev_pos := Vector2()
+
 onready var whiteint := 1 if white else -1
 onready var sprites := []
 onready var darken = get_node("../../Darken")
@@ -32,7 +36,7 @@ func _exit_tree() -> void:
 	Globals.pawns.remove(Globals.pawns.find(self))
 
 
-func moveto(position, real = true, take = false) -> void:
+func moveto(position, real = true, take = false, override_moveto = false) -> void:
 	# check if 2 step
 	if real and !twostepfirstmove and !has_moved:
 		if white and real_position.y - position.y == 2:
@@ -41,7 +45,7 @@ func moveto(position, real = true, take = false) -> void:
 		if !white and position.y - real_position.y == 2:
 			twostepfirstmove = true
 			just_set = true
-	.moveto(position, real, take)
+	.moveto(position, real, take, override_moveto)
 	if real:
 		Globals.reset_halfmove()
 
@@ -115,19 +119,36 @@ func en_passant(turncheck = true) -> Array:  # in passing
 
 
 func promote(position, type) -> void:
+	promote_prev_pos = real_position
 	if type == "take":
-		take(at_pos(position))
+		print(real_position)
+		take(at_pos(position), true)
+		promotetake = true
 	else:
-		moveto(position)
+		moveto(position, true, false, true)  # dont add the algebraic position
+	promoteposition = position
 	darken.show()
 	for i in range(len(promotables)):
 		sprites[i].sprite.texture = load("%s%s%s" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]])
 		sprites[i].show()
 
 
+func take(piece: Piece, overridemoveto = false) -> void:
+	clear_clicked()
+	piece.took()
+	moveto(piece.real_position, true, true, overridemoveto)
+	Globals.reset_halfmove()
+
+
 func handle_sprite_input_event(node) -> void:
 	darken.hide()
 	var script = piece(promotables[sprites.find(node)][0])
+	var first = (
+		algebraic_move_notation(promoteposition)
+		if !promotetake
+		else algebraic_take_notation(promoteposition, promote_prev_pos)
+	)
+	Utils.add_move("%s=%s" % [first, promotables[sprites.find(node)][0]])
 	Globals.grid.make_piece(real_position, script, white)
 	Globals.grid.turn_over()
 	clear_clicked()
