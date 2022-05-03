@@ -13,30 +13,30 @@ onready var timer := $Timer
 onready var lobby := $ColorRect/Lobby
 
 
-func _ready():
+func _ready() -> void:
 	randomize()
 	colorrect.color = nice_colors[randi() % nice_colors.size()]
 	timer.start(timer_length)
 	_on_Timer_timeout()
 
 
-func rand(clr):
+func rand(clr) -> float:
 	return clamp(clr + rand_range(0, .1) if randi() % 2 else clr - rand_range(0, .1), 0, 1)
 
 
-func _on_local_pressed():
+func _on_local_pressed() -> void:
 	get_tree().change_scene_to(world)
 
 
-func _on_quit_pressed():
+func _on_quit_pressed() -> void:
 	get_tree().quit()
 
 
-func _on_settings_pressed():
+func _on_settings_pressed() -> void:
 	settings.toggle(true)
 
 
-func _on_Timer_timeout():
+func _on_Timer_timeout() -> void:
 	var clr = nice_colors[randi() % nice_colors.size()]
 	clr.r = rand(clr.r)
 	clr.b = rand(clr.b)
@@ -46,5 +46,5 @@ func _on_Timer_timeout():
 	timer.start(timer_length)
 
 
-func _on_multiplayer_pressed():
+func _on_multiplayer_pressed() -> void:
 	lobby.toggle(true)

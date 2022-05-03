@@ -1,6 +1,6 @@
 extends Node
 
-const settings_file = "user://chess.settings"
+const settings_file := "user://chess.settings"
 
 var files := {
 	"settings":
@@ -17,17 +17,17 @@ var files := {
 }
 
 
-func _ready():
+func _ready() -> void:
 	load_data("settings")
 
 
-func save(type):
+func save(type) -> void:
 	var file = File.new()
 	file.open(files[type]["file"], File.WRITE)
 	file.store_string(var2str(files[type]["data"]))
 
 
-func load_data(type: String):
+func load_data(type: String) -> Dictionary:
 	if check_file(type):
 		var file = File.new()
 		file.open(files[type]["file"], File.READ)
@@ -36,8 +36,9 @@ func load_data(type: String):
 			if files[type]["data"].size() == read_dictionary.size():
 				files[type]["data"] = read_dictionary
 		file.close()
+	return files[type]["data"]
 
 
-func check_file(type):
+func check_file(type) -> bool:
 	var file = File.new()
 	return file.file_exists(files[type]["file"])
