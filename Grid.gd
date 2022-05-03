@@ -26,7 +26,7 @@ const default_metadata := {
 
 export(Color) var board_color1 := Color(0.870588, 0.890196, 0.901961)
 export(Color) var board_color2 := Color(0.54902, 0.635294, 0.678431)
-export(Color) var overlay_color := Color(0.2, 0.345098, 0.188235, 0.592157)
+export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
 
 var matrix := []
 var promoting = null
