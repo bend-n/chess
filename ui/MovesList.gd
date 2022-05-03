@@ -9,13 +9,13 @@ onready var scroll_bar = get_v_scrollbar()
 onready var sans = $sans
 
 
-func _ready():
+func _ready() -> void:
 	tween = Tween.new()
 	add_child(tween)
 	Utils.connect("newmove", self, "on_new_move")
 
 
-func create_number_label(num):
+func create_number_label(num) -> void:
 	var clr = ColorRect.new()
 	clr.color = Color(1, 1, 1, 0.13)
 	clr.rect_min_size = Vector2(70, 30)
@@ -28,7 +28,7 @@ func create_number_label(num):
 	sans.add_child(clr)
 
 
-func create_san_label(text, alignment = Label.ALIGN_RIGHT):
+func create_san_label(text, alignment = Label.ALIGN_RIGHT) -> void:
 	var label = Label.new()
 	label.text = text
 	label.valign = Label.VALIGN_CENTER
@@ -37,11 +37,11 @@ func create_san_label(text, alignment = Label.ALIGN_RIGHT):
 	sans.add_child(label)
 
 
-func on_new_move(move):
+func on_new_move(move) -> void:
 	var alignment = Label.ALIGN_RIGHT
 	if Globals.turn:  # white just moved
 		alignment = Label.ALIGN_LEFT
-		create_number_label(Globals.white_turns + 1)
+		create_number_label(Globals.fullmove)
 		number = 0
 	create_san_label(move, alignment)
 	tween.interpolate_property(  # scrolldown

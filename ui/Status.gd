@@ -1,6 +1,6 @@
 extends Label
 
 
-func text(newtext):
+func text(newtext) -> void:
 	show()
 	text = newtext

@@ -43,7 +43,7 @@ onready var pieces := $Pieces
 onready var status_label := $"../UI/Holder/Back/VBox/Status"
 
 
-func _ready():
+func _ready() -> void:
 	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
@@ -52,11 +52,11 @@ func _ready():
 	Events.connect("outoftime", self, "_on_outoftime")  # listen for timeout events
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	Globals.grid = null  # reset the globals grid when leaving tree
 
 
-func _input(event):  # input
+func _input(event) -> void:  # input
 	if event.is_action_released("debug"):  # if debug
 		print_matrix_pretty()  # print the matrix
 	if event.is_action_released("kill"):
@@ -66,7 +66,7 @@ func _input(event):  # input
 			clear_fx()  # clear the circles
 
 
-func print_matrix_pretty(mat = matrix):  # print the matrix
+static func print_matrix_pretty(mat = matrix) -> void:  # print the matrix
 	for j in range(8):  # for each row
 		var r: Array = mat[j]  # get the row
 		if j == 0:
@@ -84,14 +84,14 @@ func print_matrix_pretty(mat = matrix):  # print the matrix
 	print("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
 
 
-func reload_sprites():
+func reload_sprites() -> void:
 	for i in range(8):
 		for j in range(8):
 			if matrix[i][j]:
 				matrix[i][j].load_texture()
 
 
-func init_labels():
+func init_labels() -> void:
 	for i in range(8):
 		var letterslabel := BottomLeftLabel.instance()
 		letterslabel.rect_position.x = i * piece_size.x
@@ -109,19 +109,19 @@ func init_labels():
 		foreground.add_child(numberslabel)
 
 
-func size_label(label, i):
+func size_label(label, i) -> void:
 	label.rect_size = piece_size
 	label.get_node("Label").add_color_override("font_color", board_color1 if i % 2 == 0 else board_color2)
 
 
-func threefoldrepetition():
+func threefoldrepetition() -> bool:
 	for i in history_matrixes.values():
 		if i >= 3:
 			return true
 	return false
 
 
-func mat2str(mat = matrix):
+func mat2str(mat = matrix) -> String:
 	var string := ""
 	for y in range(8):
 		for x in range(8):
@@ -136,24 +136,22 @@ func mat2str(mat = matrix):
 	return string
 
 
-func drawed():
+func drawed() -> void:
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
-	get_parent().emit_signal("game_over")
 	SoundFx.play("Victory")
 
 
-func win(winner):
+func win(winner) -> void:
 	Events.emit_signal("game_over")
 	print(winner, " won the game in ", Globals.turns(winner), " turns!")
 	SoundFx.play("Victory")
 	yield(get_tree().create_timer(5), "timeout")
-	get_parent().emit_signal("game_over")
 	SoundFx.play("Victory")
 
 
-func check_in_check(prin = false):  # check if in_check
+func check_in_check(prin = false) -> bool:  # check if in_check
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
@@ -167,7 +165,7 @@ func check_in_check(prin = false):  # check if in_check
 	return false
 
 
-func can_move():
+func can_move() -> bool:
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
@@ -177,7 +175,7 @@ func can_move():
 	return false
 
 
-func init_matrix():  # create the matrix
+func init_matrix() -> void:  # create the matrix
 	for i in range(8):  # for each row
 		matrix.append([])  # add a row
 		for _j in range(8):  # for each column
@@ -186,7 +184,7 @@ func init_matrix():  # create the matrix
 	add_pieces()  # add the pieces
 
 
-func make_piece(position: Vector2, script: String, white: bool = true):  # make peace
+func make_piece(position: Vector2, script: String, white: bool = true) -> void:  # make peace
 	var piece := Piece.instance()  # create a piece
 	piece.script = load(script)  # set the script
 	piece.real_position = position  # set the real position
@@ -196,7 +194,7 @@ func make_piece(position: Vector2, script: String, white: bool = true):  # make 
 	matrix[position.y][position.x] = piece
 
 
-func init_board():  # create the board
+func init_board() -> void:  # create the board
 	for i in range(8):  # for each row
 		background_matrix.append([])  # add a row
 		for j in range(8):  # for each column
@@ -210,7 +208,7 @@ func init_board():  # create the board
 			background_matrix[i].append(square)  # add the square to the background matrix
 
 
-func add_pieces():  # add the pieces
+func add_pieces() -> void:  # add the pieces
 	add_pawns()
 	add_rooks()
 	add_knights()
@@ -219,56 +217,56 @@ func add_pieces():  # add the pieces
 	add_kings()
 
 
-func add_pawns():
+func add_pawns() -> void:
 	for i in range(8):
 		make_piece(Vector2(i, 1), "res://pieces/Pawn.gd", false)
 		make_piece(Vector2(i, 6), "res://pieces/Pawn.gd", true)
 
 
-func add_rooks():
+func add_rooks() -> void:
 	make_piece(Vector2(0, 0), "res://pieces/Rook.gd", false)
 	make_piece(Vector2(7, 0), "res://pieces/Rook.gd", false)
 	make_piece(Vector2(0, 7), "res://pieces/Rook.gd", true)
 	make_piece(Vector2(7, 7), "res://pieces/Rook.gd", true)
 
 
-func add_knights():
+func add_knights() -> void:
 	make_piece(Vector2(1, 0), "res://pieces/Knight.gd", false)
 	make_piece(Vector2(6, 0), "res://pieces/Knight.gd", false)
 	make_piece(Vector2(1, 7), "res://pieces/Knight.gd", true)
 	make_piece(Vector2(6, 7), "res://pieces/Knight.gd", true)
 
 
-func add_bishops():
+func add_bishops() -> void:
 	make_piece(Vector2(2, 0), "res://pieces/Bishop.gd", false)
 	make_piece(Vector2(5, 0), "res://pieces/Bishop.gd", false)
 	make_piece(Vector2(2, 7), "res://pieces/Bishop.gd", true)
 	make_piece(Vector2(5, 7), "res://pieces/Bishop.gd", true)
 
 
-func add_queens():
+func add_queens() -> void:
 	make_piece(Vector2(3, 0), "res://pieces/Queen.gd", false)
 	make_piece(Vector2(3, 7), "res://pieces/Queen.gd", true)
 
 
-func add_kings():
+func add_kings() -> void:
 	make_piece(Vector2(4, 0), "res://pieces/King.gd", false)
 	make_piece(Vector2(4, 7), "res://pieces/King.gd", true)
 	Globals.white_king = matrix[7][4]  # set the white king
 	Globals.black_king = matrix[0][4]  # set the black king
 
 
-func check_for_circle(position: Vector2):  # check for a circle, validating movement
+func check_for_circle(position: Vector2) -> bool:  # check for a circle, validating movement
 	return background_matrix[position.x][position.y].circle_on
 
 
-func check_for_frame(position: Vector2):  # check for a frame, validating taking
+func check_for_frame(position: Vector2) -> bool:  # check for a frame, validating taking
 	if !matrix[position.y][position.x]:  # if there is no piece
 		return false  # return false
 	return matrix[position.y][position.x].frameon  # return if the frame is on
 
 
-func square_clicked(position: Vector2):  # square clicked
+func square_clicked(position: Vector2) -> void:  # square clicked
 	if promoting != null:
 		return
 	var spot = matrix[position.y][position.x]  # get the spot
@@ -288,7 +286,7 @@ func square_clicked(position: Vector2):  # square clicked
 		spot.clicked()  # tell the piece shit happeend
 
 
-func handle_take(position):
+func handle_take(position) -> void:
 	if last_clicked is Pawn:
 		var pawn = last_clicked
 		if check_promote(pawn, position, "take"):
@@ -297,7 +295,7 @@ func handle_take(position):
 	turn_over()
 
 
-func handle_move(position):
+func handle_move(position) -> void:
 	if last_clicked is King and last_clicked.can_castle:
 		for i in range(len(last_clicked.can_castle)):
 			var castle_data = last_clicked.can_castle[i]
@@ -324,7 +322,7 @@ func handle_move(position):
 	turn_over()
 
 
-func check_promote(pawn, position, calltype: String = "move"):
+func check_promote(pawn, position, calltype: String = "move") -> bool:
 	if pawn.can_promote(position):
 		pawn.promote(position, calltype)
 		promoting = position
@@ -332,7 +330,7 @@ func check_promote(pawn, position, calltype: String = "move"):
 	return false
 
 
-func turn_over():
+func turn_over() -> void:
 	promoting = null
 	Events.emit_signal("just_before_turn_over")
 	Globals.add_turn()
@@ -340,7 +338,7 @@ func turn_over():
 	Events.emit_signal("turn_over")
 
 
-func clear_fx():  # clear the circles
+func clear_fx() -> void:  # clear the circles
 	for i in range(8):  # for each row
 		for j in range(8):  # for each column
 			var square = background_matrix[i][j]  # get the square
@@ -350,14 +348,14 @@ func clear_fx():  # clear the circles
 				piece.set_frame(false)  # clear the frame
 
 
-func _on_outoftime(who):
+func _on_outoftime(who) -> void:
 	if who == "white":
 		win("black")
 	else:
 		win("white")
 
 
-func _on_turn_over():
+func _on_turn_over() -> void:
 	var matstr: String = mat2str()
 	if !history_matrixes.has(matstr):
 		history_matrixes[matstr] = 1

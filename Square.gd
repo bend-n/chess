@@ -11,7 +11,7 @@ onready var circle := $Circle
 signal clicked
 
 
-func _ready():
+func _ready() -> void:
 	circle.position = Globals.grid.piece_size / 2
 	circle.material.set_shader_param("color", Globals.grid.overlay_color)
 	circle.visible = false
@@ -20,16 +20,16 @@ func _ready():
 	algebraic_string = Utils.calculate_algebraic_position(real_position)
 
 
-func _on_Squarea_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int):
+func _on_Squarea_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:
 	if Input.is_action_just_pressed("click"):
 		emit_signal("clicked", real_position)
 
 
-func get_string():
+func get_string() -> String:
 	return algebraic_string
 
 
-func set_circle(boolean: bool, real = true):
+func set_circle(boolean: bool, real = true) -> void:
 	circle_on = boolean
 	if real:
 		circle.visible = boolean

@@ -12,7 +12,8 @@ onready var sprites := []
 onready var darken = get_node("../../Darken")
 
 
-func _ready():
+func _ready() -> void:
+	Globals.pawns.append(self)
 	Events.connect("turn_over", self, "_on_turn_over")
 	Events.connect("just_before_turn_over", self, "_just_before_turn_over")
 	sprite.position = Globals.grid.piece_size / 2
@@ -27,7 +28,11 @@ func _ready():
 		sprites.append(newsprite)
 
 
-func moveto(position, real = true, take = false):
+func _exit_tree() -> void:
+	Globals.pawns.remove(Globals.pawns.find(self))
+
+
+func moveto(position, real = true, take = false) -> void:
 	# check if 2 step
 	if real and !twostepfirstmove and !has_moved:
 		if white and real_position.y - position.y == 2:
@@ -37,9 +42,11 @@ func moveto(position, real = true, take = false):
 			twostepfirstmove = true
 			just_set = true
 	.moveto(position, real, take)
+	if real:
+		Globals.reset_halfmove()
 
 
-func get_moves():
+func get_moves() -> Array:
 	var points := [Vector2.UP, Vector2.UP * 2]
 	var moves := []
 	for i in range(len(points)):
@@ -57,18 +64,18 @@ func get_moves():
 	return moves
 
 
-func can_promote(position):
+static func can_promote(position) -> bool:
 	if position.y >= 7 or position.y <= 0:
 		return true
 	return false
 
 
-func passant(position):
+func passant(position) -> void:
 	enpassant.clear()
 	moveto(position)
 
 
-func get_attacks():
+func get_attacks() -> Array:
 	var points := [Vector2.UP + Vector2.RIGHT, Vector2.UP + Vector2.LEFT]
 	var moves := []
 	for i in range(len(points)):
@@ -85,7 +92,7 @@ func get_attacks():
 	return moves
 
 
-func en_passant(turncheck = true):  # in passing
+func en_passant(turncheck = true) -> Array:  # in passing
 	var passants := [pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
 	var moves := []
 	for i in passants:
@@ -107,7 +114,7 @@ func en_passant(turncheck = true):  # in passing
 	return moves
 
 
-func promote(position, type):
+func promote(position, type) -> void:
 	if type == "take":
 		take(at_pos(position))
 	else:
@@ -118,7 +125,7 @@ func promote(position, type):
 		sprites[i].show()
 
 
-func handle_sprite_input_event(node):
+func handle_sprite_input_event(node) -> void:
 	darken.hide()
 	var script = piece(promotables[sprites.find(node)][0])
 	Globals.grid.make_piece(real_position, script, white)
@@ -127,7 +134,7 @@ func handle_sprite_input_event(node):
 	queue_free()
 
 
-func piece(string):
+func piece(string) -> String:
 	match string:
 		"Q":
 			return "res://pieces/Queen.gd"
@@ -137,9 +144,11 @@ func piece(string):
 			return "res://pieces/Rook.gd"
 		"B":
 			return "res://pieces/Bishop.gd"
+		_:
+			return "res://pieces/Piece.gd"
 
 
-func _on_turn_over():
+func _on_turn_over() -> void:
 	if just_set:
 		just_set = false
 		return
@@ -147,7 +156,7 @@ func _on_turn_over():
 		twostepfirstmove = false
 
 
-func _just_before_turn_over():
+func _just_before_turn_over() -> void:
 	var had_a_enpassant := len(enpassant) > 0
 	enpassant.clear()
 	if !had_a_enpassant:  # scuffed method to check if enpassant is possible

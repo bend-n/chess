@@ -15,7 +15,7 @@ var sounds := {
 onready var sound_players := get_children()
 
 
-func play(sound_string, pitch_scale = 1, volume_db = 0):
+func play(sound_string, pitch_scale = 1, volume_db = 0) -> void:
 	for soundPlayer in sound_players:
 		if not soundPlayer.playing:
 			soundPlayer.pitch_scale = pitch_scale
