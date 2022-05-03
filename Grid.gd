@@ -28,6 +28,10 @@ export(Color) var board_color1 := Color(0.870588, 0.890196, 0.901961)
 export(Color) var board_color2 := Color(0.54902, 0.635294, 0.678431)
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
 
+export(Color) var clockrunning_color := Color(0.219608, 0.278431, 0.133333)
+export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
+export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
+
 var matrix := []
 var promoting = null
 var background_matrix := []

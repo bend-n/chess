@@ -1,7 +1,9 @@
 extends Label
 
-var time := 0.0 setget set_time
+var time: float setget set_time
 var stop := false
+
+const TIME = 300
 
 export(bool) var white := false
 
@@ -23,10 +25,10 @@ func set_time(newtime) -> bool:
 
 
 func _ready() -> void:
-	_on_turn_over()
+	set_time(TIME)
+	set_color()
 	colorrect.show_behind_parent = true
-	colorrect.color = Globals.grid.overlay_color
-	Events.connect("turn_over", self, "_on_turn_over")
+	Events.connect("turn_over", self, "set_color")
 	Events.connect("game_over", self, "_on_game_over")
 
 
@@ -34,5 +36,8 @@ func _on_game_over() -> void:
 	stop = true
 
 
-func _on_turn_over() -> void:
-	colorrect.visible = Globals.turn == white
+func set_color() -> void:
+	if time > 10:
+		colorrect.color = Globals.grid.clockrunning_color if Globals.turn == white else Color.transparent
+	else:
+		colorrect.color = Globals.grid.clockrunninglow if Globals.turn == white else Globals.grid.clocklow
