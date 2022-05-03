@@ -8,7 +8,7 @@ export(bool) var white := false
 onready var colorrect := $ColorRect
 
 
-func set_time(newtime):
+func set_time(newtime) -> bool:
 	if stop:
 		return false
 	time = newtime
@@ -22,7 +22,7 @@ func set_time(newtime):
 	return true
 
 
-func _ready():
+func _ready() -> void:
 	_on_turn_over()
 	colorrect.show_behind_parent = true
 	colorrect.color = Globals.grid.overlay_color
@@ -30,9 +30,9 @@ func _ready():
 	Events.connect("game_over", self, "_on_game_over")
 
 
-func _on_game_over():
+func _on_game_over() -> void:
 	stop = true
 
 
-func _on_turn_over():
+func _on_turn_over() -> void:
 	colorrect.visible = Globals.turn == white
