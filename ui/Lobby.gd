@@ -1,94 +1,29 @@
-# Default game server port. Can be any number between 1024 and 49151.
-# Not on the list of registered or common ports as of November 2020:
-# https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
 extends Control
 
-# Default game server port. Can be any number between 1024 and 49151.
-# Not on the list of registered or common ports as of November 2020:
-# https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
-const DEFAULT_PORT = 8910
-
-var peer = null
-
 onready var address: LineEdit = $Back/Center/HBox/VBox/Address
-onready var host_button = $Back/Center/HBox/VBox/HBox/HostButton
-onready var join_button = $Back/Center/HBox/VBox/HBox/JoinButton
+onready var buttons = $Back/Center/HBox/VBox/buttons
 onready var status_ok = $Back/Center/HBox/VBox/StatusOK
 onready var status_fail = $Back/Center/HBox/VBox/StatusFail
-onready var port_forward_label = $Back/Center/HBox/VBox2/Portforward
-onready var find_public_ip_button = $Back/Center/HBox/VBox2/FindPublicIP
 
 
 func toggle(onoff) -> void:
 	visible = onoff
-
-
-func _ready() -> void:
-	address.context_menu_enabled = false
-	# Connect all the callbacks related to networking.
-	get_tree().connect("network_peer_connected", self, "_player_connected")
-	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
-	get_tree().connect("connected_to_server", self, "_connected_ok")
-	get_tree().connect("connection_failed", self, "_connected_fail")
-	get_tree().connect("server_disconnected", self, "_server_disconnected")
-
-
-#### Network callbacks from SceneTree ####
-
-
-# Callback from SceneTree.
-func _player_connected(_id) -> void:
-	# Someone connected, start the game!
-	var chess = load("res://World.tscn").instance()
-	# Connect deferred so we can safely erase it from the callback.
-	Utils.connect("game_over", self, "_end_game", [], CONNECT_DEFERRED)
-
-	get_tree().get_root().add_child(chess)
-
-
-func _player_disconnected(_id) -> void:
-	if get_tree().is_network_server():
-		_end_game("Client disconnected")
+	if onoff:
+		for i in get_tree().get_nodes_in_group("control"):
+			i.mouse_filter = MOUSE_FILTER_STOP
 	else:
-		_end_game("Server disconnected")
+		for i in get_tree().get_nodes_in_group("control"):
+			i.mouse_filter = MOUSE_FILTER_IGNORE
 
 
-# Callback from SceneTree, only for clients (not server).
-func _connected_ok() -> void:
-	pass  # This function is not needed for this project.
+func _handle_game_over(error, isok) -> void:
+	reset_buttons()
+	Globals.reset_vars()
+	end_game()
+	_set_status(error, isok)
 
 
-# Callback from SceneTree, only for clients (not server).
-func _connected_fail() -> void:
-	_set_status("Couldn't connect", false)
-
-	get_tree().set_network_peer(null)  # Remove peer.
-	host_button.show()
-	address.editable = true
-
-
-func _server_disconnected() -> void:
-	_end_game("Server disconnected")
-
-
-##### Game creation functions ######
-
-
-func _end_game(_with_error = "") -> void:
-	if has_node("/root/World"):
-		# Erase immediately, otherwise network might show
-		# errors (this is why we connected deferred above).
-		get_node("/root/World").free()
-		show()
-
-	get_tree().set_network_peer(null)  # Remove peer.
-	host_button.show()
-	join_button.show()
-	address.editable = true
-
-
-func _set_status(text, isok) -> void:
-	# Simple way to show status.
+func _set_status(text, isok) -> void:  # Simple way to show status.
 	if isok:
 		status_ok.set_text(text)
 		status_fail.set_text("")
@@ -101,35 +36,126 @@ func _set_status(text, isok) -> void:
 		status_ok.visible = len(status_ok.text) > 0
 
 
-func _on_host_pressed() -> void:
-	peer = NetworkedMultiplayerENet.new()
-	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	var err = peer.create_server(DEFAULT_PORT, 1)  # Maximum of 1 peer, since it's a 2-player game.
-	if err != OK:
-		# Is another server running?
-		_set_status("Can't host, address in use.", false)
-		return
-
-	get_tree().set_network_peer(peer)
-	host_button.hide()
-	address.editable = false
-	join_button.hide()
-	_set_status("Waiting for player...", true)
-
-	# Only show hosting instructions when relevant.
-
-
 func _on_join_pressed() -> void:
-	var ip = address.get_text()
-	if not ip.is_valid_ip_address():
-		_set_status("IP address is invalid", false)
-		return
-
-	peer = NetworkedMultiplayerENet.new()
-	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	peer.create_client(ip, DEFAULT_PORT)
-	get_tree().set_network_peer(peer)
+	Globals.network.game_code = validate_text()
+	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.joinrequest)
+	address.editable = false
+	buttons.hide()
 
 
-func _on_find_public_ip_pressed() -> void:
-	OS.shell_open("https://icanhazip.com/")
+func _on_HostButton_pressed() -> void:
+	Globals.network.game_code = validate_text()
+	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.hostrequest)
+	address.editable = false
+	buttons.hide()
+
+
+func validate_text(text = address.get_text()) -> String:
+	var pos = address.caret_position
+	text = text.strip_edges()
+	text = text.replace(" ", "_")
+	address.text = text
+	address.caret_position = pos
+	return text
+
+
+func _ready() -> void:
+	get_tree().set_auto_accept_quit(false)
+	Events.connect("go_back", self, "end_game")
+	if !is_instance_valid(Globals.network):
+		Globals.network = Network.new()
+		Globals.network.connect("move_data", self, "_on_data")
+		Globals.network.connect("join_result", self, "_on_join_result")
+		Globals.network.connect("host_result", self, "_on_host_result")
+		Globals.network.connect("game_over", self, "_handle_game_over")
+		Globals.network.connect("start_game", self, "_start_game")
+		add_child(Globals.network)
+
+
+func end_game() -> void:
+	if get_tree().get_root().has_node("World"):
+		get_tree().get_root().get_node("World").queue_free()
+	toggle(true)
+
+
+func create_world() -> void:
+	var world = load("res://World.tscn").instance()
+	get_tree().get_root().add_child(world)
+	toggle(false)
+
+
+func _start_game() -> void:
+	create_world()
+
+
+func _on_join_result(accepted: String) -> void:
+	Globals.team = false
+	if accepted == "Y":
+		_set_status("Joined!", true)
+		Globals.network.send_packet("", Globals.network.HEADERS.startgame)
+	else:
+		_set_status(accepted, false)
+		reset_buttons()
+
+
+func reset_buttons() -> void:
+	buttons.show()
+	address.editable = true
+
+
+func _on_host_result(accepted: String) -> void:
+	Globals.team = true
+	if accepted == "Y":
+		_set_status("Hosted!", true)
+	else:
+		_set_status(accepted, false)
+		reset_buttons()
+
+
+func add_turn() -> void:
+	Events.emit_signal("just_before_turn_over")
+	Globals.add_turn()
+	Globals.turn = not Globals.turn
+	Events.emit_signal("turn_over")
+
+
+func _on_data(data: Dictionary) -> void:
+	Globals.fullmove = data["fullmove"]
+	Globals.turn = data["turn"]
+	Globals.halfmove = data["halfmove"]
+	match data["movetype"]:
+		Network.MOVEHEADERS.passant:
+			# en passant
+			var end_pos = Vector2(dict2vec(data["positions"][1]))
+			var start_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][0])))
+			Piece.at_pos(Vector2(dict2vec(data["positions"][2]))).took()  # kill the unfortunate
+			start_piece.passant(end_pos)
+		Network.MOVEHEADERS.take:
+			var start_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][0])))
+			var end_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][1])))
+			start_piece.take(end_piece)
+		Network.MOVEHEADERS.move:
+			var end_pos = Vector2(dict2vec(data["positions"][1]))
+			var start_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][0])))
+			start_piece.moveto(end_pos)
+		Network.MOVEHEADERS.castle:
+			var king = Piece.at_pos(dict2vec(data["positions"]["king"]))
+			var rook = Piece.at_pos(dict2vec(data["positions"]["rook"]))
+			rook.moveto(dict2vec(data["positions"]["rookdestination"]), true, false, true)
+			Utils.add_move(king.castle(dict2vec(data["positions"]["kingdestination"])))
+
+
+func dict2vec(dict: Dictionary) -> Vector2:
+	return Vector2(dict["x"], dict["y"])
+
+
+func _notification(what: int) -> void:
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
+		Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.stopgame)
+		yield(get_tree(), "idle_frame")  # wait for the packet to send
+		get_tree().quit()
+
+
+func _on_Address_text_entered(new_text: String):
+	validate_text(new_text)
+	Globals.network.game_code = new_text

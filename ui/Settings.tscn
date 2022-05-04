@@ -4,35 +4,35 @@
 [ext_resource path="res://ui/Settings.gd" type="Script" id=2]
 [ext_resource path="res://assets/pieces/california/wP.png" type="Texture" id=3]
 
-[node name="Settings" type="Control"]
+[node name="Settings" type="Control" groups=["control"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." groups=["control"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0.862745 )
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect" groups=["control"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/HBoxContainer" groups=["control"]]
 margin_left = 225.0
 margin_right = 591.0
 margin_bottom = 800.0
 alignment = 1
 
-[node name="BackButton" type="Button" parent="ColorRect/HBoxContainer/VBoxContainer"]
+[node name="BackButton" type="Button" parent="ColorRect/HBoxContainer/VBoxContainer" groups=["control"]]
 margin_top = 261.0
 margin_right = 366.0
 margin_bottom = 367.0
 text = "back"
 
-[node name="PieceSet" type="OptionButton" parent="ColorRect/HBoxContainer/VBoxContainer"]
+[node name="PieceSet" type="OptionButton" parent="ColorRect/HBoxContainer/VBoxContainer" groups=["control"]]
 margin_top = 382.0
 margin_right = 366.0
 margin_bottom = 538.0
@@ -42,13 +42,13 @@ enabled_focus_mode = 0
 text = "piece set"
 icon = ExtResource( 3 )
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="ColorRect/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="ColorRect/HBoxContainer" groups=["control"]]
 margin_left = 606.0
 margin_right = 975.0
 margin_bottom = 800.0
 alignment = 1
 
-[node name="VsyncButton" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2"]
+[node name="VsyncButton" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2" groups=["control"]]
 margin_top = 175.0
 margin_right = 369.0
 margin_bottom = 315.0
@@ -57,7 +57,7 @@ pressed = true
 enabled_focus_mode = 0
 text = "vsync"
 
-[node name="FullscreenButton" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2"]
+[node name="FullscreenButton" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2" groups=["control"]]
 margin_top = 330.0
 margin_right = 369.0
 margin_bottom = 470.0
@@ -65,7 +65,7 @@ focus_mode = 0
 enabled_focus_mode = 0
 text = "fullscreen"
 
-[node name="Borderless" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2"]
+[node name="Borderless" type="CheckBox" parent="ColorRect/HBoxContainer/VBoxContainer2" groups=["control"]]
 margin_top = 485.0
 margin_right = 369.0
 margin_bottom = 625.0

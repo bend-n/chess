@@ -25,8 +25,18 @@ func add_move(move) -> void:
 	emit_signal("newmove", move)
 
 
-func calculate_algebraic_position(real_position) -> String:
+func reset_vars() -> void:
+	turn_moves.resize(0)
+	turns_moves.resize(0)
+	counter = 0
+
+
+func to_algebraic(real_position) -> String:
 	return char(65 + (real_position.x)).to_lower() + str(8 - real_position.y)
+
+
+func from_algebraic(algebraic_position: String) -> Vector2:
+	return Vector2(ord(algebraic_position[0]) - ord("a"), 8 - int(algebraic_position[1]))
 
 
 func get_node_name(node) -> Array:
@@ -65,12 +75,8 @@ func walk_dir(path = "res://assets/pieces") -> PoolStringArray:  # walk the dire
 
 
 func format_seconds(time: float, use_milliseconds: bool = false) -> String:
-	var minutes := time / 60
-	var seconds := fmod(time, 60)
-
-	if not use_milliseconds:
-		return "%02d:%02d" % [minutes, seconds]
-	return "%02d:%04.1f" % [minutes, seconds]
+	var format_string = "%02d:%04.1f" if use_milliseconds else "%02d:%02d"
+	return format_string % [time / 60, fmod(time, 60)]
 
 
 func _on_turn_over() -> void:
@@ -96,7 +102,7 @@ func fen() -> String:
 				else:
 					pieces += str(empty)
 			else:
-				pieces += spot.shortname[0].to_upper() if spot.white else spot.shortname[0].to_lower()
+				pieces += (spot.shortname[0].to_upper() if spot.white else spot.shortname[0].to_lower())
 				empty = 0
 		if rank != 7:
 			pieces += "/"
@@ -115,12 +121,12 @@ func fen() -> String:
 	var enpassants = ""
 	for pawn in Globals.pawns:
 		if pawn.twostepfirstmove and pawn.just_set:
-			enpassants += calculate_algebraic_position(pawn.real_position + (Vector2.DOWN * pawn.whiteint))
+			enpassants += to_algebraic(pawn.real_position + (Vector2.DOWN * pawn.whiteint))
 	var fen = (
 		"%s %s %s %s %s %s"
 		% [
 			pieces,
-			"w" if Globals.turn else "b",
+			"w" if Globals.team else "b",
 			castlingrights,
 			enpassants if enpassants else "-",
 			Globals.halfmove,
