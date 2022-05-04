@@ -33,7 +33,9 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	Globals.pawns.remove(Globals.pawns.find(self))
+	var find = Globals.pawns.find(self)
+	if find != -1:
+		Globals.pawns.remove(find)
 
 
 func moveto(position, real = true, take = false, override_moveto = false) -> void:
@@ -121,7 +123,6 @@ func en_passant(turncheck = true) -> Array:  # in passing
 func promote(position, type) -> void:
 	promote_prev_pos = real_position
 	if type == "take":
-		print(real_position)
 		take(at_pos(position), true)
 		promotetake = true
 	else:

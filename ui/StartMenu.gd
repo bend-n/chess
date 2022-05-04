@@ -29,7 +29,7 @@ func _on_local_pressed() -> void:
 
 
 func _on_quit_pressed() -> void:
-	get_tree().quit()
+	get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
 
 
 func _on_settings_pressed() -> void:

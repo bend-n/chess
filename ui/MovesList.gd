@@ -39,7 +39,7 @@ func create_san_label(text, alignment = Label.ALIGN_RIGHT) -> void:
 
 func on_new_move(move) -> void:
 	var alignment = Label.ALIGN_RIGHT
-	if Globals.turn:  # black just moved
+	if !Globals.turn:  # black just moved
 		alignment = Label.ALIGN_LEFT
 		create_number_label(Globals.fullmove)
 		number = 0
