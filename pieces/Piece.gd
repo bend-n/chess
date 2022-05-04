@@ -48,7 +48,6 @@ func clear_clicked() -> void:
 
 func algebraic_take_notation(position, startpos = real_position) -> String:
 	var starter := shortname if shortname != "p" else to_algebraic(startpos)[0]
-	print(starter)
 	return starter + "x" + to_algebraic(position)
 
 
@@ -127,7 +126,9 @@ func traverse(arr := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]) ->
 
 
 static func at_pos(vector: Vector2):
-	return Globals.grid.matrix[vector.y][vector.x]
+	if is_instance_valid(Globals.grid):
+		return Globals.grid.matrix[vector.y][vector.x]
+	return null
 
 
 func can_move() -> bool:  # checks if you can legally move
@@ -182,6 +183,7 @@ static func set_circle(positions: Array, type := "move") -> void:
 
 
 func checkcheck(pos) -> bool:  # moves to position, then checks if your king is in check
+	# TODO: figure out why this function isnt working with can_move()
 	var mat: Array = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
 	moveto(pos, false)  # move to the position
 	if Globals.grid.check_in_check():  # if you are still in check

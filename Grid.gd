@@ -36,7 +36,7 @@ var matrix := []
 var promoting = null
 var background_matrix := []
 var history_matrixes := {}
-var last_clicked = null
+var last_clicked: Piece = null
 
 onready var PIECE_SET: String = Globals.piece_set
 
@@ -47,8 +47,11 @@ onready var pieces := $Pieces
 onready var status_label := $"../UI/Holder/Back/VBox/Status"
 
 
+func _init():
+	Globals.grid = self
+
+
 func _ready() -> void:
-	Globals.grid = self  # tell the globals that this is the grid
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
 	init_labels()  # add the labels
@@ -101,9 +104,7 @@ func init_labels() -> void:
 		letterslabel.rect_position.x = i * piece_size.x
 		letterslabel.rect_position.y = piece_size.y * 7
 		size_label(letterslabel, i)
-		letterslabel.get_node("Label").text = Utils.calculate_algebraic_position(
-			letterslabel.rect_position / piece_size
-		)[0]
+		letterslabel.get_node("Label").text = Utils.to_algebraic(letterslabel.rect_position / piece_size)[0]
 		foreground.add_child(letterslabel)
 		var numberslabel := TopRightLabel.instance()
 		numberslabel.rect_position.y = i * piece_size.x
@@ -144,14 +145,16 @@ func drawed() -> void:
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
+	Events.emit_signal("go_back")
 	SoundFx.play("Victory")
 
 
 func win(winner) -> void:
 	Events.emit_signal("game_over")
-	print(winner, " won the game in ", Globals.turns(winner), " turns!")
+	print(winner, " won the game in ", Globals.turns(), " turns!")
 	SoundFx.play("Victory")
 	yield(get_tree().create_timer(5), "timeout")
+	Events.emit_signal("go_back")
 	SoundFx.play("Victory")
 
 
@@ -159,8 +162,8 @@ func check_in_check(prin = false) -> bool:  # check if in_check
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
-			if spot and spot.white != Globals.turn:  # enemie
-				if spot.can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
+			if spot and spot.white != Globals.team:  # enemie
+				if spot.can_attack_piece(Globals.white_king if Globals.team else Globals.black_king):  # if it can take the king
 					if prin:
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
@@ -173,7 +176,9 @@ func can_move() -> bool:
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
-			if spot and spot.white == Globals.turn:  # fren
+			if Input.is_action_pressed("ui_down"):
+				breakpoint
+			if spot and spot.white != Globals.team:  # enemie: checking for our enemys
 				if spot.can_move():
 					return true
 	return false
@@ -265,7 +270,7 @@ func check_for_circle(position: Vector2) -> bool:  # check for a circle, validat
 
 
 func check_for_frame(position: Vector2) -> bool:  # check for a frame, validating taking
-	if !matrix[position.y][position.x]:  # if there is no piece
+	if !is_instance_valid(matrix[position.y][position.x]):  # if there is no piece
 		return false  # return false
 	return matrix[position.y][position.x].frameon  # return if the frame is on
 
@@ -273,9 +278,11 @@ func check_for_frame(position: Vector2) -> bool:  # check for a frame, validatin
 func square_clicked(position: Vector2) -> void:  # square clicked
 	if promoting != null:
 		return
+	if Globals.turn != Globals.team:
+		return
 	var spot = matrix[position.y][position.x]  # get the spot
-	if !spot or spot.white != Globals.turn:  # spot is not a tile or spot is not turn color
-		if !is_instance_valid(last_clicked):  # last clicked is null, so this is pointless
+	if !spot or spot.white != Globals.team:
+		if !is_instance_valid(last_clicked):
 			return
 		if check_for_frame(position):  # takeable
 			handle_take(position)
@@ -295,8 +302,8 @@ func handle_take(position) -> void:
 		var pawn = last_clicked
 		if check_promote(pawn, position, "take"):
 			return
-	last_clicked.take(matrix[position.y][position.x])  # eat
 	turn_over()
+	Globals.network.send_move_packet([last_clicked.real_position, position], Network.MOVEHEADERS.take)  # piece taking piece
 
 
 func handle_move(position) -> void:
@@ -304,10 +311,16 @@ func handle_move(position) -> void:
 		for i in range(len(last_clicked.can_castle)):
 			var castle_data = last_clicked.can_castle[i]
 			if castle_data[0] == position:
-				Utils.add_move(last_clicked.castle(castle_data[0]))
-				castle_data[1].override_moveto = true
-				castle_data[1].moveto(castle_data[2])
-				castle_data[1].override_moveto = false
+				# send some packet
+				Globals.network.send_move_packet(
+					{
+						"king": last_clicked.real_position,
+						"rook": castle_data[1].real_position,
+						"rookdestination": castle_data[2],
+						"kingdestination": castle_data[0]
+					},
+					Network.MOVEHEADERS.castle
+				)
 				turn_over()
 				return
 	if last_clicked is Pawn:
@@ -316,14 +329,17 @@ func handle_move(position) -> void:
 			for i in range(len(pawn.enpassant)):
 				var en_passant_data = pawn.enpassant[i]
 				if en_passant_data[0] == position:
-					en_passant_data[1].took()  # kill the unfortunate
-					pawn.passant(en_passant_data[0])
+					# send some packet
+					Globals.network.send_move_packet(
+						[pawn.real_position, position, en_passant_data[1].real_position],
+						Network.MOVEHEADERS.passant
+					)
 					turn_over()
 					return
 		if check_promote(pawn, position):
 			return
-	last_clicked.moveto(position)
 	turn_over()
+	Globals.network.send_move_packet([last_clicked.real_position, position], Network.MOVEHEADERS.move)  # piece moving
 
 
 func check_promote(pawn, position, calltype: String = "move") -> bool:
@@ -336,10 +352,6 @@ func check_promote(pawn, position, calltype: String = "move") -> bool:
 
 func turn_over() -> void:
 	promoting = null
-	Events.emit_signal("just_before_turn_over")
-	Globals.add_turn()
-	Globals.turn = not Globals.turn
-	Events.emit_signal("turn_over")
 
 
 func clear_fx() -> void:  # clear the circles
