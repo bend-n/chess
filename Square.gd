@@ -17,7 +17,7 @@ func _ready() -> void:
 	circle.visible = false
 	areacollisionshape.global_position += Globals.grid.piece_size / 2
 	areacollisionshape.shape.extents = Vector2(rect_size.x / 2, rect_size.y / 2)
-	algebraic_string = Utils.calculate_algebraic_position(real_position)
+	algebraic_string = Utils.to_algebraic(real_position)
 
 
 func _on_Squarea_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:

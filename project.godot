@@ -34,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://pieces/Knight.gd"
 }, {
+"base": "Node",
+"class": "Network",
+"language": "GDScript",
+"path": "res://networking/Network.gd"
+}, {
 "base": "Piece",
 "class": "Pawn",
 "language": "GDScript",
@@ -60,6 +65,7 @@ _global_script_class_icons={
 "Grid": "",
 "King": "res://assets/pieces/california/wK.png",
 "Knight": "res://assets/pieces/california/wN.png",
+"Network": "",
 "Pawn": "res://assets/pieces/california/wP.png",
 "Piece": "res://assets/pieces/california/wP.png",
 "Queen": "res://assets/pieces/california/wQ.png",
@@ -76,6 +82,7 @@ config/custom_user_dir_name="chess"
 boot_splash/image="res://icon.png"
 boot_splash/bg_color=Color( 0.309804, 0.309804, 0.309804, 0.313726 )
 config/icon="res://icon.png"
+config/quit_on_go_back=false
 
 [autoload]
 
