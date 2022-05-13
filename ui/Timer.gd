@@ -15,7 +15,7 @@ func _ready() -> void:
 func _process(delta) -> void:
 	if !enabled:
 		return
-	if Globals.team:
+	if Globals.turn:
 		if !whitelabel.set_time(whitelabel.time - delta):
 			enabled = false
 	else:
