@@ -28,6 +28,7 @@ signal move_data(data)
 signal host_result(result)
 signal join_result(result)
 signal game_over(problem, isok)
+signal connection_established
 
 const url := "wss://gd-chess-server.herokuapp.com/"
 
@@ -51,6 +52,7 @@ func ping() -> void:
 
 
 func _connection_established(_protocol) -> void:
+	emit_signal("connection_established")
 	print("Connection established")
 
 

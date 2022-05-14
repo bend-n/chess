@@ -69,7 +69,13 @@ func _ready() -> void:
 		Globals.network.connect("host_result", self, "_on_host_result")
 		Globals.network.connect("game_over", self, "_handle_game_over")
 		Globals.network.connect("start_game", self, "_start_game")
+		Globals.network.connect("connection_established", self, "network_ready")
 		add_child(Globals.network)
+
+
+func network_ready():
+	for child in buttons.get_children():
+		child.disabled = false
 
 
 func end_game() -> void:
