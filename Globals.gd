@@ -1,7 +1,5 @@
 extends Node
 
-const pieces = "NKQRBP"
-
 var __nosethalfmove = false
 var pawns = []  # PoolPawnArray
 var team = true

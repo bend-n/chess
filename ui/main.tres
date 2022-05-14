@@ -8,7 +8,14 @@
 [ext_resource path="res://assets/ui/checkedbox.png" type="Texture" id=6]
 [ext_resource path="res://ui/flatblack.tres" type="StyleBox" id=7]
 
-[sub_resource type="StyleBoxEmpty" id=2]
+[sub_resource type="StyleBoxTexture" id=6]
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 84, 84 )
+margin_left = 28.0
+margin_right = 28.0
+margin_top = 28.0
+margin_bottom = 28.0
+modulate_color = Color( 0.772549, 0.772549, 0.772549, 0.54902 )
 
 [sub_resource type="StyleBoxEmpty" id=4]
 
@@ -26,10 +33,11 @@ corner_detail = 20
 [resource]
 default_font = ExtResource( 1 )
 Button/colors/font_color = Color( 1, 1, 1, 1 )
+Button/colors/font_color_disabled = Color( 1, 1, 1, 0.305882 )
 Button/colors/font_color_focus = Color( 1, 1, 1, 1 )
 Button/colors/font_color_hover = Color( 0, 0, 0, 1 )
 Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
-Button/styles/disabled = SubResource( 2 )
+Button/styles/disabled = SubResource( 6 )
 Button/styles/focus = ExtResource( 2 )
 Button/styles/hover = ExtResource( 5 )
 Button/styles/normal = ExtResource( 2 )
