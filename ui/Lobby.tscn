@@ -51,6 +51,7 @@ margin_bottom = 106.0
 rect_min_size = Vector2( 150, 0 )
 focus_mode = 0
 size_flags_horizontal = 4
+disabled = true
 enabled_focus_mode = 0
 text = "join"
 
@@ -60,6 +61,7 @@ margin_right = 350.0
 margin_bottom = 106.0
 focus_mode = 0
 size_flags_horizontal = 3
+disabled = true
 enabled_focus_mode = 0
 text = "host"
 

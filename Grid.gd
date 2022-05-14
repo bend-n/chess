@@ -164,6 +164,7 @@ func check_in_check(prin = false) -> bool:  # check if in_check
 			var spot = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
 				if spot.can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
+					# control never flows here
 					if prin:
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
@@ -176,8 +177,6 @@ func can_move() -> bool:
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot = matrix[i][j]  # get the square
-			if Input.is_action_pressed("ui_down"):
-				breakpoint
 			if spot and spot.white != Globals.team:  # enemie: checking for our enemys
 				if spot.can_move():
 					return true
