@@ -123,7 +123,6 @@ __meta__ = {
 }
 
 [node name="BlackTime" type="Label" parent="Holder/Back/VBox"]
-visible = false
 margin_top = 105.0
 margin_right = 400.0
 margin_bottom = 188.0
@@ -147,9 +146,9 @@ color = Color( 0, 0, 0, 1 )
 
 [node name="Status" type="Label" parent="Holder/Back/VBox"]
 visible = false
-margin_top = 259.0
+margin_top = 264.0
 margin_right = 400.0
-margin_bottom = 290.0
+margin_bottom = 295.0
 custom_fonts/font = SubResource( 1 )
 text = "hi there"
 align = 1
@@ -170,10 +169,9 @@ custom_constants/vseparation = 0
 columns = 3
 
 [node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
-visible = false
-margin_top = 421.0
+margin_top = 488.0
 margin_right = 400.0
-margin_bottom = 504.0
+margin_bottom = 571.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -197,9 +195,9 @@ color = Color( 0, 0, 0, 1 )
 script = ExtResource( 5 )
 
 [node name="FENlabel" type="LineEdit" parent="Holder/Back/VBox"]
-margin_top = 488.0
+margin_top = 621.0
 margin_right = 400.0
-margin_bottom = 562.0
+margin_bottom = 695.0
 custom_colors/font_color_uneditable = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 8 )
 text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
