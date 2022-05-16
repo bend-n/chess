@@ -3,3 +3,4 @@ logs/
 *.sh
 *.py
 .vscode/
+exports/
