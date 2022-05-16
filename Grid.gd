@@ -65,7 +65,7 @@ func _exit_tree() -> void:
 
 func _input(event) -> void:  # input
 	if event.is_action_released("debug"):  # if debug
-		print_matrix_pretty()  # print the matrix
+		print_matrix_pretty(matrix)  # print the matrix
 	if event.is_action_released("kill"):
 		if last_clicked and OS.is_debug_build():  # last clicked isnt null and were in debug
 			last_clicked.took()  # kill the piece
@@ -73,7 +73,7 @@ func _input(event) -> void:  # input
 			clear_fx()  # clear the circles
 
 
-static func print_matrix_pretty(mat = matrix) -> void:  # print the matrix
+static func print_matrix_pretty(mat) -> void:  # print the matrix
 	for j in range(8):  # for each row
 		var r: Array = mat[j]  # get the row
 		if j == 0:
@@ -86,7 +86,7 @@ static func print_matrix_pretty(mat = matrix) -> void:  # print the matrix
 			if c:  # if there is a piece
 				row += c.mininame + ender  # add the shortname
 			else:  # if there is no piece
-				row += " " + ender  # add 00
+				row += " " + ender
 		print(row)  # print the string
 	print("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
 
@@ -285,7 +285,7 @@ func square_clicked(position: Vector2) -> void:  # square clicked
 			return
 		if check_for_frame(position):  # takeable
 			handle_take(position)
-		if check_for_circle(position):  # see if theres a circle at the position
+		elif check_for_circle(position):  # see if theres a circle at the position
 			handle_move(position)  # move
 		last_clicked.clear_clicked()  # remove the circles
 		last_clicked = null  # set it to null
@@ -301,8 +301,7 @@ func handle_take(position) -> void:
 		var pawn = last_clicked
 		if check_promote(pawn, position, "take"):
 			return
-	turn_over()
-	Globals.network.send_move_packet([last_clicked.real_position, position], Network.MOVEHEADERS.take)  # piece taking piece
+	Globals.network.send_move_packet([last_clicked.real_position, position], Network.MOVEHEADERS.move)  # piece taking piece
 
 
 func handle_move(position) -> void:
@@ -320,7 +319,7 @@ func handle_move(position) -> void:
 					},
 					Network.MOVEHEADERS.castle
 				)
-				turn_over()
+
 				return
 	if last_clicked is Pawn:
 		var pawn = last_clicked
@@ -333,11 +332,9 @@ func handle_move(position) -> void:
 						[pawn.real_position, position, en_passant_data[1].real_position],
 						Network.MOVEHEADERS.passant
 					)
-					turn_over()
 					return
 		if check_promote(pawn, position):
 			return
-	turn_over()
 	Globals.network.send_move_packet([last_clicked.real_position, position], Network.MOVEHEADERS.move)  # piece moving
 
 
@@ -347,10 +344,6 @@ func check_promote(pawn, position, calltype: String = "move") -> bool:
 		promoting = position
 		return true
 	return false
-
-
-func turn_over() -> void:
-	promoting = null
 
 
 func clear_fx() -> void:  # clear the circles

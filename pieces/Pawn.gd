@@ -9,7 +9,6 @@ var enpassant := []
 
 var promoteposition := Vector2()
 var promotetake := false
-var promote_prev_pos := Vector2()
 
 onready var whiteint := 1 if white else -1
 onready var sprites := []
@@ -40,13 +39,14 @@ func _exit_tree() -> void:
 
 func moveto(position, real = true, take = false, override_moveto = false) -> void:
 	# check if 2 step
-	if real and !twostepfirstmove and !has_moved:
-		if white and real_position.y - position.y == 2:
-			twostepfirstmove = true
-			just_set = true
-		if !white and position.y - real_position.y == 2:
-			twostepfirstmove = true
-			just_set = true
+	if real:
+		if !twostepfirstmove and !has_moved:
+			if white and real_position.y - position.y == 2:
+				twostepfirstmove = true
+				just_set = true
+			if !white and position.y - real_position.y == 2:
+				twostepfirstmove = true
+				just_set = true
 	.moveto(position, real, take, override_moveto)
 	if real:
 		Globals.reset_halfmove()
@@ -121,12 +121,9 @@ func en_passant(turncheck = true) -> Array:  # in passing
 
 
 func promote(position, type) -> void:
-	promote_prev_pos = real_position
 	if type == "take":
-		take(at_pos(position), true)
-		promotetake = true
-	else:
-		moveto(position, true, false, true)  # dont add the algebraic position
+		at_pos(position).hide()
+	move(position)  # only move the visuals
 	promoteposition = position
 	darken.show()
 	for i in range(len(promotables)):
@@ -134,29 +131,29 @@ func promote(position, type) -> void:
 		sprites[i].show()
 
 
-func take(piece: Piece, overridemoveto = false) -> void:
-	clear_clicked()
-	piece.took()
-	moveto(piece.real_position, true, true, overridemoveto)
-	Globals.reset_halfmove()
-
-
 func handle_sprite_input_event(node) -> void:
 	darken.hide()
-	var script = piece(promotables[sprites.find(node)][0])
+	var promote_to = promotables[sprites.find(node)][0]
 	var first = (
 		algebraic_move_notation(promoteposition)
 		if !promotetake
-		else algebraic_take_notation(promoteposition, promote_prev_pos)
+		else algebraic_take_notation(promoteposition, real_position)
 	)
-	Utils.add_move("%s=%s" % [first, promotables[sprites.find(node)][0]])
-	Globals.grid.make_piece(real_position, script, white)
-	Globals.grid.turn_over()
-	clear_clicked()
-	queue_free()
+	var notation = "%s=%s" % [first, promote_to]
+	Globals.grid.promoting = null
+	Globals.network.send_move_packet(
+		{
+			"start_position": real_position,
+			"destination": promoteposition,
+			"become": promote_to,
+			"notation": notation,
+			"white": white
+		},
+		Network.MOVEHEADERS.promote
+	)
 
 
-func piece(string) -> String:
+static func piece(string) -> String:
 	match string:
 		"Q":
 			return "res://pieces/Queen.gd"

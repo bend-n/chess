@@ -133,23 +133,34 @@ func _on_data(data: Dictionary) -> void:
 	match data["movetype"]:
 		Network.MOVEHEADERS.passant:
 			# en passant
-			var end_pos = Vector2(dict2vec(data["positions"][1]))
-			var start_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][0])))
-			Piece.at_pos(Vector2(dict2vec(data["positions"][2]))).took()  # kill the unfortunate
+			var end_pos = dict2vec(data["positions"][1])
+			var start_piece = Piece.at_pos(dict2vec(data["positions"][0]))
+			Piece.at_pos(dict2vec(data["positions"][2])).took()  # kill the unfortunate
 			start_piece.passant(end_pos)
-		Network.MOVEHEADERS.take:
-			var start_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][0])))
-			var end_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][1])))
-			start_piece.take(end_piece)
 		Network.MOVEHEADERS.move:
-			var end_pos = Vector2(dict2vec(data["positions"][1]))
-			var start_piece = Piece.at_pos(Vector2(dict2vec(data["positions"][0])))
-			start_piece.moveto(end_pos)
+			var start_piece = Piece.at_pos(dict2vec(data["positions"][0]))
+			var end_pos = dict2vec(data["positions"][1])
+			var end_piece = Piece.at_pos(end_pos)
+			if end_piece != null:
+				start_piece.take(end_piece)
+			else:
+				start_piece.moveto(end_pos)
 		Network.MOVEHEADERS.castle:
 			var king = Piece.at_pos(dict2vec(data["positions"]["king"]))
 			var rook = Piece.at_pos(dict2vec(data["positions"]["rook"]))
 			rook.moveto(dict2vec(data["positions"]["rookdestination"]), true, false, true)
 			Utils.add_move(king.castle(dict2vec(data["positions"]["kingdestination"])))
+		Network.MOVEHEADERS.promote:
+			var dict_data = data["positions"]  # positions is a dict for readability sometimes
+			var pawn = Piece.at_pos(dict2vec(dict_data["start_position"]))
+			var dest = dict2vec(dict_data["destination"])
+			if Piece.at_pos(dest) != null:
+				Piece.at_pos(dest).took()  # move the pawn to the new place, killing if necessary
+				pawn.clear_clicked()
+			Globals.grid.make_piece(dest, Pawn.piece(dict_data["become"]), dict_data["white"])  # create the promotion
+			pawn.took()  # kill the pawn
+			Utils.add_move(dict_data["notation"])  # add a move
+			Globals.grid.print_matrix_pretty(Globals.grid.matrix)
 
 
 func dict2vec(dict: Dictionary) -> Vector2:
