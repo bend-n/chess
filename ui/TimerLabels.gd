@@ -28,7 +28,7 @@ func _ready() -> void:
 	set_time(TIME)
 	set_color()
 	colorrect.show_behind_parent = true
-	Events.connect("turn_over", self, "set_color")
+	Events.connect("data_recieved", self, "set_color")
 	Events.connect("game_over", self, "_on_game_over")
 
 
