@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  export_game:
+    permissions: write-all # can be read-all, write-all, or read-write
+    # Always use ubuntu-latest for this action
+    runs-on: ubuntu-latest
+    name: export
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2.3.1
+        with: # Ensure that you get the entire project history
+          fetch-depth: 0
+
+      - name: export game
+        uses: firebelley/godot-export@v3.0.0
+        with:
+          # Defining all the required inputs
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5/beta5/Godot_v3.5-beta5_linux_headless.64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5/beta5/Godot_v3.5-beta5_export_templates.tpz
+          relative_project_path: ./
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
