@@ -1,6 +1,6 @@
 extends Control
 
-onready var piece_sets: Array = Utils.walk_dir()
+onready var piece_sets := Utils.walk_dir()
 onready var piece_set_button := $ColorRect/HBoxContainer/VBoxContainer/PieceSet
 onready var fullscreenbutton := $ColorRect/HBoxContainer/VBoxContainer2/FullscreenButton
 onready var vsyncbutton := $ColorRect/HBoxContainer/VBoxContainer2/VsyncButton
@@ -24,13 +24,14 @@ func toggle_button_visuals(set = settings) -> void:
 	vsyncbutton.pressed = set["vsync"]
 	fullscreenbutton.pressed = set["fullscreen"]
 	borderlessbutton.pressed = !set["borderless"]
+	piece_set_button.selected = Array(piece_sets).find(settings.piece_set)
 
 
 func _ready() -> void:
-	toggle_button_visuals()
-	for i in piece_sets:
+	for i in piece_sets:  # add the items
 		piece_set_button.add_icon_item(load("res://assets/pieces/" + i + "/wP.png"), i)
-	piece_set_button.selected = piece_sets.find(settings.piece_set)
+	toggle_button_visuals()
+	Globals.piece_set = piece_sets[piece_set_button.selected]
 
 
 func _input(event) -> void:
