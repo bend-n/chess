@@ -129,6 +129,7 @@ func _on_data(data: Dictionary) -> void:
 	Globals.fullmove = data["fullmove"]
 	Globals.turn = data["turn"]
 	Globals.halfmove = data["halfmove"]
+	Events.emit_signal("data_recieved")
 	match data["movetype"]:
 		Network.MOVEHEADERS.passant:
 			# en passant
