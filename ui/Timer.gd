@@ -10,6 +10,10 @@ onready var blacklabel := $"../BlackTime"
 
 func _ready() -> void:
 	Events.connect("turn_over", self, "turn_over")
+	# disable, because they work wierdly with laggy and stuff
+	whitelabel.hide()  # disable
+	blacklabel.hide()  # disable
+	set_process(false)  # disable
 
 
 func _process(delta) -> void:
