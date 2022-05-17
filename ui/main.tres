@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=12 format=2]
+[gd_resource type="Theme" load_steps=15 format=2]
 
 [ext_resource path="res://ui/verdana.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/button.tres" type="StyleBox" id=2]
@@ -16,6 +16,12 @@ margin_right = 28.0
 margin_top = 28.0
 margin_bottom = 28.0
 modulate_color = Color( 0.772549, 0.772549, 0.772549, 0.54902 )
+
+[sub_resource type="StyleBoxEmpty" id=7]
+
+[sub_resource type="StyleBoxEmpty" id=8]
+
+[sub_resource type="StyleBoxEmpty" id=9]
 
 [sub_resource type="StyleBoxEmpty" id=4]
 
@@ -50,7 +56,20 @@ CheckBox/icons/radio_unchecked = null
 CheckBox/icons/radio_unchecked_disabled = null
 CheckBox/icons/unchecked = ExtResource( 4 )
 CheckBox/icons/unchecked_disabled = null
+ColorPicker/icons/color_sample = ExtResource( 3 )
+ColorPicker/icons/overbright_indicator = ExtResource( 3 )
+ColorPicker/icons/preset_bg = ExtResource( 3 )
+ColorPicker/icons/screen_picker = ExtResource( 3 )
+ColorPickerButton/colors/font_color = Color( 1, 1, 1, 1 )
+ColorPickerButton/colors/font_color_disabled = Color( 1, 1, 1, 0.301961 )
+ColorPickerButton/colors/font_color_focus = Color( 1, 1, 1, 1 )
+ColorPickerButton/colors/font_color_hover = Color( 1, 1, 1, 1 )
+ColorPickerButton/colors/font_color_pressed = Color( 0.913725, 0.913725, 0.913725, 1 )
+ColorPickerButton/icons/bg = ExtResource( 3 )
 HBoxContainer/constants/separation = 15
+HSlider/styles/grabber_area = SubResource( 7 )
+HSlider/styles/grabber_area_highlight = SubResource( 8 )
+HSlider/styles/slider = SubResource( 9 )
 ItemList/colors/font_color = Color( 1, 1, 1, 1 )
 ItemList/colors/font_color_selected = Color( 0.905882, 0.905882, 0.905882, 1 )
 ItemList/styles/bg = SubResource( 4 )
@@ -74,5 +93,6 @@ PopupMenu/icons/radio_checked = ExtResource( 3 )
 PopupMenu/icons/radio_unchecked = ExtResource( 3 )
 PopupMenu/styles/hover = SubResource( 3 )
 PopupMenu/styles/panel = ExtResource( 7 )
+SpinBox/icons/updown = ExtResource( 3 )
 VBoxContainer/constants/separation = 15
 VScrollBar/styles/scroll = SubResource( 5 )
