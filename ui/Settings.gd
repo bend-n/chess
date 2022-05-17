@@ -28,11 +28,12 @@ func update_button_visuals(set = settings) -> void:
 	vsyncbutton.pressed = set["vsync"]
 	fullscreenbutton.pressed = set["fullscreen"]
 	borderlessbutton.pressed = !set["borderless"]
-	preview.update_preview()
+	board_color1.color = set["board_color1"]
+	board_color2.color = set["board_color2"]
+	preview.update_preview(set["board_color1"], set["board_color2"], set["piece_set"])
 
 
 func _ready() -> void:
-	SaveLoad.load_data("settings")
 	board_color1.color = settings.board_color1
 	board_color2.color = settings.board_color2
 	for i in piece_sets:  # add the items
