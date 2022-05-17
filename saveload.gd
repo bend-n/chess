@@ -15,6 +15,10 @@ const default_settings_data = {
 var files := {"settings": {"file": settings_file, "data": default_settings_data.duplicate(true)}}  # file types
 
 
+func _ready():
+	SaveLoad.load_data("settings")
+
+
 func save(type) -> void:
 	var file = File.new()
 	file.open(files[type]["file"], File.WRITE)
