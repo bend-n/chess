@@ -62,11 +62,6 @@ func _exit_tree() -> void:
 func _input(event) -> void:  # input
 	if event.is_action_released("debug"):  # if debug
 		print_matrix_pretty(matrix)  # print the matrix
-	if event.is_action_released("kill"):
-		if last_clicked and OS.is_debug_build():  # last clicked isnt null and were in debug
-			last_clicked.took()  # kill the piece
-			last_clicked = null
-			clear_fx()  # clear the circles
 
 
 static func print_matrix_pretty(mat) -> void:  # print the matrix
