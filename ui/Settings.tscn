@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/Settings.gd" type="Script" id=2]
 [ext_resource path="res://assets/pieces/california/wP.png" type="Texture" id=3]
+[ext_resource path="res://ui/Preview.gd" type="Script" id=4]
+[ext_resource path="res://ui/ColorPickerButton.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ui/ColorPickerButton.gd" type="Script" id=6]
 
 [node name="Settings" type="Control" groups=["control"]]
 anchor_right = 1.0
@@ -21,30 +24,84 @@ anchor_bottom = 1.0
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/HBoxContainer" groups=["control"]]
-margin_left = 225.0
-margin_right = 591.0
+margin_left = 54.0
+margin_right = 420.0
 margin_bottom = 800.0
 alignment = 1
 
 [node name="BackButton" type="Button" parent="ColorRect/HBoxContainer/VBoxContainer" groups=["control"]]
-margin_top = 261.0
+margin_top = 121.0
 margin_right = 366.0
-margin_bottom = 367.0
+margin_bottom = 227.0
 text = "back"
 
 [node name="PieceSet" type="OptionButton" parent="ColorRect/HBoxContainer/VBoxContainer" groups=["control"]]
-margin_top = 382.0
+margin_top = 242.0
 margin_right = 366.0
-margin_bottom = 538.0
+margin_bottom = 398.0
 focus_mode = 0
 custom_constants/hseparation = 3
 enabled_focus_mode = 0
 text = "piece set"
 icon = ExtResource( 3 )
 
+[node name="PreviewLabel" type="Label" parent="ColorRect/HBoxContainer/VBoxContainer"]
+margin_top = 413.0
+margin_right = 366.0
+margin_bottom = 463.0
+text = "Preview"
+align = 1
+
+[node name="Preview" type="GridContainer" parent="ColorRect/HBoxContainer/VBoxContainer"]
+margin_left = 83.0
+margin_top = 478.0
+margin_right = 283.0
+margin_bottom = 678.0
+size_flags_horizontal = 4
+custom_constants/vseparation = 0
+custom_constants/hseparation = 0
+columns = 2
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="00" type="ColorRect" parent="ColorRect/HBoxContainer/VBoxContainer/Preview"]
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+
+[node name="Piece" type="TextureRect" parent="ColorRect/HBoxContainer/VBoxContainer/Preview/00"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 1
+
+[node name="10" type="ColorRect" parent="ColorRect/HBoxContainer/VBoxContainer/Preview"]
+margin_left = 100.0
+margin_right = 200.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+color = Color( 0, 0, 0, 1 )
+
+[node name="01" type="ColorRect" parent="ColorRect/HBoxContainer/VBoxContainer/Preview"]
+margin_top = 100.0
+margin_right = 100.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 100, 100 )
+color = Color( 0, 0, 0, 1 )
+
+[node name="11" type="ColorRect" parent="ColorRect/HBoxContainer/VBoxContainer/Preview"]
+margin_left = 100.0
+margin_top = 100.0
+margin_right = 200.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 100, 100 )
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="ColorRect/HBoxContainer" groups=["control"]]
-margin_left = 606.0
-margin_right = 975.0
+margin_left = 435.0
+margin_right = 804.0
 margin_bottom = 800.0
 alignment = 1
 
@@ -73,8 +130,38 @@ focus_mode = 0
 enabled_focus_mode = 0
 text = "borders"
 
+[node name="VBoxContainer3" type="VBoxContainer" parent="ColorRect/HBoxContainer"]
+margin_left = 819.0
+margin_right = 1145.0
+margin_bottom = 800.0
+alignment = 1
+
+[node name="resetbutton" type="Button" parent="ColorRect/HBoxContainer/VBoxContainer3"]
+margin_top = 226.0
+margin_right = 326.0
+margin_bottom = 332.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "reset all"
+
+[node name="boardcolor1" parent="ColorRect/HBoxContainer/VBoxContainer3" instance=ExtResource( 5 )]
+margin_top = 347.0
+margin_right = 326.0
+margin_bottom = 453.0
+text = "boardcolor1"
+script = ExtResource( 6 )
+
+[node name="boardcolor2" parent="ColorRect/HBoxContainer/VBoxContainer3" instance=ExtResource( 5 )]
+margin_top = 468.0
+margin_right = 326.0
+margin_bottom = 574.0
+text = "boardcolor2"
+
 [connection signal="pressed" from="ColorRect/HBoxContainer/VBoxContainer/BackButton" to="." method="_on_BackButton_pressed"]
 [connection signal="item_selected" from="ColorRect/HBoxContainer/VBoxContainer/PieceSet" to="." method="_on_PieceSet_item_selected"]
 [connection signal="toggled" from="ColorRect/HBoxContainer/VBoxContainer2/VsyncButton" to="." method="_on_VsyncButton_toggled"]
 [connection signal="toggled" from="ColorRect/HBoxContainer/VBoxContainer2/FullscreenButton" to="." method="_on_FullscreenButton_toggled"]
 [connection signal="toggled" from="ColorRect/HBoxContainer/VBoxContainer2/Borderless" to="." method="_on_Borderless_toggled"]
+[connection signal="pressed" from="ColorRect/HBoxContainer/VBoxContainer3/resetbutton" to="." method="_on_resetbutton_pressed"]
+[connection signal="newcolor" from="ColorRect/HBoxContainer/VBoxContainer3/boardcolor1" to="." method="_on_boardcolor1_newcolor"]
+[connection signal="newcolor" from="ColorRect/HBoxContainer/VBoxContainer3/boardcolor2" to="." method="_on_boardcolor2_newcolor"]

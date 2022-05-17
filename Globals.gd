@@ -10,6 +10,8 @@ var fullmove := 1
 var halfmove := 0
 var in_check := false
 var checking_piece: Piece = null
+var board_color1: Color
+var board_color2: Color
 var white_king: King
 var black_king: King
 var turn := true  # true for white, false for black
