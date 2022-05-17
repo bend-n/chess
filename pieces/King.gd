@@ -62,10 +62,12 @@ func castleing(justcheckrooks = false) -> Array:
 		var direction: Vector2 = king_moveto_spots[i]
 		var posx2: Vector2 = pos_around(direction * 2)
 		var pos: Vector2 = pos_around(direction)
-		if at_pos(posx2) or at_pos(pos):
+		if at_pos(posx2) or at_pos(pos) or checkcheck(posx2) or checkcheck(pos):
 			continue
-		if checkcheck(posx2) or checkcheck(pos):
-			continue
+		if i == 1:  # 3x check for O-O-O
+			var posx3 := pos_around(direction * 3)
+			if at_pos(posx3) or checkcheck(posx3):
+				continue
 		can_castle.append([posx2, rook, rook_motion[i], "O-O-O" if i == 1 else "O-O"])
 		moves.append(posx2)
 	return moves
