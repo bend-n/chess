@@ -24,8 +24,6 @@ const default_metadata := {
 	"bcep": [],  # black can enpassant
 }
 
-export(Color) var board_color1 := Color(0.870588, 0.890196, 0.901961)
-export(Color) var board_color2 := Color(0.54902, 0.635294, 0.678431)
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
 
 export(Color) var clockrunning_color := Color(0.219608, 0.278431, 0.133333)
@@ -38,10 +36,8 @@ var background_matrix := []
 var history_matrixes := {}
 var last_clicked: Piece = null
 
-onready var PIECE_SET: String = Globals.piece_set
-
 onready var background := $Background
-onready var ASSETS_PATH := "res://assets/pieces/%s/" % PIECE_SET
+onready var ASSETS_PATH: String = "res://assets/pieces/%s/" % Globals.piece_set
 onready var foreground := $Foreground
 onready var pieces := $Pieces
 onready var status_label := $"../UI/Holder/Back/VBox/Status"
@@ -116,7 +112,9 @@ func init_labels() -> void:
 
 func size_label(label, i) -> void:
 	label.rect_size = piece_size
-	label.get_node("Label").add_color_override("font_color", board_color1 if i % 2 == 0 else board_color2)
+	label.get_node("Label").add_color_override(
+		"font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2
+	)
 
 
 func threefoldrepetition() -> bool:
@@ -209,7 +207,7 @@ func init_board() -> void:  # create the board
 			var square := Square.instance()  # create a square
 			square.rect_size = piece_size  # set the size
 			square.rect_position = Vector2(i, j) * piece_size  # set the position
-			square.color = board_color1 if (i + j) % 2 == 0 else board_color2  # set the color
+			square.color = Globals.board_color1 if (i + j) % 2 == 0 else Globals.board_color2  # set the color
 			square.real_position = Vector2(i, j)  # set the real position
 			background.add_child(square)  # add the square to the background
 			square.connect("clicked", self, "square_clicked")  # connect the clicked event

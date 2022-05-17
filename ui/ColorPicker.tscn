@@ -1,0 +1,96 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://ui/ColorPicker.gd" type="Script" id=1]
+[ext_resource path="res://ui/ColorPicker.tres" type="Theme" id=2]
+[ext_resource path="res://assets/ui/Roboto-Medium.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://ui/smallbuttonhover.tres" type="StyleBox" id=4]
+[ext_resource path="res://ui/smallbutton.tres" type="StyleBox" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 20
+font_data = ExtResource( 3 )
+
+[node name="ColorPicker" type="Control"]
+margin_right = 202.0
+margin_bottom = 238.0
+theme = ExtResource( 2 )
+script = ExtResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_left = -12.0
+margin_top = -12.0
+margin_right = 202.0
+margin_bottom = 240.0
+
+[node name="H" type="HBoxContainer" parent="Panel"]
+margin_left = 12.0
+margin_top = 12.0
+margin_right = 209.0
+margin_bottom = 180.0
+custom_constants/separation = 8
+
+[node name="Preview" type="ColorRect" parent="Panel/H"]
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="rgb" type="VBoxContainer" parent="Panel/H"]
+margin_left = 108.0
+margin_right = 197.0
+margin_bottom = 168.0
+custom_constants/separation = 6
+
+[node name="r" type="SpinBox" parent="Panel/H/rgb"]
+margin_right = 89.0
+margin_bottom = 52.0
+max_value = 255.0
+rounded = true
+
+[node name="g" type="SpinBox" parent="Panel/H/rgb"]
+margin_top = 58.0
+margin_right = 89.0
+margin_bottom = 110.0
+max_value = 255.0
+rounded = true
+
+[node name="b" type="SpinBox" parent="Panel/H/rgb"]
+margin_top = 116.0
+margin_right = 89.0
+margin_bottom = 168.0
+max_value = 255.0
+rounded = true
+
+[node name="hex" type="LineEdit" parent="Panel"]
+margin_left = 6.0
+margin_top = 124.0
+margin_right = 114.0
+margin_bottom = 176.0
+max_length = 7
+placeholder_text = "#FFFFFF"
+caret_blink = true
+
+[node name="OKButton" type="Button" parent="Panel"]
+margin_left = 20.0
+margin_top = 186.0
+margin_right = 200.0
+margin_bottom = 238.0
+focus_mode = 0
+custom_colors/font_color_focus = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_hover = Color( 0, 0, 0, 1 )
+custom_colors/font_color_pressed = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
+custom_styles/hover = ExtResource( 4 )
+custom_styles/pressed = ExtResource( 4 )
+custom_styles/focus = ExtResource( 4 )
+custom_styles/normal = ExtResource( 5 )
+enabled_focus_mode = 0
+text = "OK"
+
+[connection signal="value_changed" from="Panel/H/rgb/r" to="." method="update_r"]
+[connection signal="value_changed" from="Panel/H/rgb/g" to="." method="update_g"]
+[connection signal="value_changed" from="Panel/H/rgb/b" to="." method="update_b"]
+[connection signal="text_entered" from="Panel/hex" to="." method="_on_hex_text_entered"]
+[connection signal="pressed" from="Panel/OKButton" to="." method="_on_OKButton_pressed"]
