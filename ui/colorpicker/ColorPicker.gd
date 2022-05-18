@@ -12,20 +12,24 @@ onready var hex = $Panel/V/hex
 onready var colorselect = $Panel/V/H/ColorSelect
 onready var hueslider = $Panel/V/H/HueSlider
 
+
 func open():
 	oldcolorview.color = color
 	update_color()
 	show()
 
+
 func _ready():
 	if has_node("/root/ColorPicker"):
-		open() # for testing
+		open()  # for testing
+
 
 func update_color():
 	newcolorpreview.color = color
 	hex.color = color
 	colorselect.color = color
 	hueslider.hue = color.h
+
 
 func set_color(newcolor):
 	color = newcolor

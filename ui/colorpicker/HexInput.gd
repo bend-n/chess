@@ -5,6 +5,7 @@ var color: Color setget set_color
 
 signal color_changed(color)
 
+
 func set_color(newcolor):
 	color = newcolor
 	var pos = caret_position

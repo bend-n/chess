@@ -59,6 +59,7 @@ margin_left = 25.0
 margin_right = 125.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 100, 100 )
+hint_tooltip = "click it!"
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource( 7 )
@@ -128,7 +129,11 @@ margin_bottom = 244.0
 
 [connection signal="gui_input" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="_gui_input"]
 [connection signal="hue_changed" from="Panel/V/H/HueSlider" to="Panel/V/H/ColorSelect" method="apply_hue"]
+[connection signal="mouse_entered" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="set_focused" binds= [ true ]]
+[connection signal="mouse_exited" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="set_focused" binds= [ false ]]
 [connection signal="color_changed" from="Panel/V/H/ColorSelect" to="." method="_color_changed"]
+[connection signal="mouse_entered" from="Panel/V/H/ColorSelect" to="Panel/V/H/ColorSelect" method="set_focused" binds= [ true ]]
+[connection signal="mouse_exited" from="Panel/V/H/ColorSelect" to="Panel/V/H/ColorSelect" method="set_focused" binds= [ false ]]
 [connection signal="color_changed" from="Panel/V/H2/OldColorView" to="." method="_color_changed"]
 [connection signal="gui_input" from="Panel/V/H2/OldColorView" to="Panel/V/H2/OldColorView" method="_gui_input"]
 [connection signal="color_changed" from="Panel/V/hex" to="." method="_color_changed"]
