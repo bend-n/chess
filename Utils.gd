@@ -25,6 +25,10 @@ func add_move(move) -> void:
 	emit_signal("newmove", move)
 
 
+func flip_int(i: int) -> int:
+	return int(abs(7 - i))
+
+
 func reset_vars() -> void:
 	turn_moves.resize(0)
 	turns_moves.resize(0)

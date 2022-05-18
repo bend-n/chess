@@ -25,7 +25,6 @@ const default_metadata := {
 }
 
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
-
 export(Color) var clockrunning_color := Color(0.219608, 0.278431, 0.133333)
 export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
 export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
@@ -35,6 +34,9 @@ var promoting = null
 var background_matrix := []
 var history_matrixes := {}
 var last_clicked: Piece = null
+var flipped = false
+
+var labels = {"letters": [], "numbers": []}
 
 onready var background := $Background
 onready var ASSETS_PATH: String = "res://assets/pieces/%s/" % Globals.piece_set
@@ -89,27 +91,60 @@ func reload_sprites() -> void:
 				matrix[i][j].load_texture()
 
 
+func rotate_pieces(degree: float) -> void:
+	for i in range(8):
+		for j in range(8):
+			var spot = matrix[i][j]
+			if spot:
+				spot.sprite.rotation_degrees = degree
+				# spot.tween.interpolate_property(
+				# 	spot.sprite, "rotation_degrees", spot.sprite.rotation_degrees, degree, .5
+				# )
+				# spot.tween.start()
+
+
+func flip_labels(to_flip: bool) -> void:
+	for i in range(8):
+		var numlabel = labels.numbers[i].get_node("Label")
+		var letlabel = labels.letters[i].get_node("Label")
+		var number: int
+		if to_flip:
+			number = i + 1
+		else:
+			number = 8 - i
+		numlabel.text = str(number)
+		letlabel.text = "hgfedcba"[number - 1]
+
+
+func flip_board():
+	if global_position == Vector2(800, 800):
+		global_position = Vector2(0, 0)
+		rotation_degrees = 0
+		rotate_pieces(0)
+		flip_labels(false)
+	else:
+		global_position = Vector2(800, 800)
+		rotation_degrees = 180
+		rotate_pieces(180)
+		flip_labels(true)
+
+
 func init_labels() -> void:
 	for i in range(8):
-		var letterslabel := BottomLeftLabel.instance()
-		letterslabel.rect_position.x = i * piece_size.x
-		letterslabel.rect_position.y = piece_size.y * 7
-		size_label(letterslabel, i)
-		letterslabel.get_node("Label").text = Utils.to_algebraic(letterslabel.rect_position / piece_size)[0]
-		foreground.add_child(letterslabel)
-		var numberslabel := TopRightLabel.instance()
-		numberslabel.rect_position.y = i * piece_size.x
-		numberslabel.rect_position.x = piece_size.x * 7
-		size_label(numberslabel, i)
-		numberslabel.get_node("Label").text = str(8 - i)
-		foreground.add_child(numberslabel)
+		labels.letters.append(init_label(BottomLeftLabel, i, Vector2(i, 7), "abcdefgh"[i]))
+
+		labels.numbers.append(init_label(TopRightLabel, i, Vector2(7, i), str(8 - i)))
 
 
-func size_label(label, i) -> void:
-	label.rect_size = piece_size
-	label.get_node("Label").add_color_override(
-		"font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2
-	)
+func init_label(labelscene: PackedScene, i: int, position: Vector2, text: String) -> Control:
+	var labelholder = labelscene.instance()
+	labelholder.rect_size = piece_size
+	labelholder.rect_position = position * piece_size
+	var label = labelholder.get_node("Label")
+	label.text = text
+	label.add_color_override("font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2)
+	foreground.add_child(labelholder)
+	return labelholder
 
 
 func threefoldrepetition() -> bool:
@@ -201,7 +236,7 @@ func init_board() -> void:  # create the board
 		for j in range(8):  # for each column
 			var square := Square.instance()  # create a square
 			square.rect_size = piece_size  # set the size
-			square.rect_position = Vector2(i, j) * piece_size  # set the position
+			square.rect_global_position = Vector2(i, j) * piece_size  # set the position
 			square.color = Globals.board_color1 if (i + j) % 2 == 0 else Globals.board_color2  # set the color
 			square.real_position = Vector2(i, j)  # set the real position
 			background.add_child(square)  # add the square to the background
@@ -268,6 +303,7 @@ func check_for_frame(position: Vector2) -> bool:  # check for a frame, validatin
 
 
 func square_clicked(position: Vector2) -> void:  # square clicked
+	print(Utils.to_algebraic(position), " clicked")
 	if promoting != null:
 		return
 	if Globals.turn != Globals.team:
@@ -290,11 +326,13 @@ func square_clicked(position: Vector2) -> void:  # square clicked
 
 
 func handle_take(position) -> void:
-	if last_clicked is Pawn:
+	if Utils.is_pawn(last_clicked):  # if its a pawn
 		var pawn = last_clicked
 		if check_promote(pawn, position, "take"):
 			return
-	Globals.network.send_move_packet([last_clicked.real_position, position], Network.MOVEHEADERS.move)  # piece taking piece
+	Globals.network.send_move_packet(
+		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move
+	)  # piece taking piece
 
 
 func handle_move(position) -> void:
@@ -322,13 +360,15 @@ func handle_move(position) -> void:
 				if en_passant_data[0] == position:
 					# send some packet
 					Globals.network.send_move_packet(
-						[pawn.real_position, position, en_passant_data[1].real_position],
+						PoolVector2Array([pawn.real_position, position, en_passant_data[1].real_position]),
 						Network.MOVEHEADERS.passant
 					)
 					return
 		if check_promote(pawn, position):
 			return
-	Globals.network.send_move_packet([last_clicked.real_position, position], Network.MOVEHEADERS.move)  # piece moving
+	Globals.network.send_move_packet(
+		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move
+	)  # piece moving
 
 
 func check_promote(pawn, position, calltype: String = "move") -> bool:
