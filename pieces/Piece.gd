@@ -79,7 +79,16 @@ func moveto(position, real := true, take := false, override_moveto = false) -> v
 				Utils.add_move(algebraic_take_notation(position))
 		real_position = position
 		move(real_position)
-		print("%s moving from %s to %s" % [mininame + shortname + " white" if white else " black", Utils.to_algebraic(global_position / Globals.grid.piece_size), Utils.to_algebraic(real_position)])
+		print(
+			(
+				"%s moving from %s to %s"
+				% [
+					mininame + shortname + " white" if white else " black",
+					Utils.to_algebraic(global_position / Globals.grid.piece_size),
+					Utils.to_algebraic(real_position)
+				]
+			)
+		)
 		SoundFx.play("Move")
 		has_moved = true
 
