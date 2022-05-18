@@ -126,6 +126,7 @@ func add_turn() -> void:
 
 
 func _on_data(data: Dictionary) -> void:
+	print(data, " recieved")
 	Globals.fullmove = data["fullmove"]
 	Globals.turn = data["turn"]
 	Globals.halfmove = data["halfmove"]
