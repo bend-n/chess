@@ -21,7 +21,7 @@ func _ready() -> void:
 	Events.connect("just_before_turn_over", self, "_just_before_turn_over")
 	sprite.position = Globals.grid.piece_size / 2
 	for i in range(0, 4):  # add 3 sprites
-		var newsprite = load("res://ClickableSprite.tscn").instance()
+		var newsprite = load("res://ui/ClickableSprite.tscn").instance()
 		newsprite.position = (sprite.position + Vector2(0, (i * Globals.grid.piece_size.y) * whiteint))
 		newsprite.name = "Sprite%s" % str(i)
 		newsprite.connect("clicked", self, "handle_sprite_input_event")

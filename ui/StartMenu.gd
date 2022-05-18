@@ -1,6 +1,6 @@
 extends Control
 
-const world = preload("res://World.tscn")
+const world = preload("res://Board.tscn")
 
 export(float) var timer_length := 0.0
 

@@ -3,7 +3,7 @@
 [ext_resource path="res://Grid.gd" type="Script" id=1]
 [ext_resource path="res://ui/GameUI.tscn" type="PackedScene" id=2]
 
-[node name="World" type="Node2D"]
+[node name="Board" type="Node2D"]
 
 [node name="Grid" type="Node2D" parent="."]
 script = ExtResource( 1 )

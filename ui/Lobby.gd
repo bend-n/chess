@@ -16,7 +16,7 @@ func toggle(onoff) -> void:
 			i.mouse_filter = MOUSE_FILTER_IGNORE
 
 
-func _handle_game_over(error, isok) -> void:
+func _handle_game_over(error = "game over", isok = true) -> void:
 	reset_buttons()
 	Globals.reset_vars()
 	end_game()
@@ -61,7 +61,7 @@ func validate_text(text = address.get_text()) -> String:
 
 func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
-	Events.connect("go_back", self, "end_game")
+	Events.connect("go_back", self, "_handle_game_over")
 	if !is_instance_valid(Globals.network):
 		Globals.network = Network.new()
 		Globals.network.connect("move_data", self, "_on_data")
@@ -79,14 +79,14 @@ func network_ready():
 
 
 func end_game() -> void:
-	if get_tree().get_root().has_node("World"):
-		get_tree().get_root().get_node("World").queue_free()
+	if get_tree().get_root().has_node("Board"):
+		get_tree().get_root().get_node("Board").queue_free()
 	toggle(true)
 
 
 func create_world() -> void:
-	var world = load("res://World.tscn").instance()
-	get_tree().get_root().add_child(world)
+	var board = load("res://Board.tscn").instance()
+	get_tree().get_root().add_child(board)
 	toggle(false)
 
 

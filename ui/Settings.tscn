@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://ui/main.tres" type="Theme" id=1]
+[ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/Settings.gd" type="Script" id=2]
 [ext_resource path="res://assets/pieces/california/wP.png" type="Texture" id=3]
 [ext_resource path="res://ui/Preview.gd" type="Script" id=4]

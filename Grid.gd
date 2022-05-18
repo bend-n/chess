@@ -170,6 +170,7 @@ func mat2str(mat = matrix) -> String:
 
 
 func drawed() -> void:
+	return # TODO: make gameovers work again
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
@@ -178,6 +179,7 @@ func drawed() -> void:
 
 
 func win(winner) -> void:
+	return # TODO: make gameovers work again
 	Events.emit_signal("game_over")
 	print(winner, " won the game in ", Globals.turns(), " turns!")
 	SoundFx.play("Victory")

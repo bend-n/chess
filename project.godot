@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Control",
 "class": "BarTextureButton",
 "language": "GDScript",
-"path": "res://ui/BarTextureButton.gd"
+"path": "res://ui/barbutton/BarTextureButton.gd"
 }, {
 "base": "Piece",
 "class": "Bishop",
