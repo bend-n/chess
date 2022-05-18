@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://ui/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/roboto.tres" type="DynamicFont" id=2]
@@ -15,6 +15,9 @@
 [ext_resource path="res://ui/button.tres" type="StyleBox" id=13]
 [ext_resource path="res://ui/buttonhover.tres" type="StyleBox" id=14]
 [ext_resource path="res://ui/FENlabel.gd" type="Script" id=15]
+[ext_resource path="res://ui/BarTextureButton.tscn" type="PackedScene" id=16]
+[ext_resource path="res://assets/ui/flip_board.png" type="Texture" id=17]
+[ext_resource path="res://ui/flipbutton.gd" type="Script" id=18]
 
 [sub_resource type="DynamicFont" id=1]
 size = 25
@@ -85,6 +88,9 @@ PopupMenu/styles/panel = ExtResource( 12 )
 VBoxContainer/constants/separation = 15
 VScrollBar/styles/scroll = SubResource( 5 )
 
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color( 0, 0, 0, 1 )
+
 [sub_resource type="DynamicFont" id=8]
 size = 15
 font_data = ExtResource( 3 )
@@ -116,16 +122,15 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="Holder/Back"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/separation = 50
 alignment = 1
 __meta__ = {
 "_edit_lock_": true
 }
 
 [node name="BlackTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 105.0
+margin_top = 140.0
 margin_right = 400.0
-margin_bottom = 188.0
+margin_bottom = 223.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -168,10 +173,35 @@ script = ExtResource( 6 )
 custom_constants/vseparation = 0
 columns = 3
 
-[node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 488.0
+[node name="buttonbarholder" type="Control" parent="Holder/Back/VBox"]
+visible = false
+margin_top = 420.0
 margin_right = 400.0
-margin_bottom = 571.0
+margin_bottom = 470.0
+rect_min_size = Vector2( 50, 50 )
+
+[node name="Panel" type="Panel" parent="Holder/Back/VBox/buttonbarholder"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 10 )
+
+[node name="buttonbar" type="HBoxContainer" parent="Holder/Back/VBox/buttonbarholder"]
+margin_right = 400.0
+margin_bottom = 50.0
+alignment = 1
+
+[node name="FlipBoard" parent="Holder/Back/VBox/buttonbarholder/buttonbar" instance=ExtResource( 16 )]
+margin_left = 175.0
+margin_right = 225.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 50, 50 )
+script = ExtResource( 18 )
+texture = ExtResource( 17 )
+
+[node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
+margin_top = 453.0
+margin_right = 400.0
+margin_bottom = 536.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -194,10 +224,16 @@ color = Color( 0, 0, 0, 1 )
 [node name="Timer" type="Node" parent="Holder/Back/VBox"]
 script = ExtResource( 5 )
 
-[node name="FENlabel" type="LineEdit" parent="Holder/Back/VBox"]
-margin_top = 621.0
+[node name="Spacer" type="Control" parent="Holder/Back/VBox"]
+margin_top = 551.0
 margin_right = 400.0
-margin_bottom = 695.0
+margin_bottom = 571.0
+rect_min_size = Vector2( 0, 20 )
+
+[node name="FENlabel" type="LineEdit" parent="Holder/Back/VBox"]
+margin_top = 586.0
+margin_right = 400.0
+margin_bottom = 660.0
 custom_colors/font_color_uneditable = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 8 )
 text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -220,3 +256,5 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -400.0
 color = Color( 0, 0, 0, 0.784314 )
+
+[connection signal="pressed" from="Holder/Back/VBox/buttonbarholder/buttonbar/FlipBoard" to="Holder/Back/VBox/buttonbarholder/buttonbar/FlipBoard" method="_pressed"]
