@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://ui/main.tres" type="Theme" id=1]
-[ext_resource path="res://ui/ColorPickerButton.gd" type="Script" id=2]
-[ext_resource path="res://ui/ColorPicker.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ui/colorpicker/ColorPickerButton.gd" type="Script" id=2]
+[ext_resource path="res://ui/colorpicker/ColorPicker.tscn" type="PackedScene" id=3]
 
 [node name="ColorPickerButton" type="Button"]
 margin_right = 232.0
@@ -15,10 +15,10 @@ script = ExtResource( 2 )
 
 [node name="ColorPicker" parent="." instance=ExtResource( 3 )]
 visible = false
-margin_left = 92.0
-margin_top = 58.0
-margin_right = 294.0
-margin_bottom = 234.0
+margin_left = 88.0
+margin_top = 56.0
+margin_right = 290.0
+margin_bottom = 294.0
 
 [node name="Position" type="Control" parent="."]
 margin_left = 80.0
@@ -26,5 +26,5 @@ margin_top = 46.0
 margin_right = 120.0
 margin_bottom = 86.0
 
-[connection signal="pressed" from="." to="." method="_on_pressed"]
+[connection signal="pressed" from="." to="ColorPicker" method="open"]
 [connection signal="done" from="ColorPicker" to="." method="_on_ColorPicker_done"]
