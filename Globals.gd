@@ -10,8 +10,8 @@ var fullmove := 1
 var halfmove := 0
 var in_check := false
 var checking_piece: Piece = null
-var board_color1: Color
-var board_color2: Color
+var board_color1: Color = Color(0.870588, 0.890196, 0.901961)
+var board_color2: Color = Color(0.54902, 0.635294, 0.678431)
 var white_king: King
 var black_king: King
 var turn := true  # true for white, false for black

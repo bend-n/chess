@@ -62,13 +62,7 @@ static func to_algebraic(position) -> String:
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.interpolate_property(
-		self,
-		"global_position",
-		global_position,
-		newpos * Globals.grid.piece_size,
-		0.3,
-		Tween.TRANS_BACK,
-		Tween.EASE_IN_OUT
+		self, "global_position", global_position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
 	)
 	anim.play("Move")
 	tween.start()
@@ -84,7 +78,8 @@ func moveto(position, real := true, take := false, override_moveto = false) -> v
 			else:
 				Utils.add_move(algebraic_take_notation(position))
 		real_position = position
-		move(position)
+		move(real_position)
+		print("%s moving from %s to %s" % [mininame + shortname, Utils.to_algebraic(global_position / Globals.grid.piece_size), Utils.to_algebraic(real_position)])
 		SoundFx.play("Move")
 		has_moved = true
 
