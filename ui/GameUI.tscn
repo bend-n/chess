@@ -128,9 +128,9 @@ __meta__ = {
 }
 
 [node name="BlackTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 107.0
+margin_top = 140.0
 margin_right = 400.0
-margin_bottom = 190.0
+margin_bottom = 223.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -161,9 +161,9 @@ autowrap = true
 script = ExtResource( 7 )
 
 [node name="MovesList" type="ScrollContainer" parent="Holder/Back/VBox"]
-margin_top = 205.0
+margin_top = 238.0
 margin_right = 400.0
-margin_bottom = 405.0
+margin_bottom = 438.0
 rect_min_size = Vector2( 0, 200 )
 theme = SubResource( 6 )
 scroll_horizontal_enabled = false
@@ -174,6 +174,7 @@ custom_constants/vseparation = 0
 columns = 3
 
 [node name="buttonbarholder" type="Control" parent="Holder/Back/VBox"]
+visible = false
 margin_top = 420.0
 margin_right = 400.0
 margin_bottom = 470.0
@@ -198,9 +199,9 @@ script = ExtResource( 18 )
 texture = ExtResource( 17 )
 
 [node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 485.0
+margin_top = 453.0
 margin_right = 400.0
-margin_bottom = 568.0
+margin_bottom = 536.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -224,15 +225,15 @@ color = Color( 0, 0, 0, 1 )
 script = ExtResource( 5 )
 
 [node name="Spacer" type="Control" parent="Holder/Back/VBox"]
-margin_top = 583.0
+margin_top = 551.0
 margin_right = 400.0
-margin_bottom = 603.0
+margin_bottom = 571.0
 rect_min_size = Vector2( 0, 20 )
 
 [node name="FENlabel" type="LineEdit" parent="Holder/Back/VBox"]
-margin_top = 618.0
+margin_top = 586.0
 margin_right = 400.0
-margin_bottom = 692.0
+margin_bottom = 660.0
 custom_colors/font_color_uneditable = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 8 )
 text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
