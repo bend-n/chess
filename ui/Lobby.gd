@@ -170,7 +170,8 @@ func dict2vec(dict: Dictionary) -> Vector2:
 
 func _notification(what: int) -> void:
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
-		Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.stopgame)
+		if get_tree().get_root().has_node("Board"):
+			Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.stopgame)
 		yield(get_tree(), "idle_frame")  # wait for the packet to send
 		get_tree().quit()
 
