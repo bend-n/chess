@@ -44,11 +44,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Grid.gd"
 }, {
-"base": "LineEdit",
-"class": "HexInput",
-"language": "GDScript",
-"path": "res://ui/colorpicker/HexInput.gd"
-}, {
 "base": "Control",
 "class": "HueSlider",
 "language": "GDScript",
@@ -112,7 +107,6 @@ _global_script_class_icons={
 "ColorSelect": "",
 "FENLabel": "",
 "Grid": "",
-"HexInput": "",
 "HueSlider": "",
 "King": "res://assets/pieces/california/wK.png",
 "Knight": "res://assets/pieces/california/wN.png",

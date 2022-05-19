@@ -1,38 +1,37 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://ui/colorpicker/ColorPicker.gd" type="Script" id=1]
-[ext_resource path="res://ui/colorpicker/ColorPicker.tres" type="Theme" id=2]
-[ext_resource path="res://assets/ui/Roboto-Medium.ttf" type="DynamicFontData" id=3]
-[ext_resource path="res://ui/theme/smallbutton.tres" type="StyleBox" id=4]
-[ext_resource path="res://ui/theme/smallbuttonhover.tres" type="StyleBox" id=5]
 [ext_resource path="res://ui/colorpicker/HueSlider.gd" type="Script" id=6]
 [ext_resource path="res://ui/colorpicker/ColorSelect.gd" type="Script" id=7]
-[ext_resource path="res://ui/colorpicker/HexInput.gd" type="Script" id=8]
 [ext_resource path="res://ui/colorpicker/OldColorView.gd" type="Script" id=9]
 [ext_resource path="res://ui/colorpicker/huepicker.material" type="Material" id=10]
 [ext_resource path="res://ui/colorpicker/ColorSelect.material" type="Material" id=11]
-
-[sub_resource type="DynamicFont" id=1]
-size = 20
-font_data = ExtResource( 3 )
+[ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=12]
+[ext_resource path="res://assets/ui/close.png" type="Texture" id=13]
 
 [node name="ColorPicker" type="Control"]
-margin_right = 128.0
-margin_bottom = 238.0
-theme = ExtResource( 2 )
+margin_right = 145.0
+margin_bottom = 145.0
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="Panel" type="Panel" parent="."]
-margin_left = -12.0
-margin_top = -12.0
-margin_right = 136.0
-margin_bottom = 248.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="V" type="VBoxContainer" parent="Panel"]
-margin_left = 12.0
-margin_top = 12.0
-margin_right = 137.0
-margin_bottom = 137.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -8.0
 custom_constants/separation = 5
 
 [node name="H" type="HBoxContainer" parent="Panel/V"]
@@ -77,10 +76,20 @@ margin_right = 125.0
 margin_bottom = 125.0
 custom_constants/separation = 0
 
+[node name="Close" parent="Panel/V/H2" instance=ExtResource( 12 )]
+margin_right = 20.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 20, 0 )
+texture = ExtResource( 13 )
+normal_color = Color( 0.145098, 0.145098, 0.164706, 1 )
+highlight_color = Color( 0.1944, 0.3048, 0.36, 1 )
+pressed_color = Color( 0.3216, 0.414, 0.48, 1 )
+
 [node name="Spacer" type="Control" parent="Panel/V/H2"]
+margin_left = 20.0
 margin_right = 25.0
 margin_bottom = 20.0
-rect_min_size = Vector2( 25, 0 )
+rect_min_size = Vector2( 5, 0 )
 
 [node name="OldColorView" type="ColorRect" parent="Panel/V/H2"]
 margin_left = 25.0
@@ -95,47 +104,10 @@ margin_right = 125.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 50, 20 )
 
-[node name="hex" type="LineEdit" parent="Panel/V"]
-margin_top = 130.0
-margin_right = 125.0
-margin_bottom = 182.0
-max_length = 7
-context_menu_enabled = false
-placeholder_text = "#FFFFFF"
-caret_blink = true
-script = ExtResource( 8 )
-
-[node name="OKButton" type="Button" parent="Panel/V"]
-margin_top = 187.0
-margin_right = 125.0
-margin_bottom = 239.0
-focus_mode = 0
-custom_colors/font_color_focus = Color( 0, 0, 0, 1 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_colors/font_color_hover = Color( 0, 0, 0, 1 )
-custom_colors/font_color_pressed = Color( 0, 0, 0, 1 )
-custom_fonts/font = SubResource( 1 )
-custom_styles/hover = ExtResource( 5 )
-custom_styles/pressed = ExtResource( 5 )
-custom_styles/focus = ExtResource( 5 )
-custom_styles/normal = ExtResource( 4 )
-enabled_focus_mode = 0
-text = "OK"
-
-[node name="LineDrawer" type="Control" parent="Panel/V"]
-margin_top = 244.0
-margin_right = 125.0
-margin_bottom = 244.0
-
 [connection signal="gui_input" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="_gui_input"]
 [connection signal="hue_changed" from="Panel/V/H/HueSlider" to="Panel/V/H/ColorSelect" method="apply_hue"]
-[connection signal="mouse_entered" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="set_focused" binds= [ true ]]
-[connection signal="mouse_exited" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="set_focused" binds= [ false ]]
 [connection signal="color_changed" from="Panel/V/H/ColorSelect" to="." method="_color_changed"]
-[connection signal="mouse_entered" from="Panel/V/H/ColorSelect" to="Panel/V/H/ColorSelect" method="set_focused" binds= [ true ]]
-[connection signal="mouse_exited" from="Panel/V/H/ColorSelect" to="Panel/V/H/ColorSelect" method="set_focused" binds= [ false ]]
+[connection signal="gui_input" from="Panel/V/H/ColorSelect" to="Panel/V/H/ColorSelect" method="_gui_input"]
+[connection signal="pressed" from="Panel/V/H2/Close" to="." method="done"]
 [connection signal="color_changed" from="Panel/V/H2/OldColorView" to="." method="_color_changed"]
 [connection signal="gui_input" from="Panel/V/H2/OldColorView" to="Panel/V/H2/OldColorView" method="_gui_input"]
-[connection signal="color_changed" from="Panel/V/hex" to="." method="_color_changed"]
-[connection signal="text_entered" from="Panel/V/hex" to="Panel/V/hex" method="_text_entered"]
-[connection signal="pressed" from="Panel/V/OKButton" to="." method="_on_OKButton_pressed"]

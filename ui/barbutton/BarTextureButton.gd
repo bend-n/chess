@@ -7,9 +7,9 @@ var focused = false
 
 export(Texture) var texture
 
-export(Color) var normal_color
-export(Color) var highlight_color
-export(Color) var pressed_color
+export(Color) var normal_color := Color.black
+export(Color) var highlight_color := Color(0.243137, 0.129412, 0.129412)
+export(Color) var pressed_color := Color(0.227451, 0.270588, 0.301961)
 
 onready var texture_button = $Texture
 onready var background = $Background

@@ -91,24 +91,25 @@ func reload_sprites() -> void:
 				matrix[i][j].load_texture()
 
 
-func rotate_pieces(degree: float) -> void:
+func flip_pieces() -> void:
 	for i in range(8):
 		for j in range(8):
 			var spot = matrix[i][j]
 			if spot:
-				spot.sprite.rotation_degrees = degree
+				spot.sprite.flip_v = flipped
+				spot.sprite.flip_h = flipped
 				# spot.tween.interpolate_property(
 				# 	spot.sprite, "rotation_degrees", spot.sprite.rotation_degrees, degree, .5
 				# )
 				# spot.tween.start()
 
 
-func flip_labels(to_flip: bool) -> void:
+func flip_labels() -> void:
 	for i in range(8):
 		var numlabel = labels.numbers[i].get_node("Label")
 		var letlabel = labels.letters[i].get_node("Label")
 		var number: int
-		if to_flip:
+		if flipped:
 			number = i + 1
 		else:
 			number = 8 - i
@@ -118,15 +119,17 @@ func flip_labels(to_flip: bool) -> void:
 
 func flip_board():
 	if global_position == Vector2(800, 800):
+		flipped = false
 		global_position = Vector2(0, 0)
 		rotation_degrees = 0
-		rotate_pieces(0)
-		flip_labels(false)
+		flip_pieces()
+		flip_labels()
 	else:
+		flipped = true
 		global_position = Vector2(800, 800)
 		rotation_degrees = 180
-		rotate_pieces(180)
-		flip_labels(true)
+		flip_pieces()
+		flip_labels()
 
 
 func init_labels() -> void:
@@ -170,7 +173,7 @@ func mat2str(mat = matrix) -> String:
 
 
 func drawed() -> void:
-	return # TODO: make gameovers work again
+	return  # TODO: make gameovers work again
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
@@ -179,7 +182,7 @@ func drawed() -> void:
 
 
 func win(winner) -> void:
-	return # TODO: make gameovers work again
+	return  # TODO: make gameovers work again
 	Events.emit_signal("game_over")
 	print(winner, " won the game in ", Globals.turns(), " turns!")
 	SoundFx.play("Victory")
