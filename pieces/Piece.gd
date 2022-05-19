@@ -61,11 +61,11 @@ static func to_algebraic(position) -> String:
 
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
-	tween.interpolate_property(
-		self, "global_position", global_position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
-	)
-	anim.play("Move")
-	tween.start()
+    tween.interpolate_property(
+        self, "position", position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
+    )
+    anim.play("Move")
+    tween.start()
 
 
 func moveto(position, real := true, take := false, override_moveto = false) -> void:
