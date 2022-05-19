@@ -8,7 +8,6 @@ signal done(color)
 
 onready var oldcolorview = $Panel/V/H2/OldColorView
 onready var newcolorpreview = $Panel/V/H2/NewColorPreview
-onready var hex = $Panel/V/hex
 onready var colorselect = $Panel/V/H/ColorSelect
 onready var hueslider = $Panel/V/H/HueSlider
 
@@ -26,7 +25,6 @@ func _ready():
 
 func update_color():
 	newcolorpreview.color = color
-	hex.color = color
 	colorselect.color = color
 	hueslider.hue = color.h
 
@@ -37,7 +35,7 @@ func set_color(newcolor):
 	emit_signal("color_changed", newcolor)
 
 
-func _on_OKButton_pressed():
+func done():
 	emit_signal("done", color)
 
 

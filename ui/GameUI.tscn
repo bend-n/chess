@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/roboto.tres" type="DynamicFont" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://ui/Status.gd" type="Script" id=7]
 [ext_resource path="res://ui/FENlabel.gd" type="Script" id=15]
 [ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=16]
+[ext_resource path="res://assets/ui/flip_board.png" type="Texture" id=17]
 [ext_resource path="res://ui/flipbutton.gd" type="Script" id=18]
 
 [sub_resource type="DynamicFont" id=1]
@@ -114,6 +115,7 @@ margin_right = 225.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 50, 50 )
 script = ExtResource( 18 )
+texture = ExtResource( 17 )
 
 [node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
 margin_top = 453.0

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/smallbutton.png-140fddc48216cea1540f15882461f39a.stex"
+path="res://.import/close.png-76ad351b77a5cd8dfb1d712106bc5926.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/smallbutton.png"
-dest_files=[ "res://.import/smallbutton.png-140fddc48216cea1540f15882461f39a.stex" ]
+source_file="res://assets/ui/close.png"
+dest_files=[ "res://.import/close.png-76ad351b77a5cd8dfb1d712106bc5926.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=false
+flags/filter=true
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2
