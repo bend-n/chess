@@ -52,7 +52,7 @@ func moveto(position, real = true, take = false, override_moveto = false) -> voi
 		Globals.reset_halfmove()
 
 
-func get_moves() -> Array:
+func get_moves(_var = false, check_spots_check = true) -> Array:
 	var points := [Vector2.UP, Vector2.UP * 2]
 	var moves := []
 	for i in range(len(points)):
@@ -81,7 +81,7 @@ func passant(position) -> void:
 	moveto(position)
 
 
-func get_attacks() -> Array:
+func get_attacks(check_spots_check = true) -> Array:
 	var points := [Vector2.UP + Vector2.RIGHT, Vector2.UP + Vector2.LEFT]
 	var moves := []
 	for i in range(len(points)):
@@ -98,7 +98,7 @@ func get_attacks() -> Array:
 	return moves
 
 
-func en_passant(turncheck = true) -> Array:  # in passing
+func en_passant(turncheck = true, check_spots_check = true) -> Array:  # in passing
 	var passants := [pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
 	var moves := []
 	for i in passants:

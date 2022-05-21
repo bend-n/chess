@@ -202,6 +202,7 @@ func check_in_check(prin = false) -> bool:  # check if in_check
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
 						SoundFx.play("Check")
+					print("check")
 					return true  # stop at the first check found
 	return false
 

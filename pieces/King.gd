@@ -9,7 +9,7 @@ func _ready() -> void:
 	Events.connect("just_before_turn_over", self, "just_before_over")
 
 
-func get_moves() -> Array:
+func get_moves(no_enemys = false, check_spots_check = true) -> Array:
 	var moves := []
 	for i in all_dirs():
 		var spot: Vector2 = pos_around(i)
@@ -94,8 +94,8 @@ func can_move() -> bool:  # checks if you can legally move
 	return can
 
 
-func get_attacks() -> Array:
+func get_attacks(check_spots_check = true) -> Array:
 	castle_check = false
-	var final: Array = .get_attacks()
+	var final: Array = .get_attacks(check_spots_check)
 	castle_check = true
 	return final
