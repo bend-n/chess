@@ -8,8 +8,6 @@ var mininame := "♙"
 var has_moved := false
 var frameon := false
 var team := "w"
-var check_spots_check := true
-var no_enemys := false
 
 onready var sprite := $Sprite
 onready var tween := $Tween
@@ -61,11 +59,9 @@ static func to_algebraic(position) -> String:
 
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
-    tween.interpolate_property(
-        self, "position", position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
-    )
-    anim.play("Move")
-    tween.start()
+	tween.interpolate_property(self, "position", position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK)
+	anim.play("Move")
+	tween.start()
 
 
 func moveto(position, real := true, take := false, override_moveto = false) -> void:
@@ -110,7 +106,7 @@ static func all_dirs() -> Array:
 	]
 
 
-func traverse(arr := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]) -> Array:
+func traverse(arr := [], no_enemys = false, check_spots_check = true) -> Array:
 	var circle_array := []
 	for i in arr:
 		var pos := real_position
@@ -141,13 +137,12 @@ func can_move() -> bool:  # checks if you can legally move
 	return false
 
 
-func get_moves() -> Array:  # @Override
+func get_moves(_no_enemys = false, _check_spots_check = true) -> Array:  # @Override
 	return []
 
 
-func get_attacks() -> Array:  # @Override
-	no_enemys = false
-	var moves: Array = get_moves()  # assumes the attacks are same as moves
+func get_attacks(check_spots_check = true) -> Array:  # @Override
+	var moves: Array = get_moves(false, check_spots_check)  # assumes the attacks are same as moves
 	var final := []
 	for i in moves:
 		if at_pos(i) != null:
@@ -155,17 +150,13 @@ func get_attacks() -> Array:  # @Override
 				if check_spots_check and checkcheck(i):
 					continue
 				final.append(i)
-	no_enemys = true
 	return final
 
 
 func can_attack_piece(piece) -> bool:
-	check_spots_check = false
-	for pos in get_attacks():
+	for pos in get_attacks(false):
 		if at_pos(pos) == piece:
-			check_spots_check = true
 			return true
-	check_spots_check = true
 	return false
 
 

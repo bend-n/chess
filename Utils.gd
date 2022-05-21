@@ -13,7 +13,7 @@ func _ready() -> void:
 	Events.connect("turn_over", self, "_on_turn_over")
 
 
-func is_pawn(inode) -> bool:
+static func is_pawn(inode) -> bool:
 	return inode is Pawn
 
 
@@ -25,7 +25,7 @@ func add_move(move) -> void:
 	emit_signal("newmove", move)
 
 
-func flip_int(i: int) -> int:
+static func flip_int(i: int) -> int:
 	return int(abs(7 - i))
 
 
@@ -35,15 +35,15 @@ func reset_vars() -> void:
 	counter = 0
 
 
-func to_algebraic(real_position) -> String:
+static func to_algebraic(real_position) -> String:
 	return char(65 + (real_position.x)).to_lower() + str(8 - real_position.y)
 
 
-func from_algebraic(algebraic_position: String) -> Vector2:
+static func from_algebraic(algebraic_position: String) -> Vector2:
 	return Vector2(ord(algebraic_position[0]) - ord("a"), 8 - int(algebraic_position[1]))
 
 
-func get_node_name(node) -> Array:
+static func get_node_name(node) -> Array:
 	if is_pawn(node):
 		return ["♙", "p"] if node.white else ["♟", "p"]
 	elif node is King:
@@ -64,13 +64,10 @@ func walk_dir(path = "res://assets/pieces") -> PoolStringArray:  # walk the dire
 	var folders: PoolStringArray = []  # init the folders
 	var dir := Directory.new()  # init the directory
 	if dir.open(path) == OK:  # open the directory
-		dir.list_dir_begin()  # list the directory
+		dir.list_dir_begin(true)  # list the directory
 		var file_name := dir.get_next()  # get the next file
 		while file_name != "":  # while there is a file
 			if dir.current_is_dir():  # if the current is a directory
-				if file_name == "." or file_name == "..":  # if it is a dot or dot dot
-					file_name = dir.get_next()  # get the next file
-					continue
 				folders.append(file_name)  # add the folder
 			file_name = dir.get_next()  # get the next file
 	else:

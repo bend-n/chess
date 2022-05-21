@@ -2,7 +2,7 @@ extends Piece
 class_name Knight, "res://assets/pieces/california/wN.png"
 
 
-func get_moves() -> Array:
+func get_moves(no_enemys = false, check_spots_check = true) -> Array:
 	var moves := [
 		pos_around(Vector2(-2, -1)),
 		pos_around(Vector2(-2, 1)),
