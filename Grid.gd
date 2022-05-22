@@ -70,9 +70,9 @@ static func print_matrix_pretty(mat) -> void:  # print the matrix
 	for j in range(8):  # for each row
 		var r: Array = mat[j]  # get the row
 		if j == 0:
-			print(topper_header)  # print the top border
+			Log.info(topper_header)  # print the top border
 		else:
-			print(middle_header)  # print the middle border
+			Log.info(middle_header)  # print the middle border
 		var row = "┃ %s ┃ " % str(8 - j)  # init the string
 		for i in range(8):  # for each column
 			var c = r[i]  # get the column
@@ -80,8 +80,8 @@ static func print_matrix_pretty(mat) -> void:  # print the matrix
 				row += c.mininame + ender  # add the shortname
 			else:  # if there is no piece
 				row += " " + ender
-		print(row)  # print the string
-	print("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
+		Log.info(row)  # print the string
+	Log.info("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
 
 
 func reload_sprites() -> void:
@@ -184,7 +184,7 @@ func drawed() -> void:
 func win(winner) -> void:
 	return  # TODO: make gameovers work again
 	Events.emit_signal("game_over")
-	print(winner, " won the game in ", Globals.turns(), " turns!")
+	Log.info([winner, " won the game in ", Globals.turns(), " turns!"])
 	SoundFx.play("Victory")
 	yield(get_tree().create_timer(5), "timeout")
 	Events.emit_signal("go_back")
@@ -202,7 +202,7 @@ func check_in_check(prin = false) -> bool:  # check if in_check
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
 						SoundFx.play("Check")
-					print("check")
+					Log.info("check")
 					return true  # stop at the first check found
 	return false
 
@@ -309,7 +309,7 @@ func check_for_frame(position: Vector2) -> bool:  # check for a frame, validatin
 
 
 func square_clicked(position: Vector2) -> void:  # square clicked
-	print(Utils.to_algebraic(position), " clicked")
+	Log.debug(Utils.to_algebraic(position) + " clicked")
 	if promoting != null:
 		return
 	if Globals.turn != Globals.team:
@@ -358,7 +358,7 @@ func handle_move(position) -> void:
 				)
 
 				return
-	if last_clicked is Pawn:
+	if Utils.is_pawn(last_clicked):
 		var pawn = last_clicked
 		if pawn.enpassant:
 			for i in range(len(pawn.enpassant)):

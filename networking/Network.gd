@@ -4,6 +4,8 @@ class_name Network
 var ws := WebSocketClient.new()
 var game_code := ""
 
+var connected = false
+
 const HEADERS := {
 	"move": "M",
 	"joinrequest": "J",
@@ -38,7 +40,7 @@ func _ready() -> void:
 	ws.connect("connection_closed", self, "_connection_closed")
 	ws.connect("connection_error", self, "_connection_error")
 	ws.connect("data_received", self, "_data_recieved")
-	print("Connecting to server...")  # maybe i shouldnt broadcast the server url
+	Log.debug("Connecting to server %s..." % url)
 	ws.connect_to_url(url)
 	var t = Timer.new()
 	add_child(t)
@@ -52,17 +54,20 @@ func ping() -> void:
 
 
 func _connection_established(_protocol) -> void:
+	connected = true
 	emit_signal("connection_established")
-	print("Connection established")
+	Log.info("Connection established")
 
 
 func _connection_closed(_was_clean_closed) -> void:
-	printerr("Connection closed")
+	connected = false
+	Log.err("Connection closed")
 	emit_signal("game_over", "Connection closed", false)
 
 
 func _connection_error() -> void:
-	printerr("Connection error")
+	connected = false
+	Log.err("Connection error")
 	emit_signal("game_over", "Connection error", false)
 
 
@@ -95,10 +100,8 @@ func _data_recieved() -> void:
 
 
 func _process(_delta) -> void:
-	if (
-		ws.get_connection_status() == ws.CONNECTION_CONNECTING
-		or ws.get_connection_status() == ws.CONNECTION_CONNECTED
-	):
+	var wsstatus = ws.get_connection_status()
+	if wsstatus == ws.CONNECTION_CONNECTING or wsstatus == ws.CONNECTION_CONNECTED:
 		ws.poll()
 
 

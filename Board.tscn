@@ -7,6 +7,10 @@
 
 [node name="Grid" type="Node2D" parent="."]
 script = ExtResource( 1 )
+overlay_color = null
+clockrunning_color = null
+clockrunninglow = null
+clocklow = null
 
 [node name="Background" type="Node2D" parent="Grid"]
 
