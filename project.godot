@@ -153,7 +153,7 @@ gdscript/warnings/return_value_discarded=false
 
 [display]
 
-window/size/width=1200
+window/size/width=1422
 window/size/height=800
 window/stretch/mode="2d"
 window/stretch/aspect="keep"

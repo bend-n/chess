@@ -13,17 +13,18 @@ func _ready() -> void:
 	tween = Tween.new()
 	add_child(tween)
 	Utils.connect("newmove", self, "on_new_move")
-
+	create_number_label(1)
+	create_san_label("Qxb4", Label.ALIGN_LEFT)
+	create_san_label("e4")
 
 func create_number_label(num) -> void:
 	var clr = ColorRect.new()
 	clr.color = Color(1, 1, 1, 0.13)
 	clr.rect_min_size = Vector2(70, 30)
 	var label = Label.new()
-	label.text = str(num) + ".  "
-	label.align = Label.ALIGN_RIGHT
+	label.text = " %s." % str(num)
+	label.align = Label.ALIGN_LEFT
 	label.valign = Label.VALIGN_CENTER
-	label.rect_min_size = clr.rect_min_size
 	clr.add_child(label)
 	sans.add_child(clr)
 
@@ -33,7 +34,7 @@ func create_san_label(text, alignment = Label.ALIGN_RIGHT) -> void:
 	label.text = text
 	label.valign = Label.VALIGN_CENTER
 	label.align = alignment
-	label.rect_min_size = Vector2(115, 0)
+	label.rect_min_size = Vector2((rect_size.x / 2.4), 0)
 	sans.add_child(label)
 
 

@@ -35,10 +35,10 @@ font_data = ExtResource( 3 )
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -400.0
+margin_left = -624.0
 theme = ExtResource( 1 )
 __meta__ = {
-"_edit_lock_": true
+"_edit_group_": true
 }
 
 [node name="Back" type="ColorRect" parent="Holder"]
@@ -59,7 +59,7 @@ __meta__ = {
 
 [node name="BlackTime" type="Label" parent="Holder/Back/VBox"]
 margin_top = 107.0
-margin_right = 400.0
+margin_right = 624.0
 margin_bottom = 190.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
@@ -92,11 +92,12 @@ script = ExtResource( 7 )
 
 [node name="MovesList" parent="Holder/Back/VBox" instance=ExtResource( 6 )]
 margin_top = 205.0
+margin_right = 624.0
 margin_bottom = 405.0
 
 [node name="buttonbarholder" type="Control" parent="Holder/Back/VBox"]
 margin_top = 420.0
-margin_right = 400.0
+margin_right = 624.0
 margin_bottom = 470.0
 rect_min_size = Vector2( 50, 50 )
 
@@ -106,14 +107,14 @@ anchor_bottom = 1.0
 custom_styles/panel = SubResource( 10 )
 
 [node name="buttonbar" type="HBoxContainer" parent="Holder/Back/VBox/buttonbarholder"]
-margin_right = 400.0
-margin_bottom = 50.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 custom_constants/separation = 0
 alignment = 1
 
 [node name="FlipBoard" parent="Holder/Back/VBox/buttonbarholder/buttonbar" instance=ExtResource( 16 )]
-margin_left = 175.0
-margin_right = 225.0
+margin_left = 287.0
+margin_right = 337.0
 margin_bottom = 50.0
 script = ExtResource( 18 )
 texture = ExtResource( 17 )
@@ -128,7 +129,7 @@ texture = ExtResource( 9 )
 
 [node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
 margin_top = 485.0
-margin_right = 400.0
+margin_right = 624.0
 margin_bottom = 568.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
@@ -154,24 +155,28 @@ script = ExtResource( 5 )
 
 [node name="Spacer" type="Control" parent="Holder/Back/VBox"]
 margin_top = 583.0
-margin_right = 400.0
+margin_right = 624.0
 margin_bottom = 603.0
 rect_min_size = Vector2( 0, 20 )
 
 [node name="FENlabel" type="LineEdit" parent="Holder/Back/VBox"]
+margin_left = 58.0
 margin_top = 618.0
-margin_right = 400.0
+margin_right = 566.0
 margin_bottom = 692.0
+size_flags_horizontal = 4
 custom_colors/font_color_uneditable = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 8 )
 text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+align = 1
 editable = false
+expand_to_text_length = true
 placeholder_text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 script = ExtResource( 15 )
 
 [node name="Label" type="Label" parent="Holder/Back/VBox/FENlabel"]
 margin_top = -49.0
-margin_right = 400.0
+margin_right = 508.0
 margin_bottom = 11.0
 custom_fonts/font = SubResource( 9 )
 text = "fen"

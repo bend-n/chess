@@ -84,4 +84,5 @@ script = ExtResource( 8 )
 
 [node name="sans" type="GridContainer" parent="."]
 custom_constants/vseparation = 0
+custom_constants/hseparation = 10
 columns = 3
