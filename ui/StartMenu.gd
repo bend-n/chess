@@ -18,6 +18,8 @@ func _ready() -> void:
 	colorrect.color = nice_colors[randi() % nice_colors.size()]
 	timer.start(timer_length)
 	_on_Timer_timeout()
+	if OS.has_feature("HTML5"):
+		find_node("quit").queue_free()
 
 
 func rand(clr) -> float:
