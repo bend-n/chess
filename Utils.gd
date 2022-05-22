@@ -17,6 +17,10 @@ static func is_pawn(inode) -> bool:
 	return inode is Pawn
 
 
+static func is_king(inode) -> bool:
+	return inode is King
+
+
 func add_move(move) -> void:
 	if turn_moves.size() == 0:
 		turn_moves.append(str(Globals.fullmove) + ". " + move)
