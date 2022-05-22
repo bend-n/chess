@@ -174,21 +174,21 @@ func mat2str(mat = matrix) -> String:
 
 func drawed() -> void:
 	return  # TODO: make gameovers work again
-	Events.emit_signal("game_over")
-	SoundFx.play("Draw")
-	yield(get_tree().create_timer(5), "timeout")
-	Events.emit_signal("go_back")
-	SoundFx.play("Victory")
+	# Events.emit_signal("game_over")
+	# SoundFx.play("Draw")
+	# yield(get_tree().create_timer(5), "timeout")
+	# Events.emit_signal("go_back")
+	# SoundFx.play("Victory")
 
 
-func win(winner) -> void:
+func win(_winner) -> void:
 	return  # TODO: make gameovers work again
-	Events.emit_signal("game_over")
-	Log.info([winner, " won the game in ", Globals.turns(), " turns!"])
-	SoundFx.play("Victory")
-	yield(get_tree().create_timer(5), "timeout")
-	Events.emit_signal("go_back")
-	SoundFx.play("Victory")
+	# Events.emit_signal("game_over")
+	# Log.info([winner, " won the game in ", Globals.turns(), " turns!"])
+	# SoundFx.play("Victory")
+	# yield(get_tree().create_timer(5), "timeout")
+	# Events.emit_signal("go_back")
+	# SoundFx.play("Victory")
 
 
 func check_in_check(prin = false) -> bool:  # check if in_check
@@ -342,7 +342,7 @@ func handle_take(position) -> void:
 
 
 func handle_move(position) -> void:
-	if last_clicked is King and last_clicked.can_castle:
+	if Utils.is_king(last_clicked) and last_clicked.can_castle:
 		for i in range(len(last_clicked.can_castle)):
 			var castle_data = last_clicked.can_castle[i]
 			if castle_data[0] == position:
