@@ -60,6 +60,15 @@ static func get_node_name(node) -> Array:
 		return ["", ""]
 
 
+func internet_available() -> bool:
+	var http = HTTPRequest.new()
+	add_child(http)
+	var httpurl = "https://1.1.1.1"
+	var returnable = http.request(httpurl) == OK
+	http.queue_free()
+	return returnable
+
+
 func walk_dir(path = "res://assets/pieces") -> PoolStringArray:  # walk the directory, finding the asset packs
 	var folders: PoolStringArray = []  # init the folders
 	var dir := Directory.new()  # init the directory
@@ -71,7 +80,7 @@ func walk_dir(path = "res://assets/pieces") -> PoolStringArray:  # walk the dire
 				folders.append(file_name)  # add the folder
 			file_name = dir.get_next()  # get the next file
 	else:
-		printerr("An error occurred when trying to access the path " + path)  # print the error
+		Log.err("An error occurred when trying to access the path " + path)  # print the error
 	return folders  # return the folders
 
 

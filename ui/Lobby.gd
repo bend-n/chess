@@ -17,7 +17,7 @@ func toggle(onoff) -> void:
 
 
 func _handle_game_over(error = "game over", isok = true) -> void:
-	reset_buttons()
+	set_buttons()
 	Globals.reset_vars()
 	end_game()
 	_set_status(error, isok)
@@ -27,27 +27,23 @@ func _set_status(text, isok) -> void:  # Simple way to show status.
 	if isok:
 		status_ok.set_text(text)
 		status_fail.set_text("")
-		status_ok.visible = len(status_ok.text) > 0
-		status_fail.visible = len(status_fail.text) > 0
 	else:
 		status_ok.set_text("")
 		status_fail.set_text(text)
-		status_fail.visible = len(status_fail.text) > 0
-		status_ok.visible = len(status_ok.text) > 0
+	status_ok.visible = len(status_ok.text) > 0
+	status_fail.visible = len(status_fail.text) > 0
 
 
 func _on_join_pressed() -> void:
 	Globals.network.game_code = validate_text()
 	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.joinrequest)
-	address.editable = false
-	buttons.hide()
+	set_buttons(false)
 
 
 func _on_HostButton_pressed() -> void:
 	Globals.network.game_code = validate_text()
 	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.hostrequest)
-	address.editable = false
-	buttons.hide()
+	set_buttons(false)
 
 
 func validate_text(text = address.get_text()) -> String:
@@ -63,19 +59,25 @@ func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
 	Events.connect("go_back", self, "_handle_game_over")
 	if !is_instance_valid(Globals.network):
-		Globals.network = Network.new()
-		Globals.network.connect("move_data", self, "_on_data")
-		Globals.network.connect("join_result", self, "_on_join_result")
-		Globals.network.connect("host_result", self, "_on_host_result")
-		Globals.network.connect("game_over", self, "_handle_game_over")
-		Globals.network.connect("start_game", self, "_start_game")
-		Globals.network.connect("connection_established", self, "network_ready")
-		add_child(Globals.network)
+		if Utils.internet_available():
+			_set_status("Connecting...", true)
+			var net = Network.new()
+			net.connect("move_data", self, "_on_data")
+			net.connect("join_result", self, "_on_join_result")
+			net.connect("host_result", self, "_on_host_result")
+			net.connect("game_over", self, "_handle_game_over")
+			net.connect("start_game", self, "_start_game")
+			net.connect("connection_established", self, "network_ready")
+			add_child(net)
+			Globals.network = net
+		else:
+			set_buttons(false)
+			_set_status("No internet connection", false)
 
 
 func network_ready():
-	for child in buttons.get_children():
-		child.disabled = false
+	set_buttons(true)
+	_set_status("", true)
 
 
 func end_game() -> void:
@@ -101,12 +103,13 @@ func _on_join_result(accepted: String) -> void:
 		Globals.network.send_packet("", Globals.network.HEADERS.startgame)
 	else:
 		_set_status(accepted, false)
-		reset_buttons()
+		set_buttons()
 
 
-func reset_buttons() -> void:
-	buttons.show()
-	address.editable = true
+func set_buttons(enabled = true) -> void:
+	for c in buttons.get_children():
+		c.disabled = !enabled
+	address.editable = enabled
 
 
 func _on_host_result(accepted: String) -> void:
@@ -115,7 +118,7 @@ func _on_host_result(accepted: String) -> void:
 		_set_status("Hosted!", true)
 	else:
 		_set_status(accepted, false)
-		reset_buttons()
+		set_buttons()
 
 
 func add_turn() -> void:
@@ -126,7 +129,7 @@ func add_turn() -> void:
 
 
 func _on_data(data: Dictionary) -> void:
-	print(data, " recieved")
+	Log.debug([data, " recieved"])
 	Globals.fullmove = data["fullmove"]
 	Globals.turn = data["turn"]
 	Globals.halfmove = data["halfmove"]

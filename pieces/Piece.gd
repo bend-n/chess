@@ -12,6 +12,7 @@ var team := "w"
 onready var sprite := $Sprite
 onready var tween := $Tween
 onready var anim := $AnimationPlayer
+onready var rotate := $RotatePlayer
 onready var colorrect := $ColorRect
 onready var frame := $Frame
 
@@ -60,6 +61,11 @@ static func to_algebraic(position) -> String:
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.interpolate_property(self, "position", position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK)
+	var signresult = sign(newpos.x * Globals.grid.piece_size.x - global_position.x)
+	if signresult == 1:
+		rotate.play("Right")
+	elif signresult == -1:
+		rotate.play("Left")
 	anim.play("Move")
 	tween.start()
 
@@ -75,11 +81,11 @@ func moveto(position, real := true, take := false, override_moveto = false) -> v
 				Utils.add_move(algebraic_take_notation(position))
 		real_position = position
 		move(real_position)
-		print(
+		Log.debug(
 			(
 				"%s moving from %s to %s"
 				% [
-					mininame + shortname + " white" if white else " black",
+					shortname + " white" if white else " black",
 					Utils.to_algebraic(global_position / Globals.grid.piece_size),
 					Utils.to_algebraic(real_position)
 				]
@@ -114,8 +120,11 @@ func traverse(arr := [], no_enemys = false, check_spots_check = true) -> Array:
 			pos += i
 			if !is_on_board(pos):
 				break
-			if at_pos(pos) != null:  # only one enemy
-				if no_enemys:  # or none
+			if at_pos(pos) != null:
+				if at_pos(pos).white == white:  # fren
+					break
+				# certaintly a enemy
+				if no_enemys:  # do we want enemys?
 					break
 				circle_array.append(pos)
 				break
