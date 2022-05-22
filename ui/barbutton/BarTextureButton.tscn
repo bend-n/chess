@@ -5,6 +5,7 @@
 [node name="BarTextureButton" type="Control"]
 margin_right = 64.0
 margin_bottom = 64.0
+rect_min_size = Vector2( 50, 50 )
 script = ExtResource( 2 )
 
 [node name="Background" type="ColorRect" parent="."]
