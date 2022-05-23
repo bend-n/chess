@@ -1,34 +1,32 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/StartMenu.gd" type="Script" id=2]
 [ext_resource path="res://ui/Settings.tscn" type="PackedScene" id=3]
-[ext_resource path="res://ui/Lobby.tscn" type="PackedScene" id=4]
 
-[node name="StartMenu" type="Control" groups=["control"]]
+[node name="StartMenu" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
-timer_length = 2.8
-nice_colors = [ Color( 0.784314, 0.427451, 0.427451, 1 ), Color( 0.913725, 0.847059, 0.403922, 1 ), Color( 0.380392, 0.741176, 0.647059, 1 ), Color( 0.321569, 0.368627, 0.858824, 1 ), Color( 0.843137, 0.133333, 0.133333, 1 ), Color( 0.109804, 0.160784, 0.564706, 1 ), Color( 0.376471, 0.796078, 0.317647, 1 ), Color( 0.8, 0.364706, 0.588235, 1 ), Color( 0.984314, 0.858824, 0.282353, 1 ), Color( 0.164706, 0.0862745, 0.247059, 1 ) ]
 
-[node name="ColorRect" type="ColorRect" parent="." groups=["control"]]
+[node name="Darken" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0, 0, 0, 1 )
+color = Color( 0, 0, 0, 0.392157 )
 
-[node name="MainButtons" type="VBoxContainer" parent="ColorRect" groups=["control"]]
+[node name="MainButtons" type="VBoxContainer" parent="Darken"]
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -157.5
 margin_right = 157.5
+mouse_filter = 2
 alignment = 1
 
-[node name="multiplayer" type="Button" parent="ColorRect/MainButtons" groups=["control"]]
+[node name="multiplayer" type="Button" parent="Darken/MainButtons"]
 margin_top = 226.0
 margin_right = 315.0
 margin_bottom = 332.0
@@ -37,7 +35,7 @@ size_flags_horizontal = 4
 enabled_focus_mode = 0
 text = "multiplayer"
 
-[node name="settings" type="Button" parent="ColorRect/MainButtons" groups=["control"]]
+[node name="settings" type="Button" parent="Darken/MainButtons"]
 margin_left = 38.0
 margin_top = 347.0
 margin_right = 276.0
@@ -47,7 +45,7 @@ size_flags_horizontal = 4
 enabled_focus_mode = 0
 text = "settings"
 
-[node name="local" type="Button" parent="ColorRect/MainButtons" groups=["control"]]
+[node name="local" type="Button" parent="Darken/MainButtons"]
 visible = false
 margin_left = 113.0
 margin_top = 242.0
@@ -59,7 +57,7 @@ size_flags_horizontal = 4
 enabled_focus_mode = 0
 text = "local"
 
-[node name="quit" type="Button" parent="ColorRect/MainButtons" groups=["control"]]
+[node name="quit" type="Button" parent="Darken/MainButtons"]
 margin_left = 86.0
 margin_top = 468.0
 margin_right = 228.0
@@ -69,19 +67,10 @@ size_flags_horizontal = 4
 enabled_focus_mode = 0
 text = "exit"
 
-[node name="Settings" parent="ColorRect" instance=ExtResource( 3 )]
+[node name="Settings" parent="Darken" instance=ExtResource( 3 )]
 visible = false
 
-[node name="Lobby" parent="ColorRect" groups=["control"] instance=ExtResource( 4 )]
-visible = false
-
-[node name="Tween" type="Tween" parent="."]
-
-[node name="Timer" type="Timer" parent="."]
-one_shot = true
-
-[connection signal="pressed" from="ColorRect/MainButtons/multiplayer" to="." method="_on_multiplayer_pressed"]
-[connection signal="pressed" from="ColorRect/MainButtons/settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="ColorRect/MainButtons/local" to="." method="_on_local_pressed"]
-[connection signal="pressed" from="ColorRect/MainButtons/quit" to="." method="_on_quit_pressed"]
-[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="pressed" from="Darken/MainButtons/multiplayer" to="." method="_on_multiplayer_pressed"]
+[connection signal="pressed" from="Darken/MainButtons/settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Darken/MainButtons/local" to="." method="_on_local_pressed"]
+[connection signal="pressed" from="Darken/MainButtons/quit" to="." method="_on_quit_pressed"]
