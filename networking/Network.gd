@@ -53,6 +53,10 @@ func ping() -> void:
 	send_packet("ping", HEADERS.ping)
 
 
+func close():
+	ws.disconnect_from_host(0, "Close")
+
+
 func _connection_established(_protocol) -> void:
 	connected = true
 	emit_signal("connection_established")
@@ -92,7 +96,10 @@ func _data_recieved() -> void:
 		HEADERS.joinrequest:
 			emit_signal("join_result", text)
 		HEADERS.stopgame:
-			emit_signal("game_over", "your opponent requested stop", true)
+			if PacketHandler.leaving:
+				PacketHandler.leaving = false
+			else: # dont emit the signal if its a stophost thing (HACK)
+				emit_signal("game_over", "your opponent requested stop", true)
 		HEADERS.startgame:
 			emit_signal("start_game")
 		HEADERS.ping:

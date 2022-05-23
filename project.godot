@@ -65,6 +65,11 @@ _global_script_classes=[ {
 "path": "res://ui/Log.gd"
 }, {
 "base": "Node",
+"class": "NetManager",
+"language": "GDScript",
+"path": "res://networking/PacketHandler.gd"
+}, {
+"base": "Node",
 "class": "Network",
 "language": "GDScript",
 "path": "res://networking/Network.gd"
@@ -116,6 +121,7 @@ _global_script_class_icons={
 "King": "res://assets/pieces/california/wK.png",
 "Knight": "res://assets/pieces/california/wN.png",
 "Log": "",
+"NetManager": "",
 "Network": "",
 "OldColorView": "",
 "Pawn": "res://assets/pieces/california/wP.png",
@@ -145,6 +151,8 @@ Events="*res://Events.gd"
 Utils="*res://Utils.gd"
 SoundFx="*res://sounds/SoundFX.tscn"
 SaveLoad="*res://saveload.gd"
+ColorBack="*res://ui/background/ColorfullBackground.tscn"
+PacketHandler="*res://networking/PacketHandler.gd"
 
 [debug]
 

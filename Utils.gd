@@ -5,7 +5,7 @@ signal newfen(fen)
 
 var turn_moves: PoolStringArray = []
 var turns_moves: PoolStringArray = []
-
+var internet = false
 var counter := 0
 
 
@@ -70,6 +70,7 @@ func internet_available() -> bool:
 	var httpurl = "https://1.1.1.1"
 	var returnable = http.request(httpurl) == OK
 	http.queue_free()
+	internet = returnable
 	return returnable
 
 
@@ -148,3 +149,12 @@ func fen() -> String:
 		]
 	)  # pos  # turn  # castling  # enpassant  # halfmove  # fullmove
 	return fen
+
+
+func _notification(what: int) -> void:
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
+		if get_tree().get_root().has_node("Board"):
+			Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.stopgame)
+		yield(get_tree(), "idle_frame")  # wait for the packet to send
+		Log.info("Bye!")
+		get_tree().quit()
