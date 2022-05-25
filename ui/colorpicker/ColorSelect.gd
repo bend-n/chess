@@ -15,10 +15,6 @@ func set_color(newcolor):
 		update()
 
 
-func apply_hue(newhue):
-	self.color.h = newhue
-
-
 func _gui_input(event):
 	if Input.is_action_pressed("click") and event is InputEventMouse:
 		var position = event.position

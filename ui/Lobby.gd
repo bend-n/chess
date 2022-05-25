@@ -1,9 +1,9 @@
 extends Control
 
-onready var address: LineEdit = $Darken/Center/HBox/VBox/Address
-onready var buttons = $Darken/Center/HBox/VBox/buttons
-onready var status_ok = $Darken/Center/HBox/VBox/StatusOK
-onready var status_fail = $Darken/Center/HBox/VBox/StatusFail
+onready var address: LineEdit = find_node("Address")
+onready var buttons = find_node("buttons")
+onready var status_ok = find_node("StatusOK")
+onready var status_fail = find_node("StatusFail")
 
 
 func toggle(onoff) -> void:
@@ -11,10 +11,10 @@ func toggle(onoff) -> void:
 
 
 func _ready():
-	PacketHandler.connect("set_back_button", $Darken/Center/HBox/VBox/backbutton, "set_disabled")
 	PacketHandler.connect("set_status", self, "_set_status")
 	PacketHandler.connect("set_buttons", self, "_set_buttons")
 	PacketHandler.connect("set_visible", self, "toggle")
+	PacketHandler.connect("hosting", find_node("stophost"), "set_visible")
 	_set_status(PacketHandler.status[0], PacketHandler.status[1])
 	if !Utils.internet_available():
 		_set_status("no internet", false)
@@ -64,6 +64,10 @@ func _on_Address_text_entered(new_text: String):
 	validate_text(new_text)
 
 
-func _on_backbutton_pressed():
+func _on_tabs_tab_changed(tab: int):
+	if tab != get_parent().get_children().find(self):
+		PacketHandler.return()
+
+
+func _on_stophost_pressed():
 	PacketHandler.return()
-	get_tree().change_scene("res://ui/StartMenu.tscn")

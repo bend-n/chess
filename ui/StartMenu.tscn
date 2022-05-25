@@ -1,8 +1,16 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/StartMenu.gd" type="Script" id=2]
 [ext_resource path="res://ui/Settings.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ui/Lobby.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/ui/verdana-bold.ttf" type="DynamicFontData" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 300
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 5 )
 
 [node name="StartMenu" type="Control"]
 anchor_right = 1.0
@@ -11,66 +19,42 @@ mouse_filter = 2
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
-[node name="Darken" type="ColorRect" parent="."]
+[node name="tabs" type="TabContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 2
-color = Color( 0, 0, 0, 0.392157 )
+margin_left = 24.0
+margin_top = 32.0
+margin_right = -30.0
+margin_bottom = -40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+drag_to_rearrange_enabled = true
 
-[node name="MainButtons" type="VBoxContainer" parent="Darken"]
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -157.5
-margin_right = 157.5
-mouse_filter = 2
-alignment = 1
+[node name="Settings" parent="tabs" instance=ExtResource( 3 )]
+margin_left = 30.0
+margin_top = 90.0
+margin_right = -30.0
+margin_bottom = -30.0
 
-[node name="multiplayer" type="Button" parent="Darken/MainButtons"]
-margin_top = 226.0
-margin_right = 315.0
-margin_bottom = 332.0
-focus_mode = 0
-size_flags_horizontal = 4
-enabled_focus_mode = 0
-text = "multiplayer"
-
-[node name="settings" type="Button" parent="Darken/MainButtons"]
-margin_left = 38.0
-margin_top = 347.0
-margin_right = 276.0
-margin_bottom = 453.0
-focus_mode = 0
-size_flags_horizontal = 4
-enabled_focus_mode = 0
-text = "settings"
-
-[node name="local" type="Button" parent="Darken/MainButtons"]
+[node name="Lobby" parent="tabs" instance=ExtResource( 4 )]
 visible = false
-margin_left = 113.0
-margin_top = 242.0
-margin_right = 275.0
-margin_bottom = 348.0
-rect_min_size = Vector2( 100, 0 )
-focus_mode = 0
-size_flags_horizontal = 4
-enabled_focus_mode = 0
-text = "local"
+margin_left = 10.0
+margin_top = 60.0
+margin_right = -10.0
+margin_bottom = -10.0
 
-[node name="quit" type="Button" parent="Darken/MainButtons"]
-margin_left = 86.0
-margin_top = 468.0
-margin_right = 228.0
-margin_bottom = 574.0
+[node name="quit" type="Button" parent="tabs"]
+visible = false
+margin_left = -157.0
+margin_top = 315.0
+margin_right = -15.0
+margin_bottom = 421.0
 focus_mode = 0
 size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_fonts/font = SubResource( 1 )
 enabled_focus_mode = 0
 text = "exit"
 
-[node name="Settings" parent="Darken" instance=ExtResource( 3 )]
-visible = false
-
-[connection signal="pressed" from="Darken/MainButtons/multiplayer" to="." method="_on_multiplayer_pressed"]
-[connection signal="pressed" from="Darken/MainButtons/settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="Darken/MainButtons/local" to="." method="_on_local_pressed"]
-[connection signal="pressed" from="Darken/MainButtons/quit" to="." method="_on_quit_pressed"]
+[connection signal="tab_changed" from="tabs" to="tabs/Lobby" method="_on_tabs_tab_changed"]
+[connection signal="pressed" from="tabs/quit" to="." method="_on_quit_pressed"]

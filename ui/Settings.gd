@@ -1,14 +1,13 @@
 extends Control
 
 onready var piece_sets := Utils.walk_dir()
-onready var piece_set_button := $ColorRect/HBoxContainer/VBoxContainer/PieceSet
-onready var fullscreenbutton := $ColorRect/HBoxContainer/VBoxContainer2/FullscreenButton
-onready var vsyncbutton := $ColorRect/HBoxContainer/VBoxContainer2/VsyncButton
-onready var borderlessbutton := $ColorRect/HBoxContainer/VBoxContainer2/Borderless
-onready var preview: Preview = $ColorRect/HBoxContainer/VBoxContainer/Preview
-
-onready var board_color1: ColorPickerButtonBetter = $ColorRect/HBoxContainer/VBoxContainer3/boardcolor1
-onready var board_color2: ColorPickerButtonBetter = $ColorRect/HBoxContainer/VBoxContainer3/boardcolor2
+onready var piece_set_button := find_node("PieceSet")
+onready var fullscreenbutton := find_node("FullscreenButton")
+onready var vsyncbutton := find_node("VsyncButton")
+onready var borderlessbutton := find_node("Borderless")
+onready var preview: Preview = find_node("Preview")
+onready var board_color1: ColorPickerButtonBetter = find_node("boardcolor1")
+onready var board_color2: ColorPickerButtonBetter = find_node("boardcolor2")
 
 onready var settings: Dictionary = SaveLoad.files["settings"]["data"] setget set_settings
 
@@ -30,7 +29,7 @@ func update_button_visuals(set = settings) -> void:
 	borderlessbutton.pressed = !set["borderless"]
 	board_color1.color = set["board_color1"]
 	board_color2.color = set["board_color2"]
-	preview.update_preview(set["board_color1"], set["board_color2"], set["piece_set"])
+	preview.call_deferred("update_preview", set["board_color1"], set["board_color2"], set["piece_set"])
 
 
 func _ready() -> void:

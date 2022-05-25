@@ -104,8 +104,8 @@ margin_right = 125.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 50, 20 )
 
+[connection signal="color_changed" from="Panel/V/H/HueSlider" to="." method="_color_changed"]
 [connection signal="gui_input" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="_gui_input"]
-[connection signal="hue_changed" from="Panel/V/H/HueSlider" to="Panel/V/H/ColorSelect" method="apply_hue"]
 [connection signal="color_changed" from="Panel/V/H/ColorSelect" to="." method="_color_changed"]
 [connection signal="gui_input" from="Panel/V/H/ColorSelect" to="Panel/V/H/ColorSelect" method="_gui_input"]
 [connection signal="pressed" from="Panel/V/H2/Close" to="." method="done"]

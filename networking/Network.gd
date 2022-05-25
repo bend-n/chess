@@ -98,7 +98,7 @@ func _data_recieved() -> void:
 		HEADERS.stopgame:
 			if PacketHandler.leaving:
 				PacketHandler.leaving = false
-			else: # dont emit the signal if its a stophost thing (HACK)
+			else:  # dont emit the signal if its a stophost thing (HACK)
 				emit_signal("game_over", "your opponent requested stop", true)
 		HEADERS.startgame:
 			emit_signal("start_game")

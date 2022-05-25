@@ -5,25 +5,32 @@ class_name NetManager
 signal set_buttons(enabled)
 signal set_status(status, err, isok)
 signal set_visible(visibility)
-signal set_back_button(disabled)
+signal hosting(newhosting)
 
 signal game_over
 signal game_started
 
-var hosting = false
+var hosting = false setget set_hosting
 var leaving = false
 
 var status = ["", true, false]
+
 
 func set_buttons(enabled):
 	status[2] = enabled
 	emit_signal("set_buttons", enabled)
 
+
+func set_hosting(newhosting):
+	hosting = newhosting
+	emit_signal("hosting", newhosting)
+
+
 func return():
 	if hosting:
 		leaving = true
 		Globals.network.send_packet(Globals.network.game_code, Network.HEADERS.stopgame)  # stop hosting
-		hosting = false
+		set_hosting(false)
 	set_buttons(true)
 	set_status("", true)
 
@@ -45,14 +52,12 @@ func _ready():
 
 
 func requestjoin():
-	set_buttons( false)
-	emit_signal("set_back_button", true)
+	set_buttons(false)
 	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.joinrequest)
 
 
 func requesthost():
 	set_buttons(false)
-	emit_signal("set_back_button", true)
 	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.hostrequest)
 
 
@@ -73,17 +78,16 @@ func _on_join_result(accepted: String) -> void:
 
 
 func _on_host_result(accepted: String) -> void:
-	hosting = handle_result(accepted, "Hosted!")
+	set_hosting(handle_result(accepted, "Hosted!"))
 
 
 func handle_result(accepted: String, resultstring: String, team: bool = true) -> bool:
-	emit_signal("set_back_button", false)
 	Globals.team = team
 	if accepted == "Y":
 		set_status(resultstring, true)
 		return true
 	set_status(accepted, false)
-	set_buttons( true)
+	set_buttons(true)
 	return false
 
 
@@ -97,7 +101,7 @@ func _handle_game_over(error = "game over", isok = true) -> void:
 
 
 func _start_game() -> void:
-	hosting = false
+	set_hosting(false)
 	var board = load("res://Board.tscn").instance()
 	get_tree().get_root().add_child(board)
 	emit_signal("set_visible", false)
