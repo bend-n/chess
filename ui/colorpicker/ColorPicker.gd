@@ -26,7 +26,7 @@ func _ready():
 func update_color():
 	newcolorpreview.color = color
 	colorselect.color = color
-	hueslider.hue = color.h
+	hueslider.color = color
 
 
 func set_color(newcolor):

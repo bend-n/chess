@@ -9,36 +9,31 @@ anchor_bottom = 1.0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
-[node name="Darken" type="ColorRect" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color( 0, 0, 0, 0.396078 )
-
-[node name="Center" type="CenterContainer" parent="Darken"]
+[node name="Center" type="CenterContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="HBox" type="HBoxContainer" parent="Darken/Center"]
+[node name="HBox" type="HBoxContainer" parent="Center"]
 margin_left = 536.0
-margin_top = 226.0
+margin_top = 286.0
 margin_right = 886.0
-margin_bottom = 574.0
+margin_bottom = 513.0
 
-[node name="VBox" type="VBoxContainer" parent="Darken/Center/HBox"]
-margin_right = 350.0
-margin_bottom = 348.0
-
-[node name="backbutton" type="Button" parent="Darken/Center/HBox/VBox"]
-margin_right = 350.0
-margin_bottom = 106.0
-focus_mode = 0
-enabled_focus_mode = 0
-text = "go back"
-
-[node name="Address" type="LineEdit" parent="Darken/Center/HBox/VBox"]
-margin_top = 121.0
+[node name="VBox" type="VBoxContainer" parent="Center/HBox"]
 margin_right = 350.0
 margin_bottom = 227.0
+
+[node name="stophost" type="Button" parent="Center/HBox/VBox"]
+visible = false
+margin_left = 7.0
+margin_right = 343.0
+margin_bottom = 106.0
+size_flags_horizontal = 4
+text = "stop hosting"
+
+[node name="Address" type="LineEdit" parent="Center/HBox/VBox"]
+margin_right = 350.0
+margin_bottom = 106.0
 rect_min_size = Vector2( 350, 0 )
 focus_mode = 1
 text = "game_code"
@@ -48,12 +43,12 @@ placeholder_text = "game_code"
 caret_blink = true
 caret_blink_speed = 0.35
 
-[node name="buttons" type="HBoxContainer" parent="Darken/Center/HBox/VBox"]
-margin_top = 242.0
+[node name="buttons" type="HBoxContainer" parent="Center/HBox/VBox"]
+margin_top = 121.0
 margin_right = 350.0
-margin_bottom = 348.0
+margin_bottom = 227.0
 
-[node name="JoinButton" type="Button" parent="Darken/Center/HBox/VBox/buttons"]
+[node name="JoinButton" type="Button" parent="Center/HBox/VBox/buttons"]
 margin_right = 150.0
 margin_bottom = 106.0
 rect_min_size = Vector2( 150, 0 )
@@ -63,7 +58,7 @@ disabled = true
 enabled_focus_mode = 0
 text = "join"
 
-[node name="HostButton" type="Button" parent="Darken/Center/HBox/VBox/buttons"]
+[node name="HostButton" type="Button" parent="Center/HBox/VBox/buttons"]
 margin_left = 165.0
 margin_right = 350.0
 margin_bottom = 106.0
@@ -73,7 +68,7 @@ disabled = true
 enabled_focus_mode = 0
 text = "host"
 
-[node name="StatusOK" type="Label" parent="Darken/Center/HBox/VBox"]
+[node name="StatusOK" type="Label" parent="Center/HBox/VBox"]
 visible = false
 margin_top = 242.0
 margin_right = 500.0
@@ -81,7 +76,7 @@ margin_bottom = 292.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 autowrap = true
 
-[node name="StatusFail" type="Label" parent="Darken/Center/HBox/VBox"]
+[node name="StatusFail" type="Label" parent="Center/HBox/VBox"]
 visible = false
 margin_top = 307.0
 margin_right = 500.0
@@ -89,7 +84,7 @@ margin_bottom = 357.0
 custom_colors/font_color = Color( 0.698039, 0.415686, 0.415686, 1 )
 autowrap = true
 
-[connection signal="pressed" from="Darken/Center/HBox/VBox/backbutton" to="." method="_on_backbutton_pressed"]
-[connection signal="text_entered" from="Darken/Center/HBox/VBox/Address" to="." method="_on_Address_text_entered"]
-[connection signal="pressed" from="Darken/Center/HBox/VBox/buttons/JoinButton" to="." method="_on_join_pressed"]
-[connection signal="pressed" from="Darken/Center/HBox/VBox/buttons/HostButton" to="." method="_on_HostButton_pressed"]
+[connection signal="pressed" from="Center/HBox/VBox/stophost" to="." method="_on_stophost_pressed"]
+[connection signal="text_entered" from="Center/HBox/VBox/Address" to="." method="_on_Address_text_entered"]
+[connection signal="pressed" from="Center/HBox/VBox/buttons/JoinButton" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Center/HBox/VBox/buttons/HostButton" to="." method="_on_HostButton_pressed"]

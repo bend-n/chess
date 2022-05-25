@@ -2,7 +2,7 @@ extends Control
 
 const world = preload("res://Board.tscn")
 
-onready var settings := $Darken/Settings
+onready var settings := find_node("Settings")
 
 
 func _ready() -> void:
