@@ -26,13 +26,16 @@ func toggle(onoff) -> void:
 func update_button_visuals(set = settings) -> void:
 	vsyncbutton.pressed = set["vsync"]
 	fullscreenbutton.pressed = set["fullscreen"]
-	borderlessbutton.pressed = !set["borderless"]
+	if is_instance_valid(borderlessbutton):
+		borderlessbutton.pressed = !set["borderless"]
 	board_color1.color = set["board_color1"]
 	board_color2.color = set["board_color2"]
 	preview.call_deferred("update_preview", set["board_color1"], set["board_color2"], set["piece_set"])
 
 
 func _ready() -> void:
+	if OS.has_feature("HTML5"):
+		borderlessbutton.queue_free()
 	board_color1.color = settings.board_color1
 	board_color2.color = settings.board_color2
 	for i in piece_sets:  # add the items
