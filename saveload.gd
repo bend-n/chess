@@ -15,19 +15,19 @@ const default_settings_data = {
 var files := {"settings": {"file": settings_file, "data": default_settings_data.duplicate(true)}}  # file types
 
 
-func _ready():
+func _ready() -> void:
 	SaveLoad.load_data("settings")
 
 
-func save(type) -> void:
-	var file = File.new()
+func save(type: String) -> void:
+	var file := File.new()
 	file.open(files[type]["file"], File.WRITE)
 	file.store_string(var2str(files[type]["data"]))
 
 
 func load_data(type: String) -> Dictionary:
 	if check_file(type):
-		var file = File.new()
+		var file := File.new()
 		file.open(files[type]["file"], File.READ)
 		if file.get_as_text().length() > 0:
 			var read_dictionary: Dictionary = str2var(file.get_as_text())
@@ -37,6 +37,6 @@ func load_data(type: String) -> Dictionary:
 	return files[type]["data"]
 
 
-func check_file(type) -> bool:
-	var file = File.new()
+func check_file(type: String) -> bool:
+	var file := File.new()
 	return file.file_exists(files[type]["file"])

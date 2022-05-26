@@ -9,10 +9,10 @@ func _ready() -> void:
 	Events.connect("just_before_turn_over", self, "just_before_over")
 
 
-func get_moves(no_enemys = false, check_spots_check = true) -> Array:
-	var moves := []
+func get_moves(no_enemys := false, check_spots_check := true) -> PoolVector2Array:
+	var moves: PoolVector2Array = []
 	for i in all_dirs():
-		var spot: Vector2 = pos_around(i)
+		var spot := pos_around(i)
 		if is_on_board(spot):
 			if no_enemys and at_pos(spot):
 				continue
@@ -40,7 +40,7 @@ func just_before_over() -> void:  # assign metadata for threefold repetition dra
 					Globals.grid.matrix[8].bccr = true
 
 
-func castleing(justcheckrooks = false) -> Array:
+func castleing(justcheckrooks := false) -> Array:
 	if has_moved:
 		return []
 	var moves := []
@@ -51,7 +51,7 @@ func castleing(justcheckrooks = false) -> Array:
 	for i in range(len(rooks)):
 		if !is_on_board(rooks[i]):
 			continue
-		var rook = at_pos(rooks[i])
+		var rook: Piece = at_pos(rooks[i])
 		if !rook is Rook:
 			continue
 		if rook.has_moved:
@@ -60,8 +60,8 @@ func castleing(justcheckrooks = false) -> Array:
 			moves.append(labels[i])
 			continue
 		var direction: Vector2 = king_moveto_spots[i]
-		var posx2: Vector2 = pos_around(direction * 2)
-		var pos: Vector2 = pos_around(direction)
+		var posx2 := pos_around(direction * 2)
+		var pos := pos_around(direction)
 		if at_pos(posx2) or at_pos(pos) or checkcheck(posx2) or checkcheck(pos):
 			continue
 		if i == 1:  # 3x check for O-O-O
@@ -70,11 +70,13 @@ func castleing(justcheckrooks = false) -> Array:
 				continue
 		can_castle.append([posx2, rook, rook_motion[i], "O-O-O" if i == 1 else "O-O"])
 		moves.append(posx2)
+	if justcheckrooks:
+		moves.sort()
 	return moves
 
 
-func castle(position) -> String:
-	var return_string = ""
+func castle(position: Vector2) -> String:
+	var return_string := ""
 	if can_castle.size() == 1:
 		return_string = can_castle[0][3]
 	else:
@@ -89,13 +91,13 @@ func castle(position) -> String:
 
 func can_move() -> bool:  # checks if you can legally move
 	castle_check = false
-	var can: bool = .can_move()
+	var can := .can_move()
 	castle_check = true
 	return can
 
 
-func get_attacks(check_spots_check = true) -> Array:
+func get_attacks(check_spots_check := true) -> PoolVector2Array:
 	castle_check = false
-	var final: Array = .get_attacks(check_spots_check)
+	var final := .get_attacks(check_spots_check)
 	castle_check = true
 	return final

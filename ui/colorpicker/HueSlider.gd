@@ -1,28 +1,25 @@
 extends Control
 class_name HueSlider
 
-signal color_changed(color)
+signal hue_changed(hue)
 
-var color: Color setget set_color
+var hue: float = 0
 
 
-func _gui_input(event):
+func _gui_input(event: InputEvent) -> void:
 	if Input.is_action_pressed("click") and event is InputEventMouse:
-		var position = event.position
-		var tmphue = clamp(position.y / rect_size.y, 0, 1)
-		set_color(Color.from_hsv(tmphue, color.s, color.v))
-		emit_signal("color_changed", color)
+		var position: Vector2 = event.position
+		set_hue(clamp(position.y / rect_size.y, 0, 1))
+		emit_signal("hue_changed", hue)
 
 
-func set_color(newcolor):
-	if newcolor != color:
-		color = newcolor
+func set_hue(nh: float) -> void:
+	if nh != hue:
+		hue = nh
 		update()
 
 
-func _draw():
-	var x = rect_size.x
-	var y = color.h * rect_size.y
-	draw_line(Vector2(0, y - 1), Vector2(x, y - 1), Color.black, 1, true)
-	draw_line(Vector2(0, y), Vector2(x, y), Color.white, 1, true)
-	draw_line(Vector2(0, y + 1), Vector2(x, y + 1), Color.black, 1, true)
+func _draw() -> void:
+	var y := hue * rect_size.y
+	var drawclr := Color.from_hsv(wrapf(hue + .5, 0, 1), 1, 1, 1)
+	draw_line(Vector2(0, y), Vector2(rect_size.x, y), drawclr, 1, true)

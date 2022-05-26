@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/roboto.tres" type="DynamicFont" id=2]
@@ -7,15 +7,21 @@
 [ext_resource path="res://ui/Timer.gd" type="Script" id=5]
 [ext_resource path="res://ui/sandisplay/SanDisplay.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/Status.gd" type="Script" id=7]
-[ext_resource path="res://ui/barbutton/resignbutton.gd" type="Script" id=8]
-[ext_resource path="res://assets/ui/flag.png" type="Texture" id=9]
+[ext_resource path="res://ui/barbutton/drawbutton.gd" type="Script" id=8]
+[ext_resource path="res://assets/ui/draw.png" type="Texture" id=9]
+[ext_resource path="res://ui/GameUI.gd" type="Script" id=10]
+[ext_resource path="res://assets/ui/check.png" type="Texture" id=11]
+[ext_resource path="res://assets/ui/close.png" type="Texture" id=12]
+[ext_resource path="res://ui/barbutton/resignbutton.gd" type="Script" id=13]
+[ext_resource path="res://ui/confirmbar.gd" type="Script" id=14]
 [ext_resource path="res://ui/FENlabel.gd" type="Script" id=15]
 [ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=16]
 [ext_resource path="res://assets/ui/flip_board.png" type="Texture" id=17]
-[ext_resource path="res://ui/flipbutton.gd" type="Script" id=18]
+[ext_resource path="res://ui/barbutton/flipbutton.gd" type="Script" id=18]
+[ext_resource path="res://assets/ui/flag.png" type="Texture" id=19]
 
 [sub_resource type="DynamicFont" id=1]
-size = 25
+size = 35
 font_data = ExtResource( 3 )
 
 [sub_resource type="StyleBoxFlat" id=10]
@@ -29,22 +35,24 @@ font_data = ExtResource( 3 )
 size = 40
 font_data = ExtResource( 3 )
 
-[node name="UI" type="CanvasLayer"]
+[node name="GameUI" type="CanvasLayer"]
+script = ExtResource( 10 )
 
 [node name="Holder" type="Control" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -624.0
+margin_left = -622.0
+margin_right = 2.0
 theme = ExtResource( 1 )
 __meta__ = {
-"_edit_group_": true
+"_edit_lock_": true
 }
 
 [node name="Back" type="ColorRect" parent="Holder"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.141176, 0.141176, 0.141176, 1 )
+color = Color( 0.141176, 0.141176, 0.141176, 0.784314 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -58,9 +66,10 @@ __meta__ = {
 }
 
 [node name="BlackTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 107.0
+visible = false
+margin_top = 218.0
 margin_right = 624.0
-margin_bottom = 190.0
+margin_bottom = 301.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -79,27 +88,29 @@ margin_left = 72.0
 margin_right = -72.0
 color = Color( 0, 0, 0, 1 )
 
+[node name="MovesList" parent="Holder/Back/VBox" instance=ExtResource( 6 )]
+margin_top = 239.0
+margin_right = 624.0
+margin_bottom = 439.0
+
 [node name="Status" type="Label" parent="Holder/Back/VBox"]
-visible = false
-margin_top = 264.0
-margin_right = 400.0
-margin_bottom = 295.0
+margin_top = 454.0
+margin_right = 624.0
+margin_bottom = 496.0
 custom_fonts/font = SubResource( 1 )
-text = "hi there"
 align = 1
 autowrap = true
 script = ExtResource( 7 )
 
-[node name="MovesList" parent="Holder/Back/VBox" instance=ExtResource( 6 )]
-margin_top = 205.0
-margin_right = 624.0
-margin_bottom = 405.0
-
 [node name="buttonbarholder" type="Control" parent="Holder/Back/VBox"]
-margin_top = 420.0
+margin_top = 511.0
 margin_right = 624.0
-margin_bottom = 470.0
+margin_bottom = 561.0
 rect_min_size = Vector2( 50, 50 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="Panel" type="Panel" parent="Holder/Back/VBox/buttonbarholder"]
 anchor_right = 1.0
@@ -113,24 +124,70 @@ custom_constants/separation = 0
 alignment = 1
 
 [node name="FlipBoard" parent="Holder/Back/VBox/buttonbarholder/buttonbar" instance=ExtResource( 16 )]
+margin_left = 237.0
+margin_right = 287.0
+texture_normal = ExtResource( 17 )
+script = ExtResource( 18 )
+
+[node name="DrawButton" parent="Holder/Back/VBox/buttonbarholder/buttonbar" instance=ExtResource( 16 )]
 margin_left = 287.0
 margin_right = 337.0
-margin_bottom = 50.0
-script = ExtResource( 18 )
-texture = ExtResource( 17 )
+texture_normal = ExtResource( 9 )
+script = ExtResource( 8 )
+status = NodePath("../../../Status")
+confirmbar = NodePath("../../../confirmbar")
 
 [node name="ResignButton" parent="Holder/Back/VBox/buttonbarholder/buttonbar" instance=ExtResource( 16 )]
+margin_left = 337.0
+margin_right = 387.0
+texture_normal = ExtResource( 19 )
+script = ExtResource( 13 )
+status = NodePath("../../../Status")
+drawbutton = NodePath("../DrawButton")
+confirmbar = NodePath("../../../confirmbar")
+
+[node name="confirmbar" type="Control" parent="Holder/Back/VBox"]
 visible = false
-margin_left = 200.0
-margin_right = 250.0
-margin_bottom = 50.0
-script = ExtResource( 8 )
-texture = ExtResource( 9 )
+margin_top = 490.0
+margin_right = 624.0
+margin_bottom = 590.0
+rect_min_size = Vector2( 0, 100 )
+script = ExtResource( 14 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
+status = NodePath("../Status")
+
+[node name="H" type="HBoxContainer" parent="Holder/Back/VBox/confirmbar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 0
+alignment = 1
+
+[node name="yes" parent="Holder/Back/VBox/confirmbar/H" instance=ExtResource( 16 )]
+margin_left = 212.0
+margin_right = 312.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource( 11 )
+
+[node name="no" parent="Holder/Back/VBox/confirmbar/H" instance=ExtResource( 16 )]
+margin_left = 312.0
+margin_right = 412.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource( 12 )
 
 [node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
-margin_top = 485.0
+visible = false
+margin_top = 498.0
 margin_right = 624.0
-margin_bottom = 568.0
+margin_bottom = 581.0
 custom_fonts/font = ExtResource( 2 )
 text = "00:00.0"
 align = 1
@@ -154,16 +211,18 @@ color = Color( 0, 0, 0, 1 )
 script = ExtResource( 5 )
 
 [node name="Spacer" type="Control" parent="Holder/Back/VBox"]
-margin_top = 583.0
+visible = false
+margin_top = 530.0
 margin_right = 624.0
-margin_bottom = 603.0
+margin_bottom = 550.0
 rect_min_size = Vector2( 0, 20 )
 
 [node name="FENlabel" type="LineEdit" parent="Holder/Back/VBox"]
+visible = false
 margin_left = 58.0
-margin_top = 618.0
+margin_top = 503.0
 margin_right = 566.0
-margin_bottom = 692.0
+margin_bottom = 577.0
 size_flags_horizontal = 4
 custom_colors/font_color_uneditable = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 8 )
@@ -171,6 +230,7 @@ text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 align = 1
 editable = false
 expand_to_text_length = true
+context_menu_enabled = false
 placeholder_text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 script = ExtResource( 15 )
 
@@ -190,5 +250,7 @@ anchor_bottom = 1.0
 margin_right = -400.0
 color = Color( 0, 0, 0, 0.784314 )
 
-[connection signal="pressed" from="Holder/Back/VBox/buttonbarholder/buttonbar/FlipBoard" to="Holder/Back/VBox/buttonbarholder/buttonbar/FlipBoard" method="_pressed"]
-[connection signal="pressed" from="Holder/Back/VBox/buttonbarholder/buttonbar/ResignButton" to="Holder/Back/VBox/buttonbarholder/buttonbar/ResignButton" method="_pressed"]
+[connection signal="confirmed" from="Holder/Back/VBox/confirmbar" to="Holder/Back/VBox/buttonbarholder/buttonbar/DrawButton" method="_handle_confirm"]
+[connection signal="confirmed" from="Holder/Back/VBox/confirmbar" to="Holder/Back/VBox/buttonbarholder/buttonbar/ResignButton" method="_confirmed"]
+[connection signal="pressed" from="Holder/Back/VBox/confirmbar/H/yes" to="Holder/Back/VBox/confirmbar" method="_pressed" binds= [ true ]]
+[connection signal="pressed" from="Holder/Back/VBox/confirmbar/H/no" to="Holder/Back/VBox/confirmbar" method="_pressed" binds= [ false ]]

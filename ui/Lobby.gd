@@ -1,29 +1,29 @@
 extends Control
 
 onready var address: LineEdit = find_node("Address")
-onready var buttons = find_node("buttons")
-onready var status_ok = find_node("StatusOK")
-onready var status_fail = find_node("StatusFail")
+onready var buttons := find_node("buttons")
+onready var status_ok := find_node("StatusOK")
+onready var status_fail := find_node("StatusFail")
 
 
-func toggle(onoff) -> void:
-	visible = onoff
+func toggle(onoff: bool) -> void:
+	get_parent().visible = onoff
 
 
-func _ready():
+func _ready() -> void:
 	PacketHandler.connect("set_status", self, "_set_status")
 	PacketHandler.connect("set_buttons", self, "_set_buttons")
 	PacketHandler.connect("set_visible", self, "toggle")
 	PacketHandler.connect("hosting", find_node("stophost"), "set_visible")
 	_set_status(PacketHandler.status[0], PacketHandler.status[1])
-	if !Utils.internet_available():
+	if !Utils.internet:
 		_set_status("no internet", false)
 		_set_buttons(false)
 	else:
 		_set_buttons(PacketHandler.status[2])
 
 
-func _set_status(text, isok) -> void:  # Simple way to show status.
+func _set_status(text: String, isok: bool) -> void:  # Simple way to show status.
 	if isok:
 		status_ok.set_text(text)
 		status_fail.set_text("")
@@ -34,7 +34,7 @@ func _set_status(text, isok) -> void:  # Simple way to show status.
 	status_fail.visible = len(status_fail.text) > 0
 
 
-func _set_buttons(enabled = true) -> void:
+func _set_buttons(enabled := true) -> void:
 	for c in buttons.get_children():
 		c.disabled = !enabled
 	address.editable = enabled
@@ -50,8 +50,8 @@ func _on_HostButton_pressed() -> void:
 	PacketHandler.requesthost()
 
 
-func validate_text(text = address.get_text()) -> String:
-	var pos = address.caret_position
+func validate_text(text := address.get_text()) -> String:
+	var pos := address.caret_position
 	text = text.strip_edges()
 	text = text.replace(" ", "_")
 	address.text = text
@@ -60,7 +60,7 @@ func validate_text(text = address.get_text()) -> String:
 	return text
 
 
-func _on_Address_text_entered(new_text: String):
+func _on_Address_text_entered(new_text: String) -> void:
 	validate_text(new_text)
 
 
@@ -69,5 +69,5 @@ func _on_tabs_tab_changed(tab: int):
 		PacketHandler.return()
 
 
-func _on_stophost_pressed():
+func _on_stophost_pressed() -> void:
 	PacketHandler.return()

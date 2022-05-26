@@ -1,18 +1,18 @@
 extends Piece
 class_name Pawn, "res://assets/pieces/california/wP.png"
 
-const promotables := ["Q.png", "N.png", "R.png", "B.png"]
+const promotables := "QNRB"
 
 var twostepfirstmove := false
 var just_set := false
-var enpassant := []
+var enpassant: Array = []
 
 var promoteposition := Vector2()
 var promotetake := false
 
 onready var whiteint := 1 if white else -1
 onready var sprites := []
-onready var darken = get_node("../../Darken")
+onready var darken: ColorRect = $"../../Darken"
 
 
 func _ready() -> void:
@@ -21,23 +21,22 @@ func _ready() -> void:
 	Events.connect("just_before_turn_over", self, "_just_before_turn_over")
 	sprite.position = Globals.grid.piece_size / 2
 	for i in range(0, 4):  # add 3 sprites
-		var newsprite = load("res://ui/ClickableSprite.tscn").instance()
+		var newsprite: Node2D = load("res://ui/ClickableSprite.tscn").instance()
 		newsprite.position = (sprite.position + Vector2(0, (i * Globals.grid.piece_size.y) * whiteint))
-		newsprite.name = "Sprite%s" % str(i)
-		newsprite.connect("clicked", self, "handle_sprite_input_event")
-		newsprite.z_index = 5
+		newsprite.connect("clicked", self, "handle_sprite_input_event", [newsprite])
+		newsprite.z_index = 5  # its not a texturebutton so i can use this
 		newsprite.hide()
 		add_child(newsprite)
 		sprites.append(newsprite)
 
 
 func _exit_tree() -> void:
-	var find = Globals.pawns.find(self)
+	var find: int = Globals.pawns.find(self)
 	if find != -1:
 		Globals.pawns.remove(find)
 
 
-func moveto(position, real = true, take = false, override_moveto = false) -> void:
+func moveto(position: Vector2, real := true, take := false, override_moveto := false) -> void:
 	# check if 2 step
 	if real:
 		if !twostepfirstmove and !has_moved:
@@ -52,9 +51,9 @@ func moveto(position, real = true, take = false, override_moveto = false) -> voi
 		Globals.reset_halfmove()
 
 
-func get_moves(_var = false, check_spots_check = true) -> Array:
+func get_moves(_var := false, check_spots_check := true) -> PoolVector2Array:
 	var points := [Vector2.UP, Vector2.UP * 2]
-	var moves := []
+	var moves: PoolVector2Array = []
 	for i in range(len(points)):
 		var point: Vector2 = points[i]
 		point *= whiteint
@@ -70,20 +69,18 @@ func get_moves(_var = false, check_spots_check = true) -> Array:
 	return moves
 
 
-static func can_promote(position) -> bool:
-	if position.y >= 7 or position.y <= 0:
-		return true
-	return false
+static func can_promote(position: Vector2) -> bool:
+	return position.y >= 7 or position.y <= 0
 
 
-func passant(position) -> void:
-	enpassant.clear()
+func passant(position: Vector2) -> void:
+	enpassant.resize(0)
 	moveto(position)
 
 
-func get_attacks(check_spots_check = true) -> Array:
+func get_attacks(check_spots_check := true) -> PoolVector2Array:
 	var points := [Vector2.UP + Vector2.RIGHT, Vector2.UP + Vector2.LEFT]
-	var moves := []
+	var moves: PoolVector2Array = []
 	for i in range(len(points)):
 		var point: Vector2 = points[i]
 		point *= whiteint
@@ -98,13 +95,13 @@ func get_attacks(check_spots_check = true) -> Array:
 	return moves
 
 
-func en_passant(turncheck = true, check_spots_check = true) -> Array:  # in passing
+func en_passant(turncheck := true, check_spots_check := true) -> Array:  # in passing
 	var passants := [pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
 	var moves := []
 	for i in passants:
 		if !is_on_board(i) or !at_pos(i):
 			continue
-		var spot = at_pos(i)
+		var spot := at_pos(i)
 		if spot.white == white or !Utils.is_pawn(spot):
 			continue
 		if turncheck and white != Globals.turn:
@@ -120,27 +117,30 @@ func en_passant(turncheck = true, check_spots_check = true) -> Array:  # in pass
 	return moves
 
 
-func promote(position, type) -> void:
+func promote(position: Vector2, type: String) -> void:
 	if type == "take":
 		at_pos(position).hide()
 	move(position)  # only move the visuals
 	promoteposition = position
 	darken.show()
 	for i in range(len(promotables)):
-		sprites[i].sprite.texture = load("%s%s%s" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]])
+		sprites[i].sprite.texture = load(
+			"%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]]
+		)
+		sprites[i].name = promotables[i]
 		sprites[i].show()
 
 
-func handle_sprite_input_event(node) -> void:
+func handle_sprite_input_event(node: Node2D) -> void:
 	darken.hide()
-	var promote_to = promotables[sprites.find(node)][0]
-	var first = (
+	var promote_to := node.name
+	var first := (
 		algebraic_move_notation(promoteposition)
 		if !promotetake
 		else algebraic_take_notation(promoteposition, real_position)
 	)
-	var notation = "%s=%s" % [first, promote_to]
-	Globals.grid.promoting = null
+	Log.debug(promote_to)
+	var notation := "%s=%s" % [first, promote_to]
 	Globals.network.send_move_packet(
 		{
 			"start_position": real_position,
@@ -153,18 +153,18 @@ func handle_sprite_input_event(node) -> void:
 	)
 
 
-static func piece(string) -> String:
+static func piece(string: String) -> String:
 	match string:
 		"Q":
-			return "res://pieces/Queen.gd"
+			return "Queen"
 		"N":
-			return "res://pieces/Knight.gd"
+			return "Knight"
 		"R":
-			return "res://pieces/Rook.gd"
+			return "Rook"
 		"B":
-			return "res://pieces/Bishop.gd"
+			return "Bishop"
 		_:
-			return "res://pieces/Piece.gd"
+			return "Piece"
 
 
 func _on_turn_over() -> void:

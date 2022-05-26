@@ -1,33 +1,29 @@
-extends Control
+extends TextureButton
 class_name BarTextureButton
 
-signal pressed
-
-var focused = false
-
-export(Texture) var texture
+var focused: bool
 
 export(Color) var normal_color := Color.black
-export(Color) var highlight_color := Color(0.243137, 0.129412, 0.129412)
-export(Color) var pressed_color := Color(0.227451, 0.270588, 0.301961)
+export(Color) var highlight_color := Color(0.670588, 0.352941, 0.352941)
+export(Color) var pressed_color := Color(0.356863, 0.572549, 0.647059)
+export(Color) var disabled_color := Color(0.501961, 0.501961, 0.501961)
 
-onready var texture_button = $Texture
-onready var background = $Background
-
-
-func _ready():
-	texture_button.texture_normal = texture
-	texture_button.texture_focused = texture
-	texture_button.texture_pressed = texture
-	texture_button.texture_hover = texture
+onready var background := $Background
 
 
-func _on_Texture_pressed():
-	emit_signal("pressed")
+func _ready() -> void:
+	_focused(false)
 
 
-func _process(_delta):
-	if texture_button.pressed:
+func set_disabled(new: bool) -> void:
+	disabled = new
+	self_modulate = Color(.1, .1, .1, 0.5) if disabled else Color.white
+
+
+func _process(_delta := 0.0):
+	if disabled:
+		background.color = disabled_color
+	elif pressed:
 		background.color = pressed_color
 	elif focused:
 		background.color = highlight_color
@@ -35,11 +31,5 @@ func _process(_delta):
 		background.color = normal_color
 
 
-func _on_Texture_mouse_entered():
-	focused = true
-	background.color = highlight_color
-
-
-func _on_Texture_mouse_exited():
-	focused = false
-	background.color = normal_color
+func _focused(q: bool):
+	focused = q

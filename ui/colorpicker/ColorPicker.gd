@@ -6,39 +6,35 @@ var color: Color = Color.white setget set_color
 signal color_changed(color)
 signal done(color)
 
-onready var oldcolorview = $Panel/V/H2/OldColorView
-onready var newcolorpreview = $Panel/V/H2/NewColorPreview
-onready var colorselect = $Panel/V/H/ColorSelect
-onready var hueslider = $Panel/V/H/HueSlider
+onready var oldcolorview := $V/H2/OldColorView
+onready var newcolorpreview := $V/H2/NewColorPreview
+onready var colorselect := $V/H/ColorSelect
+onready var hueslider := $V/H/HueSlider
+onready var closebutton := $V/H2/Close
 
 
-func open():
-	oldcolorview.color = color
-	update_color()
+func open(newcolor: Color) -> void:
+	oldcolorview.color = newcolor
 	show()
+	set_color(newcolor)
 
 
-func _ready():
-	if has_node("/root/ColorPicker"):
-		open()  # for testing
-
-
-func update_color():
+func update_color() -> void:
 	newcolorpreview.color = color
 	colorselect.color = color
-	hueslider.color = color
 
 
-func set_color(newcolor):
+func set_color(newcolor: Color) -> void:
 	color = newcolor
 	update_color()
 	emit_signal("color_changed", newcolor)
 
 
-func done():
+func done() -> void:
+	closebutton._focused(false)
 	emit_signal("done", color)
 
 
-func _color_changed(newcolor: Color):
+func _color_changed(newcolor: Color) -> void:
 	if newcolor != color:
 		set_color(newcolor)

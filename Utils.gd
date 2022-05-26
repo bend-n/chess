@@ -5,12 +5,43 @@ signal newfen(fen)
 
 var turn_moves: PoolStringArray = []
 var turns_moves: PoolStringArray = []
-var internet = false
+var internet := false
 var counter := 0
+var fen := ""
+
+
+func get_args() -> Dictionary:
+	var arguments := {}
+	for argument in OS.get_cmdline_args():
+		var key_value = argument.split("=")
+		if len(key_value) == 2:
+			arguments[key_value[0].lstrip("--")] = key_value[1]
+		else:
+			arguments[key_value[0].lstrip("--")] = "true"
+	return arguments
 
 
 func _ready() -> void:
+	internet_available()
 	Events.connect("turn_over", self, "_on_turn_over")
+	if "help" in get_args():
+		print("usage: ./chess%s [debug | help]" % exec_ext())
+		print("run with command debug to enable debug mode")
+		print("run with command help to show this help")
+		get_tree().quit()  # dont wait
+	Debug.monitor(self, "fen")
+
+
+static func exec_ext() -> String:
+	if OS.has_feature("Windows"):
+		return ".exe"
+	elif OS.has_feature("OSX"):
+		return ".app/Contents/MacOS/chess"
+	elif OS.has_feature("X11"):
+		return ".x86_64"
+	elif OS.has_feature("web"):
+		return ".html"
+	return ""
 
 
 static func is_pawn(inode) -> bool:
@@ -21,16 +52,12 @@ static func is_king(inode) -> bool:
 	return inode is King
 
 
-func add_move(move) -> void:
+func add_move(move: String) -> void:
 	if turn_moves.size() == 0:
-		turn_moves.append(str(Globals.fullmove) + ". " + move)
+		turn_moves.append("%s. %s" % [Globals.fullmove, move])
 	else:
 		turn_moves.append(move)
 	emit_signal("newmove", move)
-
-
-static func flip_int(i: int) -> int:
-	return int(abs(7 - i))
 
 
 func reset_vars() -> void:
@@ -39,15 +66,15 @@ func reset_vars() -> void:
 	counter = 0
 
 
-static func to_algebraic(real_position) -> String:
-	return char(65 + (real_position.x)).to_lower() + str(8 - real_position.y)
+static func to_algebraic(pos: Vector2) -> String:
+	return "abcdefgh"[pos.x] + str(round(8 - pos.y))
 
 
 static func from_algebraic(algebraic_position: String) -> Vector2:
 	return Vector2(ord(algebraic_position[0]) - ord("a"), 8 - int(algebraic_position[1]))
 
 
-static func get_node_name(node) -> Array:
+static func get_node_name(node: Node) -> Array:
 	if is_pawn(node):
 		return ["♙", "p"] if node.white else ["♟", "p"]
 	elif node is King:
@@ -65,16 +92,16 @@ static func get_node_name(node) -> Array:
 
 
 func internet_available() -> bool:
-	var http = HTTPRequest.new()
+	var http := HTTPRequest.new()
 	add_child(http)
-	var httpurl = "https://1.1.1.1"
-	var returnable = http.request(httpurl) == OK
+	var httpurl := "https://1.1.1.1"
+	var returnable := http.request(httpurl) == OK
 	http.queue_free()
 	internet = returnable
 	return returnable
 
 
-func walk_dir(path = "res://assets/pieces") -> PoolStringArray:  # walk the directory, finding the asset packs
+func walk_dir(path := "res://assets/pieces") -> PoolStringArray:  # walk the directory, finding the asset packs
 	var folders: PoolStringArray = []  # init the folders
 	var dir := Directory.new()  # init the directory
 	if dir.open(path) == OK:  # open the directory
@@ -90,12 +117,12 @@ func walk_dir(path = "res://assets/pieces") -> PoolStringArray:  # walk the dire
 
 
 func format_seconds(time: float, use_milliseconds: bool = false) -> String:
-	var format_string = "%02d:%04.1f" if use_milliseconds else "%02d:%02d"
-	return format_string % [time / 60, fmod(time, 60)]
+	return "%02d:%04.1f" if use_milliseconds else "%02d:%02d" % [time / 60, fmod(time, 60)]
 
 
 func _on_turn_over() -> void:
-	var fen = fen()
+	fen = get_fen()
+	Log.info("fen: " + fen)
 	emit_signal("newfen", fen)
 	counter += 1
 	if counter >= 2:
@@ -104,12 +131,12 @@ func _on_turn_over() -> void:
 		turn_moves.resize(0)
 
 
-func fen() -> String:
-	var pieces = ""
+func get_fen() -> String:
+	var pieces := ""
 	for rank in range(8):
-		var empty = 0
+		var empty := 0
 		for file in range(8):
-			var spot = Globals.grid.matrix[rank][file]
+			var spot: Piece = Globals.grid.matrix[rank][file]
 			if spot == null:
 				empty += 1
 				if len(pieces) > 0 and str(empty - 1) == pieces[-1]:
@@ -122,39 +149,35 @@ func fen() -> String:
 		if rank != 7:
 			pieces += "/"
 	# handle castling checks
-	var whitecastling = PoolStringArray(Globals.white_king.castleing(true)).join(" ")
-	var blackcastling = PoolStringArray(Globals.black_king.castleing(true)).join(" ")
-	var castlingrights = ""
+	var whitecastling := PoolStringArray(Globals.white_king.castleing(true)).join("")
+	var blackcastling := PoolStringArray(Globals.black_king.castleing(true)).join("")
+	var castlingrights := ""
 	if blackcastling and whitecastling:
-		castlingrights += "K" if "K" in whitecastling else ""
-		castlingrights += "Q" if "Q" in whitecastling else ""
-		castlingrights += "k" if "K" in blackcastling else ""
-		castlingrights += "q" if "Q" in blackcastling else ""
+		castlingrights = whitecastling.to_upper() + blackcastling.to_lower()
 	else:
 		castlingrights = "-"
 
-	var enpassants = ""
+	var enpassants := ""
 	for pawn in Globals.pawns:
 		if pawn.twostepfirstmove and pawn.just_set:
 			enpassants += to_algebraic(pawn.real_position + (Vector2.DOWN * pawn.whiteint))
-	var fen = (
+	return (
 		"%s %s %s %s %s %s"
 		% [
 			pieces,
-			"w" if Globals.team else "b",
+			"w" if Globals.turn else "b",
 			castlingrights,
 			enpassants if enpassants else "-",
 			Globals.halfmove,
 			Globals.fullmove,
 		]
 	)  # pos  # turn  # castling  # enpassant  # halfmove  # fullmove
-	return fen
 
 
 func _notification(what: int) -> void:
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
 		if get_tree().get_root().has_node("Board"):
-			Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.stopgame)
+			Globals.network.send_packet(Globals.network.game_code, Network.HEADERS.stopgame)
 		yield(get_tree(), "idle_frame")  # wait for the packet to send
-		Log.info("Bye!")
+		Log.debug("Bye!")
 		get_tree().quit()

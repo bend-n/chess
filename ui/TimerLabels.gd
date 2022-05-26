@@ -3,19 +3,19 @@ extends Label
 var time: float setget set_time
 var stop := false
 
-const TIME = 300
+const STARTTIME = 300
 
 export(bool) var white := false
 
 onready var colorrect := $ColorRect
 
 
-func set_time(newtime) -> bool:
+func set_time(newtime: float) -> bool:
 	if stop:
 		return false
 	time = newtime
 	if time <= 0.0:
-		Events.emit_signal("outoftime", "white" if white else "black")
+		Events.emit_signal("outoftime", white)
 		stop = true
 		text = "00:00.0"
 		return false
@@ -25,7 +25,7 @@ func set_time(newtime) -> bool:
 
 
 func _ready() -> void:
-	set_time(TIME)
+	set_time(STARTTIME)
 	set_color()
 	colorrect.show_behind_parent = true
 	Events.connect("data_recieved", self, "set_color")
