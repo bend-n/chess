@@ -30,18 +30,18 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 drag_to_rearrange_enabled = true
 
-[node name="Settings" parent="tabs" instance=ExtResource( 3 )]
+[node name="Lobby" parent="tabs" instance=ExtResource( 4 )]
 margin_left = 30.0
 margin_top = 90.0
 margin_right = -30.0
 margin_bottom = -30.0
 
-[node name="Lobby" parent="tabs" instance=ExtResource( 4 )]
+[node name="Settings" parent="tabs" instance=ExtResource( 3 )]
 visible = false
-margin_left = 10.0
-margin_top = 60.0
-margin_right = -10.0
-margin_bottom = -10.0
+margin_left = 30.0
+margin_top = 90.0
+margin_right = -30.0
+margin_bottom = -30.0
 
 [node name="quit" type="Button" parent="tabs"]
 visible = false
