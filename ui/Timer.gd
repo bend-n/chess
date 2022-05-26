@@ -16,7 +16,7 @@ func _ready() -> void:
 	set_process(false)  # disable
 
 
-func _process(delta) -> void:
+func _process(delta: float) -> void:
 	if !enabled:
 		return
 	if Globals.turn:

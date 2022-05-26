@@ -1,17 +1,17 @@
 extends Node2D
 class_name Grid
 
-const topper_header = "┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓"
-const middle_header = "┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
-const middish_heads = "┗━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
-const bottom_header = "┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
-const smaller_heads = "    ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
-const letter_header = "    ┃ a ┃ b ┃ c ┃ d ┃ e ┃ f ┃ g ┃ h ┃"
-const ender = " ┃ "  # for pretty prints
-const Piece = preload("res://Piece.tscn")
-const Square = preload("res://Square.tscn")
-const BottomLeftLabel = preload("res://ui/BottomLeftLabel.tscn")
-const TopRightLabel = preload("res://ui/TopRightLabel.tscn")
+const topper_header := "┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓"
+const middle_header := "┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+const middish_heads := "┗━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+const bottom_header := "┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
+const smaller_heads := "    ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
+const letter_header := "    ┃ a ┃ b ┃ c ┃ d ┃ e ┃ f ┃ g ┃ h ┃"
+const ender := " ┃ "  # for pretty prints
+const Piece := preload("res://Piece.tscn")
+const Square := preload("res://Square.tscn")
+const BottomLeftLabel := preload("res://ui/BottomLeftLabel.tscn")
+const TopRightLabel := preload("res://ui/TopRightLabel.tscn")
 
 const piece_size := Vector2(100, 100)
 const default_metadata := {
@@ -30,22 +30,22 @@ export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
 export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
 
 var matrix := []
-var promoting = null
+var stop_input := false
 var background_matrix := []
 var history_matrixes := {}
 var last_clicked: Piece = null
-var flipped = false
+var flipped := false
 
-var labels = {"letters": [], "numbers": []}
+var labels := {"letters": [], "numbers": []}
 
 onready var background := $Background
 onready var ASSETS_PATH: String = "res://assets/pieces/%s/" % Globals.piece_set
 onready var foreground := $Foreground
 onready var pieces := $Pieces
-onready var status_label := $"../UI/Holder/Back/VBox/Status"
+onready var ui := $"../UI"
 
 
-func _init():
+func _init() -> void:
 	Globals.grid = self
 
 
@@ -56,32 +56,36 @@ func _ready() -> void:
 	Events.connect("turn_over", self, "_on_turn_over")  # listen for turn_over events
 	Events.connect("outoftime", self, "_on_outoftime")  # listen for timeout events
 
+	Debug.monitor(self, "last_clicked")
+	Debug.monitor(self, "matrix", "matrix[8]")
+	Debug.monitor(self, "highest value in 3fold", "threefoldrepetition()")
+
 
 func _exit_tree() -> void:
 	Globals.grid = null  # reset the globals grid when leaving tree
 
 
-func _input(event) -> void:  # input
+func _input(event: InputEvent) -> void:  # input
 	if event.is_action_released("debug"):  # if debug
 		print_matrix_pretty(matrix)  # print the matrix
 
 
-static func print_matrix_pretty(mat) -> void:  # print the matrix
+static func print_matrix_pretty(mat: Array) -> void:  # print the matrix
 	for j in range(8):  # for each row
 		var r: Array = mat[j]  # get the row
 		if j == 0:
-			Log.info(topper_header)  # print the top border
+			print(topper_header)  # print the top border
 		else:
-			Log.info(middle_header)  # print the middle border
-		var row = "┃ %s ┃ " % str(8 - j)  # init the string
+			print(middle_header)  # print the middle border
+		var row := "┃ %s ┃ " % str(8 - j)  # init the string
 		for i in range(8):  # for each column
-			var c = r[i]  # get the column
+			var c: Piece = r[i]  # get the column
 			if c:  # if there is a piece
 				row += c.mininame + ender  # add the shortname
 			else:  # if there is no piece
 				row += " " + ender
-		Log.info(row)  # print the string
-	Log.info("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
+		print(row)  # print the string
+	print("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
 
 
 func reload_sprites() -> void:
@@ -94,30 +98,22 @@ func reload_sprites() -> void:
 func flip_pieces() -> void:
 	for i in range(8):
 		for j in range(8):
-			var spot = matrix[i][j]
+			var spot: Piece = matrix[i][j]
 			if spot:
 				spot.sprite.flip_v = flipped
 				spot.sprite.flip_h = flipped
-				# spot.tween.interpolate_property(
-				# 	spot.sprite, "rotation_degrees", spot.sprite.rotation_degrees, degree, .5
-				# )
-				# spot.tween.start()
 
 
 func flip_labels() -> void:
 	for i in range(8):
-		var numlabel = labels.numbers[i].get_node("Label")
-		var letlabel = labels.letters[i].get_node("Label")
-		var number: int
-		if flipped:
-			number = i + 1
-		else:
-			number = 8 - i
+		var numlabel: Label = labels.numbers[i].get_node("Label")
+		var letlabel: Label = labels.letters[i].get_node("Label")
+		var number := i + 1 if flipped else 8 - i
 		numlabel.text = str(number)
 		letlabel.text = "hgfedcba"[number - 1]
 
 
-func flip_board():
+func flip_board() -> void:
 	if global_position == Vector2(800, 800):
 		flipped = false
 		global_position = Vector2(0, 0)
@@ -135,33 +131,31 @@ func flip_board():
 func init_labels() -> void:
 	for i in range(8):
 		labels.letters.append(init_label(BottomLeftLabel, i, Vector2(i, 7), "abcdefgh"[i]))
-
 		labels.numbers.append(init_label(TopRightLabel, i, Vector2(7, i), str(8 - i)))
 
 
 func init_label(labelscene: PackedScene, i: int, position: Vector2, text: String) -> Control:
-	var labelholder = labelscene.instance()
+	var labelholder: Control = labelscene.instance()
 	labelholder.rect_size = piece_size
 	labelholder.rect_position = position * piece_size
-	var label = labelholder.get_node("Label")
+	var label: Label = labelholder.get_node("Label")
 	label.text = text
 	label.add_color_override("font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2)
 	foreground.add_child(labelholder)
 	return labelholder
 
 
-func threefoldrepetition() -> bool:
-	for i in history_matrixes.values():
-		if i >= 3:
-			return true
-	return false
+func threefoldrepetition() -> int:
+	if !history_matrixes.values():
+		return 0
+	return history_matrixes.values().max()
 
 
-func mat2str(mat = matrix) -> String:
+func mat2str(mat: Array = matrix) -> String:
 	var string := ""
 	for y in range(8):
 		for x in range(8):
-			var spot = mat[y][x]
+			var spot: Piece = mat[y][x]
 			if spot:
 				string += spot.mininame
 			else:
@@ -172,29 +166,27 @@ func mat2str(mat = matrix) -> String:
 	return string
 
 
-func drawed() -> void:
-	return  # TODO: make gameovers work again
-	# Events.emit_signal("game_over")
-	# SoundFx.play("Draw")
-	# yield(get_tree().create_timer(5), "timeout")
-	# Events.emit_signal("go_back")
-	# SoundFx.play("Victory")
+func drawed(reason := "") -> void:
+	ui.set_status("draw by " + reason)
+	Events.emit_signal("game_over")
+	SoundFx.play("Draw")
+	yield(get_tree().create_timer(5), "timeout")
+	Events.emit_signal("go_back")
 
 
-func win(_winner) -> void:
-	return  # TODO: make gameovers work again
-	# Events.emit_signal("game_over")
-	# Log.info([winner, " won the game in ", Globals.turns(), " turns!"])
-	# SoundFx.play("Victory")
-	# yield(get_tree().create_timer(5), "timeout")
-	# Events.emit_signal("go_back")
-	# SoundFx.play("Victory")
+func win(winner: bool, reason := "") -> void:
+	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason])  # black won the game by checkmate
+	Events.emit_signal("game_over")
+	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.turns()])
+	SoundFx.play("Victory")
+	yield(get_tree().create_timer(5), "timeout")
+	Events.emit_signal("go_back")
 
 
-func check_in_check(prin = false) -> bool:  # check if in_check
+func check_in_check(prin := false) -> bool:  # check if in_check
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
-			var spot = matrix[i][j]  # get the square
+			var spot: Piece = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
 				if spot.can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
 					# control never flows here
@@ -210,7 +202,7 @@ func check_in_check(prin = false) -> bool:  # check if in_check
 func can_move() -> bool:
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
-			var spot = matrix[i][j]  # get the square
+			var spot: Piece = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.team:  # enemie: checking for our enemys
 				if spot.can_move():
 					return true
@@ -228,7 +220,7 @@ func init_matrix() -> void:  # create the matrix
 
 func make_piece(position: Vector2, script: String, white: bool = true) -> void:  # make peace
 	var piece := Piece.instance()  # create a piece
-	piece.script = load(script)  # set the script
+	piece.script = load("res://pieces/%s.gd" % script)  # set the script
 	piece.real_position = position  # set the real position
 	piece.global_position = position * piece_size  # set the global position
 	piece.white = white  # set its team
@@ -261,39 +253,39 @@ func add_pieces() -> void:  # add the pieces
 
 func add_pawns() -> void:
 	for i in range(8):
-		make_piece(Vector2(i, 1), "res://pieces/Pawn.gd", false)
-		make_piece(Vector2(i, 6), "res://pieces/Pawn.gd", true)
+		make_piece(Vector2(i, 1), "Pawn", false)
+		make_piece(Vector2(i, 6), "Pawn", true)
 
 
 func add_rooks() -> void:
-	make_piece(Vector2(0, 0), "res://pieces/Rook.gd", false)
-	make_piece(Vector2(7, 0), "res://pieces/Rook.gd", false)
-	make_piece(Vector2(0, 7), "res://pieces/Rook.gd", true)
-	make_piece(Vector2(7, 7), "res://pieces/Rook.gd", true)
+	make_piece(Vector2(0, 0), "Rook", false)
+	make_piece(Vector2(7, 0), "Rook", false)
+	make_piece(Vector2(0, 7), "Rook", true)
+	make_piece(Vector2(7, 7), "Rook", true)
 
 
 func add_knights() -> void:
-	make_piece(Vector2(1, 0), "res://pieces/Knight.gd", false)
-	make_piece(Vector2(6, 0), "res://pieces/Knight.gd", false)
-	make_piece(Vector2(1, 7), "res://pieces/Knight.gd", true)
-	make_piece(Vector2(6, 7), "res://pieces/Knight.gd", true)
+	make_piece(Vector2(1, 0), "Knight", false)
+	make_piece(Vector2(6, 0), "Knight", false)
+	make_piece(Vector2(1, 7), "Knight", true)
+	make_piece(Vector2(6, 7), "Knight", true)
 
 
 func add_bishops() -> void:
-	make_piece(Vector2(2, 0), "res://pieces/Bishop.gd", false)
-	make_piece(Vector2(5, 0), "res://pieces/Bishop.gd", false)
-	make_piece(Vector2(2, 7), "res://pieces/Bishop.gd", true)
-	make_piece(Vector2(5, 7), "res://pieces/Bishop.gd", true)
+	make_piece(Vector2(2, 0), "Bishop", false)
+	make_piece(Vector2(5, 0), "Bishop", false)
+	make_piece(Vector2(2, 7), "Bishop", true)
+	make_piece(Vector2(5, 7), "Bishop", true)
 
 
 func add_queens() -> void:
-	make_piece(Vector2(3, 0), "res://pieces/Queen.gd", false)
-	make_piece(Vector2(3, 7), "res://pieces/Queen.gd", true)
+	make_piece(Vector2(3, 0), "Queen", false)
+	make_piece(Vector2(3, 7), "Queen", true)
 
 
 func add_kings() -> void:
-	make_piece(Vector2(4, 0), "res://pieces/King.gd", false)
-	make_piece(Vector2(4, 7), "res://pieces/King.gd", true)
+	make_piece(Vector2(4, 0), "King", false)
+	make_piece(Vector2(4, 7), "King", true)
 	Globals.white_king = matrix[7][4]  # set the white king
 	Globals.black_king = matrix[0][4]  # set the black king
 
@@ -304,24 +296,26 @@ func check_for_circle(position: Vector2) -> bool:  # check for a circle, validat
 
 func check_for_frame(position: Vector2) -> bool:  # check for a frame, validating taking
 	if !is_instance_valid(matrix[position.y][position.x]):  # if there is no piece
-		return false  # return false
+		return false  # there is no frame
 	return matrix[position.y][position.x].frameon  # return if the frame is on
 
 
 func square_clicked(position: Vector2) -> void:  # square clicked
 	Log.debug(Utils.to_algebraic(position) + " clicked")
-	if promoting != null:
+	if stop_input:
 		return
 	if Globals.turn != Globals.team:
 		return
-	var spot = matrix[position.y][position.x]  # get the spot
+	var spot: Piece = matrix[position.y][position.x]  # get the spot
 	if !spot or spot.white != Globals.team:
 		if !is_instance_valid(last_clicked):
 			return
 		if check_for_frame(position):  # takeable
 			handle_take(position)
+			stop_input = true
 		elif check_for_circle(position):  # see if theres a circle at the position
 			handle_move(position)  # move
+			stop_input = true
 		last_clicked.clear_clicked()  # remove the circles
 		last_clicked = null  # set it to null
 	elif last_clicked != spot:  # we got a new piece (or pawn) clicked
@@ -331,17 +325,16 @@ func square_clicked(position: Vector2) -> void:  # square clicked
 		spot.clicked()  # tell the piece shit happeend
 
 
-func handle_take(position) -> void:
+func handle_take(position: Vector2) -> void:
 	if Utils.is_pawn(last_clicked):  # if its a pawn
-		var pawn = last_clicked
-		if check_promote(pawn, position, "take"):
+		if check_promote(last_clicked, position, "take"):
 			return
 	Globals.network.send_move_packet(
 		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move
 	)  # piece taking piece
 
 
-func handle_move(position) -> void:
+func handle_move(position: Vector2) -> void:
 	if Utils.is_king(last_clicked) and last_clicked.can_castle:
 		for i in range(len(last_clicked.can_castle)):
 			var castle_data = last_clicked.can_castle[i]
@@ -359,7 +352,7 @@ func handle_move(position) -> void:
 
 				return
 	if Utils.is_pawn(last_clicked):
-		var pawn = last_clicked
+		var pawn: Pawn = last_clicked
 		if pawn.enpassant:
 			for i in range(len(pawn.enpassant)):
 				var en_passant_data = pawn.enpassant[i]
@@ -370,7 +363,7 @@ func handle_move(position) -> void:
 						Network.MOVEHEADERS.passant
 					)
 					return
-		if check_promote(pawn, position):
+		elif check_promote(pawn, position):
 			return
 	Globals.network.send_move_packet(
 		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move
@@ -380,7 +373,6 @@ func handle_move(position) -> void:
 func check_promote(pawn, position, calltype: String = "move") -> bool:
 	if pawn.can_promote(position):
 		pawn.promote(position, calltype)
-		promoting = position
 		return true
 	return false
 
@@ -388,25 +380,27 @@ func check_promote(pawn, position, calltype: String = "move") -> bool:
 func clear_fx() -> void:  # clear the circles
 	for i in range(8):  # for each row
 		for j in range(8):  # for each column
-			var square = background_matrix[i][j]  # get the square
+			var square: ColorRect = background_matrix[i][j]  # get the square
 			square.set_circle(false)  # set the circle to false
-			var piece = matrix[i][j]  # get the piece
+			var piece: Piece = matrix[i][j]  # get the piece
 			if piece:  # if there is a piece
 				piece.set_frame(false)  # clear the frame
 
 
-func _on_outoftime(who) -> void:
-	if who == "white":
-		win("black")
-	else:
-		win("white")
+func _on_outoftime(who: bool) -> void:
+	win(who, "time")
 
 
 func _on_turn_over() -> void:
-	var matstr: String = mat2str()
-	if !history_matrixes.has(matstr):
+	stop_input = false
+	Log.debug("turn over. new turn: " + Globals.get_turn())
+	var matstr := mat2str()
+	Log.debug("matstr: " + matstr)
+	if !matstr in history_matrixes:
+		Log.debug("new matrix entry")
 		history_matrixes[matstr] = 1
 	else:
+		Log.debug(["matrix entry = ", history_matrixes[matstr], "+ 1"])
 		history_matrixes[matstr] += 1
 	Globals.checking_piece = null  # reset checking_piece
 	Globals.in_check = false  # reset in_check
@@ -415,12 +409,8 @@ func _on_turn_over() -> void:
 	check_in_check(true)  # check if in_check
 	if !can_move():
 		if Globals.in_check:
-			var winner := "black" if Globals.turn else "white"
-			status_label.text("%s won the game by checkmate" % winner)
-			win(winner)
+			win(!Globals.turn, "checkmate")
 		else:
-			status_label.text("stalemate")
-			drawed()
-	elif threefoldrepetition():
-		status_label.text("draw by threefold repetition")
-		drawed()
+			drawed("stalemate")
+	elif threefoldrepetition() >= 3:
+		drawed("threefold repetition")

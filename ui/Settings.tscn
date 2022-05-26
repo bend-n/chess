@@ -23,7 +23,7 @@ alignment = 1
 [node name="TabContainer" type="TabContainer" parent="H"]
 margin_left = 203.0
 margin_right = 703.0
-margin_bottom = 530.0
+margin_bottom = 570.0
 rect_min_size = Vector2( 500, 0 )
 size_flags_vertical = 0
 custom_constants/hseparation = 20
@@ -40,25 +40,25 @@ margin_bottom = -30.0
 alignment = 1
 
 [node name="boardcolor1" parent="H/TabContainer/colors" instance=ExtResource( 5 )]
-margin_left = 77.0
+margin_left = 57.0
 margin_top = 26.0
-margin_right = 403.0
+margin_right = 383.0
 margin_bottom = 132.0
 size_flags_horizontal = 4
 text = "boardcolor1"
 
 [node name="boardcolor2" parent="H/TabContainer/colors" instance=ExtResource( 5 )]
-margin_left = 77.0
+margin_left = 57.0
 margin_top = 147.0
-margin_right = 403.0
+margin_right = 383.0
 margin_bottom = 253.0
 size_flags_horizontal = 4
 text = "boardcolor2"
 
 [node name="PieceSet" type="OptionButton" parent="H/TabContainer/colors"]
-margin_left = 57.0
+margin_left = 37.0
 margin_top = 268.0
-margin_right = 423.0
+margin_right = 403.0
 margin_bottom = 424.0
 focus_mode = 0
 size_flags_horizontal = 4

@@ -45,23 +45,20 @@ func clear_clicked() -> void:
 	Globals.grid.clear_fx()
 
 
-func algebraic_take_notation(position, startpos = real_position) -> String:
-	var starter := shortname if shortname != "p" else to_algebraic(startpos)[0]
-	return starter + "x" + to_algebraic(position)
+func algebraic_take_notation(position: Vector2, startpos: Vector2 = real_position) -> String:
+	var starter := shortname if shortname != "p" else Utils.to_algebraic(startpos)[0]
+	return starter + "x" + Utils.to_algebraic(position)
 
 
-func algebraic_move_notation(position) -> String:
+func algebraic_move_notation(position: Vector2) -> String:
 	var starter := shortname if shortname != "p" else ""
-	return starter + to_algebraic(position)
-
-
-static func to_algebraic(position) -> String:
-	return Globals.grid.background_matrix[position.x][position.y].get_string()
+	return starter + Utils.to_algebraic(position)
 
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.interpolate_property(self, "position", position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK)
-	var signresult = sign(newpos.x * Globals.grid.piece_size.x - global_position.x)
+	var signresult := sign(newpos.x * Globals.grid.piece_size.x - global_position.x)
+	Log.debug("signresult: " + str(signresult))
 	if signresult == 1:
 		rotate.play("Right")
 	elif signresult == -1:
@@ -70,7 +67,7 @@ func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.start()
 
 
-func moveto(position, real := true, take := false, override_moveto = false) -> void:
+func moveto(position: Vector2, real := true, take := false, override_moveto := false) -> void:
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[position.y][position.x] = self
 	if real:
@@ -86,7 +83,7 @@ func moveto(position, real := true, take := false, override_moveto = false) -> v
 				"%s moving from %s to %s"
 				% [
 					shortname + " white" if white else " black",
-					Utils.to_algebraic(global_position / Globals.grid.piece_size),
+					Utils.to_algebraic((global_position / Globals.grid.piece_size).snapped(Vector2(1, 1))),
 					Utils.to_algebraic(real_position)
 				]
 			)
@@ -95,25 +92,27 @@ func moveto(position, real := true, take := false, override_moveto = false) -> v
 		has_moved = true
 
 
-func pos_around(around_vector) -> Vector2:
+func pos_around(around_vector: Vector2) -> Vector2:
 	return real_position + around_vector
 
 
-static func all_dirs() -> Array:
-	return [
-		Vector2.UP,
-		Vector2.DOWN,
-		Vector2.LEFT,
-		Vector2.RIGHT,
-		Vector2(1, 1),
-		Vector2(1, -1),
-		Vector2(-1, 1),
-		Vector2(-1, -1)
-	]
+static func all_dirs() -> PoolVector2Array:
+	return PoolVector2Array(
+		[
+			Vector2.UP,
+			Vector2.DOWN,
+			Vector2.LEFT,
+			Vector2.RIGHT,
+			Vector2(1, 1),
+			Vector2(1, -1),
+			Vector2(-1, 1),
+			Vector2(-1, -1)
+		]
+	)
 
 
-func traverse(arr := [], no_enemys = false, check_spots_check = true) -> Array:
-	var circle_array := []
+func traverse(arr: PoolVector2Array = [], no_enemys := false, check_spots_check := true) -> PoolVector2Array:
+	var circle_array: PoolVector2Array = []
 	for i in arr:
 		var pos := real_position
 		while true:
@@ -134,7 +133,7 @@ func traverse(arr := [], no_enemys = false, check_spots_check = true) -> Array:
 	return circle_array
 
 
-static func at_pos(vector: Vector2):
+static func at_pos(vector: Vector2) -> Piece:
 	if is_instance_valid(Globals.grid):
 		return Globals.grid.matrix[vector.y][vector.x]
 	return null
@@ -146,13 +145,13 @@ func can_move() -> bool:  # checks if you can legally move
 	return false
 
 
-func get_moves(_no_enemys = false, _check_spots_check = true) -> Array:  # @Override
-	return []
+func get_moves(_no_enemys := false, _check_spots_check := true) -> PoolVector2Array:  # @Override
+	return PoolVector2Array()
 
 
-func get_attacks(check_spots_check = true) -> Array:  # @Override
-	var moves: Array = get_moves(false, check_spots_check)  # assumes the attacks are same as moves
-	var final := []
+func get_attacks(check_spots_check := true) -> PoolVector2Array:  # @Override
+	var moves := get_moves(false, check_spots_check)  # assumes the attacks are same as moves
+	var final: PoolVector2Array = []
 	for i in moves:
 		if at_pos(i) != null:
 			if at_pos(i).white != white:  # attack ze enemie
@@ -162,24 +161,24 @@ func get_attacks(check_spots_check = true) -> Array:  # @Override
 	return final
 
 
-func can_attack_piece(piece) -> bool:
+func can_attack_piece(piece: Piece) -> bool:
 	for pos in get_attacks(false):
 		if at_pos(pos) == piece:
 			return true
 	return false
 
 
-static func create_move_circles(pos) -> void:
+static func create_move_circles(pos: Vector2) -> void:
 	Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)  # make the move circle
 
 
-static func create_take_circles(spot) -> void:  # create take circles
+static func create_take_circles(spot: Piece) -> void:  # create take circles
 	spot.set_frame()  # turn on the little take frame on the piece, to show its takeable
 
 
 static func set_circle(positions: Array, type := "move") -> void:
 	for pos in positions:
-		var spot = at_pos(pos)  # get the piece at the position
+		var spot := at_pos(pos)  # get the piece at the position
 		if type == "move":
 			create_move_circles(pos)  # create the move circle
 		elif type == "take":
@@ -216,6 +215,6 @@ func took() -> void:  # called when piece is taken
 	anim.play("Take")
 
 
-func set_frame(value = true) -> void:
+func set_frame(value := true) -> void:
 	frameon = value
 	frame.visible = value

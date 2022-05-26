@@ -1,7 +1,6 @@
 extends ColorRect
 
 var real_position := Vector2()
-var algebraic_string := ""
 var circle_on := false
 
 onready var area := $Squarea
@@ -17,7 +16,6 @@ func _ready() -> void:
 	circle.visible = false
 	areacollisionshape.global_position += Globals.grid.piece_size / 2
 	areacollisionshape.shape.extents = Vector2(rect_size.x / 2, rect_size.y / 2)
-	algebraic_string = Utils.to_algebraic(real_position)
 
 
 func _on_Squarea_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:
@@ -25,11 +23,6 @@ func _on_Squarea_input_event(_viewport: Node, _event: InputEvent, _shape_idx: in
 		emit_signal("clicked", real_position)
 
 
-func get_string() -> String:
-	return algebraic_string
-
-
-func set_circle(boolean: bool, real = true) -> void:
+func set_circle(boolean: bool) -> void:
 	circle_on = boolean
-	if real:
-		circle.visible = boolean
+	circle.visible = boolean

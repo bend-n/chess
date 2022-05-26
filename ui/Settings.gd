@@ -11,26 +11,28 @@ onready var board_color2: ColorPickerButtonBetter = find_node("boardcolor2")
 
 onready var settings: Dictionary = SaveLoad.files["settings"]["data"] setget set_settings
 
+var ignore_set_settings = false
 
-func set_settings(new_settings) -> void:
+
+func set_settings(new_settings: Dictionary) -> void:
+	if ignore_set_settings:
+		return
 	update_button_visuals(new_settings)
 	settings = new_settings
 	SaveLoad.files["settings"]["data"] = settings
 	SaveLoad.save("settings")
 
 
-func toggle(onoff) -> void:
-	visible = onoff
-
-
-func update_button_visuals(set = settings) -> void:
+func update_button_visuals(set: Dictionary = settings) -> void:
+	ignore_set_settings = true
 	vsyncbutton.pressed = set["vsync"]
 	fullscreenbutton.pressed = set["fullscreen"]
 	if is_instance_valid(borderlessbutton):
 		borderlessbutton.pressed = !set["borderless"]
 	board_color1.color = set["board_color1"]
 	board_color2.color = set["board_color2"]
-	preview.call_deferred("update_preview", set["board_color1"], set["board_color2"], set["piece_set"])
+	preview.update_preview(set["board_color1"], set["board_color2"], set["piece_set"])
+	ignore_set_settings = false
 
 
 func _ready() -> void:
@@ -58,16 +60,7 @@ func update_vars() -> void:
 	SaveLoad.save("settings")
 
 
-func _input(event) -> void:
-	if visible and event.is_action_pressed("ui_cancel"):
-		toggle(false)
-
-
-func _on_BackButton_pressed() -> void:
-	toggle(false)
-
-
-func _on_PieceSet_item_selected(index) -> void:
+func _on_PieceSet_item_selected(index: int) -> void:
 	Globals.piece_set = piece_sets[index]
 	self.settings.piece_set = piece_sets[index]
 
@@ -87,16 +80,16 @@ func _on_Borderless_toggled(button_pressed: bool) -> void:
 	OS.window_borderless = !button_pressed
 
 
-func _on_boardcolor1_newcolor(color: Color):
+func _on_boardcolor1_newcolor(color: Color) -> void:
 	Globals.board_color1 = color
 	self.settings.board_color1 = color
 
 
-func _on_boardcolor2_newcolor(color: Color):
+func _on_boardcolor2_newcolor(color: Color) -> void:
 	Globals.board_color2 = color
 	self.settings.board_color2 = color
 
 
-func _on_resetbutton_pressed():
+func _on_resetbutton_pressed() -> void:
 	self.settings = SaveLoad.default_settings_data.duplicate(true)
 	update_vars()

@@ -1,6 +1,6 @@
 extends Node
 
-const soundpath = "res://sounds/"
+const soundpath := "res://sounds/"
 
 var sounds := {
 	"Check": load(soundpath + "Check.ogg"),
@@ -15,7 +15,7 @@ var sounds := {
 onready var sound_players := get_children()
 
 
-func play(sound_string, pitch_scale = 1, volume_db = 0) -> void:
+func play(sound_string: String, pitch_scale: float = 1, volume_db: float = 0) -> void:
 	for soundPlayer in sound_players:
 		if not soundPlayer.playing:
 			soundPlayer.pitch_scale = pitch_scale

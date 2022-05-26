@@ -1,59 +1,49 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://ui/colorpicker/ColorPicker.gd" type="Script" id=1]
+[ext_resource path="res://assets/ui/close.png" type="Texture" id=2]
 [ext_resource path="res://ui/colorpicker/HueSlider.gd" type="Script" id=6]
 [ext_resource path="res://ui/colorpicker/ColorSelect.gd" type="Script" id=7]
 [ext_resource path="res://ui/colorpicker/OldColorView.gd" type="Script" id=9]
 [ext_resource path="res://ui/colorpicker/huepicker.material" type="Material" id=10]
 [ext_resource path="res://ui/colorpicker/ColorSelect.material" type="Material" id=11]
 [ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=12]
-[ext_resource path="res://assets/ui/close.png" type="Texture" id=13]
 
 [node name="ColorPicker" type="Control"]
-margin_right = 145.0
-margin_bottom = 145.0
+margin_right = 125.0
+margin_bottom = 125.0
+rect_min_size = Vector2( 125, 125 )
 script = ExtResource( 1 )
 __meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true
+"_edit_group_": true
 }
 
-[node name="Panel" type="Panel" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="V" type="VBoxContainer" parent="Panel"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 10.0
-margin_top = 10.0
-margin_right = -10.0
-margin_bottom = -8.0
+[node name="V" type="VBoxContainer" parent="."]
+margin_right = 125.0
+margin_bottom = 125.0
 custom_constants/separation = 5
 
-[node name="H" type="HBoxContainer" parent="Panel/V"]
+[node name="H" type="HBoxContainer" parent="V"]
 margin_right = 125.0
 margin_bottom = 100.0
 custom_constants/separation = 5
 
-[node name="HueSlider" type="Control" parent="Panel/V/H"]
+[node name="HueSlider" type="Control" parent="V/H"]
 margin_right = 20.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 20, 100 )
 size_flags_vertical = 0
 script = ExtResource( 6 )
 
-[node name="ShaderHolder" type="ColorRect" parent="Panel/V/H/HueSlider"]
+[node name="ShaderHolder" type="ColorRect" parent="V/H/HueSlider"]
 show_behind_parent = true
 material = ExtResource( 10 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+color = Color( 1, 0, 0, 1 )
 
-[node name="ColorSelect" type="Control" parent="Panel/V/H"]
+[node name="ColorSelect" type="Control" parent="V/H"]
 margin_left = 25.0
 margin_right = 125.0
 margin_bottom = 100.0
@@ -63,51 +53,48 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource( 7 )
 
-[node name="ShaderHolder" type="ColorRect" parent="Panel/V/H/ColorSelect"]
+[node name="ShaderHolder" type="ColorRect" parent="V/H/ColorSelect"]
 show_behind_parent = true
 material = ExtResource( 11 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="H2" type="HBoxContainer" parent="Panel/V"]
+[node name="H2" type="HBoxContainer" parent="V"]
 margin_top = 105.0
 margin_right = 125.0
 margin_bottom = 125.0
 custom_constants/separation = 0
 
-[node name="Close" parent="Panel/V/H2" instance=ExtResource( 12 )]
+[node name="Close" parent="V/H2" instance=ExtResource( 12 )]
 margin_right = 20.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 20, 0 )
-texture = ExtResource( 13 )
+texture_normal = ExtResource( 2 )
 normal_color = Color( 0.145098, 0.145098, 0.164706, 1 )
-highlight_color = Color( 0.1944, 0.3048, 0.36, 1 )
-pressed_color = Color( 0.3216, 0.414, 0.48, 1 )
 
-[node name="Spacer" type="Control" parent="Panel/V/H2"]
+[node name="Spacer" type="Control" parent="V/H2"]
 margin_left = 20.0
 margin_right = 25.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 5, 0 )
 
-[node name="OldColorView" type="ColorRect" parent="Panel/V/H2"]
+[node name="OldColorView" type="ColorRect" parent="V/H2"]
 margin_left = 25.0
 margin_right = 75.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 50, 20 )
 script = ExtResource( 9 )
 
-[node name="NewColorPreview" type="ColorRect" parent="Panel/V/H2"]
+[node name="NewColorPreview" type="ColorRect" parent="V/H2"]
 margin_left = 75.0
 margin_right = 125.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 50, 20 )
 
-[connection signal="color_changed" from="Panel/V/H/HueSlider" to="." method="_color_changed"]
-[connection signal="gui_input" from="Panel/V/H/HueSlider" to="Panel/V/H/HueSlider" method="_gui_input"]
-[connection signal="color_changed" from="Panel/V/H/ColorSelect" to="." method="_color_changed"]
-[connection signal="gui_input" from="Panel/V/H/ColorSelect" to="Panel/V/H/ColorSelect" method="_gui_input"]
-[connection signal="pressed" from="Panel/V/H2/Close" to="." method="done"]
-[connection signal="color_changed" from="Panel/V/H2/OldColorView" to="." method="_color_changed"]
-[connection signal="gui_input" from="Panel/V/H2/OldColorView" to="Panel/V/H2/OldColorView" method="_gui_input"]
+[connection signal="hue_changed" from="V/H/HueSlider" to="V/H/ColorSelect" method="_hue_changed"]
+[connection signal="color_changed" from="V/H/ColorSelect" to="." method="_color_changed"]
+[connection signal="gui_input" from="V/H/ColorSelect" to="V/H/ColorSelect" method="_gui_input"]
+[connection signal="pressed" from="V/H2/Close" to="." method="done"]
+[connection signal="color_changed" from="V/H2/OldColorView" to="." method="_color_changed"]
+[connection signal="gui_input" from="V/H2/OldColorView" to="V/H2/OldColorView" method="_gui_input"]

@@ -1,7 +1,7 @@
 extends Node
 class_name NetManager
 
-### for the ui
+### for the lobby ui
 signal set_buttons(enabled)
 signal set_status(status, err, isok)
 signal set_visible(visibility)
@@ -10,23 +10,23 @@ signal hosting(newhosting)
 signal game_over
 signal game_started
 
-var hosting = false setget set_hosting
-var leaving = false
+var hosting := false setget set_hosting
+var leaving := false
 
-var status = ["", true, false]
+var status := ["", true, false]
 
 
-func set_buttons(enabled):
+func set_buttons(enabled: bool) -> void:
 	status[2] = enabled
 	emit_signal("set_buttons", enabled)
 
 
-func set_hosting(newhosting):
+func set_hosting(newhosting: bool) -> void:
 	hosting = newhosting
 	emit_signal("hosting", newhosting)
 
 
-func return():
+func return() -> void:  # return to the void
 	if hosting:
 		leaving = true
 		Globals.network.send_packet(Globals.network.game_code, Network.HEADERS.stopgame)  # stop hosting
@@ -35,10 +35,10 @@ func return():
 	set_status("", true)
 
 
-func _ready():
+func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
-	if Utils.internet_available():
-		var net = Network.new()
+	if Utils.internet:
+		var net := Network.new()
 		set_status("Connecting", true)
 		Events.connect("go_back", self, "_handle_game_over")
 		net.connect("move_data", self, "_on_data")
@@ -51,22 +51,22 @@ func _ready():
 		Globals.network = net
 
 
-func requestjoin():
+func requestjoin() -> void:
 	set_buttons(false)
 	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.joinrequest)
 
 
-func requesthost():
+func requesthost() -> void:
 	set_buttons(false)
 	Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.hostrequest)
 
 
-func network_ready():
+func network_ready() -> void:
 	set_status("", true)
 	set_buttons(true)
 
 
-func set_status(text, isok):
+func set_status(text: String, isok: bool) -> void:
 	status[0] = text
 	status[1] = isok
 	emit_signal("set_status", text, isok)
@@ -74,6 +74,7 @@ func set_status(text, isok):
 
 func _on_join_result(accepted: String) -> void:
 	if handle_result(accepted, "Joined!", false):
+		emit_signal("set_visible", false)
 		Globals.network.send_packet(Globals.network.game_code, Globals.network.HEADERS.startgame)
 
 
@@ -81,8 +82,8 @@ func _on_host_result(accepted: String) -> void:
 	set_hosting(handle_result(accepted, "Hosted!"))
 
 
-func handle_result(accepted: String, resultstring: String, team: bool = true) -> bool:
-	Globals.team = team
+func handle_result(accepted: String, resultstring: String, team := true) -> bool:
+	Globals.team = team  # what am i doing here???
 	if accepted == "Y":
 		set_status(resultstring, true)
 		return true
@@ -91,61 +92,54 @@ func handle_result(accepted: String, resultstring: String, team: bool = true) ->
 	return false
 
 
-func _handle_game_over(error = "game over", isok = true) -> void:
+func _handle_game_over(error := "game over", isok := true) -> void:
+	Globals.network.send_packet({"gamecode": Globals.network.game_code, "reason": error}, Network.HEADERS.stopgame)
 	Globals.reset_vars()
 	if get_tree().get_root().has_node("Board"):
 		get_tree().get_root().get_node("Board").queue_free()
 	set_status(error, isok)
 	emit_signal("set_visible", true)
+	set_buttons(true)
 	emit_signal("game_over")
 
 
 func _start_game() -> void:
 	set_hosting(false)
-	var board = load("res://Board.tscn").instance()
+	var board: Node2D = load("res://Board.tscn").instance()
 	get_tree().get_root().add_child(board)
 	emit_signal("set_visible", false)
 	emit_signal("game_started")
 	set_buttons(false)
 
 
-static func add_turn() -> void:
-	Events.emit_signal("just_before_turn_over")
-	Globals.add_turn()
-	Globals.turn = not Globals.turn
-	Events.emit_signal("turn_over")
-
-
 func _on_data(data: Dictionary) -> void:
+	Globals.add_turn()
 	Log.debug([data, " recieved"])
-	Globals.fullmove = data["fullmove"]
-	Globals.turn = data["turn"]
-	Globals.halfmove = data["halfmove"]
 	Events.emit_signal("data_recieved")
 	match data["movetype"]:
 		Network.MOVEHEADERS.passant:
 			# en passant
-			var end_pos = dict2vec(data["positions"][1])
-			var start_piece = Piece.at_pos(dict2vec(data["positions"][0]))
+			var end_pos := dict2vec(data["positions"][1])
+			var start_piece := Piece.at_pos(dict2vec(data["positions"][0]))
 			Piece.at_pos(dict2vec(data["positions"][2])).took()  # kill the unfortunate
 			start_piece.passant(end_pos)
 		Network.MOVEHEADERS.move:
-			var start_piece = Piece.at_pos(dict2vec(data["positions"][0]))
-			var end_pos = dict2vec(data["positions"][1])
-			var end_piece = Piece.at_pos(end_pos)
+			var start_piece := Piece.at_pos(dict2vec(data["positions"][0]))
+			var end_pos := dict2vec(data["positions"][1])
+			var end_piece := Piece.at_pos(end_pos)
 			if end_piece != null:
 				start_piece.take(end_piece)
 			else:
 				start_piece.moveto(end_pos)
 		Network.MOVEHEADERS.castle:
-			var king = Piece.at_pos(dict2vec(data["positions"]["king"]))
-			var rook = Piece.at_pos(dict2vec(data["positions"]["rook"]))
+			var king := Piece.at_pos(dict2vec(data["positions"]["king"]))
+			var rook := Piece.at_pos(dict2vec(data["positions"]["rook"]))
 			rook.moveto(dict2vec(data["positions"]["rookdestination"]), true, false, true)
 			Utils.add_move(king.castle(dict2vec(data["positions"]["kingdestination"])))
 		Network.MOVEHEADERS.promote:
-			var dict_data = data["positions"]  # positions is a dict for readability sometimes
-			var pawn = Piece.at_pos(dict2vec(dict_data["start_position"]))
-			var dest = dict2vec(dict_data["destination"])
+			var dict_data: Dictionary = data["positions"]  # positions is a dict for readability sometimes
+			var pawn: Pawn = Piece.at_pos(dict2vec(dict_data["start_position"]))
+			var dest := dict2vec(dict_data["destination"])
 			if Piece.at_pos(dest) != null:
 				Piece.at_pos(dest).took()  # move the pawn to the new place, killing if necessary
 				pawn.clear_clicked()

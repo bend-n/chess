@@ -1,8 +1,8 @@
 extends Node
 
-var __nosethalfmove = false
-var pawns = []  # PoolPawnArray
-var team = true
+var __nosethalfmove := false
+var pawns := []  # PoolPawnArray
+var team := true
 var grid: Grid = null
 var network: Network = null
 var piece_set := "california"
@@ -12,8 +12,8 @@ var in_check := false
 var checking_piece: Piece = null
 var board_color1: Color = Color(0.870588, 0.890196, 0.901961)
 var board_color2: Color = Color(0.54902, 0.635294, 0.678431)
-var white_king: King
-var black_king: King
+var white_king: King = null
+var black_king: King = null
 var turn := true  # true for white, false for black
 # true cuz white goes first
 
@@ -41,10 +41,6 @@ func pack_vars() -> Dictionary:
 	}
 
 
-func get_var(key):
-	return self.get(key)
-
-
 func turns() -> int:
 	return fullmove
 
@@ -63,8 +59,19 @@ func add_turn() -> void:
 	else:
 		halfmove += 1
 	turn = not turn
+	Log.debug("Turn over signal emmited")
 	Events.emit_signal("turn_over")
+
+
+func get_turn(flip := false) -> String:
+	if flip:
+		return "black" if turn else "white"
+	return "white" if turn else "black"
 
 
 func _ready() -> void:
 	VisualServer.set_default_clear_color(Color.black)
+	Debug.monitor(self, "fullmove")
+	Debug.monitor(self, "halfmove")
+	Debug.monitor(self, "in_check")
+	Debug.monitor(self, "turn", "get_turn()")
