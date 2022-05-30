@@ -1,4 +1,5 @@
 extends Control
+class_name Lobby
 
 onready var address: LineEdit = find_node("Address")
 onready var buttons := find_node("buttons")
@@ -11,19 +12,14 @@ func toggle(onoff: bool) -> void:
 
 
 func _ready() -> void:
-	PacketHandler.connect("set_status", self, "_set_status")
-	PacketHandler.connect("set_buttons", self, "_set_buttons")
-	PacketHandler.connect("set_visible", self, "toggle")
+	PacketHandler.lobby = self
 	PacketHandler.connect("hosting", find_node("stophost"), "set_visible")
-	_set_status(PacketHandler.status[0], PacketHandler.status[1])
 	if !Utils.internet:
-		_set_status("no internet", false)
-		_set_buttons(false)
-	else:
-		_set_buttons(PacketHandler.status[2])
+		set_status("no internet", false)
+		set_buttons(false)
 
 
-func _set_status(text: String, isok: bool) -> void:  # Simple way to show status.
+func set_status(text: String, isok: bool) -> void:  # Simple way to show status.
 	if isok:
 		status_ok.set_text(text)
 		status_fail.set_text("")
@@ -34,7 +30,7 @@ func _set_status(text: String, isok: bool) -> void:  # Simple way to show status
 	status_fail.visible = len(status_fail.text) > 0
 
 
-func _set_buttons(enabled := true) -> void:
+func set_buttons(enabled := true) -> void:
 	for c in buttons.get_children():
 		c.disabled = !enabled
 	address.editable = enabled
@@ -65,7 +61,7 @@ func _on_Address_text_entered(new_text: String) -> void:
 
 
 func _on_tabs_tab_changed(tab: int):
-	if tab != get_parent().get_children().find(self):
+	if self != get_parent().get_children()[tab]:
 		PacketHandler.return()
 
 

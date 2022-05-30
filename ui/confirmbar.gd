@@ -34,6 +34,8 @@ func confirm(who: Node, what: String, timeout := 5):
 
 
 func _pressed(what: bool):
+	for i in $H.get_children():
+		i._focused(false)
 	status.set_text("", 0)
 	emit_signal("confirmed", what)
 	stop_looking()

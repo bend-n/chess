@@ -141,7 +141,7 @@ func handle_sprite_input_event(node: Node2D) -> void:
 	)
 	Log.debug(promote_to)
 	var notation := "%s=%s" % [first, promote_to]
-	Globals.network.send_move_packet(
+	Globals.network.relay_signal(
 		{
 			"start_position": real_position,
 			"destination": promoteposition,
@@ -149,7 +149,8 @@ func handle_sprite_input_event(node: Node2D) -> void:
 			"notation": notation,
 			"white": white
 		},
-		Network.MOVEHEADERS.promote
+		Network.MOVEHEADERS.promote,
+		"positions"
 	)
 
 

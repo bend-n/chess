@@ -7,18 +7,21 @@ export(NodePath) onready var confirmbar = get_node(confirmbar) as Confirm
 var waiting_on_answer := false
 
 
-func _ready() -> void:
-	Globals.network.connect("request", self, "draw_request")
-	Globals.network.connect("request_result", self, "_on_draw_result")
+func _ready():
+	Globals.network.connect("signal_recieved", self, "_on_signal")
 
 
-func draw_request(what: Dictionary):
-	if what.type == Network.REQUESTHEADERS.draw:
-		if "questions" in what:
-			Log.err("Draw request without prompt")
-			return
-		confirmbar.confirm(self, what.question, 20)
-		waiting_on_answer = true
+func _on_signal(what: Dictionary):
+	if what.type == Network.SIGNALHEADERS.draw:
+		if "question" in what:
+			confirmbar.confirm(self, "Your opponent requests a draw", 20)
+			waiting_on_answer = true
+		else:
+			disabled = false
+			if what.accepted:
+				drawed()
+			else:
+				status.set_text("Your opponent rejected the draw")
 
 
 func drawed() -> GDScriptFunctionState:
@@ -35,25 +38,14 @@ func _pressed() -> void:
 		confirmbar.stop_looking()
 	else:
 		disabled = true
-		Globals.network.send_request_packet(
-			Network.REQUESTHEADERS.draw, "Your opponent wishes to draw, do you accept?"
-		)
+		Globals.network.signal("", Network.SIGNALHEADERS.draw, "question")
 		status.set_text("Draw request sent")
-
-
-func _on_draw_result(accepted: Dictionary) -> void:  # called from _handle_confirm
-	disabled = false
-	if accepted.type == Network.REQUESTHEADERS.draw:
-		if accepted.answer:
-			drawed()
-		else:
-			status.set_text("Your opponent has rejected the draw request.")
 
 
 func _handle_confirm(yes: bool) -> void:  # called from confirmbar.confirmed
 	if waiting_on_answer:
 		disabled = false
 		waiting_on_answer = false
-		Globals.network.send_request_answer_packet(Network.REQUESTHEADERS.draw, yes)
+		Globals.network.signal(yes, Network.SIGNALHEADERS.draw, "accepted")
 		if yes:
 			drawed()

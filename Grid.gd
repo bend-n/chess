@@ -167,7 +167,7 @@ func mat2str(mat: Array = matrix) -> String:
 
 
 func drawed(reason := "") -> void:
-	ui.set_status("draw by " + reason)
+	ui.set_status("draw by " + reason, 0)
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
@@ -175,7 +175,7 @@ func drawed(reason := "") -> void:
 
 
 func win(winner: bool, reason := "") -> void:
-	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason])  # black won the game by checkmate
+	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason], 0)  # black won the game by checkmate
 	Events.emit_signal("game_over")
 	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.turns()])
 	SoundFx.play("Victory")
@@ -329,8 +329,8 @@ func handle_take(position: Vector2) -> void:
 	if Utils.is_pawn(last_clicked):  # if its a pawn
 		if check_promote(last_clicked, position, "take"):
 			return
-	Globals.network.send_move_packet(
-		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move
+	Globals.network.relay_signal(
+		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move, "positions"
 	)  # piece taking piece
 
 
@@ -340,14 +340,15 @@ func handle_move(position: Vector2) -> void:
 			var castle_data = last_clicked.can_castle[i]
 			if castle_data[0] == position:
 				# send some packet
-				Globals.network.send_move_packet(
+				Globals.network.relay_signal(
 					{
 						"king": last_clicked.real_position,
 						"rook": castle_data[1].real_position,
 						"rookdestination": castle_data[2],
 						"kingdestination": castle_data[0]
 					},
-					Network.MOVEHEADERS.castle
+					Network.MOVEHEADERS.castle,
+					"positions"
 				)
 
 				return
@@ -358,15 +359,16 @@ func handle_move(position: Vector2) -> void:
 				var en_passant_data = pawn.enpassant[i]
 				if en_passant_data[0] == position:
 					# send some packet
-					Globals.network.send_move_packet(
+					Globals.network.relay_signal(
 						PoolVector2Array([pawn.real_position, position, en_passant_data[1].real_position]),
-						Network.MOVEHEADERS.passant
+						Network.MOVEHEADERS.passant,
+						"positions"
 					)
 					return
 		elif check_promote(pawn, position):
 			return
-	Globals.network.send_move_packet(
-		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move
+	Globals.network.relay_signal(
+		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move, "positions"
 	)  # piece moving
 
 

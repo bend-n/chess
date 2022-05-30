@@ -7,24 +7,24 @@ var game_code := ""
 var connected := false
 
 const HEADERS := {
-	"move": "M",
 	"joinrequest": "J",
 	"hostrequest": "H",
 	"stopgame": "K",
 	"ping": "P",
-	"startgame": "S",
-	"request": "R"
+	"relay": "R",  # relay goes to both
+	"signal": "S",  # signal is one way
 }
 
-const MOVEHEADERS := {
-	"take": "K",
+const MOVEHEADERS := {  # subheaders for HEADERS.move
 	"move": "M",
+	"take": "K",
 	"castle": "C",
 	"passant": "P",
 	"promote": "Q",
 }
 
-const REQUESTHEADERS := {"takeback": "T", "draw": "D", "resign": "R"}  # not really a request, but...
+const RELAYHEADERS := {"chat": "C", "startgame": "S"}
+const SIGNALHEADERS := {"takeback": "T", "draw": "D", "resign": "R"}  # subheaders for HEADERS.signal
 
 var notation := ""
 
@@ -33,9 +33,8 @@ signal move_data(data)
 signal host_result(result)
 signal join_result(result)
 signal game_over(problem, isok)
-signal request_result(result)
-signal request(request)
 signal connection_established
+signal signal_recieved(what)
 
 const url := "wss://gd-chess-server.herokuapp.com/"
 
@@ -80,45 +79,49 @@ func _connection_error() -> void:
 	emit_signal("game_over", "Connection error", false)
 
 
-func send_request_answer_packet(request_type: String, answer: bool) -> void:
-	var data := {"answering": true, "type": request_type, "gamecode": game_code, "answer": answer}
-	send_packet(data, HEADERS.request)
+func signal(body, header: String, keyname := "body", _mainheader := HEADERS.signal) -> Dictionary:
+	var data := {"type": header, "gamecode": game_code, keyname: body}
+	send_packet(data, _mainheader)
+	Log.debug("sending signal %s of type %s" % [body, header])
+	return data
 
 
-func send_request_packet(request_type: String, prompt: String) -> void:
-	var data := {"answering": false, "type": request_type, "gamecode": game_code, "question": prompt}
-	send_packet(data, HEADERS.request)
+func relay_signal(body, header: String, keyname := "body") -> Dictionary:  # its really the same thing as signal()
+	return signal(body, header, keyname, HEADERS.relay)
 
 
-func send_move_packet(positions, header: String) -> void:
-	var packet := {"movetype": header, "gamecode": game_code, "positions": positions}
-	Log.debug("sending move packet: %s" % packet)
-	send_packet(packet, HEADERS.move)  # your move will wait till the server relays back :>
+func stopgame(reason: String) -> void:
+	var packet := {"reason": reason, "gamecode": game_code}
+	send_packet(packet, HEADERS.stopgame)
 
 
 func _data_recieved() -> void:
 	var recieve: Dictionary = ws.get_peer(1).get_var()
 	var header: String = recieve.header
 	var text = recieve.data
+	if header != HEADERS.ping:
+		Log.debug("recieved %s of header %s" % [text, header])
 	match header:
 		HEADERS.hostrequest:
 			emit_signal("host_result", text)
-		HEADERS.move:
-			emit_signal("move_data", text)
+		HEADERS.relay:
+			var relay: Dictionary = text
+			if relay.type in MOVEHEADERS.values():
+				emit_signal("move_data", text)
+			else:
+				match relay.type:
+					RELAYHEADERS.startgame:
+						print("Start")
+						emit_signal("start_game")
 		HEADERS.joinrequest:
 			emit_signal("join_result", text)
 		HEADERS.stopgame:
 			if !PacketHandler.leaving:  # dont emit the signal if its a stophost thing (HACK)
 				emit_signal("game_over", text, true)
 			PacketHandler.leaving = false
-		HEADERS.startgame:
-			emit_signal("start_game")
-			PacketHandler.emit_signal("set_visible", false)
-		HEADERS.request:
-			if text.answering:
-				emit_signal("request_result", text)
-			else:
-				emit_signal("request", text)
+		HEADERS.signal:
+			var signal: Dictionary = text
+			emit_signal("signal_recieved", signal)
 		HEADERS.ping:
 			pass
 		_:

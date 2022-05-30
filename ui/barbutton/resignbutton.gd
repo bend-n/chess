@@ -9,11 +9,11 @@ var waiting_on_answer = false
 
 
 func _ready() -> void:
-	Globals.network.connect("request", self, "resigned")
+	Globals.network.connect("signal_recieved", self, "resigned")
 
 
 func resigned(what: Dictionary):
-	if what.type == Network.REQUESTHEADERS.resign:
+	if what.type == Network.SIGNALHEADERS.resign:
 		Globals.grid.win(Globals.team, "resignation")
 
 
@@ -36,6 +36,6 @@ func _confirmed(what: bool):
 		waiting_on_answer = false
 		drawbutton.disabled = what  # dont un disable it if the game is over
 		if what:
-			Globals.network.send_request_packet(Network.REQUESTHEADERS.resign, "")
+			Globals.network.signal("", Network.SIGNALHEADERS.resign)
 			Globals.grid.win(!Globals.team, "resignation")
 			disabled = true
