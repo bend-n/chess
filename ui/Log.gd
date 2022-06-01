@@ -21,8 +21,7 @@ static func to_str(arg) -> String:
 	elif typeof(arg) == TYPE_STRING:
 		return arg
 	else:
-		err("Called with invalid arguments")
-		return ""
+		return str(arg)
 
 
 static func arr2str(arr: Array) -> String:

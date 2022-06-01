@@ -9,7 +9,8 @@ var waiting_on_answer = false
 
 
 func _ready() -> void:
-	Globals.network.connect("signal_recieved", self, "resigned")
+	if Globals.network:
+		Globals.network.connect("signal_recieved", self, "resigned")
 
 
 func resigned(what: Dictionary):

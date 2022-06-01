@@ -2,16 +2,16 @@ extends Node
 
 
 static func info(information) -> void:  # logs the input string
-	print("[i] " + to_str(information))
+	print("[i] %s" % to_str(information))
 
 
 static func debug(information) -> void:  # logs the input string on debug builds
 	if Debug.debug:
-		print("[d] " + to_str(information))
+		print("[d] %s" % to_str(information))
 
 
 static func err(information) -> void:  # logs the input string to stderr
-	printerr("[E]" + to_str(information))
+	printerr("[E] %s" % to_str(information))
 
 
 static func to_str(arg) -> String:
@@ -23,5 +23,5 @@ static func to_str(arg) -> String:
 static func arr2str(arr: Array) -> String:
 	var string := ""
 	for i in arr:
-		string += str(i) + " "
+		string += "%s " % i
 	return string

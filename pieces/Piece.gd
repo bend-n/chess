@@ -161,7 +161,7 @@ func get_attacks(check_spots_check := true) -> PoolVector2Array:  # @Override
 	return final
 
 
-func can_attack_piece(piece: Piece) -> bool:
+func can_attack_piece(piece: Piece) -> bool:##i cant use pos in get_attacks for some bizarre reasons
 	for pos in get_attacks(false):
 		if at_pos(pos) == piece:
 			return true

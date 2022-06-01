@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://assets/ui/eyemap.png" type="Texture" id=1]
+[ext_resource path="res://ui/account/Secret.gd" type="Script" id=2]
+[ext_resource path="res://assets/ui/eye.png" type="Texture" id=3]
+[ext_resource path="res://assets/ui/eye_off.png" type="Texture" id=4]
+[ext_resource path="res://ui/theme/main.tres" type="Theme" id=5]
+[ext_resource path="res://ui/account/usernamepass.gd" type="Script" id=6]
+[ext_resource path="res://ui/account/Password.gd" type="Script" id=7]
+[ext_resource path="res://ui/account/Username.gd" type="Script" id=8]
+
+[node name="usernamepass" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 0, 225 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource( 5 )
+alignment = 1
+script = ExtResource( 6 )
+
+[node name="Username" type="LineEdit" parent="."]
+margin_left = 361.0
+margin_top = 286.0
+margin_right = 1061.0
+margin_bottom = 392.0
+rect_min_size = Vector2( 700, 0 )
+size_flags_horizontal = 4
+size_flags_vertical = 0
+max_length = 20
+placeholder_text = "username goes here"
+caret_blink = true
+caret_blink_speed = 0.5
+script = ExtResource( 8 )
+
+[node name="H" type="HBoxContainer" parent="."]
+margin_top = 407.0
+margin_right = 1422.0
+margin_bottom = 513.0
+custom_constants/separation = 2
+alignment = 1
+
+[node name="Password" type="LineEdit" parent="H"]
+margin_left = 207.0
+margin_right = 1107.0
+margin_bottom = 106.0
+rect_min_size = Vector2( 900, 0 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+max_length = 20
+context_menu_enabled = false
+placeholder_text = "password goes here"
+caret_blink = true
+caret_blink_speed = 0.5
+script = ExtResource( 7 )
+
+[node name="Secret" type="TextureButton" parent="H"]
+margin_left = 1109.0
+margin_right = 1215.0
+margin_bottom = 106.0
+rect_min_size = Vector2( 106, 106 )
+focus_mode = 1
+toggle_mode = true
+enabled_focus_mode = 1
+texture_normal = ExtResource( 3 )
+texture_pressed = ExtResource( 4 )
+expand = true
+script = ExtResource( 2 )
+focusedcolor = Color( 0.921569, 0.827451, 0.827451, 1 )
+map_tex = ExtResource( 1 )
+
+[connection signal="text_changed" from="Username" to="Username" method="_on_text_changed"]
+[connection signal="text_changed" from="H/Password" to="H/Password" method="_on_text_changed"]
+[connection signal="mouse_entered" from="H/Secret" to="H/Secret" method="_focus" binds= [ true ]]
+[connection signal="mouse_exited" from="H/Secret" to="H/Secret" method="_focus" binds= [ false ]]

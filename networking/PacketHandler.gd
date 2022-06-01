@@ -26,7 +26,7 @@ func return() -> void:  # return to the void
 
 func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
-	if Utils.internet:
+	if Utils.internet and get_tree().get_root().has_node("StartMenu"):
 		var net := Network.new()
 		Events.connect("go_back", self, "_handle_game_over")
 		net.connect("move_data", self, "_on_data")

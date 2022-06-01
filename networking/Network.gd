@@ -11,6 +11,8 @@ const HEADERS := {
 	"hostrequest": "H",
 	"stopgame": "K",
 	"ping": "P",
+	"signup": "C",
+	"signin": ">",
 	"relay": "R",  # relay goes to both
 	"signal": "S",  # signal is one way
 }
@@ -36,6 +38,10 @@ signal game_over(problem, isok)
 signal connection_established
 signal signal_recieved(what)
 
+## for accounts
+signal signinresult(what)
+signal signupresult(what)
+
 const url := "wss://gd-chess-server.herokuapp.com/"
 
 
@@ -51,6 +57,14 @@ func _ready() -> void:
 	t.wait_time = 1
 	t.start(1)
 	t.connect("timeout", self, "ping")
+
+
+func signin(data):
+	send_packet(data, HEADERS.signin)
+
+
+func signup(data):
+	send_packet(data, HEADERS.signup)
 
 
 func ping() -> void:
@@ -99,8 +113,6 @@ func _data_recieved() -> void:
 	var recieve: Dictionary = ws.get_peer(1).get_var()
 	var header: String = recieve.header
 	var text = recieve.data
-	if header != HEADERS.ping:
-		Log.debug("recieved %s of header %s" % [text, header])
 	match header:
 		HEADERS.hostrequest:
 			emit_signal("host_result", text)
@@ -111,7 +123,6 @@ func _data_recieved() -> void:
 			else:
 				match relay.type:
 					RELAYHEADERS.startgame:
-						print("Start")
 						emit_signal("start_game")
 		HEADERS.joinrequest:
 			emit_signal("join_result", text)
@@ -124,6 +135,10 @@ func _data_recieved() -> void:
 			emit_signal("signal_recieved", signal)
 		HEADERS.ping:
 			pass
+		HEADERS.signup:
+			emit_signal("signupresult", text)
+		HEADERS.signin:
+			emit_signal("signinresult", text)
 		_:
 			Log.err("unknown header %s" % header)
 
