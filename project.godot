@@ -84,6 +84,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/Log.gd"
 }, {
+"base": "Resource",
+"class": "Move",
+"language": "GDScript",
+"path": "res://SanParse/Move.gd"
+}, {
 "base": "Node",
 "class": "NetManager",
 "language": "GDScript",
@@ -98,6 +103,11 @@ _global_script_classes=[ {
 "class": "OldColorView",
 "language": "GDScript",
 "path": "res://ui/colorpicker/OldColorView.gd"
+}, {
+"base": "Node",
+"class": "PGN",
+"language": "GDScript",
+"path": "res://PGN/PGN.gd"
 }, {
 "base": "Piece",
 "class": "Pawn",
@@ -124,10 +134,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/barbutton/resignbutton.gd"
 }, {
+"base": "LineEdit",
+"class": "Restrict",
+"language": "GDScript",
+"path": "res://ui/account/Restrict.gd"
+}, {
 "base": "Piece",
 "class": "Rook",
 "language": "GDScript",
 "path": "res://pieces/Rook.gd"
+}, {
+"base": "Node",
+"class": "SanParser",
+"language": "GDScript",
+"path": "res://SanParse/SanParse.gd"
 }, {
 "base": "Node",
 "class": "SaveLoader",
@@ -138,6 +158,11 @@ _global_script_classes=[ {
 "class": "StatusLabel",
 "language": "GDScript",
 "path": "res://ui/Status.gd"
+}, {
+"base": "Control",
+"class": "UsernamePass",
+"language": "GDScript",
+"path": "res://ui/account/usernamepass.gd"
 } ]
 _global_script_class_icons={
 "BarTextureButton": "",
@@ -155,17 +180,22 @@ _global_script_class_icons={
 "Knight": "res://assets/pieces/california/wN.png",
 "Lobby": "",
 "Log": "",
+"Move": "",
 "NetManager": "",
 "Network": "",
 "OldColorView": "",
+"PGN": "",
 "Pawn": "res://assets/pieces/california/wP.png",
 "Piece": "res://assets/pieces/california/wP.png",
 "Preview": "",
 "Queen": "res://assets/pieces/california/wQ.png",
 "ResignButton": "res://assets/ui/flag.png",
+"Restrict": "",
 "Rook": "res://assets/pieces/california/wR.png",
+"SanParser": "",
 "SaveLoader": "",
-"StatusLabel": ""
+"StatusLabel": "",
+"UsernamePass": ""
 }
 
 [application]
@@ -190,6 +220,8 @@ SaveLoad="*res://saveload.gd"
 ColorBack="*res://ui/background/ColorfullBackground.tscn"
 PacketHandler="*res://networking/PacketHandler.gd"
 Debug="*res://Debug.gd"
+SanParse="*res://SanParse/SanParse.gd"
+Pgn="*res://PGN/PGN.gd"
 
 [debug]
 

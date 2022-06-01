@@ -41,10 +41,6 @@ func pack_vars() -> Dictionary:
 	}
 
 
-func turns() -> int:
-	return fullmove
-
-
 func reset_halfmove() -> void:
 	halfmove = 0
 	__nosethalfmove = true

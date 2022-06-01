@@ -52,7 +52,7 @@ func _draw() -> void:
 		return
 	draw_style_box(style, calculate_size())
 	var i = len(refs)
-	while i >= 0:
+	while i > 0:
 		i -= 1
 		var pos := Vector2(offset.x, (i + 1) * vertical)
 		draw_string(font, pos, get_string(refs[i]))

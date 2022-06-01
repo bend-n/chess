@@ -77,13 +77,10 @@ static func print_matrix_pretty(mat: Array) -> void:  # print the matrix
 			print(topper_header)  # print the top border
 		else:
 			print(middle_header)  # print the middle border
-		var row := "┃ %s ┃ " % str(8 - j)  # init the string
+		var row := "%s%s %s " % [ender, 8 - j, ender]  # init the string
 		for i in range(8):  # for each column
 			var c: Piece = r[i]  # get the column
-			if c:  # if there is a piece
-				row += c.mininame + ender  # add the shortname
-			else:  # if there is no piece
-				row += " " + ender
+			row += "%s%s" % [c.mininame, ender] if c else " " + ender  # add the piece
 		print(row)  # print the string
 	print("%s\n%s\n%s" % [middish_heads, letter_header, smaller_heads])
 
@@ -146,9 +143,7 @@ func init_label(labelscene: PackedScene, i: int, position: Vector2, text: String
 
 
 func threefoldrepetition() -> int:
-	if !history_matrixes.values():
-		return 0
-	return history_matrixes.values().max()
+	return 0 if !history_matrixes.values() else history_matrixes.values().max()
 
 
 func mat2str(mat: Array = matrix) -> String:
@@ -156,13 +151,9 @@ func mat2str(mat: Array = matrix) -> String:
 	for y in range(8):
 		for x in range(8):
 			var spot: Piece = mat[y][x]
-			if spot:
-				string += spot.mininame
-			else:
-				string += "*"
-	for i in mat[8].keys():  # store the metadata
-		var thing = mat[8][i]
-		string += i + str(thing)
+			string += spot.mininame if spot else "*"
+	for key in mat[8].keys():  # store the metadata
+		string += "%s:%s" % [key, mat[8][key]]
 	return string
 
 
@@ -177,7 +168,7 @@ func drawed(reason := "") -> void:
 func win(winner: bool, reason := "") -> void:
 	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason], 0)  # black won the game by checkmate
 	Events.emit_signal("game_over")
-	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.turns()])
+	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.fullmove])
 	SoundFx.play("Victory")
 	yield(get_tree().create_timer(5), "timeout")
 	Events.emit_signal("go_back")
@@ -189,12 +180,11 @@ func check_in_check(prin := false) -> bool:  # check if in_check
 			var spot: Piece = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
 				if spot.can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
-					# control never flows here
 					if prin:
+						# control never flows here
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
 						SoundFx.play("Check")
-					Log.info("check")
 					return true  # stop at the first check found
 	return false
 

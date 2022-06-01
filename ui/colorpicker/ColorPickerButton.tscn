@@ -21,7 +21,6 @@ text = "button"
 script = ExtResource( 2 )
 
 [node name="Popup" type="PopupPanel" parent="."]
-visible = true
 margin_left = 50.0
 margin_top = 50.0
 margin_right = 195.0

@@ -8,7 +8,8 @@ var waiting_on_answer := false
 
 
 func _ready():
-	Globals.network.connect("signal_recieved", self, "_on_signal")
+	if Globals.network:
+		Globals.network.connect("signal_recieved", self, "_on_signal")
 
 
 func _on_signal(what: Dictionary):

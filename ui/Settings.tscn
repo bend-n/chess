@@ -21,10 +21,9 @@ size_flags_vertical = 0
 alignment = 1
 
 [node name="TabContainer" type="TabContainer" parent="H"]
-margin_left = 203.0
-margin_right = 703.0
+margin_left = 239.0
+margin_right = 668.0
 margin_bottom = 570.0
-rect_min_size = Vector2( 500, 0 )
 size_flags_vertical = 0
 custom_constants/hseparation = 20
 drag_to_rearrange_enabled = true
@@ -40,25 +39,25 @@ margin_bottom = -30.0
 alignment = 1
 
 [node name="boardcolor1" parent="H/TabContainer/colors" instance=ExtResource( 5 )]
-margin_left = 57.0
+margin_left = 21.0
 margin_top = 26.0
-margin_right = 383.0
+margin_right = 347.0
 margin_bottom = 132.0
 size_flags_horizontal = 4
 text = "boardcolor1"
 
 [node name="boardcolor2" parent="H/TabContainer/colors" instance=ExtResource( 5 )]
-margin_left = 57.0
+margin_left = 21.0
 margin_top = 147.0
-margin_right = 383.0
+margin_right = 347.0
 margin_bottom = 253.0
 size_flags_horizontal = 4
 text = "boardcolor2"
 
 [node name="PieceSet" type="OptionButton" parent="H/TabContainer/colors"]
-margin_left = 37.0
+margin_left = 1.0
 margin_top = 268.0
-margin_right = 403.0
+margin_right = 367.0
 margin_bottom = 424.0
 focus_mode = 0
 size_flags_horizontal = 4
@@ -72,15 +71,17 @@ icon = ExtResource( 3 )
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 60.0
+margin_left = 30.0
+margin_top = 90.0
+margin_right = -30.0
+margin_bottom = -30.0
 mouse_filter = 2
 alignment = 1
 
 [node name="VsyncButton" type="CheckBox" parent="H/TabContainer/window"]
-margin_left = 113.0
-margin_top = 65.0
-margin_right = 386.0
-margin_bottom = 205.0
+margin_left = 213.0
+margin_right = 486.0
+margin_bottom = 140.0
 focus_mode = 0
 size_flags_horizontal = 4
 pressed = true
@@ -88,28 +89,28 @@ enabled_focus_mode = 0
 text = "vsync"
 
 [node name="FullscreenButton" type="CheckBox" parent="H/TabContainer/window"]
-margin_left = 65.0
-margin_top = 220.0
-margin_right = 434.0
-margin_bottom = 360.0
+margin_left = 165.0
+margin_top = 155.0
+margin_right = 534.0
+margin_bottom = 295.0
 focus_mode = 0
 size_flags_horizontal = 4
 enabled_focus_mode = 0
 text = "fullscreen"
 
 [node name="Borderless" type="CheckBox" parent="H/TabContainer/window"]
-margin_left = 91.0
-margin_top = 375.0
-margin_right = 409.0
-margin_bottom = 515.0
+margin_left = 191.0
+margin_top = 310.0
+margin_right = 509.0
+margin_bottom = 450.0
 focus_mode = 0
 size_flags_horizontal = 4
 enabled_focus_mode = 0
 text = "borders"
 
 [node name="Container" type="VBoxContainer" parent="H"]
-margin_left = 718.0
-margin_right = 1218.0
+margin_left = 683.0
+margin_right = 1183.0
 margin_bottom = 800.0
 rect_min_size = Vector2( 300, 0 )
 
