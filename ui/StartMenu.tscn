@@ -6,7 +6,7 @@
 [ext_resource path="res://ui/Lobby.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/ui/verdana-bold.ttf" type="DynamicFontData" id=5]
 [ext_resource path="res://ui/account/Account.tscn" type="PackedScene" id=6]
-[ext_resource path="res://SanParse/test.gd" type="Script" id=7]
+[ext_resource path="res://test.gd" type="Script" id=7]
 
 [sub_resource type="DynamicFont" id=1]
 size = 400

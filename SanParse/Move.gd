@@ -1,7 +1,6 @@
 class_name Move
 extends Resource
 
-enum CASTLETYPES { NONE, QUEEN_SIDE, KING_SIDE }
 enum CHECKTYPES { NONE, CHECK, CHECKMATE }
 var generated_from := ""
 var piece := -1
@@ -19,7 +18,7 @@ func _init(newpiece: int, newmove, capture := false) -> void:
 
 
 static func castle_type(type: String) -> int:
-	return CASTLETYPES.QUEEN_SIDE if type == "O-O-O" else CASTLETYPES.KING_SIDE
+	return MoveKind.CASTLETYPES.QUEEN_SIDE if type == "O-O-O" else MoveKind.CASTLETYPES.KING_SIDE
 
 
 func set_check_type(type: String) -> void:
@@ -103,6 +102,7 @@ func long_helper(vec: Vector2, attack: bool, move: bool, touch: Vector2):
 
 class MoveKind:
 	extends Resource
+	enum CASTLETYPES { NONE, QUEEN_SIDE, KING_SIDE }
 	enum { NONE, NORMAL, CASTLE }
 	var type := 0
 	var data  # string OR array
@@ -118,4 +118,4 @@ class MoveKind:
 			assert(false)
 
 	func to_str() -> String:
-		return "O-O-O" if data == CASTLETYPES.QUEENSIDE else "O-O"
+		return "O-O-O" if data == CASTLETYPES.QUEEN_SIDE else "O-O"

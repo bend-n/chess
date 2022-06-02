@@ -119,7 +119,7 @@ func traverse(arr: PoolVector2Array = [], no_enemys := false, check_spots_check 
 
 
 static func at_pos(vector: Vector2) -> Piece:
-	if is_instance_valid(Globals.grid):
+	if is_on_board(vector):
 		return Globals.grid.matrix[vector.y][vector.x]
 	return null
 

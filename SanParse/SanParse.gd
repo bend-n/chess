@@ -17,6 +17,7 @@ var regexs := {
 	"specific_row_piece_capture": compile("^([KQBNR])([0-9])x([a-h])([1-8])"),
 	"long_piece_capture": compile("^([KQBNR])([a-h])([0-9])x([a-h])([1-8])"),
 	"pawn_promotion": compile("^([a-h])([1-8])=?([KQBNR])"),
+	"long_pawn_promotion": compile("^([a-h])([1-8])([a-h])([1-8])=?([KQBNR])"),
 	"castling": compile("^(O-O-O|O-O)"),
 }
 
@@ -142,6 +143,14 @@ func regexmatch(san: String) -> Move:
 		var mov = Move.new(PAWN, [UNKNOWN_POS, pos(cap[1], cap[2])], true)
 		mov.promotion = from_str(cap[3])
 		mov.set_check_type(cap[4])
+		return mov
+
+	re = regexs.long_pawn_promotion.search(san)
+	if re:
+		var cap = re.strings
+		var mov = Move.new(PAWN, [pos(cap[1], cap[2]), pos(cap[3], cap[4])], true)
+		mov.promotion = from_str(cap[5])
+		mov.set_check_type(cap[6])
 		return mov
 
 	re = regexs.castling.search(san)

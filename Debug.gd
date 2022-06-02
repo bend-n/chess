@@ -15,7 +15,7 @@ static func is_debug() -> bool:
 	var args := Utils.get_args()
 	if "debug" in args:
 		return bool(args.debug)
-	return false or OS.is_debug_build()
+	return OS.is_debug_build()
 
 
 func _ready() -> void:

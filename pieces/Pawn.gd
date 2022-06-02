@@ -3,7 +3,7 @@ class_name Pawn, "res://assets/pieces/california/wP.png"
 
 const promotables := "QNRB"
 
-var twostepfirstmove := false
+var just_double_stepped := false
 var just_set := false
 var enpassant: Array = []
 
@@ -23,7 +23,9 @@ func _ready() -> void:
 	for i in range(0, 4):  # add 3 sprites
 		var newsprite: Node2D = load("res://ui/ClickableSprite.tscn").instance()
 		newsprite.position = (sprite.position + Vector2(0, (i * Globals.grid.piece_size.y) * whiteint))
-		newsprite.get_node("Sprite").texture = load("%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]])
+		newsprite.get_node("Sprite").texture = load(
+			"%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]]
+		)
 		newsprite.name = promotables[i]
 		newsprite.connect("clicked", self, "handle_sprite_input_event", [newsprite.name])
 		newsprite.z_index = 5  # its not a texturebutton so i can use this
@@ -41,12 +43,12 @@ func _exit_tree() -> void:
 func moveto(position: Vector2, real := true) -> void:
 	# check if 2 step
 	if real:
-		if !twostepfirstmove and !has_moved:
+		if !just_double_stepped and !has_moved:
 			if white and real_position.y - position.y == 2:
-				twostepfirstmove = true
+				just_double_stepped = true
 				just_set = true
 			if !white and position.y - real_position.y == 2:
-				twostepfirstmove = true
+				just_double_stepped = true
 				just_set = true
 	.moveto(position, real)
 	if real:
@@ -76,14 +78,14 @@ static func can_promote(position: Vector2) -> bool:
 
 
 func passant(position: Vector2) -> void:
-	var to_take = position + Vector2(-1, -1) * whiteint
-	if !at_pos(to_take):
-		if at_pos(to_take + Vector2(2, 0)):
-			to_take += Vector2(2, 0)
-	if at_pos(position):
-		at_pos(position).took()
+	var to_take = position + Vector2(0, whiteint)
+	at_pos(to_take).took()
 	enpassant.resize(0)
 	moveto(position)
+
+
+func valid_to_passant_take(piece) -> bool:
+	return !piece or !Utils.is_pawn(piece) or piece.white != white or !piece.just_double_stepped
 
 
 func get_attacks(check_spots_check := true) -> PoolVector2Array:
@@ -99,7 +101,7 @@ func get_attacks(check_spots_check := true) -> PoolVector2Array:
 			continue
 		if at_pos(point) != null and at_pos(point).white != white:
 			moves.append(point)
-	en_passant()
+	en_passant()  # for the fen
 	return moves
 
 
@@ -114,7 +116,7 @@ func en_passant(turncheck := true, check_spots_check := true) -> Array:  # in pa
 			continue
 		if turncheck and white != Globals.turn:
 			continue
-		if !spot.twostepfirstmove:
+		if !spot.just_double_stepped:
 			continue
 		if check_spots_check and checkcheck(i):
 			continue
@@ -145,7 +147,8 @@ func promote_to(promote_to: String, is_capture: bool, position: Vector2):
 
 func handle_sprite_input_event(promote_to: String) -> void:
 	darken.hide()
-	var mov = Move.new(SanParser.PAWN, [real_position, promoteposition])
+	var is_cap = at_pos(promoteposition) != null
+	var mov = Move.new(SanParser.PAWN, [real_position, promoteposition], is_cap)
 	mov.promotion = SanParse.from_str(promote_to)
 	Globals.network.send_mov(mov)
 
@@ -168,8 +171,8 @@ func _on_turn_over() -> void:
 	if just_set:
 		just_set = false
 		return
-	if twostepfirstmove:
-		twostepfirstmove = false
+	if just_double_stepped:
+		just_double_stepped = false
 
 
 func _just_before_turn_over() -> void:
