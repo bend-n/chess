@@ -67,27 +67,12 @@ func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.start()
 
 
-func moveto(position: Vector2, real := true, take := false, override_moveto := false) -> void:
+func moveto(pos: Vector2, real := true) -> void:
 	Globals.grid.matrix[real_position.y][real_position.x] = null
-	Globals.grid.matrix[position.y][position.x] = self
+	Globals.grid.matrix[pos.y][pos.x] = self
 	if real:
-		if !override_moveto:
-			if !take:
-				Utils.add_move(algebraic_move_notation(position))
-			else:
-				Utils.add_move(algebraic_take_notation(position))
-		real_position = position
+		real_position = pos
 		move(real_position)
-		Log.debug(
-			(
-				"%s moving from %s to %s"
-				% [
-					shortname + " white" if white else " black",
-					Utils.to_algebraic((global_position / Globals.grid.piece_size).snapped(Vector2(1, 1))),
-					Utils.to_algebraic(real_position)
-				]
-			)
-		)
 		SoundFx.play("Move")
 		has_moved = true
 
@@ -161,11 +146,22 @@ func get_attacks(check_spots_check := true) -> PoolVector2Array:  # @Override
 	return final
 
 
-func can_attack_piece(piece: Piece) -> bool:##i cant use pos in get_attacks for some bizarre reasons
+func can_attack_piece(piece: Piece) -> bool:  ##i cant use pos in get_attacks for some bizarre reasons
 	for pos in get_attacks(false):
 		if at_pos(pos) == piece:
 			return true
 	return false
+
+
+func can_touch(pos: Vector2, attack := true, move := true) -> bool:
+	if attack and move:
+		return pos in get_attacks() or pos in get_moves()
+	elif attack:
+		return pos in get_attacks()
+	elif move:
+		return pos in get_moves()
+	else:
+		return false
 
 
 static func create_move_circles(pos: Vector2) -> void:
@@ -205,7 +201,7 @@ static func is_on_board(vector: Vector2) -> bool:  # limit the vector to the boa
 func take(piece: Piece) -> void:
 	clear_clicked()
 	piece.took()
-	moveto(piece.real_position, true, true)
+	moveto(piece.real_position, true)
 	Globals.reset_halfmove()
 
 

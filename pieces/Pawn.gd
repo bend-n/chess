@@ -23,7 +23,9 @@ func _ready() -> void:
 	for i in range(0, 4):  # add 3 sprites
 		var newsprite: Node2D = load("res://ui/ClickableSprite.tscn").instance()
 		newsprite.position = (sprite.position + Vector2(0, (i * Globals.grid.piece_size.y) * whiteint))
-		newsprite.connect("clicked", self, "handle_sprite_input_event", [newsprite])
+		newsprite.get_node("Sprite").texture = load("%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]])
+		newsprite.name = promotables[i]
+		newsprite.connect("clicked", self, "handle_sprite_input_event", [newsprite.name])
 		newsprite.z_index = 5  # its not a texturebutton so i can use this
 		newsprite.hide()
 		add_child(newsprite)
@@ -36,7 +38,7 @@ func _exit_tree() -> void:
 		Globals.pawns.remove(find)
 
 
-func moveto(position: Vector2, real := true, take := false, override_moveto := false) -> void:
+func moveto(position: Vector2, real := true) -> void:
 	# check if 2 step
 	if real:
 		if !twostepfirstmove and !has_moved:
@@ -46,7 +48,7 @@ func moveto(position: Vector2, real := true, take := false, override_moveto := f
 			if !white and position.y - real_position.y == 2:
 				twostepfirstmove = true
 				just_set = true
-	.moveto(position, real, take, override_moveto)
+	.moveto(position, real)
 	if real:
 		Globals.reset_halfmove()
 
@@ -74,6 +76,12 @@ static func can_promote(position: Vector2) -> bool:
 
 
 func passant(position: Vector2) -> void:
+	var to_take = position + Vector2(-1, -1) * whiteint
+	if !at_pos(to_take):
+		if at_pos(to_take + Vector2(2, 0)):
+			to_take += Vector2(2, 0)
+	if at_pos(position):
+		at_pos(position).took()
 	enpassant.resize(0)
 	moveto(position)
 
@@ -124,34 +132,22 @@ func promote(position: Vector2, type: String) -> void:
 	promoteposition = position
 	darken.show()
 	for i in range(len(promotables)):
-		sprites[i].sprite.texture = load(
-			"%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]]
-		)
-		sprites[i].name = promotables[i]
 		sprites[i].show()
 
 
-func handle_sprite_input_event(node: Node2D) -> void:
+func promote_to(promote_to: String, is_capture: bool, position: Vector2):
+	if is_capture and at_pos(position):
+		at_pos(position).took()
+	clear_clicked()
+	Globals.grid.make_piece(position, piece(promote_to), white)
+	took()
+
+
+func handle_sprite_input_event(promote_to: String) -> void:
 	darken.hide()
-	var promote_to := node.name
-	var first := (
-		algebraic_move_notation(promoteposition)
-		if !promotetake
-		else algebraic_take_notation(promoteposition, real_position)
-	)
-	Log.debug(promote_to)
-	var notation := "%s=%s" % [first, promote_to]
-	Globals.network.relay_signal(
-		{
-			"start_position": real_position,
-			"destination": promoteposition,
-			"become": promote_to,
-			"notation": notation,
-			"white": white
-		},
-		Network.MOVEHEADERS.promote,
-		"positions"
-	)
+	var mov = Move.new(SanParser.PAWN, [real_position, promoteposition])
+	mov.promotion = SanParse.from_str(promote_to)
+	Globals.network.send_mov(mov)
 
 
 static func piece(string: String) -> String:

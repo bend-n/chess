@@ -9,7 +9,7 @@ class TestSan:
 		assert(m.move_kind.type == Move.MoveKind.CASTLE)
 		assert(m.move_kind.data == s)
 		assert(m.piece == KING)
-		assert(m.promotion == 0)
+		assert(m.promotion == -1)
 		assert(m.check_type == Move.CHECKTYPES.NONE)
 		assert(m.is_capture == false)
 

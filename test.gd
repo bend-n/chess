@@ -84,6 +84,7 @@ class TestSan:
 		s.is_capture = true
 		var result = s.compile()
 		assert(result == "exd8=Q+")
+		assert(Move.parse("e4").compile() == "e4")
 
 	func _init():
 		test_algebraic_conversion()

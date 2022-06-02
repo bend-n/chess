@@ -319,9 +319,8 @@ func handle_take(position: Vector2) -> void:
 	if Utils.is_pawn(last_clicked):  # if its a pawn
 		if check_promote(last_clicked, position, "take"):
 			return
-	Globals.network.relay_signal(
-		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move, "positions"
-	)  # piece taking piece
+	var mov = Move.new(SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position], true)
+	Globals.network.send_mov(mov)  # piece taking piece
 
 
 func handle_move(position: Vector2) -> void:
@@ -330,17 +329,8 @@ func handle_move(position: Vector2) -> void:
 			var castle_data = last_clicked.can_castle[i]
 			if castle_data[0] == position:
 				# send some packet
-				Globals.network.relay_signal(
-					{
-						"king": last_clicked.real_position,
-						"rook": castle_data[1].real_position,
-						"rookdestination": castle_data[2],
-						"kingdestination": castle_data[0]
-					},
-					Network.MOVEHEADERS.castle,
-					"positions"
-				)
-
+				var mov = Move.new(SanParser.KING, Move.castle_type(castle_data[3]))
+				Globals.network.send_mov(mov)
 				return
 	if Utils.is_pawn(last_clicked):
 		var pawn: Pawn = last_clicked
@@ -349,17 +339,13 @@ func handle_move(position: Vector2) -> void:
 				var en_passant_data = pawn.enpassant[i]
 				if en_passant_data[0] == position:
 					# send some packet
-					Globals.network.relay_signal(
-						PoolVector2Array([pawn.real_position, position, en_passant_data[1].real_position]),
-						Network.MOVEHEADERS.passant,
-						"positions"
-					)
+					var mov = Move.new(SanParser.PAWN, [pawn.real_position, position])
+					Globals.network.send_mov(mov)
 					return
 		elif check_promote(pawn, position):
 			return
-	Globals.network.relay_signal(
-		PoolVector2Array([last_clicked.real_position, position]), Network.MOVEHEADERS.move, "positions"
-	)  # piece moving
+	var mov = Move.new(SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position])
+	Globals.network.send_mov(mov)
 
 
 func check_promote(pawn, position, calltype: String = "move") -> bool:
