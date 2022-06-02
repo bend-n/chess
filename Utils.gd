@@ -50,7 +50,7 @@ func get_fen() -> String:
 
 	var enpassants := ""
 	for pawn in Globals.pawns:
-		if pawn.twostepfirstmove and pawn.just_set:
+		if pawn.just_double_stepped and pawn.just_set:
 			enpassants += Utils.to_algebraic(pawn.real_position + (Vector2.DOWN * pawn.whiteint))
 	return (
 		"%s %s %s %s %s %s"

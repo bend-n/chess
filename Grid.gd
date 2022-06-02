@@ -77,7 +77,7 @@ static func print_matrix_pretty(mat: Array) -> void:  # print the matrix
 			print(topper_header)  # print the top border
 		else:
 			print(middle_header)  # print the middle border
-		var row := "%s%s %s " % [ender, 8 - j, ender]  # init the string
+		var row := "%s %s%s" % [ender.strip_edges(), 8 - j, ender]  # init the string
 		for i in range(8):  # for each column
 			var c: Piece = r[i]  # get the column
 			row += "%s%s" % [c.mininame, ender] if c else " " + ender  # add the piece
@@ -339,7 +339,7 @@ func handle_move(position: Vector2) -> void:
 				var en_passant_data = pawn.enpassant[i]
 				if en_passant_data[0] == position:
 					# send some packet
-					var mov = Move.new(SanParser.PAWN, [pawn.real_position, position])
+					var mov = Move.new(SanParser.PAWN, [pawn.real_position, position], true)
 					Globals.network.send_mov(mov)
 					return
 		elif check_promote(pawn, position):

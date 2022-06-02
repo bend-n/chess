@@ -9,7 +9,7 @@ class TestSan:
 		assert(m.move_kind.type == Move.MoveKind.CASTLE)
 		assert(m.move_kind.data == s)
 		assert(m.piece == KING)
-		assert(m.promotion == 0)
+		assert(m.promotion == -1)
 		assert(m.check_type == Move.CHECKTYPES.NONE)
 		assert(m.is_capture == false)
 
@@ -33,10 +33,10 @@ class TestSan:
 		assert(Utils.row_pos("1") == 7)
 
 	func test_castle_short():
-		assert_castle("O-O", Move.CASTLETYPES.KING_SIDE)
+		assert_castle("O-O", Move.MoveKind.CASTLETYPES.KING_SIDE)
 
 	func test_castle_long():
-		assert_castle("O-O-O", Move.CASTLETYPES.QUEEN_SIDE)
+		assert_castle("O-O-O", Move.MoveKind.CASTLETYPES.QUEEN_SIDE)
 
 	func test_pawn():
 		assert_move("e4", UNKNOWN_POS, Vector2(4, 4), PAWN)
@@ -84,7 +84,7 @@ class TestSan:
 		s.is_capture = true
 		var result = s.compile()
 		assert(result == "exd8=Q+")
-		assert(Move.parse("e4").compile() == "e4")
+		assert((SanParse.parse("e4").compile()) == "e4")
 
 	func _init():
 		test_algebraic_conversion()
@@ -107,4 +107,5 @@ class TestSan:
 
 
 func _ready():
-	TestSan.new()
+	if Debug.is_debug():
+		TestSan.new()

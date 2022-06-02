@@ -98,65 +98,43 @@ func _start_game() -> void:
 func _on_data(data: String) -> void:
 	Globals.add_turn()
 	Log.debug([data, " recieved"])
-	Utils.add_move(data)
+	var san_to_add := data
 	var mov = SanParse.parse(data)
 	match mov.move_kind.type:
 		Move.MoveKind.CASTLE:
-			var side = 7 if Globals.turn else 0
+			var side = 0 if Globals.turn else 7
 			var rook: Rook
 			var rook_goto: Vector2
 			var kingpos = Vector2(4, side)
 			var king: King = Piece.at_pos(kingpos)
 			var king_goto: Vector2
 			match mov.move_kind.data:
-				Move.CASTLETYPES.KING_SIDE:
+				Move.MoveKind.CASTLETYPES.KING_SIDE:
 					rook = Piece.at_pos(Vector2(7, side))
 					rook_goto = Vector2(5, side)
 					king_goto = Vector2(6, side)
-				Move.CASTLETYPES.QUEEN_SIDE:
+				Move.MoveKind.CASTLETYPES.QUEEN_SIDE:
 					rook = Piece.at_pos(Vector2(0, side))
 					rook_goto = Vector2(3, side)
 					king_goto = Vector2(2, side)
-				_:
-					Log.error("Invalid castle type")
-					return
 			rook.moveto(rook_goto)
 			king.castle(king_goto)
 		Move.MoveKind.NORMAL:
-			# this needs to handle enpassant, taking, and promotion.
+			# this handles promotion, taking, enpassant, and moves.
 			mov.make_long()
 			var positions = mov.move_kind.data
-			if mov.promotion != -1:
-				var promote_to = SanParse.from_str(mov.promotion)
+			if mov.promotion != -1:  # promotion part
+				Globals.grid.print_matrix_pretty(Globals.grid.matrix)
+				var promote_to = Utils.to_str(mov.promotion)
 				Piece.at_pos(positions[0]).promote_to(promote_to, mov.is_capture, positions[1])
 
-			elif mov.is_capture:
-				Piece.at_pos(positions[0]).take(Piece.at_pos(positions[1]))
-
-			elif not Piece.at_pos(positions[1]) and mov.piece == SanParser.PAWN:  # if not positions[1] and piece is pawn: enpassant!
-				var pawn: Pawn = Piece.at_pos(positions[0])
-				pawn.passant(positions[1])
+			elif mov.is_capture:  # taking part
+				if Piece.at_pos(positions[1]):
+					Piece.at_pos(positions[0]).take(Piece.at_pos(positions[1]))
+				elif mov.piece == SanParser.PAWN:  # enpassant part
+					var pawn: Pawn = Piece.at_pos(positions[0])
+					pawn.passant(positions[1])
+					san_to_add += " e.p."
 			else:  # a very normal move
 				Piece.at_pos(positions[0]).moveto(positions[1])
-
-	# Events.emit_signal("data_recieved")
-	# match data["type"]:
-	# 	Network.MOVEHEADERS.passant:
-	# 		# en passant
-	# 		var end_pos := dict2vec(data["positions"][1])
-	# 		var start_piece := Piece.at_pos(dict2vec(data["positions"][0]))
-	# 		Piece.at_pos(dict2vec(data["positions"][2])).took()  # kill the unfortunate
-	# 		start_piece.passant(end_pos)
-	# 	Network.MOVEHEADERS.move:
-	# 		var start_piece := Piece.at_pos(dict2vec(data["positions"][0]))
-	# 		var end_pos := dict2vec(data["positions"][1])
-	# 		var end_piece := Piece.at_pos(end_pos)
-	# 		if end_piece != null:
-	# 			start_piece.take(end_piece)
-	# 		else:
-	# 			start_piece.moveto(end_pos)
-
-	# 	Network.MOVEHEADERS.promote:
-	# 		var dict_data: Dictionary = data["positions"]  # positions is a dict for readability sometimes
-	# 	_:
-	# 		Log.err("Wtf")
+	Utils.add_move(san_to_add)
