@@ -41,10 +41,12 @@ margin_bottom = 140.0
 script = ExtResource( 7 )
 
 [node name="choose" type="TabContainer" parent="."]
+margin_left = 177.0
 margin_top = 155.0
-margin_right = 1422.0
-margin_bottom = 800.0
-size_flags_vertical = 3
+margin_right = 1245.0
+margin_bottom = 613.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="signup" type="VBoxContainer" parent="choose"]
 anchor_right = 1.0
@@ -58,8 +60,7 @@ custom_constants/separation = 5
 [node name="usernamepass" parent="choose/signup" instance=ExtResource( 5 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 177.0
-margin_right = 1185.0
+margin_right = 1008.0
 margin_bottom = 227.0
 
 [node name="flag" type="OptionButton" parent="choose/signup"]
@@ -77,9 +78,9 @@ align = 1
 expand_icon = true
 
 [node name="signupbutton" type="Button" parent="choose/signup"]
-margin_left = 566.0
+margin_left = 389.0
 margin_top = 232.0
-margin_right = 796.0
+margin_right = 619.0
 margin_bottom = 338.0
 rect_min_size = Vector2( 230, 0 )
 focus_mode = 0
@@ -98,12 +99,17 @@ margin_bottom = -30.0
 custom_constants/separation = 5
 
 [node name="usernamepass" parent="choose/signin" instance=ExtResource( 5 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 177.0
+margin_right = 1185.0
+margin_bottom = 227.0
 
 [node name="signinbutton" type="Button" parent="choose/signin"]
-margin_left = 577.0
-margin_top = 240.0
-margin_right = 785.0
-margin_bottom = 346.0
+margin_left = 566.0
+margin_top = 232.0
+margin_right = 796.0
+margin_bottom = 338.0
 rect_min_size = Vector2( 230, 0 )
 focus_mode = 0
 size_flags_horizontal = 4

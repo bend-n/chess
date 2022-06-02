@@ -1,22 +1,25 @@
 extends BarTextureButton
 class_name DrawButton, "res://assets/ui/draw.png"
 
+const Confirm = preload("res://ui/confirm/Confirm.tscn")
+var waiting_on_answer: Confirm = null
+
 export(NodePath) onready var status = get_node(status) as StatusLabel
-export(NodePath) onready var confirmbar = get_node(confirmbar) as Confirm
-
-var waiting_on_answer := false
 
 
-func _ready():
+func _ready() -> void:
+	PacketHandler.connect("game_over", self, "set_disabled", [true])
 	if Globals.network:
 		Globals.network.connect("signal_recieved", self, "_on_signal")
 
 
-func _on_signal(what: Dictionary):
+func _on_signal(what: Dictionary) -> void:
 	if what.type == Network.SIGNALHEADERS.draw:
 		if "question" in what:
-			confirmbar.confirm(self, "Your opponent requests a draw", 20)
-			waiting_on_answer = true
+			var confirm = Confirm.instance()
+			add_child(confirm)
+			confirm.confirm(self, "Your opponent wants to draw", 20)
+			waiting_on_answer = confirm
 		else:
 			disabled = false
 			if what.accepted:
@@ -29,24 +32,21 @@ func drawed() -> GDScriptFunctionState:
 	return Globals.grid.drawed("mutual agreement")
 
 
-func stoplooking() -> void:
-	_handle_confirm(false)
-
-
 func _pressed() -> void:
 	if waiting_on_answer:
-		_handle_confirm(true)
-		confirmbar.stop_looking()
+		_confirmed(true)
 	else:
 		disabled = true
 		Globals.network.signal("", Network.SIGNALHEADERS.draw, "question")
 		status.set_text("Draw request sent")
 
 
-func _handle_confirm(yes: bool) -> void:  # called from confirmbar.confirmed
+func _confirmed(yes: bool) -> void:  # called from confirmbar.confirmed
 	if waiting_on_answer:
+		if !waiting_on_answer.is_queued_for_deletion():
+			waiting_on_answer.queue_free()
 		disabled = false
-		waiting_on_answer = false
+		waiting_on_answer = null
 		Globals.network.signal(yes, Network.SIGNALHEADERS.draw, "accepted")
 		if yes:
 			drawed()

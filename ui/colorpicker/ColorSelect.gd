@@ -29,15 +29,23 @@ func _gui_input(event: InputEvent) -> void:
 func _draw() -> void:
 	var draw_color := color.inverted()
 
-	var vlinex := clamp(last_clicked_pos.x, 0, rect_size.x)
+	if color.h == 0:
+		var vlinex := clamp(last_clicked_pos.x, 0, rect_size.x)
 
-	draw_line(Vector2(vlinex, 0), Vector2(vlinex, rect_size.x), draw_color)
+		draw_line(Vector2(vlinex, 0), Vector2(vlinex, rect_size.x), draw_color)
 
-	var hliney = clamp(last_clicked_pos.y, 0, rect_size.y)
+		var hliney = clamp(last_clicked_pos.y, 0, rect_size.y)
 
-	draw_line(Vector2(0, hliney), Vector2(rect_size.x, hliney), draw_color)
+		draw_line(Vector2(0, hliney), Vector2(rect_size.x, hliney), draw_color)
+	else:
+		var vlinex = color.s * rect_size.x
+
+		draw_line(Vector2(vlinex, 0), Vector2(vlinex, rect_size.y), draw_color)
+
+		var hliney = rect_size.y - color.v * rect_size.y
+
+		draw_line(Vector2(0, hliney), Vector2(rect_size.x, hliney), draw_color)
 
 
 func _hue_changed(hue: float) -> void:
-	color.h = hue
-	set_color(color, true)
+	set_color(Color.from_hsv(hue, color.s, color.v), true)

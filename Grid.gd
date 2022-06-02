@@ -1,17 +1,10 @@
 extends Node2D
 class_name Grid
 
-const topper_header := "┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓"
-const middle_header := "┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
-const middish_heads := "┗━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
-const bottom_header := "┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
-const smaller_heads := "    ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
-const letter_header := "    ┃ a ┃ b ┃ c ┃ d ┃ e ┃ f ┃ g ┃ h ┃"
-const ender := " ┃ "  # for pretty prints
 const Piece := preload("res://Piece.tscn")
 const Square := preload("res://Square.tscn")
-const BottomLeftLabel := preload("res://ui/BottomLeftLabel.tscn")
-const TopRightLabel := preload("res://ui/TopRightLabel.tscn")
+const BottomLeftLabel := preload("res://ui/boardlabels/BottomLeftLabel.tscn")
+const TopRightLabel := preload("res://ui/boardlabels/TopRightLabel.tscn")
 
 const piece_size := Vector2(100, 100)
 const default_metadata := {
@@ -71,6 +64,12 @@ func _input(event: InputEvent) -> void:  # input
 
 
 static func print_matrix_pretty(mat: Array) -> void:  # print the matrix
+	var topper_header := "┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓"
+	var middle_header := "┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+	var middish_heads := "┗━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫"
+	var smaller_heads := "    ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛"
+	var letter_header := "    ┃ a ┃ b ┃ c ┃ d ┃ e ┃ f ┃ g ┃ h ┃"
+	var ender := " ┃ "  # for pretty prints
 	for j in range(8):  # for each row
 		var r: Array = mat[j]  # get the row
 		if j == 0:
