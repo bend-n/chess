@@ -104,6 +104,10 @@ func relay_signal(body, header: String, keyname := "body") -> Dictionary:  # its
 	return signal(body, header, keyname, HEADERS.relay)
 
 
+func send_mov(mov: Move):
+	relay_signal(mov.compile(), MOVEHEADERS.move, "move")
+
+
 func stopgame(reason: String) -> void:
 	var packet := {"reason": reason, "gamecode": game_code}
 	send_packet(packet, HEADERS.stopgame)
@@ -119,7 +123,7 @@ func _data_recieved() -> void:
 		HEADERS.relay:
 			var relay: Dictionary = text
 			if relay.type in MOVEHEADERS.values():
-				emit_signal("move_data", text)
+				emit_signal("move_data", text.move)
 			else:
 				match relay.type:
 					RELAYHEADERS.startgame:

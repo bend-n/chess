@@ -18,6 +18,10 @@ func _on_turn_over() -> void:
 	emit_signal("newfen", fen)
 
 
+func spotispiece(piece_type: int, spot: Piece) -> bool:
+	return SanParse.from_str(spot.shortname.to_upper()) == piece_type if spot else false
+
+
 func get_fen() -> String:
 	var pieces := ""
 	for rank in range(8):
@@ -118,7 +122,7 @@ func reset_vars() -> void:
 
 static func get_node_name(node: Node) -> Array:
 	if is_pawn(node):
-		return ["♙", "p"] if node.white else ["♟", "p"]
+		return ["♙", "P"] if node.white else ["♟", "P"]
 	elif node is King:
 		return ["♔", "K"] if node.white else ["♚", "K"]
 	elif node is Queen:

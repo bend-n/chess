@@ -85,7 +85,7 @@ func castle(position: Vector2) -> String:
 				return_string = i[3]
 				break
 	can_castle.clear()
-	moveto(position, true, false, true)
+	moveto(position, true)
 	return return_string
 
 
