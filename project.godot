@@ -34,10 +34,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/colorpicker/ColorSelect.gd"
 }, {
-"base": "Control",
+"base": "WindowDialog",
 "class": "Confirm",
 "language": "GDScript",
-"path": "res://ui/confirmbar.gd"
+"path": "res://ui/confirm/confirm.gd"
 }, {
 "base": "BarTextureButton",
 "class": "DrawButton",

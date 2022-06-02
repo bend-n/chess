@@ -1,19 +1,19 @@
 extends BarTextureButton
 class_name ResignButton, "res://assets/ui/flag.png"
 
-export(NodePath) onready var status = get_node(status) as StatusLabel
-export(NodePath) onready var drawbutton = get_node(drawbutton) as DrawButton
-export(NodePath) onready var confirmbar = get_node(confirmbar) as Confirm
+const Confirm = preload("res://ui/confirm/Confirm.tscn")
+var waiting_on_answer: Confirm = null
 
-var waiting_on_answer = false
+export(NodePath) onready var status = get_node(status) as StatusLabel
 
 
 func _ready() -> void:
+	PacketHandler.connect("game_over", self, "set_disabled", [true])
 	if Globals.network:
 		Globals.network.connect("signal_recieved", self, "resigned")
 
 
-func resigned(what: Dictionary):
+func resigned(what: Dictionary) -> void:
 	if what.type == Network.SIGNALHEADERS.resign:
 		Globals.grid.win(Globals.team, "resignation")
 
@@ -21,21 +21,18 @@ func resigned(what: Dictionary):
 func _pressed() -> void:
 	if waiting_on_answer:
 		_confirmed(true)
-		confirmbar.stop_looking()
 	else:
-		confirmbar.confirm(self, "Resign?", 20)
-		waiting_on_answer = true
-		drawbutton.disabled = true
+		var confirm = Confirm.instance()
+		add_child(confirm)
+		confirm.confirm(self, "Resign?", 20)
+		waiting_on_answer = confirm
 
 
-func stoplooking() -> void:
-	_confirmed(false)
-
-
-func _confirmed(what: bool):
+func _confirmed(what: bool) -> void:
 	if waiting_on_answer:
-		waiting_on_answer = false
-		drawbutton.disabled = what  # dont un disable it if the game is over
+		if !waiting_on_answer.is_queued_for_deletion():
+			waiting_on_answer.queue_free()
+		waiting_on_answer = null
 		if what:
 			Globals.network.signal("", Network.SIGNALHEADERS.resign)
 			Globals.grid.win(!Globals.team, "resignation")

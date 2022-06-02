@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/roboto.tres" type="DynamicFont" id=2]
@@ -10,10 +10,7 @@
 [ext_resource path="res://ui/barbutton/drawbutton.gd" type="Script" id=8]
 [ext_resource path="res://assets/ui/draw.png" type="Texture" id=9]
 [ext_resource path="res://ui/GameUI.gd" type="Script" id=10]
-[ext_resource path="res://assets/ui/check.png" type="Texture" id=11]
-[ext_resource path="res://assets/ui/close.png" type="Texture" id=12]
 [ext_resource path="res://ui/barbutton/resignbutton.gd" type="Script" id=13]
-[ext_resource path="res://ui/confirmbar.gd" type="Script" id=14]
 [ext_resource path="res://ui/FENlabel.gd" type="Script" id=15]
 [ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=16]
 [ext_resource path="res://assets/ui/flip_board.png" type="Texture" id=17]
@@ -135,7 +132,6 @@ margin_right = 337.0
 texture_normal = ExtResource( 9 )
 script = ExtResource( 8 )
 status = NodePath("../../../Status")
-confirmbar = NodePath("../../../confirmbar")
 
 [node name="ResignButton" parent="Holder/Back/VBox/buttonbarholder/buttonbar" instance=ExtResource( 16 )]
 margin_left = 337.0
@@ -143,45 +139,6 @@ margin_right = 387.0
 texture_normal = ExtResource( 19 )
 script = ExtResource( 13 )
 status = NodePath("../../../Status")
-drawbutton = NodePath("../DrawButton")
-confirmbar = NodePath("../../../confirmbar")
-
-[node name="confirmbar" type="Control" parent="Holder/Back/VBox"]
-visible = false
-margin_top = 490.0
-margin_right = 624.0
-margin_bottom = 590.0
-rect_min_size = Vector2( 0, 100 )
-script = ExtResource( 14 )
-__meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true
-}
-status = NodePath("../Status")
-
-[node name="H" type="HBoxContainer" parent="Holder/Back/VBox/confirmbar"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_constants/separation = 0
-alignment = 1
-
-[node name="yes" parent="Holder/Back/VBox/confirmbar/H" instance=ExtResource( 16 )]
-margin_left = 212.0
-margin_right = 312.0
-margin_bottom = 100.0
-rect_min_size = Vector2( 100, 100 )
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture_normal = ExtResource( 11 )
-
-[node name="no" parent="Holder/Back/VBox/confirmbar/H" instance=ExtResource( 16 )]
-margin_left = 312.0
-margin_right = 412.0
-margin_bottom = 100.0
-rect_min_size = Vector2( 100, 100 )
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture_normal = ExtResource( 12 )
 
 [node name="WhiteTime" type="Label" parent="Holder/Back/VBox"]
 visible = false
@@ -249,8 +206,3 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -400.0
 color = Color( 0, 0, 0, 0.784314 )
-
-[connection signal="confirmed" from="Holder/Back/VBox/confirmbar" to="Holder/Back/VBox/buttonbarholder/buttonbar/DrawButton" method="_handle_confirm"]
-[connection signal="confirmed" from="Holder/Back/VBox/confirmbar" to="Holder/Back/VBox/buttonbarholder/buttonbar/ResignButton" method="_confirmed"]
-[connection signal="pressed" from="Holder/Back/VBox/confirmbar/H/yes" to="Holder/Back/VBox/confirmbar" method="_pressed" binds= [ true ]]
-[connection signal="pressed" from="Holder/Back/VBox/confirmbar/H/no" to="Holder/Back/VBox/confirmbar" method="_pressed" binds= [ false ]]

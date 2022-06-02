@@ -10,7 +10,8 @@ const default_settings_data = {
 	"borderless": OS.window_borderless,
 	"piece_set": "california",
 	"board_color1": Color(0.870588, 0.890196, 0.901961),
-	"board_color2": Color(0.54902, 0.635294, 0.678431)
+	"board_color2": Color(0.54902, 0.635294, 0.678431),
+	"rainbow": true
 }
 
 var files := {
@@ -48,7 +49,7 @@ func load_data(type: String) -> Dictionary:
 			var read_dictionary = from_base64(text)
 			if typeof(read_dictionary) != TYPE_DICTIONARY:
 				save(type)  # OVERWRITE
-			elif files[type]["data"].size() == read_dictionary.size():
+			elif files[type]["data"].keys() == read_dictionary.keys():
 				files[type]["data"] = read_dictionary
 		save(type)  # overwrite.
 		file.close()

@@ -8,6 +8,7 @@ onready var borderlessbutton := find_node("Borderless")
 onready var preview: Preview = find_node("Preview")
 onready var board_color1: ColorPickerButtonBetter = find_node("boardcolor1")
 onready var board_color2: ColorPickerButtonBetter = find_node("boardcolor2")
+onready var rainbow = find_node("rainbow")
 
 onready var settings: Dictionary = SaveLoad.files["settings"]["data"] setget set_settings
 
@@ -31,6 +32,7 @@ func update_button_visuals(set: Dictionary = settings) -> void:
 		borderlessbutton.pressed = !set["borderless"]
 	board_color1.color = set["board_color1"]
 	board_color2.color = set["board_color2"]
+	rainbow.pressed = set["rainbow"]
 	preview.update_preview(set["board_color1"], set["board_color2"], set["piece_set"])
 	ignore_set_settings = false
 
@@ -56,6 +58,7 @@ func update_vars() -> void:
 	OS.vsync_enabled = settings.vsync
 	OS.window_fullscreen = settings.fullscreen
 	OS.window_borderless = settings.borderless
+	ColorBack.rainbow = settings.rainbow
 	SaveLoad.files["settings"]["data"] = settings
 	SaveLoad.save("settings")
 
@@ -93,3 +96,8 @@ func _on_boardcolor2_newcolor(color: Color) -> void:
 func _on_resetbutton_pressed() -> void:
 	self.settings = SaveLoad.default_settings_data.duplicate(true)
 	update_vars()
+
+
+func _on_rainbow_toggled(button_pressed: bool) -> void:
+	ColorBack.rainbow = button_pressed
+	self.settings.rainbow = button_pressed

@@ -47,7 +47,7 @@ func compile() -> String:  # compiles the structure to a san
 					res += "+"
 				CHECKTYPES.CHECKMATE:
 					res += "#"
-	return res
+	return res.strip_edges()
 
 
 ## tests
