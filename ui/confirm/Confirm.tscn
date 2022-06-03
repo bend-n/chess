@@ -20,16 +20,6 @@ anchor_bottom = 1.0
 custom_constants/separation = 0
 alignment = 1
 
-[node name="yes" parent="H" instance=ExtResource( 2 )]
-margin_left = 250.0
-margin_top = 34.0
-margin_right = 350.0
-margin_bottom = 134.0
-rect_min_size = Vector2( 100, 100 )
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture_normal = ExtResource( 5 )
-
 [node name="no" parent="H" instance=ExtResource( 2 )]
 margin_left = 350.0
 margin_top = 34.0
@@ -40,5 +30,15 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 texture_normal = ExtResource( 3 )
 
-[connection signal="pressed" from="H/yes" to="." method="_pressed" binds= [ true ]]
+[node name="yes" parent="H" instance=ExtResource( 2 )]
+margin_left = 250.0
+margin_top = 34.0
+margin_right = 350.0
+margin_bottom = 134.0
+rect_min_size = Vector2( 100, 100 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource( 5 )
+
 [connection signal="pressed" from="H/no" to="." method="_pressed" binds= [ false ]]
+[connection signal="pressed" from="H/yes" to="." method="_pressed" binds= [ true ]]
