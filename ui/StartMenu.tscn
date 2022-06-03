@@ -71,7 +71,7 @@ custom_fonts/font = SubResource( 1 )
 enabled_focus_mode = 0
 text = "exit"
 
-[node name="Node2D" type="Node2D" parent="."]
+[node name="tests" type="Node2D" parent="."]
 script = ExtResource( 7 )
 
 [connection signal="tab_changed" from="tabs" to="tabs/Lobby" method="_on_tabs_tab_changed"]
