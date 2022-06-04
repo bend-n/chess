@@ -1,28 +1,25 @@
 extends ColorRect
 
-var real_position := Vector2()
+signal clicked
+
 var circle_on := false
 
-onready var area := $Squarea
-onready var areacollisionshape := $Squarea/CollisionShape2D
-onready var circle := $Circle
-
-signal clicked
+onready var circle := $CircleHolder/Circle
 
 
 func _ready() -> void:
-	circle.position = Globals.grid.piece_size / 2
+	circle.rect_min_size = Globals.grid.piece_size / 4
 	circle.material.set_shader_param("color", Globals.grid.overlay_color)
 	circle.visible = false
-	areacollisionshape.global_position += Globals.grid.piece_size / 2
-	areacollisionshape.shape.extents = Vector2(rect_size.x / 2, rect_size.y / 2)
-
-
-func _on_Squarea_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:
-	if Input.is_action_just_pressed("click"):
-		emit_signal("clicked", real_position)
+	rect_min_size = Globals.grid.piece_size
+	rect_size = rect_min_size
 
 
 func set_circle(boolean: bool) -> void:
 	circle_on = boolean
 	circle.visible = boolean
+
+
+func _gui_input(event: InputEvent):
+	if event is InputEventMouseButton and Input.is_action_pressed("click"):
+		emit_signal("clicked")

@@ -37,6 +37,7 @@ signal join_result(result)
 signal game_over(problem, isok)
 signal connection_established
 signal signal_recieved(what)
+signal chat(text)
 
 ## for accounts(mostly)
 signal signinresult(what)
@@ -113,6 +114,8 @@ func stopgame(reason: String) -> void:
 
 
 func _data_recieved() -> void:
+	if !OS.is_window_focused():
+		OS.request_attention()
 	var recieve: Dictionary = ws.get_peer(1).get_var()
 	var header: String = recieve.header
 	var text = recieve.data
@@ -121,8 +124,11 @@ func _data_recieved() -> void:
 			emit_signal("host_result", text)
 		HEADERS.relay:
 			var relay: Dictionary = text
-			if relay.type in MOVEHEADERS.values():
-				emit_signal("move_data", text.move)
+			match relay.type:
+				RELAYHEADERS.chat:
+					emit_signal("chat", relay.body)
+				MOVEHEADERS.move:
+					emit_signal("move_data", text.move)
 		HEADERS.joinrequest:
 			emit_signal("join_result", text)
 		HEADERS.loadpgn:

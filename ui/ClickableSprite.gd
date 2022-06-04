@@ -20,4 +20,4 @@ func _on_Area2D_mouse_entered() -> void:
 
 
 func _on_Area2D_mouse_exited() -> void:
-	sprite.scale = Vector2(.8, .8)
+	sprite.scale = Vector2(.9, .9)
