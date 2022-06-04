@@ -157,7 +157,7 @@ func init_label(i: int, position: Vector2, text: String, valign := 0, align := 0
 	label.rect_position = (position * piece_size) + off
 	label.text = text
 	label.add_color_override("font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2)
-	var font: DynamicFont = load("res://ui/verdana-bold.tres")
+	var font: DynamicFont = load("res://ui/verdana-bold.tres").duplicate()
 	font.size = 15
 	label.add_font_override("font", font)
 	foreground.add_child(label)
