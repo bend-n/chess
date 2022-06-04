@@ -13,6 +13,7 @@ onready var tabs := {
 var signed_in = false
 var autologin = true
 
+onready var tabcontainer = $choose
 
 func _ready():
 	Globals.network.connect("signinresult", self, "_on_signin_result")
@@ -26,7 +27,8 @@ func _ready():
 func attempt_autologin():
 	if data.name and data.password:
 		Globals.network.signin(data)
-
+	else:
+		tabcontainer.show()
 
 func _on_signin_pressed():
 	$choose/signin/signinbutton.disabled = true
@@ -37,7 +39,7 @@ func _on_signin_pressed():
 func _on_signin_result(result):
 	var status_set = !autologin
 	autologin = false
-	$choose.show()
+	tabcontainer.show()
 	$choose/signin/signinbutton.disabled = false
 	if typeof(result) == TYPE_STRING:  # ew, error, get it away from me
 		return reset(result, status_set)
@@ -65,14 +67,14 @@ func reset(reason: String, set_status := true):
 		status.set_text(reason)
 	data = SaveLoad.default_id_data
 	save_data()
-	$choose.show()
+	tabcontainer.show()
 
 
 func _after_result():
 	save_data()
 	status.set_text("Signed in to " + SaveLoad.files.id.data.name)
 	signed_in = true  # yay
-	$choose.hide()
+	tabcontainer.hide()
 
 
 func update_data(username, pw):
