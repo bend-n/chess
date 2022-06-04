@@ -14,7 +14,7 @@ const vertical := 15
 static func is_debug() -> bool:
 	var args := Utils.get_args()
 	if "debug" in args:
-		return bool(args.debug)
+		return Utils.str_bool(args.debug)
 	return OS.is_debug_build()
 
 

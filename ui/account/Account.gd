@@ -4,11 +4,14 @@ onready var flags: PoolStringArray = ["rainbow"]
 onready var flagchoice: OptionButton = $choose/signup/flag
 onready var data: Dictionary = SaveLoad.files.id.data
 onready var status: StatusLabel = $StatusLabel
-onready var signup: UsernamePass = $choose/signup/usernamepass
-onready var signin: UsernamePass = $choose/signin/usernamepass
 
-var autologin = false
+onready var tabs := {
+	"signup": $choose/signup/usernamepass,
+	"signin": $choose/signin/usernamepass,
+}
+
 var signed_in = false
+var autologin = true
 
 
 func _ready():
@@ -21,40 +24,55 @@ func _ready():
 
 
 func attempt_autologin():
-	autologin = true
 	if data.name and data.password:
 		Globals.network.signin(data)
-		Log.info("Attempting autologin")
-	autologin = false
+
+
+func _on_signin_pressed():
+	$choose/signin/signinbutton.disabled = true
+	update_data(tabs.signin.username, tabs.signin.pw)
+	Globals.network.signin(data)
 
 
 func _on_signin_result(result):
+	var status_set = !autologin
+	autologin = false
+	$choose.show()
 	$choose/signin/signinbutton.disabled = false
 	if typeof(result) == TYPE_STRING:  # ew, error, get it away from me
-		Log.err(result)
-		return
+		return reset(result, status_set)
 	data.id = result.id
 	data.country = result.country
-	save_data()
-	status.set_text("Sign in sucessfull!")
-	signed_in = true  # yay
+	_after_result()
+
+
+func _on_signup_pressed():
+	$choose/signup/signupbutton.disabled = true
+	update_data(tabs.signup.username, tabs.signup.pw)
+	Globals.network.signup(data)
 
 
 func _on_signup_result(result: String):
 	$choose/signup/signupbutton.disabled = false
 	if "err:" in result:  # ew error go awway
-		Log.err(result)
-		return
+		return reset(result)
 	data.id = result
+	_after_result()
+
+
+func reset(reason: String, set_status := true):
+	if set_status:
+		status.set_text(reason)
+	data = SaveLoad.default_id_data
 	save_data()
-	status.set_text("Sign up sucessfull ( you are now logged in )!")
+	$choose.show()
+
+
+func _after_result():
+	save_data()
+	status.set_text("Signed in to " + SaveLoad.files.id.data.name)
 	signed_in = true  # yay
-
-
-func _on_signup_pressed():
-	$choose/signup/signupbutton.disabled = true
-	update_data(signup.username, signup.pw)
-	Globals.network.signup(data)
+	$choose.hide()
 
 
 func update_data(username, pw):
@@ -69,7 +87,7 @@ func save_data():
 	SaveLoad.save("id")
 
 
-func _on_signin_pressed():
-	$choose/signin/signinbutton.disabled = true
-	update_data(signin.username, signin.pw)
-	Globals.network.signin(data)
+func _on_choose_tab_changed(tab: int):
+	var new: VBoxContainer = $choose.get_children()[tab].get_node("usernamepass")
+	var old = $choose.get_children()[1 if tab == 0 else 0].get_node("usernamepass")
+	new.update_data(old.export_data())

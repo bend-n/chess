@@ -40,19 +40,17 @@ func _exit_tree() -> void:
 		Globals.pawns.remove(find)
 
 
-func moveto(position: Vector2, real := true) -> void:
+func moveto(position: Vector2, instant := false) -> void:
 	# check if 2 step
-	if real:
-		if !just_double_stepped and !has_moved:
-			if white and real_position.y - position.y == 2:
-				just_double_stepped = true
-				just_set = true
-			if !white and position.y - real_position.y == 2:
-				just_double_stepped = true
-				just_set = true
-	.moveto(position, real)
-	if real:
-		Globals.reset_halfmove()
+	if !just_double_stepped and !has_moved:
+		if white and real_position.y - position.y == 2:
+			just_double_stepped = true
+			just_set = true
+		if !white and position.y - real_position.y == 2:
+			just_double_stepped = true
+			just_set = true
+	.moveto(position, instant)
+	Globals.reset_halfmove()
 
 
 func get_moves(_var := false, check_spots_check := true) -> PoolVector2Array:
@@ -77,11 +75,11 @@ static func can_promote(position: Vector2) -> bool:
 	return position.y >= 7 or position.y <= 0
 
 
-func passant(position: Vector2) -> void:
+func passant(position: Vector2, instant := false) -> void:
 	var to_take = position + Vector2(0, whiteint)
-	at_pos(to_take).took()
+	at_pos(to_take).took(instant)
 	enpassant.resize(0)
-	moveto(position)
+	moveto(position, instant)
 
 
 func valid_to_passant_take(piece) -> bool:
@@ -137,9 +135,9 @@ func promote(position: Vector2, type: String) -> void:
 		sprites[i].show()
 
 
-func promote_to(promote_to: String, is_capture: bool, position: Vector2):
+func promote_to(promote_to: String, is_capture: bool, position: Vector2, instant := false):
 	if is_capture and at_pos(position):
-		at_pos(position).took()
+		at_pos(position).took(instant)
 	clear_clicked()
 	Globals.grid.make_piece(position, piece(promote_to), white)
 	took()

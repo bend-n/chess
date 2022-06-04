@@ -10,11 +10,11 @@ const HEADERS := {
 	"joinrequest": "J",
 	"hostrequest": "H",
 	"stopgame": "K",
-	"ping": "P",
 	"signup": "C",
 	"signin": ">",
 	"relay": "R",  # relay goes to both
 	"signal": "S",  # signal is one way
+	"loadpgn": "L"  # server telling me to load a pgn
 }
 
 const MOVEHEADERS := {  # subheaders for HEADERS.move
@@ -25,7 +25,7 @@ const MOVEHEADERS := {  # subheaders for HEADERS.move
 	"promote": "Q",
 }
 
-const RELAYHEADERS := {"chat": "C", "startgame": "S"}
+const RELAYHEADERS := {"chat": "C"}
 const SIGNALHEADERS := {"takeback": "T", "draw": "D", "resign": "R"}  # subheaders for HEADERS.signal
 
 var notation := ""
@@ -38,7 +38,7 @@ signal game_over(problem, isok)
 signal connection_established
 signal signal_recieved(what)
 
-## for accounts
+## for accounts(mostly)
 signal signinresult(what)
 signal signupresult(what)
 
@@ -52,11 +52,6 @@ func _ready() -> void:
 	ws.connect("connection_error", self, "_connection_error")
 	ws.connect("data_received", self, "_data_recieved")
 	ws.connect_to_url(url)
-	var t := Timer.new()
-	add_child(t)
-	t.wait_time = 1
-	t.start(1)
-	t.connect("timeout", self, "ping")
 
 
 func signin(data):
@@ -65,10 +60,6 @@ func signin(data):
 
 func signup(data):
 	send_packet(data, HEADERS.signup)
-
-
-func ping() -> void:
-	send_packet("ping", HEADERS.ping)
 
 
 func close() -> void:
@@ -100,6 +91,14 @@ func signal(body, header: String, keyname := "body", _mainheader := HEADERS.sign
 	return data
 
 
+func join_game(game: String) -> void:
+	send_packet({"gamecode": game, "id": SaveLoad.files.id.data.id}, HEADERS.joinrequest)
+
+
+func host_game(game: String) -> void:
+	send_packet({"gamecode": game, "id": SaveLoad.files.id.data.id}, HEADERS.hostrequest)
+
+
 func relay_signal(body, header: String, keyname := "body") -> Dictionary:  # its really the same thing as signal()
 	return signal(body, header, keyname, HEADERS.relay)
 
@@ -124,12 +123,13 @@ func _data_recieved() -> void:
 			var relay: Dictionary = text
 			if relay.type in MOVEHEADERS.values():
 				emit_signal("move_data", text.move)
-			else:
-				match relay.type:
-					RELAYHEADERS.startgame:
-						emit_signal("start_game")
 		HEADERS.joinrequest:
 			emit_signal("join_result", text)
+		HEADERS.loadpgn:
+			emit_signal("start_game")
+			yield(get_tree().create_timer(.5), "timeout")
+			Log.info("load pgn " + text)
+			Globals.grid.play_pgn(text, true)  # call deferred wont work since grid obj may be null
 		HEADERS.stopgame:
 			if !PacketHandler.leaving:  # dont emit the signal if its a stophost thing (HACK)
 				emit_signal("game_over", text, true)
@@ -137,8 +137,6 @@ func _data_recieved() -> void:
 		HEADERS.signal:
 			var signal: Dictionary = text
 			emit_signal("signal_recieved", signal)
-		HEADERS.ping:
-			pass
 		HEADERS.signup:
 			emit_signal("signupresult", text)
 		HEADERS.signin:
@@ -156,3 +154,5 @@ func _process(_delta: float) -> void:
 func send_packet(variant, header: String) -> void:
 	if ws.get_peer(1).is_connected_to_host():
 		ws.get_peer(1).put_var({"header": header, "data": variant})
+	else:
+		Log.err("not connected to server: packet %s not sent" % variant)

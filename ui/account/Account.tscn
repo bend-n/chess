@@ -41,6 +41,7 @@ margin_bottom = 140.0
 script = ExtResource( 7 )
 
 [node name="choose" type="TabContainer" parent="."]
+visible = false
 margin_left = 177.0
 margin_top = 155.0
 margin_right = 1245.0
@@ -116,5 +117,6 @@ size_flags_horizontal = 4
 enabled_focus_mode = 0
 text = "sign in"
 
+[connection signal="tab_changed" from="choose" to="." method="_on_choose_tab_changed"]
 [connection signal="pressed" from="choose/signup/signupbutton" to="." method="_on_signup_pressed"]
 [connection signal="pressed" from="choose/signin/signinbutton" to="." method="_on_signin_pressed"]

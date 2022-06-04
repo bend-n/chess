@@ -14,9 +14,11 @@ const default_settings_data = {
 	"rainbow": true
 }
 
+const default_id_data = {"id": "", "name": "", "country": "rainbow", "password": ""}
+
 var files := {
 	"settings": {"file": settings_file, "data": default_settings_data.duplicate(true)},
-	"id": {"file": id, "data": {"id": "", "name": "", "country": "rainbow", "password": ""}}
+	"id": {"file": id, "data": default_id_data.duplicate()}
 }  # file types
 
 

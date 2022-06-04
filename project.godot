@@ -79,11 +79,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/Lobby.gd"
 }, {
-"base": "Node",
-"class": "Log",
-"language": "GDScript",
-"path": "res://ui/Log.gd"
-}, {
 "base": "Resource",
 "class": "Move",
 "language": "GDScript",
@@ -179,7 +174,6 @@ _global_script_class_icons={
 "King": "res://assets/pieces/california/wK.png",
 "Knight": "res://assets/pieces/california/wN.png",
 "Lobby": "",
-"Log": "",
 "Move": "",
 "NetManager": "",
 "Network": "",
@@ -222,6 +216,7 @@ PacketHandler="*res://networking/PacketHandler.gd"
 Debug="*res://Debug.gd"
 SanParse="*res://SanParse/SanParse.gd"
 Pgn="*res://PGN/PGN.gd"
+Log="*res://Log.gd"
 
 [debug]
 

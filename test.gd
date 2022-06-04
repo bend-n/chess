@@ -65,8 +65,11 @@ class TestSan:
 	func test_pawn_capture_long():
 		assert_capture("e3xd4", Vector2(4, 5), Vector2(3, 4), PAWN)
 
-	func test_piece_capture():
+	func test_row_piece_capture():
 		assert_capture("R1xh3", Vector2(-1, 7), Vector2(7, 5), ROOK)
+
+	func test_piece_capture():
+		assert_capture("Nxe4", Vector2(-1, -1), Vector2(4, 4), KNIGHT)
 
 	func test_piece_capture_file():
 		assert_capture("Rexh3", Vector2(4, -1), Vector2(7, 5), ROOK)
@@ -97,6 +100,7 @@ class TestSan:
 		test_piece_rank()
 		test_piece_long()
 		test_pawn_capture()
+		test_row_piece_capture()
 		test_pawn_capture_promotion()
 		test_pawn_capture_long()
 		test_piece_capture()
@@ -107,5 +111,5 @@ class TestSan:
 
 
 func _ready():
-	if Debug.is_debug():
+	if Debug.debug:
 		TestSan.new()
