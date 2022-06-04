@@ -75,8 +75,8 @@ func handle_result(accepted: String, resultstring: String, team := true) -> bool
 func _handle_game_over(error := "game over", isok := true) -> void:
 	Globals.network.stopgame(error)
 	Globals.reset_vars()
-	if has_node("/root/Board"):
-		get_node("/root/Board").queue_free()
+	if has_node("/root/Game"):
+		get_node("/root/Game").queue_free()
 	lobby.set_status(error, isok)
 	lobby.toggle(true)
 	lobby.set_buttons(true)
@@ -85,7 +85,7 @@ func _handle_game_over(error := "game over", isok := true) -> void:
 
 func _start_game() -> void:
 	set_hosting(false)
-	var board: Node2D = load("res://Board.tscn").instance()
+	var board: Control = load("res://Game.tscn").instance()
 	get_tree().get_root().add_child(board)
 	lobby.toggle(false)
 	emit_signal("game_started")

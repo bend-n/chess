@@ -1,12 +1,10 @@
-extends Node2D
+extends Control
 class_name Grid
 
 const PieceScene := preload("res://Piece.tscn")
 const Square := preload("res://Square.tscn")
-const BottomLeftLabel := preload("res://ui/boardlabels/BottomLeftLabel.tscn")
-const TopRightLabel := preload("res://ui/boardlabels/TopRightLabel.tscn")
 
-const piece_size := Vector2(100, 100)
+const piece_size := Vector2(80, 80)
 const default_metadata := {
 	"wccl": false,  # white can castle left
 	"wccr": false,  # white can castle right
@@ -17,13 +15,15 @@ const default_metadata := {
 	"bcep": [],  # black can enpassant
 }
 
+onready var offset = rect_position
+
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
 export(Color) var clockrunning_color := Color(0.219608, 0.278431, 0.133333)
 export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
 export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
 
 var matrix := []
-var stop_input := true
+var stop_input := false
 var background_matrix := []
 var history_matrixes := {}
 var last_clicked: Piece = null
@@ -35,7 +35,7 @@ onready var background := $Background
 onready var ASSETS_PATH: String = "res://assets/pieces/%s/" % Globals.piece_set
 onready var foreground := $Foreground
 onready var pieces := $Pieces
-onready var ui := $"../UI"
+export(NodePath) onready var status = get_node(status) as StatusLabel
 
 
 func _init() -> void:
@@ -54,7 +54,7 @@ func _ready() -> void:
 	Debug.monitor(self, "last_clicked")
 	Debug.monitor(self, "matrix", "matrix[8]")
 	Debug.monitor(self, "highest value in 3fold", "threefoldrepetition()")
-	stop_input = false
+	Debug.monitor(self, "stop_input")
 
 
 func _exit_tree() -> void:
@@ -113,35 +113,55 @@ func flip_labels() -> void:
 
 
 func flip_board() -> void:
-	if global_position == Vector2(800, 800):
+	if flipped:
 		flipped = false
-		global_position = Vector2(0, 0)
-		rotation_degrees = 0
+		rect_rotation = 0
 		flip_pieces()
 		flip_labels()
 	else:
 		flipped = true
-		global_position = Vector2(800, 800)
-		rotation_degrees = 180
+		rect_rotation = 180
 		flip_pieces()
 		flip_labels()
 
 
 func init_labels() -> void:
 	for i in range(8):
-		labels.letters.append(init_label(BottomLeftLabel, i, Vector2(i, 7), "abcdefgh"[i]))
-		labels.numbers.append(init_label(TopRightLabel, i, Vector2(7, i), str(8 - i)))
+		labels.letters.append(
+			init_label(
+				i,
+				Vector2(i, 7),
+				"abcdefgh"[i],
+				Label.VALIGN_BOTTOM,
+				Label.ALIGN_LEFT,
+				(Vector2.RIGHT + Vector2.UP) * 10
+			)
+		)
+		labels.numbers.append(
+			init_label(
+				i,
+				Vector2(7, i),
+				str(8 - i),
+				Label.VALIGN_TOP,
+				Label.ALIGN_RIGHT,
+				(Vector2.LEFT + Vector2.DOWN) * 10
+			)
+		)
 
 
-func init_label(labelscene: PackedScene, i: int, position: Vector2, text: String) -> Control:
-	var labelholder: Control = labelscene.instance()
-	labelholder.rect_size = piece_size
-	labelholder.rect_position = position * piece_size
-	var label: Label = labelholder.get_node("Label")
+func init_label(i: int, position: Vector2, text: String, valign := 0, align := 0, off := Vector2.ZERO) -> Label:
+	var label := Label.new()
+	label.rect_size = piece_size
+	label.align = align
+	label.valign = valign
+	label.rect_position = (position * piece_size) + off
 	label.text = text
 	label.add_color_override("font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2)
-	foreground.add_child(labelholder)
-	return labelholder
+	var font: DynamicFont = load("res://ui/verdana-bold.tres")
+	font.size = 15
+	label.add_font_override("font", font)
+	foreground.add_child(label)
+	return label
 
 
 func threefoldrepetition() -> int:
@@ -160,7 +180,7 @@ func mat2str(mat: Array = matrix) -> String:
 
 
 func drawed(reason := "") -> void:
-	ui.set_status("draw by " + reason, 0)
+	status.set_text("draw by " + reason, 0)
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
@@ -168,7 +188,7 @@ func drawed(reason := "") -> void:
 
 
 func win(winner: bool, reason := "") -> void:
-	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason], 0)  # black won the game by checkmate
+	status.set_text("%s won the game by %s" % ["white" if winner else "black", reason], 0)  # black won the game by checkmate
 	Events.emit_signal("game_over")
 	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.fullmove])
 	SoundFx.play("Victory")
@@ -214,7 +234,7 @@ func make_piece(position: Vector2, script: String, white: bool = true) -> void: 
 	var piece := PieceScene.instance()  # create a piece
 	piece.script = load("res://pieces/%s.gd" % script)  # set the script
 	piece.real_position = position  # set the real position
-	piece.global_position = position * piece_size  # set the global position
+	piece.rect_global_position = position * piece_size  # set the global position
 	piece.white = white  # set its team
 	pieces.add_child(piece)  # add the piece to the grid
 	matrix[position.y][position.x] = piece
@@ -228,9 +248,8 @@ func init_board() -> void:  # create the board
 			square.rect_size = piece_size  # set the size
 			square.rect_global_position = Vector2(i, j) * piece_size  # set the position
 			square.color = Globals.board_color1 if (i + j) % 2 == 0 else Globals.board_color2  # set the color
-			square.real_position = Vector2(i, j)  # set the real position
 			background.add_child(square)  # add the square to the background
-			square.connect("clicked", self, "square_clicked")  # connect the clicked event
+			square.connect("clicked", self, "square_clicked", [Vector2(i, j)])  # connect the clicked event
 			background_matrix[i].append(square)  # add the square to the background matrix
 
 
@@ -293,11 +312,11 @@ func check_for_frame(position: Vector2) -> bool:  # check for a frame, validatin
 
 
 func square_clicked(position: Vector2) -> void:  # square clicked
-	Log.debug(Utils.to_algebraic(position) + " clicked")
 	if stop_input:
 		return
 	if Globals.turn != Globals.team:
 		return
+	Log.debug(Utils.to_algebraic(position) + " clicked")
 	var spot: Piece = matrix[position.y][position.x]  # get the spot
 	if !spot or spot.white != Globals.team:
 		if !is_instance_valid(last_clicked):
@@ -395,17 +414,18 @@ func _on_turn_over() -> void:
 
 
 func play_pgn(pgn: String, instant := false):
+	stop_input = true
 	for san in Pgn.parse(pgn).moves:
-		play_san(san)  # instant is not working right right now
+		play_san(san, false, false)  # instant is not working right right now
 		# so just change the delay :>
 		if instant:
 			yield(get_tree(), "idle_frame")
 		else:
 			yield(get_tree().create_timer(.3), "timeout")
+	stop_input = false
 
 
-func play_san(san: String, instant := false) -> void:
-	stop_input = true
+func play_san(san: String, instant := false, set_input := true) -> void:
 	Log.debug("playing " + san)
 	var san_to_add := san
 	var mov = SanParse.parse(san)
@@ -447,4 +467,4 @@ func play_san(san: String, instant := false) -> void:
 			else:  # a very normal move
 				Piece.at_pos(positions[0]).moveto(positions[1], instant)
 	Utils.add_move(san_to_add)
-	stop_input = false
+	stop_input = false if set_input else stop_input

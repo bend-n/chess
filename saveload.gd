@@ -22,6 +22,12 @@ var files := {
 }  # file types
 
 
+func access_data(type: String) -> Dictionary:
+	if !files.has(type):
+		return {}
+	return files[type].data
+
+
 func _ready() -> void:
 	# Debug.monitor(self, "id data", "files.id.data")
 	SaveLoad.load_data("settings")
@@ -32,7 +38,7 @@ func to_base64(variant) -> String:
 	return Marshalls.variant_to_base64(variant)
 
 
-func from_base64(base64):
+func from_base64(base64: String):
 	return Marshalls.base64_to_variant(base64)
 
 

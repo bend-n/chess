@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 class_name Piece, "res://assets/pieces/california/wP.png"
 
 var real_position := Vector2.ZERO
@@ -14,20 +14,24 @@ onready var tween := $Tween
 onready var anim := $AnimationPlayer
 onready var rotate := $RotatePlayer
 onready var colorrect := $ColorRect
-onready var frame := $Frame
+onready var frame := $Sprite/Frame
 
 
 func _ready() -> void:
 	team = "w" if white else "b"
-	sprite.position = Globals.grid.piece_size / 2
 	var tmp: Array = Utils.get_node_name(self)
 	mininame = tmp[0]
 	shortname = tmp[1]
-	frame.position = Globals.grid.piece_size / 2
+	rect_min_size = Globals.grid.piece_size
+	rect_size = rect_min_size
+	rect_pivot_offset = Globals.grid.piece_size / 2
 	frame.modulate = Globals.grid.overlay_color
 	colorrect.color = Globals.grid.overlay_color
-	colorrect.rect_size = Globals.grid.piece_size
 	load_texture()
+
+
+func set_zindex(zindex: int):
+	VisualServer.canvas_item_set_z_index(get_canvas_item(), zindex)
 
 
 func load_texture(path := "%s%s%s.png" % [Globals.grid.ASSETS_PATH, team, shortname.to_upper()]) -> void:
@@ -45,19 +49,11 @@ func clear_clicked() -> void:
 	Globals.grid.clear_fx()
 
 
-func algebraic_take_notation(position: Vector2, startpos: Vector2 = real_position) -> String:
-	var starter := shortname if shortname != "p" else Utils.to_algebraic(startpos)[0]
-	return starter + "x" + Utils.to_algebraic(position)
-
-
-func algebraic_move_notation(position: Vector2) -> String:
-	var starter := shortname if shortname != "p" else ""
-	return starter + Utils.to_algebraic(position)
-
-
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
-	tween.interpolate_property(self, "position", position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK)
-	var signresult := int(sign(newpos.x * Globals.grid.piece_size.x - global_position.x))
+	tween.interpolate_property(
+		self, "rect_position", rect_position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
+	)
+	var signresult := int(sign((newpos.x * Globals.grid.piece_size.x) - rect_global_position.x))
 	if signresult == 1:
 		rotate.play("Right")
 	elif signresult == -1:
@@ -209,7 +205,7 @@ func took(instant := false) -> void:  # called when piece is taken
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	if !instant:
 		SoundFx.play("Capture")
-		anim.play("Take")
+		anim.play("Took")
 
 
 func set_frame(value := true) -> void:

@@ -15,6 +15,7 @@ var autologin = true
 
 onready var tabcontainer = $choose
 
+
 func _ready():
 	Globals.network.connect("signinresult", self, "_on_signin_result")
 	Globals.network.connect("signupresult", self, "_on_signup_result")
@@ -29,6 +30,7 @@ func attempt_autologin():
 		Globals.network.signin(data)
 	else:
 		tabcontainer.show()
+
 
 func _on_signin_pressed():
 	$choose/signin/signinbutton.disabled = true

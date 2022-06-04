@@ -1,17 +1,11 @@
 extends Control
 
-const world = preload("res://Board.tscn")
-
 onready var settings := find_node("Settings")
 
 
 func _ready() -> void:
 	if OS.has_feature("HTML5"):
 		find_node("quit").queue_free()
-
-
-func _on_local_pressed() -> void:
-	get_tree().change_scene_to(world)
 
 
 func _on_quit_pressed() -> void:

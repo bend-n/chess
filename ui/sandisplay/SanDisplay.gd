@@ -15,7 +15,7 @@ func _ready() -> void:
 func create_number_label(num: int) -> void:
 	var clr := ColorRect.new()
 	clr.color = Color(1, 1, 1, 0.13)
-	clr.rect_min_size = Vector2(70, 30)
+	clr.rect_min_size = Vector2(100, 30)
 	var label := Label.new()
 	label.text = " %s." % str(num)
 	label.align = Label.ALIGN_LEFT
@@ -29,7 +29,7 @@ func create_san_label(text: String, alignment := Label.ALIGN_RIGHT) -> void:
 	label.text = text
 	label.valign = Label.VALIGN_CENTER
 	label.align = alignment
-	label.rect_min_size = Vector2(rect_size.x / 2.4, 0)
+	label.rect_min_size = Vector2(rect_size.x / 3, 0)
 	sans.add_child(label)
 
 

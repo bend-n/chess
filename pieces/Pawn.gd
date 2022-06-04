@@ -19,10 +19,10 @@ func _ready() -> void:
 	Globals.pawns.append(self)
 	Events.connect("turn_over", self, "_on_turn_over")
 	Events.connect("just_before_turn_over", self, "_just_before_turn_over")
-	sprite.position = Globals.grid.piece_size / 2
 	for i in range(0, 4):  # add 3 sprites
 		var newsprite: Node2D = load("res://ui/ClickableSprite.tscn").instance()
-		newsprite.position = (sprite.position + Vector2(0, (i * Globals.grid.piece_size.y) * whiteint))
+		newsprite.scale = Globals.grid.piece_size / Vector2(100, 100)
+		newsprite.position = (Globals.grid.piece_size / 2 + Vector2(0, (i * Globals.grid.piece_size.y) * whiteint))
 		newsprite.get_node("Sprite").texture = load(
 			"%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]]
 		)

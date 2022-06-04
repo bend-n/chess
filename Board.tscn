@@ -1,20 +1,34 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Grid.gd" type="Script" id=1]
-[ext_resource path="res://ui/GameUI.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Board.gd" type="Script" id=1]
+[ext_resource path="res://ui/theme/main.tres" type="Theme" id=3]
 
-[node name="Board" type="Node2D"]
-
-[node name="Grid" type="Node2D" parent="."]
+[node name="Board" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
 
-[node name="Background" type="Node2D" parent="Grid"]
+[node name="Background" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
 
-[node name="Pieces" type="Node2D" parent="Grid"]
+[node name="Pieces" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
 
-[node name="Foreground" type="CanvasLayer" parent="Grid"]
+[node name="Foreground" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 3 )
 
-[node name="Darken" type="ColorRect" parent="Grid"]
+[node name="Darken" type="ColorRect" parent="."]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,5 +36,3 @@ rect_min_size = Vector2( 800, 800 )
 mouse_filter = 2
 mouse_default_cursor_shape = 7
 color = Color( 0, 0, 0, 0.784314 )
-
-[node name="UI" parent="." instance=ExtResource( 2 )]
