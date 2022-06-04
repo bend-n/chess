@@ -61,6 +61,8 @@ func compile() -> String:  # compiles the structure to a san
 # 	print(Utils.to_algebraic(make_long(SanParse.parse("N1xc3").move_kind.data, false, SanParser.KNIGHT)[0]) == "b1")
 ### fix short san
 func make_long():
+	if move_kind.type == MoveKind.CASTLE:
+		return
 	var newvecs: PoolVector2Array = []
 
 	var vectors = move_kind.data
@@ -85,19 +87,23 @@ func long_helper(vec: Vector2, attack: bool, move: bool, touch: Vector2):
 	if vec.y == -1 and vec.x != -1:
 		for y in range(8):
 			var spot = Piece.at_pos(Vector2(vec.x, y))
-			if Utils.spotispiece(piece, spot) and spot.can_touch(touch, attack, move):
+			if long_helper_helper(spot, touch, attack, move):
 				return Vector2(vec.x, y)
 	elif vec.x == -1 and vec.y != -1:
 		for x in range(8):
 			var spot = Piece.at_pos(Vector2(x, vec.y))
-			if Utils.spotispiece(piece, spot) and spot.can_touch(touch, attack, move):
+			if long_helper_helper(spot, touch, attack, move):
 				return Vector2(x, vec.y)
 	elif vec == Vector2(-1, -1):
 		for x in range(8):
 			for y in range(8):
 				var spot = Piece.at_pos(Vector2(x, y))
-				if Utils.spotispiece(piece, spot) and spot.can_touch(touch, attack, move):
+				if long_helper_helper(spot, touch, attack, move):
 					return Vector2(x, y)
+
+
+func long_helper_helper(spot, touch, attack, move):
+	return Utils.spotispiece(piece, spot) and spot.white == Globals.turn and spot.can_touch(touch, attack, move)
 
 
 class MoveKind:

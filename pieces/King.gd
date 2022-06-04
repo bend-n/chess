@@ -75,7 +75,7 @@ func castleing(justcheckrooks := false) -> Array:
 	return moves
 
 
-func castle(position: Vector2) -> String:
+func castle(position: Vector2, instant := false) -> String:
 	var return_string := ""
 	if can_castle.size() == 1:
 		return_string = can_castle[0][3]
@@ -85,7 +85,7 @@ func castle(position: Vector2) -> String:
 				return_string = i[3]
 				break
 	can_castle.clear()
-	moveto(position, true)
+	moveto(position, instant)
 	return return_string
 
 

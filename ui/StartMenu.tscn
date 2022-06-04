@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/StartMenu.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://assets/ui/verdana-bold.ttf" type="DynamicFontData" id=5]
 [ext_resource path="res://ui/account/Account.tscn" type="PackedScene" id=6]
 [ext_resource path="res://test.gd" type="Script" id=7]
+[ext_resource path="res://PGN/test_pgns.tscn" type="PackedScene" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 400
@@ -55,6 +56,9 @@ margin_left = 30.0
 margin_top = 90.0
 margin_right = -30.0
 margin_bottom = -30.0
+
+[node name="tests" parent="tabs" instance=ExtResource( 8 )]
+visible = false
 
 [node name="quit" type="Button" parent="tabs"]
 visible = false

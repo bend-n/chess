@@ -1,7 +1,7 @@
 extends Node2D
 class_name Grid
 
-const Piece := preload("res://Piece.tscn")
+const PieceScene := preload("res://Piece.tscn")
 const Square := preload("res://Square.tscn")
 const BottomLeftLabel := preload("res://ui/boardlabels/BottomLeftLabel.tscn")
 const TopRightLabel := preload("res://ui/boardlabels/TopRightLabel.tscn")
@@ -23,7 +23,7 @@ export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
 export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
 
 var matrix := []
-var stop_input := false
+var stop_input := true
 var background_matrix := []
 var history_matrixes := {}
 var last_clicked: Piece = null
@@ -43,6 +43,8 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	if Globals.network:
+		Globals.network.connect("move_data", self, "play_san")
 	init_board()  # create the tile squares
 	init_matrix()  # create the pieces
 	init_labels()  # add the labels
@@ -52,6 +54,7 @@ func _ready() -> void:
 	Debug.monitor(self, "last_clicked")
 	Debug.monitor(self, "matrix", "matrix[8]")
 	Debug.monitor(self, "highest value in 3fold", "threefoldrepetition()")
+	stop_input = false
 
 
 func _exit_tree() -> void:
@@ -208,7 +211,7 @@ func init_matrix() -> void:  # create the matrix
 
 
 func make_piece(position: Vector2, script: String, white: bool = true) -> void:  # make peace
-	var piece := Piece.instance()  # create a piece
+	var piece := PieceScene.instance()  # create a piece
 	piece.script = load("res://pieces/%s.gd" % script)  # set the script
 	piece.real_position = position  # set the real position
 	piece.global_position = position * piece_size  # set the global position
@@ -369,15 +372,13 @@ func _on_outoftime(who: bool) -> void:
 
 
 func _on_turn_over() -> void:
-	stop_input = false
-	Log.debug("turn over. new turn: " + Globals.get_turn())
 	var matstr := mat2str()
-	Log.debug("matstr: " + matstr)
+	# Log.debug("matstr: " + matstr)
 	if !matstr in history_matrixes:
-		Log.debug("new matrix entry")
+		# Log.debug("new matrix entry")
 		history_matrixes[matstr] = 1
 	else:
-		Log.debug(["matrix entry = ", history_matrixes[matstr], "+ 1"])
+		# Log.debug(["matrix entry = ", history_matrixes[matstr], "+ 1"])
 		history_matrixes[matstr] += 1
 	Globals.checking_piece = null  # reset checking_piece
 	Globals.in_check = false  # reset in_check
@@ -391,3 +392,59 @@ func _on_turn_over() -> void:
 			drawed("stalemate")
 	elif threefoldrepetition() >= 3:
 		drawed("threefold repetition")
+
+
+func play_pgn(pgn: String, instant := false):
+	for san in Pgn.parse(pgn).moves:
+		play_san(san)  # instant is not working right right now
+		# so just change the delay :>
+		if instant:
+			yield(get_tree(), "idle_frame")
+		else:
+			yield(get_tree().create_timer(.3), "timeout")
+
+
+func play_san(san: String, instant := false) -> void:
+	stop_input = true
+	Log.debug("playing " + san)
+	var san_to_add := san
+	var mov = SanParse.parse(san)
+	mov.make_long()
+	Globals.add_turn()
+	match mov.move_kind.type:
+		Move.MoveKind.CASTLE:
+			var side = 0 if Globals.turn else 7
+			var rook: Rook
+			var rook_goto: Vector2
+			var kingpos = Vector2(4, side)
+			var king: King = Piece.at_pos(kingpos)
+			var king_goto: Vector2
+			match mov.move_kind.data:
+				Move.MoveKind.CASTLETYPES.KING_SIDE:
+					rook = Piece.at_pos(Vector2(7, side))
+					rook_goto = Vector2(5, side)
+					king_goto = Vector2(6, side)
+				Move.MoveKind.CASTLETYPES.QUEEN_SIDE:
+					rook = Piece.at_pos(Vector2(0, side))
+					rook_goto = Vector2(3, side)
+					king_goto = Vector2(2, side)
+			rook.moveto(rook_goto, instant)
+			king.castle(king_goto, instant)
+		Move.MoveKind.NORMAL:
+			# this handles promotion, taking, enpassant, and moves.
+			var positions = mov.move_kind.data
+			if mov.promotion != -1:  # promotion part
+				var promote_to = Utils.to_str(mov.promotion)
+				Piece.at_pos(positions[0]).promote_to(promote_to, mov.is_capture, positions[1], instant)
+
+			elif mov.is_capture:  # taking part
+				if Piece.at_pos(positions[1]):
+					Piece.at_pos(positions[0]).take(Piece.at_pos(positions[1]), instant)
+				elif mov.piece == SanParser.PAWN:  # enpassant part
+					var pawn: Pawn = Piece.at_pos(positions[0])
+					pawn.passant(positions[1], instant)
+					san_to_add += " e.p."
+			else:  # a very normal move
+				Piece.at_pos(positions[0]).moveto(positions[1], instant)
+	Utils.add_move(san_to_add)
+	stop_input = false

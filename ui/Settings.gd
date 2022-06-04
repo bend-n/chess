@@ -40,21 +40,17 @@ func update_button_visuals(set: Dictionary = settings) -> void:
 func _ready() -> void:
 	if OS.has_feature("HTML5"):
 		borderlessbutton.queue_free()
-	board_color1.color = settings.board_color1
-	board_color2.color = settings.board_color2
 	for i in piece_sets:  # add the items
 		piece_set_button.add_icon_item(load("res://assets/pieces/" + i + "/wP.png"), i)
 	piece_set_button.selected = Array(piece_sets).find(settings.piece_set)
-	Globals.piece_set = piece_sets[piece_set_button.selected]
-	Globals.board_color1 = settings.board_color1
-	Globals.board_color2 = settings.board_color2
+	update_vars()
 	update_button_visuals()
 
 
 func update_vars() -> void:
-	Globals.piece_set = piece_sets[piece_set_button.selected]
-	Globals.board_color1 = board_color1.color
-	Globals.board_color2 = board_color2.color
+	Globals.piece_set = settings.piece_set
+	Globals.board_color1 = settings.board_color1
+	Globals.board_color2 = settings.board_color2
 	OS.vsync_enabled = settings.vsync
 	OS.window_fullscreen = settings.fullscreen
 	OS.window_borderless = settings.borderless

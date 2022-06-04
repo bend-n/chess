@@ -57,8 +57,7 @@ func algebraic_move_notation(position: Vector2) -> String:
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.interpolate_property(self, "position", position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK)
-	var signresult := sign(newpos.x * Globals.grid.piece_size.x - global_position.x)
-	Log.debug("signresult: " + str(signresult))
+	var signresult := int(sign(newpos.x * Globals.grid.piece_size.x - global_position.x))
 	if signresult == 1:
 		rotate.play("Right")
 	elif signresult == -1:
@@ -67,10 +66,10 @@ func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.start()
 
 
-func moveto(pos: Vector2, real := true) -> void:
+func moveto(pos: Vector2, instant := false) -> void:
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[pos.y][pos.x] = self
-	if real:
+	if !instant:
 		real_position = pos
 		move(real_position)
 		SoundFx.play("Move")
@@ -184,7 +183,8 @@ static func set_circle(positions: Array, type := "move") -> void:
 func checkcheck(pos) -> bool:  # moves to position, then checks if your king is in check
 	# TODO: figure out why this function isnt working with can_move()
 	var mat: Array = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
-	moveto(pos, false)  # move to the position
+	Globals.grid.matrix[real_position.y][real_position.x] = null  # remove the piece from the matrix
+	Globals.grid.matrix[pos.y][pos.x] = self  # move the piece to the new position
 	if Globals.grid.check_in_check():  # if you are still in check
 		Globals.grid.matrix = mat  # revert changes on the matrix
 		return true
@@ -198,17 +198,18 @@ static func is_on_board(vector: Vector2) -> bool:  # limit the vector to the boa
 	return true
 
 
-func take(piece: Piece) -> void:
+func take(piece: Piece, instant := false) -> void:
 	clear_clicked()
-	piece.took()
-	moveto(piece.real_position, true)
+	piece.took(instant)
+	moveto(piece.real_position, instant)
 	Globals.reset_halfmove()
 
 
-func took() -> void:  # called when piece is taken
-	SoundFx.play("Capture")
+func took(instant := false) -> void:  # called when piece is taken
 	Globals.grid.matrix[real_position.y][real_position.x] = null
-	anim.play("Take")
+	if !instant:
+		SoundFx.play("Capture")
+		anim.play("Take")
 
 
 func set_frame(value := true) -> void:

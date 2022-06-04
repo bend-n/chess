@@ -65,6 +65,15 @@ func get_fen() -> String:
 	)  # pos  # turn  # castling  # enpassant  # halfmove  # fullmove
 
 
+static func str_bool(string: String) -> bool:
+	string = string.to_lower()
+	if string == "true":
+		return true
+	if string == "false":
+		return false
+	return false
+
+
 func add_move(move: String) -> void:
 	if Globals.turn == false:
 		moves_list.append("%s. %s" % [Globals.fullmove, move])
@@ -174,11 +183,7 @@ func format_seconds(time: float, use_milliseconds: bool = false) -> String:
 
 func _notification(what: int) -> void:
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
-		if get_tree().get_root().has_node("Board"):
-			Globals.network.stopgame("quit")
-		yield(get_tree(), "idle_frame")  # wait for the packet to send
 		Log.debug("Bye!")
-		get_tree().quit()
 
 
 static func to_algebraic(pos: Vector2) -> String:

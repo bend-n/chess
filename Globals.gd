@@ -55,7 +55,6 @@ func add_turn() -> void:
 	else:
 		halfmove += 1
 	turn = not turn
-	Log.debug("Turn over signal emmited")
 	Events.emit_signal("turn_over")
 
 
