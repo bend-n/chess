@@ -54,17 +54,17 @@ func network_ready() -> void:
 	lobby.set_buttons(true)
 
 
-func _on_join_result(accepted: String) -> void:
-	handle_result(accepted, "Joined!", true)
+func _on_join_result(accepted) -> void:
+	handle_result(accepted, "Joined!")
 
 
-func _on_host_result(accepted: String) -> void:
+func _on_host_result(accepted) -> void:
 	set_hosting(handle_result(accepted, "Hosted!"))
 
 
-func handle_result(accepted: String, resultstring: String, team := false) -> bool:
-	Globals.team = team  # joiner is always white
-	if accepted == "Y":
+func handle_result(accepted, resultstring: String) -> bool:
+	if typeof(accepted) == TYPE_DICTIONARY:
+		Globals.team = !bool(accepted.idx)
 		lobby.set_status(resultstring, true)
 		return true
 	lobby.set_status(accepted, false)

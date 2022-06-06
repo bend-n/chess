@@ -21,7 +21,7 @@ export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
 export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
 
 var matrix := []
-var stop_input := false
+var stop_input := true
 var background_matrix := []
 var history_matrixes := {}
 var last_clicked: Piece = null
@@ -54,7 +54,7 @@ func _ready() -> void:
 	Debug.monitor(self, "last_clicked")
 	Debug.monitor(self, "meta", "matrix[8]")
 	Debug.monitor(self, "highest value in 3fold", "threefoldrepetition()")
-
+	stop_input = false
 
 func _exit_tree() -> void:
 	Globals.grid = null  # reset the globals grid when leaving tree
