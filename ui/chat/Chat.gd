@@ -65,7 +65,7 @@ func send(_arg = 0):
 		return
 	t = translate_md(t)
 	text.text = ""
-	var name_data = SaveLoad.access_data("id").name
+	var name_data = SaveLoad.get_data("id").name
 	var name = name_data if name_data else "Anonymous"
 	Globals.network.relay_signal({"text": t, "who": name if name else "Anonymous"}, Network.RELAYHEADERS.chat)
 

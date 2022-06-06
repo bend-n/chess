@@ -53,7 +53,7 @@ func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.interpolate_property(
 		self, "rect_position", rect_position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
 	)
-	var signresult := int(sign((newpos.x * Globals.grid.piece_size.x) - rect_global_position.x))
+	var signresult := int(sign(real_position.x - newpos.x))
 	if signresult == 1:
 		rotate.play("Right")
 	elif signresult == -1:
@@ -66,8 +66,8 @@ func moveto(pos: Vector2, instant := false) -> void:
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[pos.y][pos.x] = self
 	if !instant:
+		move(pos)
 		real_position = pos
-		move(real_position)
 		SoundFx.play("Move")
 		has_moved = true
 

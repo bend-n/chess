@@ -12,7 +12,7 @@ export(PoolColorArray) var colors := [
 	Color(0.984314, 0.858824, 0.282353, 1),
 	Color(0.164706, 0.0862745, 0.247059, 1),
 	Color(0.509804, 0.509804, 0.509804, 1),
-	Color(0.679297, 0.679297, 0.679297, 1)
+	Color("262421")
 ]
 export(float) var length := 2.8
 

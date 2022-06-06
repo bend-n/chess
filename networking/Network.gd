@@ -14,7 +14,8 @@ const HEADERS := {
 	"signin": ">",
 	"relay": "R",  # relay goes to both
 	"signal": "S",  # signal is one way
-	"loadpgn": "L"  # server telling me to load a pgn
+	"loadpgn": "L",  # server telling me to load a pgn
+	"info": "I"
 }
 
 const MOVEHEADERS := {  # subheaders for HEADERS.move
@@ -26,7 +27,7 @@ const MOVEHEADERS := {  # subheaders for HEADERS.move
 }
 
 const RELAYHEADERS := {"chat": "C"}
-const SIGNALHEADERS := {"takeback": "T", "draw": "D", "resign": "R"}  # subheaders for HEADERS.signal
+const SIGNALHEADERS := {"takeback": "T", "draw": "D", "resign": "R", "info": "I"}  # subheaders for HEADERS.signal
 
 var notation := ""
 
@@ -38,6 +39,7 @@ signal game_over(problem, isok)
 signal connection_established
 signal signal_recieved(what)
 signal chat(text)
+signal info_recieved(info)
 
 ## for accounts(mostly)
 signal signinresult(what)
@@ -85,32 +87,30 @@ func _connection_error() -> void:
 	emit_signal("game_over", "Connection error", false)
 
 
-func signal(body, header: String, keyname := "body", _mainheader := HEADERS.signal) -> Dictionary:
-	var data := {"type": header, "gamecode": game_code, keyname: body}
+func signal(body: Dictionary, header: String, _mainheader := HEADERS.signal) -> Dictionary:
+	var data: Dictionary = Utils.append_dict({"type": header, "gamecode": game_code}, body)
 	send_packet(data, _mainheader)
-	Log.debug("sending signal %s of type %s" % [body, header])
 	return data
 
 
 func join_game(game: String) -> void:
-	send_packet({"gamecode": game, "id": SaveLoad.files.id.data.id}, HEADERS.joinrequest)
+	send_packet(Utils.append_dict({"gamecode": game}, SaveLoad.get_public_info()), HEADERS.joinrequest)
 
 
 func host_game(game: String) -> void:
-	send_packet({"gamecode": game, "id": SaveLoad.files.id.data.id}, HEADERS.hostrequest)
+	send_packet(Utils.append_dict({"gamecode": game}, SaveLoad.get_public_info()), HEADERS.hostrequest)
 
 
-func relay_signal(body, header: String, keyname := "body") -> Dictionary:  # its really the same thing as signal()
-	return signal(body, header, keyname, HEADERS.relay)
+func relay_signal(body: Dictionary, header: String) -> Dictionary:  # its really the same thing as signal()
+	return signal(body, header, HEADERS.relay)
 
 
 func send_mov(mov: Move):
-	relay_signal(mov.compile(), MOVEHEADERS.move, "move")
+	relay_signal({"move": mov.compile()}, MOVEHEADERS.move)
 
 
 func stopgame(reason: String) -> void:
-	var packet := {"reason": reason, "gamecode": game_code}
-	send_packet(packet, HEADERS.stopgame)
+	send_packet({"reason": reason, "gamecode": game_code}, HEADERS.stopgame)
 
 
 func _data_recieved() -> void:
@@ -126,11 +126,14 @@ func _data_recieved() -> void:
 			var relay: Dictionary = text
 			match relay.type:
 				RELAYHEADERS.chat:
-					emit_signal("chat", relay.body)
+					emit_signal("chat", relay)
 				MOVEHEADERS.move:
 					emit_signal("move_data", text.move)
 		HEADERS.joinrequest:
 			emit_signal("join_result", text)
+		HEADERS.info:
+			yield(get_tree().create_timer(.5), "timeout")
+			emit_signal("info_recieved", text)
 		HEADERS.loadpgn:
 			emit_signal("start_game")
 			yield(get_tree().create_timer(.5), "timeout")

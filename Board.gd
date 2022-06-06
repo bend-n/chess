@@ -15,8 +15,6 @@ const default_metadata := {
 	"bcep": [],  # black can enpassant
 }
 
-onready var offset = rect_position
-
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
 export(Color) var clockrunning_color := Color(0.219608, 0.278431, 0.133333)
 export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
@@ -35,7 +33,8 @@ onready var background := $Background
 onready var ASSETS_PATH: String = "res://assets/pieces/%s/" % Globals.piece_set
 onready var foreground := $Foreground
 onready var pieces := $Pieces
-export(NodePath) onready var status = get_node(status) as StatusLabel
+export(NodePath) onready var ui = get_node(ui)
+export(NodePath) onready var sidebar = get_node(sidebar)
 
 
 func _init() -> void:
@@ -43,6 +42,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	rect_pivot_offset = rect_size / 2
 	if Globals.network:
 		Globals.network.connect("move_data", self, "play_san")
 	init_board()  # create the tile squares
@@ -52,9 +52,8 @@ func _ready() -> void:
 	Events.connect("outoftime", self, "_on_outoftime")  # listen for timeout events
 
 	Debug.monitor(self, "last_clicked")
-	Debug.monitor(self, "matrix", "matrix[8]")
+	Debug.monitor(self, "meta", "matrix[8]")
 	Debug.monitor(self, "highest value in 3fold", "threefoldrepetition()")
-	Debug.monitor(self, "stop_input")
 
 
 func _exit_tree() -> void:
@@ -105,14 +104,19 @@ func flip_pieces() -> void:
 
 func flip_labels() -> void:
 	for i in range(8):
-		var numlabel: Label = labels.numbers[i].get_node("Label")
-		var letlabel: Label = labels.letters[i].get_node("Label")
+		var numlabel: Label = labels.numbers[i]
+		var letlabel: Label = labels.letters[i]
 		var number := i + 1 if flipped else 8 - i
 		numlabel.text = str(number)
 		letlabel.text = "hgfedcba"[number - 1]
 
 
+func flip_panels() -> void:
+	pass
+
+
 func flip_board() -> void:
+	sidebar.flip_panels()
 	if flipped:
 		flipped = false
 		rect_rotation = 0
@@ -126,26 +130,13 @@ func flip_board() -> void:
 
 
 func init_labels() -> void:
+	foreground.offset = rect_global_position
 	for i in range(8):
 		labels.letters.append(
-			init_label(
-				i,
-				Vector2(i, 7),
-				"abcdefgh"[i],
-				Label.VALIGN_BOTTOM,
-				Label.ALIGN_LEFT,
-				(Vector2.RIGHT + Vector2.UP) * 10
-			)
+			init_label(i, Vector2(i, 7), "abcdefgh"[i], Label.VALIGN_BOTTOM, Label.ALIGN_LEFT, Vector2(10, -10))
 		)
 		labels.numbers.append(
-			init_label(
-				i,
-				Vector2(7, i),
-				str(8 - i),
-				Label.VALIGN_TOP,
-				Label.ALIGN_RIGHT,
-				(Vector2.LEFT + Vector2.DOWN) * 10
-			)
+			init_label(i, Vector2(7, i), str(8 - i), Label.VALIGN_TOP, Label.ALIGN_RIGHT, Vector2(-10, 10))
 		)
 
 
@@ -180,7 +171,7 @@ func mat2str(mat: Array = matrix) -> String:
 
 
 func drawed(reason := "") -> void:
-	status.set_text("draw by " + reason, 0)
+	ui.set_status("draw by " + reason, 0)
 	Events.emit_signal("game_over")
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
@@ -188,7 +179,7 @@ func drawed(reason := "") -> void:
 
 
 func win(winner: bool, reason := "") -> void:
-	status.set_text("%s won the game by %s" % ["white" if winner else "black", reason], 0)  # black won the game by checkmate
+	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason], 0)  # black won the game by checkmate
 	Events.emit_signal("game_over")
 	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.fullmove])
 	SoundFx.play("Victory")

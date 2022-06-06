@@ -34,6 +34,6 @@ func _confirmed(what: bool) -> void:
 			waiting_on_answer.queue_free()
 		waiting_on_answer = null
 		if what:
-			Globals.network.signal("", Network.SIGNALHEADERS.resign)
+			Globals.network.signal({}, Network.SIGNALHEADERS.resign)
 			Globals.grid.win(!Globals.team, "resignation")
 			disabled = true

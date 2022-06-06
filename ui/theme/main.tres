@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=28 format=2]
+[gd_resource type="Theme" load_steps=29 format=2]
 
 [ext_resource path="res://ui/verdana-bold.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/theme/button.tres" type="StyleBox" id=2]
@@ -11,7 +11,8 @@
 [ext_resource path="res://assets/ui/verdana.ttf" type="DynamicFontData" id=9]
 [ext_resource path="res://assets/ui/CascadiaCode.ttf" type="DynamicFontData" id=10]
 [ext_resource path="res://assets/ui/verdana-bold-italic.ttf" type="DynamicFontData" id=11]
-[ext_resource path="res://assets/ui/verdana-bold.ttf" type="DynamicFontData" id=12]
+[ext_resource path="res://ui/verdana-bold-small.tres" type="DynamicFont" id=12]
+[ext_resource path="res://ui/theme/panel.tres" type="StyleBox" id=13]
 
 [sub_resource type="StyleBoxTexture" id=6]
 texture = ExtResource( 4 )
@@ -40,10 +41,6 @@ border_color = Color( 1, 1, 1, 1 )
 corner_detail = 20
 expand_margin_left = 10.0
 expand_margin_right = 10.0
-
-[sub_resource type="DynamicFont" id=21]
-size = 20
-font_data = ExtResource( 12 )
 
 [sub_resource type="DynamicFont" id=19]
 size = 20
@@ -89,6 +86,18 @@ border_width_top = 3
 border_width_right = 3
 border_width_bottom = 1
 border_color = Color( 0, 0, 0, 0.392157 )
+
+[sub_resource type="StyleBoxFlat" id=21]
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0, 0, 0, 0.313726 )
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 15
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
@@ -155,6 +164,8 @@ OptionButton/colors/font_color_focus = Color( 1, 1, 1, 1 )
 OptionButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
 OptionButton/colors/font_color_pressed = Color( 1, 1, 1, 1 )
 OptionButton/icons/arrow = ExtResource( 3 )
+Panel/styles/panel = ExtResource( 13 )
+PanelContainer/styles/panel = ExtResource( 13 )
 PopupMenu/colors/font_color = Color( 1, 1, 1, 1 )
 PopupMenu/colors/font_color_accel = Color( 1, 1, 1, 0.8 )
 PopupMenu/colors/font_color_hover = Color( 1, 1, 1, 1 )
@@ -165,7 +176,7 @@ PopupMenu/styles/hover = SubResource( 3 )
 PopupMenu/styles/panel = ExtResource( 7 )
 PopupPanel/styles/panel = ExtResource( 8 )
 RichTextLabel/colors/default_color = Color( 1, 1, 1, 1 )
-RichTextLabel/fonts/bold_font = SubResource( 21 )
+RichTextLabel/fonts/bold_font = ExtResource( 12 )
 RichTextLabel/fonts/bold_italics_font = SubResource( 19 )
 RichTextLabel/fonts/italics_font = SubResource( 19 )
 RichTextLabel/fonts/mono_font = SubResource( 14 )
@@ -176,6 +187,9 @@ TabContainer/colors/font_color_fg = Color( 1, 1, 1, 1 )
 TabContainer/styles/panel = SubResource( 10 )
 TabContainer/styles/tab_bg = SubResource( 12 )
 TabContainer/styles/tab_fg = SubResource( 11 )
+TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
+TooltipLabel/fonts/font = ExtResource( 12 )
+TooltipPanel/styles/panel = SubResource( 21 )
 VBoxContainer/constants/separation = 15
 VScrollBar/styles/scroll = SubResource( 5 )
 WindowDialog/colors/title_color = Color( 1, 1, 1, 1 )

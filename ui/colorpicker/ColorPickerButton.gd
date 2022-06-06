@@ -17,7 +17,6 @@ func set_color(newcolor: Color) -> void:
 func _on_ColorPicker_done(newcolor: Color) -> void:
 	set_color(newcolor)
 	popup.hide()
-	colorpicker.hide()
 	emit_signal("newcolor", color)
 
 

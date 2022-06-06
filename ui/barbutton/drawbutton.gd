@@ -37,7 +37,7 @@ func _pressed() -> void:
 		_confirmed(true)
 	else:
 		disabled = true
-		Globals.network.signal("", Network.SIGNALHEADERS.draw, "question")
+		Globals.network.signal({"question": ""}, Network.SIGNALHEADERS.draw)
 		status.set_text("Draw request sent")
 
 
@@ -47,6 +47,6 @@ func _confirmed(yes: bool) -> void:  # called from confirmbar.confirmed
 			waiting_on_answer.queue_free()
 		disabled = false
 		waiting_on_answer = null
-		Globals.network.signal(yes, Network.SIGNALHEADERS.draw, "accepted")
+		Globals.network.signal({"accepted": yes}, Network.SIGNALHEADERS.draw)
 		if yes:
 			drawed()
