@@ -206,3 +206,9 @@ static func from_algebraic(pos: String) -> Vector2:
 
 static func to_str(type: int) -> String:
 	return " NBRQK"[type].strip_edges()  # if its a pawn, return nothing
+
+
+static func append_dict(dict: Dictionary, newdict: Dictionary) -> Dictionary:
+	for key in newdict:
+		dict[key] = newdict[key]
+	return dict

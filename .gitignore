@@ -4,5 +4,3 @@ logs/
 *.py
 .vscode/
 exports/
-# for later
-assets/flags/

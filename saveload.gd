@@ -22,7 +22,11 @@ var files := {
 }  # file types
 
 
-func access_data(type: String) -> Dictionary:
+func get_public_info():
+	return {"name": files.id.data.name, "country": files.id.data.country, "id": files.id.data.id}
+
+
+func get_data(type: String) -> Dictionary:
 	if !files.has(type):
 		return {}
 	return files[type].data

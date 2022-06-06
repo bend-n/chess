@@ -1,13 +1,10 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://Game.gd" type="Script" id=1]
 [ext_resource path="res://assets/ui/whitespace.png" type="Texture" id=2]
 [ext_resource path="res://ui/theme/transblack.tres" type="StyleBox" id=3]
-[ext_resource path="res://ui/FENlabel.gd" type="Script" id=4]
-[ext_resource path="res://ui/barbutton/resignbutton.gd" type="Script" id=5]
-[ext_resource path="res://ui/Status.gd" type="Script" id=6]
+[ext_resource path="res://ui/menus/sidebarright/SidebarRight.tscn" type="PackedScene" id=4]
 [ext_resource path="res://ui/theme/flatblack.tres" type="StyleBox" id=7]
-[ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/chat/Chat.tscn" type="PackedScene" id=9]
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=10]
 [ext_resource path="res://assets/ui/verdana-bold.ttf" type="DynamicFontData" id=11]
@@ -18,16 +15,6 @@
 [ext_resource path="res://assets/ui/checkedbox.png" type="Texture" id=16]
 [ext_resource path="res://assets/ui/CascadiaCode.ttf" type="DynamicFontData" id=17]
 [ext_resource path="res://assets/ui/verdana-bold-italic.ttf" type="DynamicFontData" id=18]
-[ext_resource path="res://ui/barbutton/drawbutton.gd" type="Script" id=19]
-[ext_resource path="res://ui/Timer.gd" type="Script" id=20]
-[ext_resource path="res://ui/TimerLabels.gd" type="Script" id=21]
-[ext_resource path="res://ui/sandisplay/SanDisplay.tscn" type="PackedScene" id=22]
-[ext_resource path="res://assets/ui/Roboto-Medium.ttf" type="DynamicFontData" id=23]
-[ext_resource path="res://ui/roboto.tres" type="DynamicFont" id=24]
-[ext_resource path="res://assets/ui/draw.png" type="Texture" id=25]
-[ext_resource path="res://assets/ui/flip_board.png" type="Texture" id=26]
-[ext_resource path="res://ui/barbutton/flipbutton.gd" type="Script" id=27]
-[ext_resource path="res://assets/ui/flag.png" type="Texture" id=28]
 [ext_resource path="res://Board.tscn" type="PackedScene" id=29]
 
 [sub_resource type="StyleBoxTexture" id=6]
@@ -207,21 +194,6 @@ WindowDialog/icons/close = ExtResource( 2 )
 WindowDialog/icons/close_highlight = ExtResource( 2 )
 WindowDialog/styles/panel = SubResource( 13 )
 
-[sub_resource type="DynamicFont" id=1]
-size = 35
-font_data = ExtResource( 23 )
-
-[sub_resource type="StyleBoxFlat" id=21]
-bg_color = Color( 0, 0, 0, 1 )
-
-[sub_resource type="DynamicFont" id=22]
-size = 15
-font_data = ExtResource( 23 )
-
-[sub_resource type="DynamicFont" id=23]
-size = 40
-font_data = ExtResource( 23 )
-
 [node name="Game" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -256,7 +228,8 @@ anchor_bottom = 0.0
 margin_right = 640.0
 margin_bottom = 640.0
 rect_min_size = Vector2( 640, 640 )
-status = NodePath("../../SidebarRight/VBox/Status")
+ui = NodePath("../../..")
+sidebar = NodePath("../../SidebarRight")
 
 [node name="Chat" parent="Holder/middle" instance=ExtResource( 9 )]
 anchor_right = 0.0
@@ -267,161 +240,7 @@ margin_bottom = 800.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SidebarRight" type="ColorRect" parent="Holder"]
-margin_left = 940.0
-margin_right = 1422.0
-margin_bottom = 800.0
-rect_min_size = Vector2( 300, 0 )
-size_flags_horizontal = 3
-color = Color( 0.141176, 0.141176, 0.141176, 0.784314 )
-
-[node name="VBox" type="VBoxContainer" parent="Holder/SidebarRight"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-alignment = 1
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="BlackTime" type="Label" parent="Holder/SidebarRight/VBox"]
-visible = false
-margin_top = 218.0
-margin_right = 624.0
-margin_bottom = 301.0
-custom_fonts/font = ExtResource( 24 )
-text = "00:00.0"
-align = 1
-valign = 1
-script = ExtResource( 21 )
-__meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true
-}
-
-[node name="ColorRect" type="ColorRect" parent="Holder/SidebarRight/VBox/BlackTime"]
-show_behind_parent = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 72.0
-margin_right = -72.0
-color = Color( 0, 0, 0, 1 )
-
-[node name="MovesList" parent="Holder/SidebarRight/VBox" instance=ExtResource( 22 )]
-margin_top = 239.0
-margin_right = 482.0
-margin_bottom = 439.0
-
-[node name="Status" type="Label" parent="Holder/SidebarRight/VBox"]
-margin_top = 454.0
-margin_right = 482.0
-margin_bottom = 496.0
-custom_fonts/font = SubResource( 1 )
-align = 1
-autowrap = true
-script = ExtResource( 6 )
-
-[node name="buttonbarholder" type="Control" parent="Holder/SidebarRight/VBox"]
-margin_top = 511.0
-margin_right = 482.0
-margin_bottom = 561.0
-rect_min_size = Vector2( 50, 50 )
-__meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true
-}
-
-[node name="Panel" type="Panel" parent="Holder/SidebarRight/VBox/buttonbarholder"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_styles/panel = SubResource( 21 )
-
-[node name="buttonbar" type="HBoxContainer" parent="Holder/SidebarRight/VBox/buttonbarholder"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_constants/separation = 0
-alignment = 1
-
-[node name="FlipBoard" parent="Holder/SidebarRight/VBox/buttonbarholder/buttonbar" instance=ExtResource( 8 )]
-margin_left = 166.0
-margin_right = 216.0
-texture_normal = ExtResource( 26 )
-script = ExtResource( 27 )
-
-[node name="DrawButton" parent="Holder/SidebarRight/VBox/buttonbarholder/buttonbar" instance=ExtResource( 8 )]
-margin_left = 216.0
-margin_right = 266.0
-texture_normal = ExtResource( 25 )
-script = ExtResource( 19 )
-status = NodePath("../../../Status")
-
-[node name="ResignButton" parent="Holder/SidebarRight/VBox/buttonbarholder/buttonbar" instance=ExtResource( 8 )]
-margin_left = 266.0
-margin_right = 316.0
-texture_normal = ExtResource( 28 )
-script = ExtResource( 5 )
-status = NodePath("../../../Status")
-
-[node name="WhiteTime" type="Label" parent="Holder/SidebarRight/VBox"]
-visible = false
-margin_top = 498.0
-margin_right = 624.0
-margin_bottom = 581.0
-custom_fonts/font = ExtResource( 24 )
-text = "00:00.0"
-align = 1
-valign = 1
-script = ExtResource( 21 )
-__meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true
-}
-white = true
-
-[node name="ColorRect" type="ColorRect" parent="Holder/SidebarRight/VBox/WhiteTime"]
-show_behind_parent = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 72.0
-margin_right = -72.0
-color = Color( 0, 0, 0, 1 )
-
-[node name="Timer" type="Node" parent="Holder/SidebarRight/VBox"]
-script = ExtResource( 20 )
-
-[node name="Spacer" type="Control" parent="Holder/SidebarRight/VBox"]
-visible = false
-margin_top = 530.0
-margin_right = 624.0
-margin_bottom = 550.0
-rect_min_size = Vector2( 0, 20 )
-
-[node name="FENlabel" type="LineEdit" parent="Holder/SidebarRight/VBox"]
-visible = false
-margin_left = 58.0
-margin_top = 503.0
-margin_right = 566.0
-margin_bottom = 577.0
-size_flags_horizontal = 4
-custom_colors/font_color_uneditable = Color( 1, 1, 1, 1 )
-custom_fonts/font = SubResource( 22 )
-text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-align = 1
-editable = false
-expand_to_text_length = true
-context_menu_enabled = false
-placeholder_text = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-caret_blink = true
-caret_blink_speed = 0.5
-script = ExtResource( 4 )
-
-[node name="Label" type="Label" parent="Holder/SidebarRight/VBox/FENlabel"]
-margin_top = -49.0
-margin_right = 508.0
-margin_bottom = 11.0
-custom_fonts/font = SubResource( 23 )
-text = "fen"
-align = 1
-valign = 2
+[node name="SidebarRight" parent="Holder" instance=ExtResource( 4 )]
 
 [node name="Darken" type="ColorRect" parent="."]
 visible = false

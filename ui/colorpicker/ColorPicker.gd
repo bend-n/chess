@@ -15,7 +15,6 @@ onready var closebutton := $V/H2/Close
 
 func open(newcolor: Color) -> void:
 	oldcolorview.color = newcolor
-	show()
 	set_color(newcolor)
 
 

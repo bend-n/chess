@@ -55,15 +55,15 @@ func network_ready() -> void:
 
 
 func _on_join_result(accepted: String) -> void:
-	handle_result(accepted, "Joined!", false)
+	handle_result(accepted, "Joined!", true)
 
 
 func _on_host_result(accepted: String) -> void:
 	set_hosting(handle_result(accepted, "Hosted!"))
 
 
-func handle_result(accepted: String, resultstring: String, team := true) -> bool:
-	Globals.team = team  # what am i doing here???
+func handle_result(accepted: String, resultstring: String, team := false) -> bool:
+	Globals.team = team  # joiner is always white
 	if accepted == "Y":
 		lobby.set_status(resultstring, true)
 		return true

@@ -10,13 +10,14 @@ focus_mode = 1
 enabled_focus_mode = 1
 expand = true
 script = ExtResource( 2 )
+normal_color = Color( 0.188235, 0.180392, 0.172549, 1 )
 
 [node name="Background" type="ColorRect" parent="."]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0, 0, 0, 1 )
+color = Color( 0.188235, 0.180392, 0.172549, 1 )
 
 [connection signal="mouse_entered" from="." to="." method="_focused" binds= [ true ]]
 [connection signal="mouse_exited" from="." to="." method="_focused" binds= [ false ]]

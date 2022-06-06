@@ -47,7 +47,7 @@ _global_script_classes=[ {
 "base": "LineEdit",
 "class": "FENLabel",
 "language": "GDScript",
-"path": "res://ui/FENlabel.gd"
+"path": "res://ui/menus/sidebarright/FENlabel.gd"
 }, {
 "base": "BarTextureButton",
 "class": "FlipButton",
@@ -58,6 +58,16 @@ _global_script_classes=[ {
 "class": "Grid",
 "language": "GDScript",
 "path": "res://Board.gd"
+}, {
+"base": "GridContainer",
+"class": "GridMenu",
+"language": "GDScript",
+"path": "res://ui/gridmenu/GridMenu.gd"
+}, {
+"base": "Button",
+"class": "GridMenuButton",
+"language": "GDScript",
+"path": "res://ui/gridmenu/GridMenuButton.gd"
 }, {
 "base": "Control",
 "class": "HueSlider",
@@ -77,7 +87,7 @@ _global_script_classes=[ {
 "base": "Control",
 "class": "Lobby",
 "language": "GDScript",
-"path": "res://ui/Lobby.gd"
+"path": "res://ui/menus/Lobby.gd"
 }, {
 "base": "Resource",
 "class": "Move",
@@ -132,7 +142,7 @@ _global_script_classes=[ {
 "base": "LineEdit",
 "class": "Restrict",
 "language": "GDScript",
-"path": "res://ui/account/Restrict.gd"
+"path": "res://ui/menus/account/Restrict.gd"
 }, {
 "base": "Piece",
 "class": "Rook",
@@ -157,7 +167,7 @@ _global_script_classes=[ {
 "base": "Control",
 "class": "UsernamePass",
 "language": "GDScript",
-"path": "res://ui/account/usernamepass.gd"
+"path": "res://ui/menus/account/usernamepass.gd"
 } ]
 _global_script_class_icons={
 "BarTextureButton": "",
@@ -170,6 +180,8 @@ _global_script_class_icons={
 "FENLabel": "",
 "FlipButton": "res://assets/ui/flip_board.png",
 "Grid": "",
+"GridMenu": "",
+"GridMenuButton": "",
 "HueSlider": "",
 "King": "res://assets/pieces/california/wK.png",
 "Knight": "res://assets/pieces/california/wN.png",
@@ -196,7 +208,7 @@ _global_script_class_icons={
 
 config/name="chess"
 config/description="pog"
-run/main_scene="res://ui/StartMenu.tscn"
+run/main_scene="res://ui/menus/StartMenu.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chess"
 boot_splash/image="res://icon.png"
@@ -221,6 +233,7 @@ Log="*res://Log.gd"
 [debug]
 
 settings/crash_handler/message="fucking hell, make a issue at https://github.com/bend-n/chess"
+gdscript/warnings/narrowing_conversion=false
 gdscript/warnings/return_value_discarded=false
 
 [display]

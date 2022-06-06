@@ -1,0 +1,28 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+
+float circle(vec2 uv, float blur) {
+    return smoothstep(0., blur, 1. - length(uv));
+}
+
+void fragment()
+{
+    vec2 uv = UV - vec2(0.5, 0.5);
+    float circleWhite = circle(uv * 1.83, 1);
+    float circleBlack = circle(uv * 2.1, 0.87);
+    float c = circleWhite - circleBlack;
+    c *= 6.;
+    
+    float t = TIME * 5.;
+    c -= circle(vec2(uv.x - sin(t) * .85, 1.8*uv.y - cos(t) * .65) * .8, 1.3); 
+    
+    vec3 col = vec3(c) * vec3(1, 0, 0.5);
+    col += vec3(smoothstep(0.2, 0.7, c)) * vec3(1, 1, 0.);
+    col += vec3(smoothstep(0.4, 0.55, c));
+    COLOR = vec4(col, (col.r + col.b + col.g)/ 3.);
+}"
+
+[resource]
+shader = SubResource( 3 )

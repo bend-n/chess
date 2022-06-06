@@ -70,3 +70,4 @@ func _ready() -> void:
 	Debug.monitor(self, "halfmove")
 	Debug.monitor(self, "in_check")
 	Debug.monitor(self, "turn", "get_turn()")
+	Debug.monitor(self, "team")
