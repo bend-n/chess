@@ -61,7 +61,7 @@ func _draw() -> void:
 func get_string(set: Array) -> String:
 	var node: Node = set[0]
 	if !is_instance_valid(node):
-		refs.remove(refs.find(set))
+		refs.erase(set)
 		return "invalid!"
 	var what: String = set[1]
 	var gotten = node.get(what)

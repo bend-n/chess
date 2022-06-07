@@ -18,16 +18,10 @@ const HEADERS := {
 	"info": "I"
 }
 
-const MOVEHEADERS := {  # subheaders for HEADERS.move
-	"move": "M",
-	"take": "K",
-	"castle": "C",
-	"passant": "P",
-	"promote": "Q",
-}
+const MOVEHEADERS := {move = "M", take = "K", castle = "C", passant = "P", promote = "Q"}  # subheaders for HEADERS.move
 
-const RELAYHEADERS := {"chat": "C"}
-const SIGNALHEADERS := {"takeback": "T", "draw": "D", "resign": "R", "info": "I"}  # subheaders for HEADERS.signal
+const RELAYHEADERS := {chat = "C"}
+const SIGNALHEADERS := {takeback = "T", draw = "D", resign = "R", info = "I"}  # subheaders for HEADERS.signal
 
 var notation := ""
 

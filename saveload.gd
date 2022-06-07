@@ -5,25 +5,25 @@ const settings_file := "user://chess.settings"
 const id := "user://.chess.id"
 
 const default_settings_data = {
-	"vsync": OS.vsync_enabled,
-	"fullscreen": OS.window_fullscreen,
-	"borderless": OS.window_borderless,
-	"piece_set": "california",
-	"board_color1": Color(0.870588, 0.890196, 0.901961),
-	"board_color2": Color(0.54902, 0.635294, 0.678431),
-	"rainbow": true
+	vsync = OS.vsync_enabled,
+	fullscreen = OS.window_fullscreen,
+	borderless = OS.window_borderless,
+	piece_set = "california",
+	board_color1 = Color(0.870588, 0.890196, 0.901961),
+	board_color2 = Color(0.54902, 0.635294, 0.678431),
+	rainbow = true
 }
 
-const default_id_data = {"id": "", "name": "", "country": "rainbow", "password": ""}
+const default_id_data = {id = "", name = "", country = "rainbow", password = ""}
 
 var files := {
-	"settings": {"file": settings_file, "data": default_settings_data.duplicate(true)},
-	"id": {"file": id, "data": default_id_data.duplicate()}
+	settings = {file = settings_file, data = default_settings_data.duplicate(true)},
+	id = {file = id, data = default_id_data.duplicate()}
 }  # file types
 
 
 func get_public_info():
-	return {"name": files.id.data.name, "country": files.id.data.country, "id": files.id.data.id}
+	return {name = files.id.data.name, country = files.id.data.country, id = files.id.data.id}
 
 
 func get_data(type: String) -> Dictionary:

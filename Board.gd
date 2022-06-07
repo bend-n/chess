@@ -6,13 +6,13 @@ const Square := preload("res://Square.tscn")
 
 const piece_size := Vector2(80, 80)
 const default_metadata := {
-	"wccl": false,  # white can castle left
-	"wccr": false,  # white can castle right
-	"bccl": false,  # black can castle left
-	"bccr": false,  # black can castle right
-	"turn": true,  # true = white, false = black
-	"wcep": [],  # white can enpassant
-	"bcep": [],  # black can enpassant
+	wccl = false,  # white can castle left
+	wccr = false,  # white can castle right
+	bccl = false,  # black can castle left
+	bccr = false,  # black can castle right
+	turn = true,  # true = white, false = black
+	wcep = [],  # white can enpassant
+	bcep = [],  # black can enpassant
 }
 
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
@@ -22,12 +22,12 @@ export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
 
 var matrix := []
 var stop_input := true
-var background_matrix := []
+var background_array := []
 var history_matrixes := {}
 var last_clicked: Piece = null
 var flipped := false
 
-var labels := {"letters": [], "numbers": []}
+var labels := {letters = [], numbers = []}
 
 onready var background := $Background
 onready var ASSETS_PATH: String = "res://assets/pieces/%s/" % Globals.piece_set
@@ -55,6 +55,7 @@ func _ready() -> void:
 	Debug.monitor(self, "meta", "matrix[8]")
 	Debug.monitor(self, "highest value in 3fold", "threefoldrepetition()")
 	stop_input = false
+
 
 func _exit_tree() -> void:
 	Globals.grid = null  # reset the globals grid when leaving tree
@@ -232,16 +233,20 @@ func make_piece(position: Vector2, script: String, white: bool = true) -> void: 
 
 
 func init_board() -> void:  # create the board
-	for i in range(8):  # for each row
-		background_matrix.append([])  # add a row
-		for j in range(8):  # for each column
+	for x in range(8):
+		for y in range(8):  # for each column
 			var square := Square.instance()  # create a square
-			square.rect_size = piece_size  # set the size
-			square.rect_global_position = Vector2(i, j) * piece_size  # set the position
-			square.color = Globals.board_color1 if (i + j) % 2 == 0 else Globals.board_color2  # set the color
+			square.name = Utils.to_algebraic(Vector2(y, x))
+			square.hint_tooltip = square.name
+			square.rect_min_size = piece_size  # set the size
+			square.color = Globals.board_color1 if (x + y) % 2 == 0 else Globals.board_color2  # set the color
 			background.add_child(square)  # add the square to the background
-			square.connect("clicked", self, "square_clicked", [Vector2(i, j)])  # connect the clicked event
-			background_matrix[i].append(square)  # add the square to the background matrix
+			square.connect("clicked", self, "square_clicked", [Vector2(y, x)])  # connect the clicked event
+			background_array.append(square)  # add the square to the background array
+
+
+func get_background_element(pos: Vector2) -> ColorRect:
+	return background_array[8 * pos.y + pos.x]
 
 
 func add_pieces() -> void:  # add the pieces
@@ -293,7 +298,7 @@ func add_kings() -> void:
 
 
 func check_for_circle(position: Vector2) -> bool:  # check for a circle, validating movement
-	return background_matrix[position.x][position.y].circle_on
+	return get_background_element(position).circle_on
 
 
 func check_for_frame(position: Vector2) -> bool:  # check for a frame, validating taking
@@ -318,8 +323,9 @@ func square_clicked(position: Vector2) -> void:  # square clicked
 		elif check_for_circle(position):  # see if theres a circle at the position
 			handle_move(position)  # move
 			stop_input = true
-		last_clicked.clear_clicked()  # remove the circles
-		last_clicked = null  # set it to null
+		if last_clicked:
+			last_clicked.clear_clicked()  # remove the circles
+			last_clicked = null  # set it to null
 	elif last_clicked != spot:  # we got a new piece (or pawn) clicked
 		if is_instance_valid(last_clicked):  # remove the circles
 			last_clicked.clear_clicked()
@@ -370,7 +376,7 @@ func check_promote(pawn, position, calltype: String = "move") -> bool:
 func clear_fx() -> void:  # clear the circles
 	for i in range(8):  # for each row
 		for j in range(8):  # for each column
-			var square: ColorRect = background_matrix[i][j]  # get the square
+			var square: ColorRect = get_background_element(Vector2(i, j))  # get the square
 			square.set_circle(false)  # set the circle to false
 			var piece: Piece = matrix[i][j]  # get the piece
 			if piece:  # if there is a piece

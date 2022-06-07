@@ -40,6 +40,7 @@ margin_right = 1245.0
 margin_bottom = 634.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+use_hidden_tabs_for_min_size = true
 
 [node name="signup" type="VBoxContainer" parent="choose"]
 anchor_right = 1.0

@@ -20,8 +20,9 @@ func set_disabled(new: bool) -> void:
 	self_modulate = Color(.1, .1, .1, 0.5) if disabled else Color.white
 
 
-func _input(_event:InputEvent):
+func _input(_event: InputEvent):
 	_update()
+
 
 func _update():
 	if disabled:

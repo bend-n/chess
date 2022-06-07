@@ -22,7 +22,7 @@
 [ext_resource path="res://ui/menus/sidebarright/UserPanel.tscn" type="PackedScene" id=22]
 
 [sub_resource type="StyleBoxFlat" id=8]
-content_margin_right = 10.0
+content_margin_right = 0.0
 content_margin_top = 10.0
 content_margin_bottom = 10.0
 bg_color = Color( 0.188235, 0.180392, 0.172549, 1 )
@@ -115,20 +115,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 custom_constants/separation = 0
 alignment = 1
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="BlackPanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 184.0
-margin_right = 492.0
+margin_right = 482.0
 margin_bottom = 244.0
 
 [node name="buttonbarholder" type="Control" parent="V"]
 margin_top = 244.0
-margin_right = 492.0
+margin_right = 482.0
 margin_bottom = 294.0
 rect_min_size = Vector2( 50, 50 )
 __meta__ = {
@@ -147,28 +144,28 @@ custom_constants/separation = 0
 alignment = 1
 
 [node name="FlipBoard" parent="V/buttonbarholder/Panel/buttonbar" instance=ExtResource( 6 )]
-margin_left = 171.0
-margin_right = 221.0
+margin_left = 166.0
+margin_right = 216.0
 texture_normal = ExtResource( 17 )
 script = ExtResource( 19 )
 
 [node name="DrawButton" parent="V/buttonbarholder/Panel/buttonbar" instance=ExtResource( 6 )]
-margin_left = 221.0
-margin_right = 271.0
+margin_left = 216.0
+margin_right = 266.0
 texture_normal = ExtResource( 16 )
 script = ExtResource( 1 )
 status = NodePath("../../../../Status")
 
 [node name="ResignButton" parent="V/buttonbarholder/Panel/buttonbar" instance=ExtResource( 6 )]
-margin_left = 271.0
-margin_right = 321.0
+margin_left = 266.0
+margin_right = 316.0
 texture_normal = ExtResource( 20 )
 script = ExtResource( 2 )
 status = NodePath("../../../../Status")
 
 [node name="SanDisplay" type="PanelContainer" parent="V"]
 margin_top = 294.0
-margin_right = 492.0
+margin_right = 482.0
 margin_bottom = 514.0
 custom_styles/panel = SubResource( 8 )
 
@@ -183,12 +180,12 @@ theme = SubResource( 6 )
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 514.0
-margin_right = 492.0
+margin_right = 482.0
 margin_bottom = 574.0
 
 [node name="Status" type="Label" parent="V"]
 margin_top = 574.0
-margin_right = 492.0
+margin_right = 482.0
 margin_bottom = 616.0
 custom_fonts/font = SubResource( 1 )
 align = 1
