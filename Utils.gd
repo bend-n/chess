@@ -156,7 +156,7 @@ func internet_available() -> bool:
 	return returnable
 
 
-func walk_dir(path := "res://assets/pieces", only_dir := true, of_ext := "png", exclude := []) -> PoolStringArray:  # walk the directory, finding the asset packs
+func walk_dir(path := "res://assets/pieces", only_dir := true, exclude := []) -> PoolStringArray:  # walk the directory, finding the asset packs
 	var files := []  # init the files
 	var dir := Directory.new()  # init the directory
 	if dir.open(path) == OK:  # open the directory
@@ -168,7 +168,7 @@ func walk_dir(path := "res://assets/pieces", only_dir := true, of_ext := "png", 
 					files.append(file_name)  # add the folder
 			else:
 				var split = file_name.split(".")
-				if split[-1] == of_ext and !split[0] in exclude:
+				if split[-1] == "import" and !split[0] in exclude:
 					files.append(split[0])  # add the file
 			file_name = dir.get_next()  # get the next file
 	else:

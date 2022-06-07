@@ -1,7 +1,5 @@
 extends Control
 
-onready var settings := find_node("Settings")
-
 
 func _ready() -> void:
 	if OS.has_feature("HTML5"):
@@ -10,11 +8,3 @@ func _ready() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
-
-
-func _on_settings_pressed() -> void:
-	settings.toggle(true)
-
-
-func _on_multiplayer_pressed() -> void:
-	get_tree().change_scene("res://ui/Lobby.tscn")

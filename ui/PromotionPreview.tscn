@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ui/PromotionPreview.gd" type="Script" id=1]
+
+[node name="PromotionPreview" type="TextureButton"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -711.0
+margin_top = -400.0
+margin_right = 711.0
+margin_bottom = 400.0
+mouse_filter = 1
+expand = true
+stretch_mode = 5
+script = ExtResource( 1 )
+
+[connection signal="mouse_entered" from="." to="." method="set_focused" binds= [ true ]]
+[connection signal="mouse_exited" from="." to="." method="set_focused" binds= [ false ]]

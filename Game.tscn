@@ -241,10 +241,3 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SidebarRight" parent="Holder" instance=ExtResource( 4 )]
-
-[node name="Darken" type="ColorRect" parent="."]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -400.0
-color = Color( 0, 0, 0, 0.784314 )

@@ -11,10 +11,13 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Background" type="Control" parent="."]
+[node name="Background" type="GridContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+custom_constants/vseparation = 0
+custom_constants/hseparation = 0
+columns = 8
 
 [node name="Pieces" type="Control" parent="."]
 anchor_right = 1.0

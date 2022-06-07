@@ -7,3 +7,4 @@ signal outoftime  # called when the time is up
 signal game_over  # called when the game is over
 signal go_back  # called when the game is over, and were ready to go back
 signal data_recieved  # called every time the data comes in
+signal set_signed_in(signed_in)

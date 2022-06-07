@@ -224,6 +224,8 @@ script = ExtResource( 3 )
 margin_right = 50.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 30, 20 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="GridMenu" type="GridContainer" parent="Popup"]
 margin_left = 10.0

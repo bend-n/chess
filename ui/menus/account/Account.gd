@@ -11,10 +11,15 @@ onready var tabs := {
 	"signin": $choose/signin/usernamepass,
 }
 
-var signed_in = false
+var signed_in = false setget set_signed_in
 var autologin = true
 
 onready var tabcontainer = $choose
+
+
+func set_signed_in(new):
+	signed_in = new
+	Events.emit_signal("set_signed_in", new)
 
 
 func _ready():
@@ -24,7 +29,7 @@ func _ready():
 		Globals.network.connect("signinresult", self, "_on_signin_result")
 		Globals.network.connect("signupresult", self, "_on_signup_result")
 		Globals.network.connect("connection_established", self, "attempt_autologin")
-	flags.append_array(Utils.walk_dir("res://assets/flags", false, "png", ["rainbow"]))
+	flags.append_array(Utils.walk_dir("res://assets/flags", false, ["rainbow"]))
 	for i in flags:  # add the items
 		flagchoice.add_item(load("res://assets/flags/%s.png" % i), i.replace("_", " "))
 	flagchoice.selected = 0
@@ -34,8 +39,7 @@ func attempt_autologin():
 	if data.name and data.password:
 		Globals.network.signin(data)
 	else:
-		tabcontainer.show()
-		loading.hide()
+		reset("", false)
 
 
 func _on_signin_pressed():
@@ -49,8 +53,6 @@ func _on_signin_result(result):
 	if autologin:
 		autologin = false
 		yield(get_tree().create_timer(.5), "timeout")
-	loading.hide()
-	tabcontainer.show()
 	$choose/signin/signinbutton.disabled = false
 	if typeof(result) == TYPE_STRING:  # ew, error, get it away from me
 		return reset(result, status_set)
@@ -78,6 +80,9 @@ func reset(reason: String, set_status := true):
 	if set_status:
 		status.set_text(reason)
 	data = SaveLoad.default_id_data
+	tabcontainer.show()
+	loading.hide()
+	set_signed_in(false)
 	save_data()
 	tabcontainer.show()
 
@@ -85,7 +90,7 @@ func reset(reason: String, set_status := true):
 func _after_result():
 	save_data()
 	status.set_text("Signed in to " + SaveLoad.get_data("id").name)
-	signed_in = true  # yay
+	self.signed_in = true  # yay
 	$H/LogOut.show()
 	tabcontainer.hide()
 
@@ -109,4 +114,5 @@ func _on_choose_tab_changed(tab: int):
 
 
 func log_out():
+	$H/LogOut.hide()
 	reset("You are now logged out!")

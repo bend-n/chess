@@ -6,6 +6,12 @@ signal confirmed(what)
 var timer := Timer.new()
 
 
+func _process(_delta):
+	if visible:
+		rect_position.x = clamp(rect_position.x, 0, OS.get_window_size().x - rect_size.x)
+		rect_position.y = clamp(rect_position.y, 50, OS.get_window_size().y - rect_size.y)
+
+
 func _ready() -> void:
 	add_child(timer)
 	timer.connect("timeout", self, "_pressed", [false])

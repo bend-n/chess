@@ -30,8 +30,8 @@ func _ready() -> void:
 	load_texture()
 
 
-func set_zindex(zindex: int):
-	VisualServer.canvas_item_set_z_index(get_canvas_item(), zindex)
+func set_zindex(zindex: int, obj: CanvasItem = self):
+	VisualServer.canvas_item_set_z_index(obj.get_canvas_item(), zindex)
 
 
 func load_texture(path := "%s%s%s.png" % [Globals.grid.ASSETS_PATH, team, shortname.to_upper()]) -> void:
@@ -160,7 +160,7 @@ func can_touch(pos: Vector2, attack := true, move := true) -> bool:
 
 
 static func create_move_circles(pos: Vector2) -> void:
-	Globals.grid.background_matrix[pos.x][pos.y].set_circle(true)  # make the move circle
+	Globals.grid.get_background_element(pos).set_circle(true)  # make the move circle
 
 
 static func create_take_circles(spot: Piece) -> void:  # create take circles

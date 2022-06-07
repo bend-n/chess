@@ -13,31 +13,32 @@ var promotetake := false
 onready var whiteint := 1 if white else -1
 onready var sprites := []
 onready var darken: ColorRect = $"../../Darken"
+onready var previews = $Popup/Previews
+onready var popup: Popup = $Popup
 
 
 func _ready() -> void:
 	Globals.pawns.append(self)
 	Events.connect("turn_over", self, "_on_turn_over")
 	Events.connect("just_before_turn_over", self, "_just_before_turn_over")
-	for i in range(0, 4):  # add 3 sprites
-		var newsprite: Node2D = load("res://ui/ClickableSprite.tscn").instance()
-		newsprite.scale = Globals.grid.piece_size / Vector2(100, 100)
-		newsprite.position = (Globals.grid.piece_size / 2 + Vector2(0, (i * Globals.grid.piece_size.y) * whiteint))
-		newsprite.get_node("Sprite").texture = load(
-			"%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]]
-		)
+	for i in range(4):  # add 4 sprites
+		var newsprite: TextureButton = load("res://ui/PromotionPreview.tscn").instance()
+		newsprite.texture_normal = load("%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]])
 		newsprite.name = promotables[i]
-		newsprite.connect("clicked", self, "handle_sprite_input_event", [newsprite.name])
-		newsprite.z_index = 5  # its not a texturebutton so i can use this
-		newsprite.hide()
-		add_child(newsprite)
+		newsprite.connect("pressed", self, "_pressed", [newsprite.name])
+		previews.add_child(newsprite)
 		sprites.append(newsprite)
 
 
+func open_previews() -> void:
+	var rect := popup.get_global_rect()
+	rect.position = rect_global_position
+	popup.popup(rect)
+	# popup.visible = true
+
+
 func _exit_tree() -> void:
-	var find: int = Globals.pawns.find(self)
-	if find != -1:
-		Globals.pawns.remove(find)
+	Globals.pawns.erase(self)
 
 
 func moveto(position: Vector2, instant := false) -> void:
@@ -131,8 +132,8 @@ func promote(position: Vector2, type: String) -> void:
 	move(position)  # only move the visuals
 	promoteposition = position
 	darken.show()
-	for i in range(len(promotables)):
-		sprites[i].show()
+	yield(tween, "tween_completed")
+	open_previews()
 
 
 func promote_to(promote_to: String, is_capture: bool, position: Vector2, instant := false):
@@ -143,7 +144,8 @@ func promote_to(promote_to: String, is_capture: bool, position: Vector2, instant
 	took()
 
 
-func handle_sprite_input_event(promote_to: String) -> void:
+func _pressed(promote_to: String) -> void:
+	previews.hide()
 	darken.hide()
 	var is_cap = at_pos(promoteposition) != null
 	var mov = Move.new(SanParser.PAWN, [real_position, promoteposition], is_cap)
