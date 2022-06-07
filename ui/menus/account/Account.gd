@@ -89,8 +89,9 @@ func reset(reason: String, set_status := true):
 
 func _after_result():
 	save_data()
+	loading.hide()
 	status.set_text("Signed in to " + SaveLoad.get_data("id").name)
-	self.signed_in = true  # yay
+	set_signed_in(true)  # yay
 	$H/LogOut.show()
 	tabcontainer.hide()
 
