@@ -37,7 +37,6 @@ func parse(string) -> Dictionary:
 				return {}
 		else:
 			break
-
 	var movetext := PoolStringArray()
 	while !lines.empty():
 		var line = lines.pop_front().strip_edges()

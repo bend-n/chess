@@ -1,16 +1,18 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/ui/close.png" type="Texture" id=3]
 [ext_resource path="res://ui/confirm/confirm.gd" type="Script" id=4]
 [ext_resource path="res://assets/ui/check.png" type="Texture" id=5]
+[ext_resource path="res://ui/verdana-bold-small.tres" type="DynamicFont" id=6]
 
 [node name="Confirm" type="WindowDialog"]
 margin_right = 576.0
 margin_bottom = 168.0
 rect_min_size = Vector2( 700, 0 )
 theme = ExtResource( 1 )
+custom_fonts/title_font = ExtResource( 6 )
 popup_exclusive = true
 script = ExtResource( 4 )
 

@@ -3,6 +3,7 @@ extends Node
 var internet := false
 signal newmove(move)
 signal newfen(fen)
+signal pop_move(fen, was_num)
 
 var moves_list: PoolStringArray = []
 var fen := ""
@@ -13,56 +14,21 @@ func get_pgn():
 
 
 func _on_turn_over() -> void:
-	fen = get_fen()
+	fen = Fen.get_fen()
 	Log.info("fen: " + fen)
 	emit_signal("newfen", fen)
 
 
+func pop_move() -> String:
+	emit_signal("pop_move")
+	moves_list.remove(moves_list.size() - 1)
+	var pgn = get_pgn()
+	moves_list.resize(0)
+	return pgn
+
+
 func spotispiece(piece_type: int, spot: Piece) -> bool:
 	return SanParse.from_str(spot.shortname.to_upper()) == piece_type if spot else false
-
-
-func get_fen() -> String:
-	var pieces := ""
-	for rank in range(8):
-		var empty := 0
-		for file in range(8):
-			var spot: Piece = Globals.grid.matrix[rank][file]
-			if spot == null:
-				empty += 1
-				if len(pieces) > 0 and str(empty - 1) == pieces[-1]:
-					pieces[-1] = str(empty)
-				else:
-					pieces += str(empty)
-			else:
-				pieces += (spot.shortname[0].to_upper() if spot.white else spot.shortname[0].to_lower())
-				empty = 0
-		if rank != 7:
-			pieces += "/"
-	# handle castling checks
-	var whitecastling := PoolStringArray(Globals.white_king.castleing(true)).join("")
-	var blackcastling := PoolStringArray(Globals.black_king.castleing(true)).join("")
-	var castlingrights := ""
-	if blackcastling and whitecastling:
-		castlingrights = whitecastling.to_upper() + blackcastling.to_lower()
-	else:
-		castlingrights = "-"
-
-	var enpassants := ""
-	for pawn in Globals.pawns:
-		if pawn.just_double_stepped and pawn.just_set:
-			enpassants += Utils.to_algebraic(pawn.real_position + (Vector2.DOWN * pawn.whiteint))
-	return (
-		"%s %s %s %s %s %s"
-		% [
-			pieces,
-			"w" if Globals.turn else "b",
-			castlingrights,
-			enpassants if enpassants else "-",
-			Globals.halfmove,
-			Globals.fullmove,
-		]
-	)  # pos  # turn  # castling  # enpassant  # halfmove  # fullmove
 
 
 static func str_bool(string: String) -> bool:
@@ -205,9 +171,10 @@ static func from_algebraic(pos: String) -> Vector2:
 
 
 static func to_str(type: int) -> String:
-	return " NBRQK"[type].strip_edges()  # if its a pawn, return nothing
+	return "PNBRQK"[type]
 
 
+# cant wait for 4.0 dict.merge(dict) :C
 static func append_dict(dict: Dictionary, newdict: Dictionary) -> Dictionary:
 	for key in newdict:
 		dict[key] = newdict[key]

@@ -27,6 +27,8 @@ func _ready() -> void:
 	rect_pivot_offset = Globals.grid.piece_size / 2
 	frame.modulate = Globals.grid.overlay_color
 	colorrect.color = Globals.grid.overlay_color
+	sprite.flip_v = Globals.grid.flipped
+	sprite.flip_h = Globals.grid.flipped
 	load_texture()
 
 
@@ -69,7 +71,13 @@ func moveto(pos: Vector2, instant := false) -> void:
 		move(pos)
 		real_position = pos
 		SoundFx.play("Move")
+	else:
 		has_moved = true
+		real_position = pos
+
+
+func update_visual_position():
+	rect_position = real_position * Globals.grid.piece_size
 
 
 func pos_around(around_vector: Vector2) -> Vector2:
@@ -198,7 +206,6 @@ func take(piece: Piece, instant := false) -> void:
 	clear_clicked()
 	piece.took(instant)
 	moveto(piece.real_position, instant)
-	Globals.reset_halfmove()
 
 
 func took(instant := false) -> void:  # called when piece is taken

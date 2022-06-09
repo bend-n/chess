@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/flag.png-77c9b7bf98c3bdd0a6037ebd527e5287.stex"
+path="res://.import/undo.png-1a08869722195ead3fe48ffb6aa0ef0b.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/flag.png"
-dest_files=[ "res://.import/flag.png-77c9b7bf98c3bdd0a6037ebd527e5287.stex" ]
+source_file="res://assets/ui/undo.png"
+dest_files=[ "res://.import/undo.png-1a08869722195ead3fe48ffb6aa0ef0b.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=false
+flags/filter=true
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

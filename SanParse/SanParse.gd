@@ -30,7 +30,7 @@ const UNKNOWN_POS = Vector2(-1, -1)
 enum { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING }
 
 
-func from_str(string: String) -> int:
+static func from_str(string: String) -> int:
 	var find = " NBRQK".find(string)
 	if find != -1:
 		return find
@@ -54,15 +54,13 @@ func regexmatch(san: String) -> Move:
 	var re: RegExMatch = regexs.pawn_move.search(san)
 	if re:
 		var cap = re.strings
-		var mov = Move.new(PAWN, [UNKNOWN_POS, pos(cap[1], cap[2])])
-		mov.set_check_type(cap[3])
+		var mov = Move.new(PAWN, [UNKNOWN_POS, pos(cap[1], cap[2])]).set_check_type(cap[3])
 		return mov
 
 	re = regexs.long_pawn_move.search(san)
 	if re:
 		var cap = re.strings
-		var mov = Move.new(PAWN, [pos(cap[1], cap[2]), pos(cap[3], cap[4])])
-		mov.set_check_type(cap[5])
+		var mov = Move.new(PAWN, [pos(cap[1], cap[2]), pos(cap[3], cap[4])]).set_check_type(cap[5])
 		return mov
 
 	re = regexs.piece_movement.search(san)

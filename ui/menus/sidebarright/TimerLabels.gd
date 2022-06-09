@@ -24,6 +24,10 @@ func set_time(newtime: float) -> bool:
 	return true
 
 
+func tick(delta: float):
+	time -= delta
+
+
 func _ready() -> void:
 	set_time(STARTTIME)
 	set_color()

@@ -15,7 +15,7 @@ func _load(i: int):
 	var boar = load("res://Game.tscn").instance()
 	get_tree().get_root().add_child(boar)
 	boar = boar.get_board()
-	boar.play_pgn(pgns[i])
+	boar.play_pgn(pgns[i], true)
 	get_parent().hide()
 
 

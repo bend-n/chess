@@ -4,8 +4,14 @@ class_name King, "res://assets/pieces/california/wK.png"
 var castle_check := true
 var can_castle := []
 
+enum { NONE, QUEEN_SIDE, KING_SIDE }  # keep up to date with move.movekind.castletypes
+
 
 func _ready() -> void:
+	if white:
+		Globals.white_king = self
+	else:
+		Globals.black_king = self
 	Events.connect("just_before_turn_over", self, "just_before_over")
 
 
@@ -26,18 +32,6 @@ func get_moves(no_enemys := false, check_spots_check := true) -> PoolVector2Arra
 
 func just_before_over() -> void:  # assign metadata for threefold repetition draw check
 	castleing()
-	if can_castle.size() > 0:
-		for i in can_castle:
-			if i[3] == "O-O-O":
-				if white:
-					Globals.grid.matrix[8].wccl = true
-				else:
-					Globals.grid.matrix[8].bccl = true
-			else:
-				if white:
-					Globals.grid.matrix[8].wccr = true
-				else:
-					Globals.grid.matrix[8].bccr = true
 
 
 func castleing(justcheckrooks := false) -> Array:
@@ -68,25 +62,17 @@ func castleing(justcheckrooks := false) -> Array:
 			var posx3 := pos_around(direction * 3)
 			if at_pos(posx3) or checkcheck(posx3):
 				continue
-		can_castle.append([posx2, rook, rook_motion[i], "O-O-O" if i == 1 else "O-O"])
+		can_castle.append([posx2, rook, rook_motion[i], QUEEN_SIDE if i == 1 else KING_SIDE])
 		moves.append(posx2)
 	if justcheckrooks:
 		moves.sort()
 	return moves
 
 
-func castle(position: Vector2, instant := false) -> String:
-	var return_string := ""
-	if can_castle.size() == 1:
-		return_string = can_castle[0][3]
-	else:
-		for i in can_castle:
-			if i[0] == position:
-				return_string = i[3]
-				break
+# basically a wrapper for move to
+func castle(position: Vector2, instant := false) -> void:
 	can_castle.clear()
 	moveto(position, instant)
-	return return_string
 
 
 func can_move() -> bool:  # checks if you can legally move
