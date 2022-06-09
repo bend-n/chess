@@ -20,10 +20,11 @@ onready var popup: Popup = $Popup
 func _ready() -> void:
 	Globals.pawns.append(self)
 	Events.connect("turn_over", self, "_on_turn_over")
-	Events.connect("just_before_turn_over", self, "_just_before_turn_over")
 	for i in range(4):  # add 4 sprites
 		var newsprite: TextureButton = load("res://ui/PromotionPreview.tscn").instance()
-		newsprite.texture_normal = load("%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]])
+		newsprite.texture_normal = load(
+			"%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]]
+		)
 		newsprite.name = promotables[i]
 		newsprite.connect("pressed", self, "_pressed", [newsprite.name])
 		previews.add_child(newsprite)
@@ -34,7 +35,6 @@ func open_previews() -> void:
 	var rect := popup.get_global_rect()
 	rect.position = rect_global_position
 	popup.popup(rect)
-	# popup.visible = true
 
 
 func _exit_tree() -> void:
@@ -44,14 +44,9 @@ func _exit_tree() -> void:
 func moveto(position: Vector2, instant := false) -> void:
 	# check if 2 step
 	if !just_double_stepped and !has_moved:
-		if white and real_position.y - position.y == 2:
-			just_double_stepped = true
-			just_set = true
-		if !white and position.y - real_position.y == 2:
-			just_double_stepped = true
-			just_set = true
+		just_double_stepped = true
+		just_set = true
 	.moveto(position, instant)
-	Globals.reset_halfmove()
 
 
 func get_moves(_var := false, check_spots_check := true) -> PoolVector2Array:
@@ -61,9 +56,10 @@ func get_moves(_var := false, check_spots_check := true) -> PoolVector2Array:
 		var point: Vector2 = points[i]
 		point *= whiteint
 		point = pos_around(point)
-		if is_on_board(point) and at_pos(point) == null:
-			if i == 1 and has_moved or at_pos(pos_around(points[0] * whiteint)) != null:
-				continue
+		if at_pos(point) == null:
+			if i == 1:
+				if has_moved or at_pos(pos_around(points[0] * whiteint)) != null:
+					continue
 			if check_spots_check and checkcheck(point):
 				continue
 			if is_on_board(point):
@@ -108,9 +104,9 @@ func en_passant(turncheck := true, check_spots_check := true) -> Array:  # in pa
 	var passants := [pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
 	var moves := []
 	for i in passants:
-		if !is_on_board(i) or !at_pos(i):
-			continue
 		var spot := at_pos(i)
+		if !spot:
+			continue
 		if spot.white == white or !Utils.is_pawn(spot):
 			continue
 		if turncheck and white != Globals.turn:
@@ -136,11 +132,11 @@ func promote(position: Vector2, type: String) -> void:
 	open_previews()
 
 
-func promote_to(promote_to: String, is_capture: bool, position: Vector2, instant := false):
+func promote_to(promote_to: int, is_capture: bool, position: Vector2, instant := false):
 	if is_capture and at_pos(position):
 		at_pos(position).took(instant)
 	clear_clicked()
-	Globals.grid.make_piece(position, piece(promote_to), white)
+	Globals.grid.make_piece(position, promote_to, white)
 	took()
 
 
@@ -153,39 +149,9 @@ func _pressed(promote_to: String) -> void:
 	Globals.network.send_mov(mov)
 
 
-static func piece(string: String) -> String:
-	match string:
-		"Q":
-			return "Queen"
-		"N":
-			return "Knight"
-		"R":
-			return "Rook"
-		"B":
-			return "Bishop"
-		_:
-			return "Piece"
-
-
 func _on_turn_over() -> void:
 	if just_set:
 		just_set = false
 		return
 	if just_double_stepped:
 		just_double_stepped = false
-
-
-func _just_before_turn_over() -> void:
-	var had_a_enpassant := len(enpassant) > 0
-	enpassant.clear()
-	if !had_a_enpassant:  # scuffed method to check if enpassant is possible
-		en_passant(false)
-	var temporary := []
-	for i in enpassant:
-		temporary.append(i[0])
-	if !temporary:
-		return
-	if white:
-		Globals.grid.matrix[8].wcep.append_array(temporary)
-	else:
-		Globals.grid.matrix[8].bcep.append_array(temporary)

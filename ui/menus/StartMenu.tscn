@@ -24,9 +24,9 @@ script = ExtResource( 7 )
 
 [node name="tabs" type="TabContainer" parent="."]
 margin_left = 89.0
-margin_top = 47.0
+margin_top = 23.0
 margin_right = 1333.0
-margin_bottom = 753.0
+margin_bottom = 777.0
 rect_min_size = Vector2( 2, 2 )
 mouse_filter = 1
 size_flags_horizontal = 0

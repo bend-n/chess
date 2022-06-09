@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://ui/barbutton/drawbutton.gd" type="Script" id=1]
 [ext_resource path="res://ui/barbutton/resignbutton.gd" type="Script" id=2]
@@ -14,8 +14,10 @@
 [ext_resource path="res://assets/ui/Roboto-Medium.ttf" type="DynamicFontData" id=12]
 [ext_resource path="res://ui/menus/sidebarright/SidebarRight.gd" type="Script" id=13]
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=14]
+[ext_resource path="res://assets/ui/undo.png" type="Texture" id=15]
 [ext_resource path="res://assets/ui/draw.png" type="Texture" id=16]
 [ext_resource path="res://assets/ui/flip_board.png" type="Texture" id=17]
+[ext_resource path="res://ui/barbutton/undobutton.gd" type="Script" id=18]
 [ext_resource path="res://ui/barbutton/flipbutton.gd" type="Script" id=19]
 [ext_resource path="res://assets/ui/flag.png" type="Texture" id=20]
 [ext_resource path="res://ui/menus/sidebarright/sandisplay/SanDisplay.tscn" type="PackedScene" id=21]
@@ -144,23 +146,36 @@ custom_constants/separation = 0
 alignment = 1
 
 [node name="FlipBoard" parent="V/buttonbarholder/Panel/buttonbar" instance=ExtResource( 6 )]
-margin_left = 166.0
-margin_right = 216.0
+margin_left = 141.0
+margin_right = 191.0
+hint_tooltip = "rotate the board"
 texture_normal = ExtResource( 17 )
 script = ExtResource( 19 )
 
 [node name="DrawButton" parent="V/buttonbarholder/Panel/buttonbar" instance=ExtResource( 6 )]
-margin_left = 216.0
-margin_right = 266.0
+margin_left = 191.0
+margin_right = 241.0
+hint_tooltip = "request a draw"
 texture_normal = ExtResource( 16 )
 script = ExtResource( 1 )
+confirm_text = "Your opponent requests a draw"
 status = NodePath("../../../../Status")
 
 [node name="ResignButton" parent="V/buttonbarholder/Panel/buttonbar" instance=ExtResource( 6 )]
-margin_left = 266.0
-margin_right = 316.0
+margin_left = 241.0
+margin_right = 291.0
+hint_tooltip = "resign"
 texture_normal = ExtResource( 20 )
 script = ExtResource( 2 )
+confirm_text = "Resign?"
+status = NodePath("../../../../Status")
+
+[node name="UndoButton" parent="V/buttonbarholder/Panel/buttonbar" instance=ExtResource( 6 )]
+margin_left = 291.0
+margin_right = 341.0
+texture_normal = ExtResource( 15 )
+script = ExtResource( 18 )
+confirm_text = "Your opponent requests a takeback"
 status = NodePath("../../../../Status")
 
 [node name="SanDisplay" type="PanelContainer" parent="V"]

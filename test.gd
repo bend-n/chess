@@ -19,7 +19,9 @@ class TestSan:
 	func assert_capture(mv: String, start: Vector2, dest: Vector2, piece: int) -> void:
 		assert_all(parse(mv), PoolVector2Array([start, dest]), piece, true)
 
-	func assert_all(mv: Move, vectors: PoolVector2Array, piece: int, capture: bool, promote = -1) -> void:
+	func assert_all(
+		mv: Move, vectors: PoolVector2Array, piece: int, capture: bool, promote = -1
+	) -> void:
 		assert(mv.move_kind.type == Move.MoveKind.NORMAL)
 		assert([mv.move_kind.data == vectors, mv.piece == piece, mv.is_capture == capture].min())
 		if promote != -1:
@@ -60,7 +62,9 @@ class TestSan:
 		assert_capture("exd4", Vector2(4, -1), Vector2(3, 4), PAWN)
 
 	func test_pawn_capture_promotion():
-		assert_all(parse("exd8=Q"), PoolVector2Array([Vector2(4, -1), Vector2(3, 0)]), PAWN, true, QUEEN)
+		assert_all(
+			parse("exd8=Q"), PoolVector2Array([Vector2(4, -1), Vector2(3, 0)]), PAWN, true, QUEEN
+		)
 
 	func test_pawn_capture_long():
 		assert_capture("e3xd4", Vector2(4, 5), Vector2(3, 4), PAWN)
