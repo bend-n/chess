@@ -33,14 +33,6 @@ func reset_vars() -> void:
 	Utils.reset_vars()
 
 
-func pack_vars() -> Dictionary:
-	return {
-		"fullmove": fullmove,
-		"halfmove": halfmove,
-		"turn": turn,
-	}
-
-
 func reset_halfmove() -> void:
 	halfmove = 0
 	__nosethalfmove = true
@@ -48,19 +40,17 @@ func reset_halfmove() -> void:
 
 func add_turn() -> void:
 	Events.emit_signal("just_before_turn_over")
-	if !turn:
+	turn = not turn
+	if turn:  #  white just moved
 		fullmove += 1
 	if __nosethalfmove:
 		__nosethalfmove = false
 	else:
 		halfmove += 1
-	turn = not turn
 	Events.emit_signal("turn_over")
 
 
-func get_turn(flip := false) -> String:
-	if flip:
-		return "black" if turn else "white"
+func get_turn() -> String:
 	return "white" if turn else "black"
 
 

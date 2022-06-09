@@ -27,6 +27,8 @@ func _ready() -> void:
 	rect_pivot_offset = Globals.grid.piece_size / 2
 	frame.modulate = Globals.grid.overlay_color
 	colorrect.color = Globals.grid.overlay_color
+	sprite.flip_v = Globals.grid.flipped
+	sprite.flip_h = Globals.grid.flipped
 	load_texture()
 
 
@@ -34,7 +36,9 @@ func set_zindex(zindex: int, obj: CanvasItem = self):
 	VisualServer.canvas_item_set_z_index(obj.get_canvas_item(), zindex)
 
 
-func load_texture(path := "%s%s%s.png" % [Globals.grid.ASSETS_PATH, team, shortname.to_upper()]) -> void:
+func load_texture(
+	path := "%s%s%s.png" % [Globals.grid.ASSETS_PATH, team, shortname.to_upper()]
+) -> void:
 	sprite.texture = load(path)
 
 
@@ -51,7 +55,12 @@ func clear_clicked() -> void:
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.interpolate_property(
-		self, "rect_position", rect_position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
+		self,
+		"rect_position",
+		rect_position,
+		newpos * Globals.grid.piece_size,
+		0.3,
+		Tween.TRANS_BACK
 	)
 	var signresult := int(sign(real_position.x - newpos.x))
 	if signresult == 1:
@@ -69,7 +78,13 @@ func moveto(pos: Vector2, instant := false) -> void:
 		move(pos)
 		real_position = pos
 		SoundFx.play("Move")
+	else:
 		has_moved = true
+		real_position = pos
+
+
+func update_visual_position():
+	rect_position = real_position * Globals.grid.piece_size
 
 
 func pos_around(around_vector: Vector2) -> Vector2:
@@ -91,7 +106,9 @@ static func all_dirs() -> PoolVector2Array:
 	)
 
 
-func traverse(arr: PoolVector2Array = [], no_enemys := false, check_spots_check := true) -> PoolVector2Array:
+func traverse(
+	arr: PoolVector2Array = [], no_enemys := false, check_spots_check := true
+) -> PoolVector2Array:
 	var circle_array: PoolVector2Array = []
 	for i in arr:
 		var pos := real_position
@@ -198,7 +215,6 @@ func take(piece: Piece, instant := false) -> void:
 	clear_clicked()
 	piece.took(instant)
 	moveto(piece.real_position, instant)
-	Globals.reset_halfmove()
 
 
 func took(instant := false) -> void:  # called when piece is taken

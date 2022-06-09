@@ -21,7 +21,7 @@ static func castle_type(type: String) -> int:
 	return MoveKind.CASTLETYPES.QUEEN_SIDE if type == "O-O-O" else MoveKind.CASTLETYPES.KING_SIDE
 
 
-func set_check_type(type: String) -> void:
+func set_check_type(type: String) -> Move:
 	match type:
 		"+":
 			check_type = CHECKTYPES.CHECK
@@ -29,6 +29,7 @@ func set_check_type(type: String) -> void:
 			check_type = CHECKTYPES.CHECKMATE
 		_:
 			check_type = CHECKTYPES.NONE
+	return self
 
 
 func compile() -> String:  # compiles the structure to a san
@@ -37,17 +38,21 @@ func compile() -> String:  # compiles the structure to a san
 		MoveKind.CASTLE:
 			res += move_kind.to_str()
 		MoveKind.NORMAL:
-			res += Utils.to_str(piece)
+			res += to_str(piece)
 			res += Utils.to_algebraic(move_kind.data[0])
 			res += "x" if is_capture else ""
 			res += Utils.to_algebraic(move_kind.data[1])
-			res += "=" + Utils.to_str(promotion) if promotion != -1 else ""
+			res += "=" + to_str(promotion) if promotion != -1 else ""
 			match check_type:
 				CHECKTYPES.CHECK:
 					res += "+"
 				CHECKTYPES.CHECKMATE:
 					res += "#"
 	return res.strip_edges()
+
+
+static func to_str(type: int) -> String:
+	return " NBRQK"[type].strip_edges()  # if its a pawn, return nothing
 
 
 ## tests
@@ -60,15 +65,15 @@ func compile() -> String:  # compiles the structure to a san
 # 	print(Utils.to_algebraic(make_long(SanParse.parse("Nbxc3").move_kind.data, false, SanParser.KNIGHT)[0]) == "b1")
 # 	print(Utils.to_algebraic(make_long(SanParse.parse("N1xc3").move_kind.data, false, SanParser.KNIGHT)[0]) == "b1")
 ### fix short san
-func make_long():
+func make_long() -> Move:
 	if move_kind.type == MoveKind.CASTLE:
-		return
+		return self
 	var newvecs: PoolVector2Array = []
 
 	var vectors = move_kind.data
 
 	if Piece.is_on_board(vectors[0]):  # [0] is the only one with -1(s) possible
-		return vectors
+		return self
 
 	if is_capture:
 		newvecs.append(long_helper(vectors[0], true, false, vectors[1]))
@@ -77,10 +82,11 @@ func make_long():
 
 	if newvecs.empty():
 		Log.error("cruddlesticks")
-		return
+		return self
 	newvecs.append(vectors[1])
 
 	move_kind.data = newvecs
+	return self
 
 
 func long_helper(vec: Vector2, attack: bool, move: bool, touch: Vector2):
@@ -103,7 +109,11 @@ func long_helper(vec: Vector2, attack: bool, move: bool, touch: Vector2):
 
 
 func long_helper_helper(spot, touch, attack, move):
-	return Utils.spotispiece(piece, spot) and spot.white == Globals.turn and spot.can_touch(touch, attack, move)
+	return (
+		Utils.spotispiece(piece, spot)
+		and spot.white == Globals.turn
+		and spot.can_touch(touch, attack, move)
+	)
 
 
 class MoveKind:

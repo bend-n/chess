@@ -15,10 +15,10 @@ const HEADERS := {
 	"relay": "R",  # relay goes to both
 	"signal": "S",  # signal is one way
 	"loadpgn": "L",  # server telling me to load a pgn
-	"info": "I"
+	"info": "I",
+	"move": "M",
+	"undo": "<"
 }
-
-const MOVEHEADERS := {move = "M", take = "K", castle = "C", passant = "P", promote = "Q"}  # subheaders for HEADERS.move
 
 const RELAYHEADERS := {chat = "C"}
 const SIGNALHEADERS := {takeback = "T", draw = "D", resign = "R", info = "I"}  # subheaders for HEADERS.signal
@@ -33,6 +33,7 @@ signal game_over(problem, isok)
 signal connection_established
 signal signal_recieved(what)
 signal chat(text)
+signal undo(undo)
 signal info_recieved(info)
 
 ## for accounts(mostly)
@@ -82,25 +83,29 @@ func _connection_error() -> void:
 
 
 func signal(body: Dictionary, header: String, _mainheader := HEADERS.signal) -> Dictionary:
-	var data: Dictionary = Utils.append_dict({"type": header, "gamecode": game_code}, body)
-	send_packet(data, _mainheader)
+	var data: Dictionary = Utils.append_dict({"type": header}, body)
+	send_gamecode_packet(data, _mainheader)
 	return data
 
 
 func join_game(game: String) -> void:
-	send_packet(Utils.append_dict({"gamecode": game}, SaveLoad.get_public_info()), HEADERS.joinrequest)
+	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.joinrequest, game)
 
 
 func host_game(game: String) -> void:
-	send_packet(Utils.append_dict({"gamecode": game}, SaveLoad.get_public_info()), HEADERS.hostrequest)
+	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.hostrequest, game)
 
 
-func relay_signal(body: Dictionary, header: String) -> Dictionary:  # its really the same thing as signal()
-	return signal(body, header, HEADERS.relay)
+func send_gamecode_packet(data: Dictionary, header: String, gamecode: String = game_code):
+	send_packet(Utils.append_dict({"gamecode": gamecode}, data), header)
+
+
+func relay_signal(body: Dictionary, header: String, _mainheader := HEADERS.relay) -> Dictionary:  # its really the same thing as signal()
+	return signal(body, header, _mainheader)
 
 
 func send_mov(mov: Move):
-	relay_signal({"move": mov.compile()}, MOVEHEADERS.move)
+	send_packet({move = mov.compile(), gamecode = game_code}, HEADERS.move)
 
 
 func stopgame(reason: String) -> void:
@@ -108,12 +113,16 @@ func stopgame(reason: String) -> void:
 
 
 func _data_recieved() -> void:
-	if !OS.is_window_focused():
-		OS.request_attention()
 	var recieve: Dictionary = ws.get_peer(1).get_var()
 	var header: String = recieve.header
 	var text = recieve.data
 	match header:
+		HEADERS.undo:
+			emit_signal("undo", text)
+		HEADERS.move:
+			if !OS.is_window_focused():
+				OS.request_attention()
+			emit_signal("move_data", text.move)
 		HEADERS.hostrequest:
 			emit_signal("host_result", text)
 		HEADERS.relay:
@@ -121,8 +130,6 @@ func _data_recieved() -> void:
 			match relay.type:
 				RELAYHEADERS.chat:
 					emit_signal("chat", relay)
-				MOVEHEADERS.move:
-					emit_signal("move_data", text.move)
 		HEADERS.joinrequest:
 			emit_signal("join_result", text)
 		HEADERS.info:
@@ -139,7 +146,9 @@ func _data_recieved() -> void:
 			PacketHandler.leaving = false
 		HEADERS.signal:
 			var signal: Dictionary = text
-			emit_signal("signal_recieved", signal)
+			match signal.type:
+				_:
+					emit_signal("signal_recieved", signal)
 		HEADERS.signup:
 			emit_signal("signupresult", text)
 		HEADERS.signin:

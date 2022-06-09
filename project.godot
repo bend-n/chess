@@ -17,7 +17,7 @@ _global_script_classes=[ {
 "base": "Piece",
 "class": "Bishop",
 "language": "GDScript",
-"path": "res://pieces/Bishop.gd"
+"path": "res://pieces/B.gd"
 }, {
 "base": "Control",
 "class": "ColorPickerBetter",
@@ -40,9 +40,19 @@ _global_script_classes=[ {
 "path": "res://ui/confirm/confirm.gd"
 }, {
 "base": "BarTextureButton",
+"class": "ConfirmButton",
+"language": "GDScript",
+"path": "res://ui/barbutton/confirmbutton.gd"
+}, {
+"base": "ConfirmButton",
 "class": "DrawButton",
 "language": "GDScript",
 "path": "res://ui/barbutton/drawbutton.gd"
+}, {
+"base": "Node",
+"class": "FEN",
+"language": "GDScript",
+"path": "res://FEN/Fen.gd"
 }, {
 "base": "LineEdit",
 "class": "FENLabel",
@@ -77,12 +87,12 @@ _global_script_classes=[ {
 "base": "Piece",
 "class": "King",
 "language": "GDScript",
-"path": "res://pieces/King.gd"
+"path": "res://pieces/K.gd"
 }, {
 "base": "Piece",
 "class": "Knight",
 "language": "GDScript",
-"path": "res://pieces/Knight.gd"
+"path": "res://pieces/N.gd"
 }, {
 "base": "Control",
 "class": "Lobby",
@@ -117,7 +127,7 @@ _global_script_classes=[ {
 "base": "Piece",
 "class": "Pawn",
 "language": "GDScript",
-"path": "res://pieces/Pawn.gd"
+"path": "res://pieces/P.gd"
 }, {
 "base": "Control",
 "class": "Piece",
@@ -132,9 +142,9 @@ _global_script_classes=[ {
 "base": "Piece",
 "class": "Queen",
 "language": "GDScript",
-"path": "res://pieces/Queen.gd"
+"path": "res://pieces/Q.gd"
 }, {
-"base": "BarTextureButton",
+"base": "ConfirmButton",
 "class": "ResignButton",
 "language": "GDScript",
 "path": "res://ui/barbutton/resignbutton.gd"
@@ -147,7 +157,7 @@ _global_script_classes=[ {
 "base": "Piece",
 "class": "Rook",
 "language": "GDScript",
-"path": "res://pieces/Rook.gd"
+"path": "res://pieces/R.gd"
 }, {
 "base": "Node",
 "class": "SanParser",
@@ -164,6 +174,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/Status.gd"
 }, {
+"base": "ConfirmButton",
+"class": "UndoButton",
+"language": "GDScript",
+"path": "res://ui/barbutton/undobutton.gd"
+}, {
 "base": "Control",
 "class": "UsernamePass",
 "language": "GDScript",
@@ -176,7 +191,9 @@ _global_script_class_icons={
 "ColorPickerButtonBetter": "",
 "ColorSelect": "",
 "Confirm": "",
+"ConfirmButton": "",
 "DrawButton": "res://assets/ui/draw.png",
+"FEN": "",
 "FENLabel": "",
 "FlipButton": "res://assets/ui/flip_board.png",
 "Grid": "",
@@ -201,6 +218,7 @@ _global_script_class_icons={
 "SanParser": "",
 "SaveLoader": "",
 "StatusLabel": "",
+"UndoButton": "res://assets/ui/undo.png",
 "UsernamePass": ""
 }
 
@@ -229,6 +247,7 @@ Debug="*res://Debug.gd"
 SanParse="*res://SanParse/SanParse.gd"
 Pgn="*res://PGN/PGN.gd"
 Log="*res://Log.gd"
+Fen="*res://FEN/Fen.gd"
 
 [debug]
 
@@ -250,6 +269,10 @@ main_run_args="debug"
 [editor_plugins]
 
 enabled=PoolStringArray(  )
+
+[gui]
+
+theme/custom="res://ui/theme/main.tres"
 
 [importer_defaults]
 

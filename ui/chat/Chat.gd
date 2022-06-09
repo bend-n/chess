@@ -40,7 +40,9 @@ func add_label_with(data):
 	add_label(string)
 
 
-func add_label(bbcode: String, name = "richtextlabel", size = Vector2(rect_size.x, 35)) -> RichTextLabel:
+func add_label(
+	bbcode: String, name = "richtextlabel", size = Vector2(rect_size.x, 35)
+) -> RichTextLabel:
 	var l = RichTextLabel.new()
 	l.name = name
 	l.rect_min_size = size
@@ -50,7 +52,9 @@ func add_label(bbcode: String, name = "richtextlabel", size = Vector2(rect_size.
 	l.connect("meta_clicked", self, "open_url")
 	l.bbcode_text = bbcode
 	# l.fit_content_height = true
-	tween.interpolate_property(scrollbar, "value", scrollbar.value, scrollbar.max_value, .5, Tween.TRANS_BOUNCE)
+	tween.interpolate_property(
+		scrollbar, "value", scrollbar.value, scrollbar.max_value, .5, Tween.TRANS_BOUNCE
+	)
 	tween.start()
 	return l
 
@@ -67,7 +71,9 @@ func send(_arg = 0):
 	text.text = ""
 	var name_data = SaveLoad.get_data("id").name
 	var name = name_data if name_data else "Anonymous"
-	Globals.network.relay_signal({"text": t, "who": name if name else "Anonymous"}, Network.RELAYHEADERS.chat)
+	Globals.network.relay_signal(
+		{"text": t, "who": name if name else "Anonymous"}, Network.RELAYHEADERS.chat
+	)
 
 
 # markdown to bbcode
