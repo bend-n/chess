@@ -74,13 +74,13 @@ func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 func moveto(pos: Vector2, instant := false) -> void:
 	Globals.grid.matrix[real_position.y][real_position.x] = null
 	Globals.grid.matrix[pos.y][pos.x] = self
-	if !instant:
+	if instant:
+		real_position = pos
+	else:
 		move(pos)
 		real_position = pos
 		SoundFx.play("Move")
-	else:
-		has_moved = true
-		real_position = pos
+	has_moved = true
 
 
 func update_visual_position():
