@@ -155,3 +155,7 @@ func _on_turn_over() -> void:
 		return
 	if just_double_stepped:
 		just_double_stepped = false
+	if Utils.to_algebraic(real_position) == "e4":
+		prints("duble steppe:", just_double_stepped)
+		prints("just sette:", just_set)
+		prints("has moved:", has_moved)
