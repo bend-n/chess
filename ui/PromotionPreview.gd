@@ -13,7 +13,3 @@ func _ready():
 		rect_pivot_offset = Globals.grid.piece_size / 2
 		rect_min_size = Globals.grid.piece_size
 	set_focused(false)
-
-
-func _pressed():
-	print("PRESSED")
