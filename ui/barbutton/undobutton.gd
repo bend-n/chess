@@ -44,5 +44,6 @@ func _confirmed(what: bool) -> void:
 
 func undo():
 	var mov = Utils.pop_move()
-	Globals.chat.server("Move %s undone" % mov.move)
-	Globals.grid.undo()
+	Globals.chat.server("Move %s undone" % mov)
+	Globals.grid.undo(mov)
+	status.set_text("")
