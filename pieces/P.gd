@@ -23,7 +23,7 @@ func _ready() -> void:
 	for i in range(4):  # add 4 sprites
 		var newsprite: TextureButton = load("res://ui/PromotionPreview.tscn").instance()
 		newsprite.texture_normal = load(
-			"%s%s%s.png" % [Globals.grid.ASSETS_PATH, team.to_lower(), promotables[i]]
+			"res://assets/pieces/%s/%s%s.png" % [Globals.piece_set, team.to_lower(), promotables[i]]
 		)
 		newsprite.name = promotables[i]
 		newsprite.connect("pressed", self, "_pressed", [newsprite.name])
@@ -155,7 +155,3 @@ func _on_turn_over() -> void:
 		return
 	if just_double_stepped:
 		just_double_stepped = false
-	if Utils.to_algebraic(real_position) == "e4":
-		prints("duble steppe:", just_double_stepped)
-		prints("just sette:", just_set)
-		prints("has moved:", has_moved)

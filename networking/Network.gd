@@ -17,7 +17,8 @@ const HEADERS := {
 	"loadpgn": "L",  # server telling me to load a pgn
 	"info": "I",
 	"move": "M",
-	"undo": "<"
+	"undo": "<",
+	"spectate": "0"  # its a eye you see
 }
 
 const RELAYHEADERS := {chat = "C"}
@@ -88,12 +89,16 @@ func signal(body: Dictionary, header: String, _mainheader := HEADERS.signal) -> 
 	return data
 
 
-func join_game(game: String) -> void:
+func join_game(game: String = game_code) -> void:
 	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.joinrequest, game)
 
 
-func host_game(game: String) -> void:
+func host_game(game: String = game_code) -> void:
 	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.hostrequest, game)
+
+
+func spectate(game: String = game_code) -> void:
+	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.spectate, game)
 
 
 func send_gamecode_packet(data: Dictionary, header: String, gamecode: String = game_code):
@@ -134,6 +139,13 @@ func _data_recieved() -> void:
 			emit_signal("join_result", text)
 		HEADERS.info:
 			yield(get_tree().create_timer(.5), "timeout")
+			emit_signal("info_recieved", text)
+		HEADERS.spectate:
+			# handle spectate here
+			Globals.spectating = true
+			emit_signal("start_game")
+			yield(get_tree().create_timer(.5), "timeout")
+			Globals.grid.play_pgn(text.pgn, true)
 			emit_signal("info_recieved", text)
 		HEADERS.loadpgn:
 			emit_signal("start_game")

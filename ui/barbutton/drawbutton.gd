@@ -10,7 +10,7 @@ func _signal_recieved(what: Dictionary) -> void:
 			if what.accepted:
 				drawed()
 			else:
-				status.set_text("Draw request rejected")
+				Globals.chat.server("Draw request rejected")
 
 
 func drawed() -> GDScriptFunctionState:
@@ -18,11 +18,13 @@ func drawed() -> GDScriptFunctionState:
 
 
 func _pressed() -> void:
+	if Globals.spectating:
+		return
 	if waiting_on_answer:
 		_confirmed(true)
 	else:
 		Globals.network.signal({"question": ""}, Network.SIGNALHEADERS.draw)
-		status.set_text("Draw request sent")
+		Globals.chat.server("Draw request sent")
 
 
 func _confirmed(what: bool) -> void:  # called from confirmbar.confirmed

@@ -66,6 +66,7 @@ rect_min_size = Vector2( 230, 0 )
 size_flags_horizontal = 4
 text = "flag"
 icon = ExtResource( 3 )
+offset = Vector2( 50, -400 )
 
 [node name="signupbutton" type="Button" parent="choose/signup"]
 margin_left = 389.0

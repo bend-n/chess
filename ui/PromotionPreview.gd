@@ -9,6 +9,11 @@ func set_focused(is_focused: bool):
 
 
 func _ready():
-	rect_pivot_offset = Globals.grid.piece_size / 2
-	rect_min_size = Globals.grid.piece_size
+	if Globals.grid:
+		rect_pivot_offset = Globals.grid.piece_size / 2
+		rect_min_size = Globals.grid.piece_size
 	set_focused(false)
+
+
+func _pressed():
+	print("PRESSED")

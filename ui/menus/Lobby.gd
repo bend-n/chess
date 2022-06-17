@@ -37,13 +37,19 @@ func set_buttons(enabled := true) -> void:
 
 
 func _on_join_pressed() -> void:
-	validate_text()
-	PacketHandler.requestjoin()
+	if validate_text():
+		set_buttons(false)
+		Globals.network.join_game()
+	else:
+		set_status("Invalid address", false)
 
 
 func _on_HostButton_pressed() -> void:
-	validate_text()
-	PacketHandler.requesthost()
+	if validate_text():
+		set_buttons(false)
+		Globals.network.host_game()
+	else:
+		set_status("Invalid address", false)
 
 
 func validate_text(text := address.get_text()) -> String:
@@ -58,6 +64,14 @@ func validate_text(text := address.get_text()) -> String:
 
 func _on_Address_text_entered(new_text: String) -> void:
 	validate_text(new_text)
+
+
+func _on_spectate_pressed():
+	if validate_text():
+		set_buttons(false)
+		Globals.network.spectate()
+	else:
+		set_status("Invalid address", false)
 
 
 func _on_tabs_tab_changed(tab: int):

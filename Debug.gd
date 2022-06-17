@@ -29,7 +29,7 @@ func _ready() -> void:
 	visible = debug
 
 
-func monitor(node: Node, what: String, code := "") -> void:  # code doesnt really work well with ternarys
+func monitor(node: Object, what: String, code := "") -> void:  # code doesnt really work well with ternarys
 	refs.append([node, what, code] if code else [node, what])
 	calculate_size()
 
@@ -59,7 +59,7 @@ func _draw() -> void:
 
 
 func get_string(set: Array) -> String:
-	var node: Node = set[0]
+	var node: Object = set[0]
 	if !is_instance_valid(node):
 		refs.erase(set)
 		return "invalid!"

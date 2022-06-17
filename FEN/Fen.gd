@@ -47,11 +47,7 @@ func get_fen() -> String:
 				else:
 					pieces += str(empty)
 			else:
-				pieces += (
-					spot.shortname[0].to_upper()
-					if spot.white
-					else spot.shortname[0].to_lower()
-				)
+				pieces += (spot.shortname[0].to_upper() if spot.white else spot.shortname[0].to_lower())
 				empty = 0
 		if rank != 7:
 			pieces += "/"

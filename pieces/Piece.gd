@@ -36,9 +36,7 @@ func set_zindex(zindex: int, obj: CanvasItem = self):
 	VisualServer.canvas_item_set_z_index(obj.get_canvas_item(), zindex)
 
 
-func load_texture(
-	path := "%s%s%s.png" % [Globals.grid.ASSETS_PATH, team, shortname.to_upper()]
-) -> void:
+func load_texture(path := "%s%s%s.png" % [Globals.grid.ASSETS_PATH, team, shortname.to_upper()]) -> void:
 	sprite.texture = load(path)
 
 
@@ -55,12 +53,7 @@ func clear_clicked() -> void:
 
 func move(newpos: Vector2) -> void:  # dont use directly; use moveto
 	tween.interpolate_property(
-		self,
-		"rect_position",
-		rect_position,
-		newpos * Globals.grid.piece_size,
-		0.3,
-		Tween.TRANS_BACK
+		self, "rect_position", rect_position, newpos * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
 	)
 	var signresult := int(sign(real_position.x - newpos.x))
 	if signresult == 1:
@@ -106,9 +99,7 @@ static func all_dirs() -> PoolVector2Array:
 	)
 
 
-func traverse(
-	arr: PoolVector2Array = [], no_enemys := false, check_spots_check := true
-) -> PoolVector2Array:
+func traverse(arr: PoolVector2Array = [], no_enemys := false, check_spots_check := true) -> PoolVector2Array:
 	var circle_array: PoolVector2Array = []
 	for i in arr:
 		var pos := real_position

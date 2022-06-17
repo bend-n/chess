@@ -39,16 +39,6 @@ func _ready() -> void:
 		lobby.set_status("Connecting", true)
 
 
-func requestjoin() -> void:
-	lobby.set_buttons(false)
-	Globals.network.join_game(Globals.network.game_code)
-
-
-func requesthost() -> void:
-	lobby.set_buttons(false)
-	Globals.network.host_game(Globals.network.game_code)
-
-
 func network_ready() -> void:
 	lobby.set_status("", true)
 	lobby.set_buttons(true)

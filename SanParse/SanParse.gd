@@ -73,18 +73,14 @@ func regexmatch(san: String) -> Move:
 	re = regexs.specific_row_piece_movement.search(san)
 	if re:
 		var cap = re.strings
-		var mov = Move.new(
-			from_str(cap[1]), [Vector2(-1, Utils.row_pos(cap[2])), pos(cap[3], cap[4])]
-		)
+		var mov = Move.new(from_str(cap[1]), [Vector2(-1, Utils.row_pos(cap[2])), pos(cap[3], cap[4])])
 		mov.set_check_type(cap[5])
 		return mov
 
 	re = regexs.specific_column_piece_movement.search(san)
 	if re:
 		var cap = re.strings
-		var mov = Move.new(
-			from_str(cap[1]), [Vector2(Utils.col_pos(cap[2]), -1), pos(cap[3], cap[4])]
-		)
+		var mov = Move.new(from_str(cap[1]), [Vector2(Utils.col_pos(cap[2]), -1), pos(cap[3], cap[4])])
 		mov.set_check_type(cap[5])
 		return mov
 
@@ -121,18 +117,14 @@ func regexmatch(san: String) -> Move:
 	re = regexs.specific_column_piece_capture.search(san)
 	if re:
 		var cap = re.strings
-		var mov = Move.new(
-			from_str(cap[1]), [Vector2(Utils.col_pos(cap[2]), -1), pos(cap[3], cap[4])], true
-		)
+		var mov = Move.new(from_str(cap[1]), [Vector2(Utils.col_pos(cap[2]), -1), pos(cap[3], cap[4])], true)
 		mov.set_check_type(cap[5])
 		return mov
 
 	re = regexs.specific_row_piece_capture.search(san)
 	if re:
 		var cap = re.strings
-		var mov = Move.new(
-			from_str(cap[1]), [Vector2(-1, Utils.row_pos(cap[2])), pos(cap[3], cap[4])], true
-		)
+		var mov = Move.new(from_str(cap[1]), [Vector2(-1, Utils.row_pos(cap[2])), pos(cap[3], cap[4])], true)
 		mov.set_check_type(cap[5])
 		return mov
 

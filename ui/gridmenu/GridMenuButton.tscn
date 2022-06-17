@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://ui/gridmenu/GridMenu.gd" type="Script" id=1]
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=2]
@@ -16,6 +16,8 @@
 [ext_resource path="res://ui/verdana-bold-small.tres" type="DynamicFont" id=14]
 [ext_resource path="res://ui/theme/buttonhover.tres" type="StyleBox" id=15]
 [ext_resource path="res://ui/theme/panel.tres" type="StyleBox" id=16]
+
+[sub_resource type="StyleBoxEmpty" id=24]
 
 [sub_resource type="StyleBoxTexture" id=6]
 texture = ExtResource( 12 )
@@ -226,12 +228,11 @@ margin_bottom = 40.0
 rect_min_size = Vector2( 30, 20 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
+custom_styles/panel = SubResource( 24 )
 
 [node name="GridMenu" type="GridContainer" parent="Popup"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 40.0
-margin_bottom = 30.0
+margin_right = 50.0
+margin_bottom = 40.0
 rect_min_size = Vector2( 30, 20 )
 theme = SubResource( 23 )
 custom_constants/vseparation = 0

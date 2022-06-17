@@ -8,6 +8,8 @@ func _signal_recieved(what: Dictionary) -> void:
 
 
 func _pressed() -> void:
+	if Globals.spectating:
+		return
 	if waiting_on_answer:
 		_confirmed(true)
 	else:

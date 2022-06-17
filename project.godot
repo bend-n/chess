@@ -20,6 +20,11 @@ _global_script_classes=[ {
 "path": "res://pieces/B.gd"
 }, {
 "base": "Control",
+"class": "Chat",
+"language": "GDScript",
+"path": "res://ui/chat/Chat.gd"
+}, {
+"base": "Control",
 "class": "ColorPickerBetter",
 "language": "GDScript",
 "path": "res://ui/colorpicker/ColorPicker.gd"
@@ -187,6 +192,7 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "BarTextureButton": "",
 "Bishop": "res://assets/pieces/california/wB.png",
+"Chat": "",
 "ColorPickerBetter": "",
 "ColorPickerButtonBetter": "",
 "ColorSelect": "",

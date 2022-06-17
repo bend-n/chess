@@ -12,17 +12,17 @@ theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
 [node name="Center" type="CenterContainer" parent="."]
-margin_left = 536.0
+margin_left = 411.0
 margin_top = 286.0
-margin_right = 886.0
+margin_right = 1011.0
 margin_bottom = 513.0
 
 [node name="HBox" type="HBoxContainer" parent="Center"]
-margin_right = 350.0
+margin_right = 600.0
 margin_bottom = 227.0
 
 [node name="VBox" type="VBoxContainer" parent="Center/HBox"]
-margin_right = 350.0
+margin_right = 600.0
 margin_bottom = 227.0
 
 [node name="stophost" type="Button" parent="Center/HBox/VBox"]
@@ -34,9 +34,9 @@ size_flags_horizontal = 4
 text = "stop hosting"
 
 [node name="Address" type="LineEdit" parent="Center/HBox/VBox"]
-margin_right = 350.0
+margin_right = 600.0
 margin_bottom = 106.0
-rect_min_size = Vector2( 350, 0 )
+rect_min_size = Vector2( 600, 0 )
 hint_tooltip = "place game code here"
 focus_mode = 1
 text = "game_code"
@@ -48,11 +48,22 @@ caret_blink_speed = 0.5
 
 [node name="buttons" type="HBoxContainer" parent="Center/HBox/VBox"]
 margin_top = 121.0
-margin_right = 350.0
+margin_right = 600.0
 margin_bottom = 227.0
 
+[node name="SpectateButton" type="Button" parent="Center/HBox/VBox/buttons"]
+margin_right = 249.0
+margin_bottom = 106.0
+focus_mode = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+disabled = true
+enabled_focus_mode = 0
+text = "spectate"
+
 [node name="JoinButton" type="Button" parent="Center/HBox/VBox/buttons"]
-margin_right = 167.0
+margin_left = 264.0
+margin_right = 424.0
 margin_bottom = 106.0
 rect_min_size = Vector2( 150, 0 )
 hint_tooltip = "join the game"
@@ -63,8 +74,8 @@ enabled_focus_mode = 0
 text = "join"
 
 [node name="HostButton" type="Button" parent="Center/HBox/VBox/buttons"]
-margin_left = 182.0
-margin_right = 350.0
+margin_left = 439.0
+margin_right = 600.0
 margin_bottom = 106.0
 hint_tooltip = "host the game"
 focus_mode = 0
@@ -112,5 +123,6 @@ color = Color( 0.588235, 0.560784, 0.309804, 1 )
 
 [connection signal="pressed" from="Center/HBox/VBox/stophost" to="." method="_on_stophost_pressed"]
 [connection signal="text_entered" from="Center/HBox/VBox/Address" to="." method="_on_Address_text_entered"]
+[connection signal="pressed" from="Center/HBox/VBox/buttons/SpectateButton" to="." method="_on_spectate_pressed"]
 [connection signal="pressed" from="Center/HBox/VBox/buttons/JoinButton" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="Center/HBox/VBox/buttons/HostButton" to="." method="_on_HostButton_pressed"]
