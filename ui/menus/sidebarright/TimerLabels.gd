@@ -42,14 +42,6 @@ func _on_game_over() -> void:
 
 func set_color() -> void:
 	if time > 10:
-		colorrect.color = (
-			Globals.grid.clockrunning_color
-			if Globals.turn == white
-			else Color.transparent
-		)
+		colorrect.color = (Globals.grid.clockrunning_color if Globals.turn == white else Color.transparent)
 	else:
-		colorrect.color = (
-			Globals.grid.clockrunninglow
-			if Globals.turn == white
-			else Globals.grid.clocklow
-		)
+		colorrect.color = (Globals.grid.clockrunninglow if Globals.turn == white else Globals.grid.clocklow)

@@ -1,7 +1,7 @@
 extends Control
 
 onready var piece_sets := Utils.walk_dir()
-onready var piece_set_button := find_node("PieceSet")
+onready var piece_set_button: GridMenuButton = find_node("PieceSet")
 onready var fullscreenbutton := find_node("FullscreenButton")
 onready var vsyncbutton := find_node("VsyncButton")
 onready var borderlessbutton := find_node("Borderless")
@@ -41,7 +41,7 @@ func _ready() -> void:
 	if OS.has_feature("HTML5"):
 		borderlessbutton.queue_free()
 	for i in piece_sets:  # add the items
-		piece_set_button.add_icon_item(load("res://assets/pieces/" + i + "/wP.png"), i)
+		piece_set_button.add_item(load("res://assets/pieces/" + i + "/wP.png"), i, Vector2(50, 50))
 	piece_set_button.selected = Array(piece_sets).find(settings.piece_set)
 	update_vars()
 	update_button_visuals()
@@ -59,7 +59,7 @@ func update_vars() -> void:
 	SaveLoad.save("settings")
 
 
-func _on_PieceSet_item_selected(index: int) -> void:
+func _on_PieceSet_selected(index: int) -> void:
 	Globals.piece_set = piece_sets[index]
 	self.settings.piece_set = piece_sets[index]
 

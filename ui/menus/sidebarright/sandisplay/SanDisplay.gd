@@ -39,3 +39,8 @@ func on_new_move(move: String) -> void:
 func reset_moves():
 	for i in sans.get_children():
 		i.queue_free()
+
+
+func _gui_input(event):
+	if event is InputEventMouseButton:
+		OS.clipboard = Utils.get_pgn()

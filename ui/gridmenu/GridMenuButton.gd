@@ -6,6 +6,8 @@ onready var gridmenu: GridMenu = $Popup/GridMenu
 
 signal selected(index)
 
+export(Vector2) var offset = Vector2(50, -50)
+
 var selected := 0 setget set_selected
 var items := []
 
@@ -27,8 +29,7 @@ func set_selected(index: int):
 
 
 func _pressed() -> void:
-	popup.rect_size = Vector2.ZERO
-	var rect := popup.get_global_rect()
-	rect.position = rect_global_position - Vector2(50, 50)
-	popup.popup(rect)
+	popup.popup()
+	yield(get_tree(), "idle_frame")
+	popup.rect_global_position = rect_global_position + offset
 	gridmenu.open()

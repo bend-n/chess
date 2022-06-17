@@ -5,11 +5,18 @@
 [node name="Board" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_min_size = Vector2( 640, 640 )
 mouse_filter = 2
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
+overlay_color = null
+clockrunning_color = null
+clockrunninglow = null
+clocklow = null
+ui = null
+sidebar = null
 
 [node name="Background" type="GridContainer" parent="."]
 anchor_right = 1.0
@@ -30,7 +37,6 @@ mouse_filter = 2
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 800, 800 )
 mouse_filter = 2
 mouse_default_cursor_shape = 7
 color = Color( 0, 0, 0, 0.784314 )

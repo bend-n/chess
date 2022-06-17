@@ -2,9 +2,9 @@
 
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/menus/settings/Settings.gd" type="Script" id=2]
-[ext_resource path="res://assets/pieces/california/wP.png" type="Texture" id=3]
 [ext_resource path="res://ui/menus/settings/Preview.gd" type="Script" id=4]
 [ext_resource path="res://ui/colorpicker/ColorPickerButton.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ui/gridmenu/GridMenuButton.tscn" type="PackedScene" id=6]
 
 [node name="Settings" type="CenterContainer"]
 anchor_right = 1.0
@@ -55,19 +55,13 @@ margin_bottom = 278.0
 size_flags_horizontal = 4
 text = "boardcolor2"
 
-[node name="PieceSet" type="OptionButton" parent="H/TabContainer/colors"]
-margin_left = 173.0
+[node name="PieceSet" parent="H/TabContainer/colors" instance=ExtResource( 6 )]
+margin_left = 175.0
 margin_top = 293.0
-margin_right = 436.0
+margin_right = 434.0
 margin_bottom = 399.0
-focus_mode = 0
 size_flags_horizontal = 4
-size_flags_vertical = 0
-custom_constants/hseparation = 3
-enabled_focus_mode = 0
 text = "piece set"
-icon = ExtResource( 3 )
-expand_icon = true
 
 [node name="window" type="VBoxContainer" parent="H/TabContainer"]
 visible = false
@@ -161,7 +155,7 @@ __meta__ = {
 
 [connection signal="newcolor" from="H/TabContainer/colors/boardcolor1" to="." method="_on_boardcolor1_newcolor"]
 [connection signal="newcolor" from="H/TabContainer/colors/boardcolor2" to="." method="_on_boardcolor2_newcolor"]
-[connection signal="item_selected" from="H/TabContainer/colors/PieceSet" to="." method="_on_PieceSet_item_selected"]
+[connection signal="selected" from="H/TabContainer/colors/PieceSet" to="." method="_on_PieceSet_selected"]
 [connection signal="toggled" from="H/TabContainer/window/VsyncButton" to="." method="_on_VsyncButton_toggled"]
 [connection signal="toggled" from="H/TabContainer/window/FullscreenButton" to="." method="_on_FullscreenButton_toggled"]
 [connection signal="toggled" from="H/TabContainer/window/Borderless" to="." method="_on_Borderless_toggled"]

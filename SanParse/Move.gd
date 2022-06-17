@@ -109,11 +109,7 @@ func long_helper(vec: Vector2, attack: bool, move: bool, touch: Vector2):
 
 
 func long_helper_helper(spot, touch, attack, move):
-	return (
-		Utils.spotispiece(piece, spot)
-		and spot.white == Globals.turn
-		and spot.can_touch(touch, attack, move)
-	)
+	return Utils.spotispiece(piece, spot) and spot.white == Globals.turn and spot.can_touch(touch, attack, move)
 
 
 class MoveKind:

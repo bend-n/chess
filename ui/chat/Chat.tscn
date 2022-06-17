@@ -44,19 +44,19 @@ expand_margin_left = 10.0
 expand_margin_right = 10.0
 
 [sub_resource type="DynamicFont" id=18]
-size = 20
+size = 15
 font_data = ExtResource( 3 )
 
 [sub_resource type="DynamicFont" id=19]
-size = 20
+size = 15
 font_data = ExtResource( 13 )
 
 [sub_resource type="DynamicFont" id=14]
-size = 20
+size = 15
 font_data = ExtResource( 7 )
 
 [sub_resource type="DynamicFont" id=20]
-size = 25
+size = 15
 font_data = ExtResource( 9 )
 
 [sub_resource type="StyleBoxFlat" id=10]
@@ -109,7 +109,7 @@ corner_detail = 15
 expand_margin_top = 65.0
 
 [sub_resource type="DynamicFont" id=15]
-size = 20
+size = 15
 font_data = ExtResource( 3 )
 
 [sub_resource type="Theme" id=16]
@@ -237,6 +237,7 @@ scroll_horizontal_enabled = false
 margin_right = 1406.0
 size_flags_horizontal = 3
 size_flags_vertical = 2
+custom_constants/separation = 0
 
 [node name="h" type="HBoxContainer" parent="v"]
 margin_top = 740.0

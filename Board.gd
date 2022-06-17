@@ -130,34 +130,21 @@ func init_labels() -> void:
 	foreground.offset = rect_global_position
 	for i in range(8):
 		labels.letters.append(
-			init_label(
-				i,
-				Vector2(i, 7),
-				"abcdefgh"[i],
-				Label.VALIGN_BOTTOM,
-				Label.ALIGN_LEFT,
-				Vector2(10, -10)
-			)
+			init_label(i, Vector2(i, 7), "abcdefgh"[i], Label.VALIGN_BOTTOM, Label.ALIGN_LEFT, Vector2(10, -10))
 		)
 		labels.numbers.append(
-			init_label(
-				i, Vector2(7, i), str(8 - i), Label.VALIGN_TOP, Label.ALIGN_RIGHT, Vector2(-10, 10)
-			)
+			init_label(i, Vector2(7, i), str(8 - i), Label.VALIGN_TOP, Label.ALIGN_RIGHT, Vector2(-10, 10))
 		)
 
 
-func init_label(
-	i: int, position: Vector2, text: String, valign := 0, align := 0, off := Vector2.ZERO
-) -> Label:
+func init_label(i: int, position: Vector2, text: String, valign := 0, align := 0, off := Vector2.ZERO) -> Label:
 	var label := Label.new()
 	label.rect_size = piece_size
 	label.align = align
 	label.valign = valign
 	label.rect_position = (position * piece_size) + off
 	label.text = text
-	label.add_color_override(
-		"font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2
-	)
+	label.add_color_override("font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2)
 	var font: DynamicFont = load("res://ui/verdana-bold.tres").duplicate()
 	font.size = 15
 	label.add_font_override("font", font)
@@ -187,9 +174,7 @@ func check_in_check(prin := false) -> bool:  # check if in_check
 		for j in range(0, 8):  # for each column
 			var spot: Piece = matrix[i][j]  # get the square
 			if spot and spot.white != Globals.turn:  # enemie
-				if spot.can_attack_piece(
-					Globals.white_king if Globals.turn else Globals.black_king
-				):  # if it can take the king
+				if spot.can_attack_piece(Globals.white_king if Globals.turn else Globals.black_king):  # if it can take the king
 					if prin:
 						# control never flows here
 						Globals.in_check = true  # set in_check
@@ -216,9 +201,7 @@ func init_matrix() -> void:  # create the matrix
 			matrix[i].append(null)  # add a square
 
 
-func make_piece(
-	position: Vector2, piece_type: int, white: bool = true, visible: bool = true
-) -> void:  # make peace
+func make_piece(position: Vector2, piece_type: int, white: bool = true, visible: bool = true) -> void:  # make peace
 	var piece := PieceScene.instance()  # create a piece
 	piece.name = Utils.to_str(piece_type)
 	piece.script = load("res://pieces/%s.gd" % Utils.to_str(piece_type))  # set the script
@@ -262,9 +245,7 @@ func check_for_frame(position: Vector2) -> bool:  # check for a frame, validatin
 
 
 func square_clicked(position: Vector2) -> void:  # square clicked
-	if stop_input:
-		return
-	if Globals.turn != Globals.team:
+	if stop_input or Globals.turn != Globals.team or Globals.spectating:
 		return
 	Log.debug(Utils.to_algebraic(position) + " clicked")
 	var spot: Piece = matrix[position.y][position.x]  # get the spot
@@ -293,9 +274,7 @@ func handle_take(position: Vector2) -> void:
 	if Utils.is_pawn(last_clicked):  # if its a pawn
 		if check_promote(last_clicked, position, "take"):
 			return
-	var mov = Move.new(
-		SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position], true
-	)
+	var mov = Move.new(SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position], true)
 	Globals.network.send_mov(mov)  # piece taking piece
 
 
@@ -320,9 +299,7 @@ func handle_move(position: Vector2) -> void:
 					return
 		elif check_promote(pawn, position):
 			return
-	var mov = Move.new(
-		SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position]
-	)
+	var mov = Move.new(SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position])
 	Globals.network.send_mov(mov)
 
 
@@ -414,9 +391,7 @@ func play_san(san: String, instant := false, set_input := true) -> void:
 			# this handles promotion, taking, enpassant, and moves.
 			var positions = mov.move_kind.data
 			if mov.promotion != -1:  # promotion part
-				Piece.at_pos(positions[0]).promote_to(
-					mov.promotion, mov.is_capture, positions[1], instant
-				)
+				Piece.at_pos(positions[0]).promote_to(mov.promotion, mov.is_capture, positions[1], instant)
 
 			elif mov.is_capture:  # taking part
 				Globals.reset_halfmove()
@@ -471,11 +446,11 @@ func kill_matrix():
 	init_matrix()
 
 
-func undo():
+func undo(last_move := Utils.pop_move()):
 	Globals.turn = true
 	Globals.fullmove = 1
 	Globals.halfmove = 0
 	Globals.in_check = false
 	Globals.checking_piece = null
 	clear_fx()
-	play_pgn(Utils.pop_move(), true)
+	play_pgn(last_move, true)

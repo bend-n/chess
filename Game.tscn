@@ -227,7 +227,6 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 640.0
 margin_bottom = 640.0
-rect_min_size = Vector2( 640, 640 )
 ui = NodePath("../../..")
 sidebar = NodePath("../../SidebarRight")
 

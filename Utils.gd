@@ -157,10 +157,7 @@ func format_seconds(time: float, use_milliseconds: bool = false) -> String:
 
 
 func _notification(what: int) -> void:
-	if (
-		what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST
-		or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST
-	):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
 		Log.debug("Bye!")
 
 
