@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://pieces/Piece.gd" type="Script" id=1]
 [ext_resource path="res://assets/pieces/california/wP.png" type="Texture" id=2]
 [ext_resource path="res://frame.png" type="Texture" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=10]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Move"
@@ -111,10 +113,11 @@ rect_pivot_offset = Vector2( 40, 40 )
 mouse_filter = 2
 script = ExtResource( 1 )
 
-[node name="Popup" type="Popup" parent="."]
+[node name="Popup" type="PopupPanel" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
 mouse_filter = 2
+custom_styles/panel = SubResource( 10 )
 popup_exclusive = true
 
 [node name="Previews" type="VBoxContainer" parent="Popup"]
