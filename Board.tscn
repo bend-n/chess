@@ -11,12 +11,6 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
-overlay_color = null
-clockrunning_color = null
-clockrunninglow = null
-clocklow = null
-ui = null
-sidebar = null
 
 [node name="Background" type="GridContainer" parent="."]
 anchor_right = 1.0
