@@ -1,4 +1,4 @@
-extends ColorRect
+extends Control
 
 onready var whitepanel = find_node("WhitePanel")
 onready var blackpanel = find_node("BlackPanel")

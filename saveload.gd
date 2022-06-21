@@ -4,6 +4,8 @@ class_name SaveLoader
 const settings_file := "user://chess.settings"
 const id := "user://.chess.id"
 
+var file: File = File.new()
+
 const default_settings_data = {
 	vsync = OS.vsync_enabled,
 	fullscreen = OS.window_fullscreen,
@@ -33,43 +35,73 @@ func get_data(type: String) -> Dictionary:
 
 
 func _ready() -> void:
-	# Debug.monitor(self, "id data", "files.id.data")
 	SaveLoad.load_data("settings")
 	SaveLoad.load_data("id")
 
 
-func to_base64(variant) -> String:
+static func to_base64(variant) -> String:
 	return Marshalls.variant_to_base64(variant)
 
 
-func from_base64(base64: String):
+static func from_base64(base64: String):
 	return Marshalls.base64_to_variant(base64)
 
 
 func save(type: String) -> void:
-	var file := File.new()
-	file.open(files[type]["file"], File.WRITE)
-	file.store_string(to_base64(files[type]["data"]))
+	save_dict(files[type]["file"], files[type]["data"])
+
+
+func save_dict(path: String, data: Dictionary, plain := false) -> void:
+	file.open(path, File.WRITE)
+	file.store_string(var2str(data) if plain else to_base64(data))
+	file.close()
+
+
+func save_string(path: String, string: String) -> void:
+	file.open(path, File.WRITE)
+	file.store_string(string)
+	file.close()
+
+
+func append_string(path: String, string: String) -> void:
+	file.open(path, File.READ_WRITE)
+	file.seek_end()
+	file.store_string("\n%s" % string)
+	file.close()
+
+
+func load_string(path: String) -> String:
+	if file.file_exists(path):
+		file.open(path, File.READ)
+		var string = file.get_as_text()
+		file.close()
+		return string
+	return ""
 
 
 func load_data(type: String) -> Dictionary:
-	if check_file(type):
-		var file := File.new()
-		file.open(files[type]["file"], File.READ)
-		var text = file.get_as_text()
-		if len(text) > 0:
-			var read_dictionary = from_base64(text)
-			if typeof(read_dictionary) != TYPE_DICTIONARY:
-				save(type)  # OVERWRITE
-			elif files[type]["data"].keys() == read_dictionary.keys():
-				files[type]["data"] = read_dictionary
-		save(type)  # overwrite.
-		file.close()
-	else:
-		save(type)
+	var read_dictionary = load_file(files[type]["file"])
+	if files[type]["data"].keys() == read_dictionary.keys():
+		files[type]["data"] = read_dictionary
+	save(type)  # write over old data
 	return files[type]["data"]
 
 
+func load_file(path: String) -> Dictionary:
+	if file.file_exists(path):
+		file.open(path, File.READ)
+		var text := file.get_as_text()
+		var dict := {}
+		if text:
+			var read_dict = str2var(text)
+			if typeof(read_dict) == TYPE_DICTIONARY:  # it may be plaintext
+				dict = read_dict
+			else:
+				dict = from_base64(text)
+		file.close()
+		return dict
+	return {}
+
+
 func check_file(type: String) -> bool:
-	var file := File.new()
 	return file.file_exists(files[type]["file"])

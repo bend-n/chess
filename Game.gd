@@ -1,16 +1,16 @@
 extends Control
 
 onready var status: StatusLabel = find_node("Status")
-onready var sidebar = $Holder/SidebarRight
-onready var panels = [
-	sidebar.whitepanel,
+onready var sidebar := $Holder/SidebarRight
+onready var panels := [
 	sidebar.blackpanel,
+	sidebar.whitepanel,
 ]
 
 
-func _ready():
-	if Globals.network:
-		Globals.network.connect("info_recieved", self, "_spectate_info" if Globals.spectating else "_on_info")
+func _ready() -> void:
+	if PacketHandler:
+		PacketHandler.connect("info_recieved", self, "_spectate_info" if Globals.spectating else "_on_info")
 
 
 func set_status(text: String, length := 5) -> void:
@@ -22,9 +22,9 @@ func get_board() -> Node:
 
 
 func _spectate_info(info: Dictionary) -> void:
-	var whitepnl = panels[0]  #white
+	var whitepnl = panels[Globals.WHITE]
 	set_panel(whitepnl, info.white.name, info.white.country)
-	var blackpnl = panels[1]  #black
+	var blackpnl = panels[Globals.BLACK]  #black
 	set_panel(blackpnl, info.black.name, info.black.country)
 
 

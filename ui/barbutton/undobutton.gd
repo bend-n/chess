@@ -2,14 +2,16 @@ extends ConfirmButton
 class_name UndoButton, "res://assets/ui/undo.png"
 
 export(NodePath) onready var status = get_node(status) as StatusLabel
+const undo_request_message = "%s requested a undo"
+const undo_declined_message = "undo declined"
 
 
-func _ready():
-	if Globals.network:
-		Globals.network.connect("undo", self, "undo_recieved")
+func _ready() -> void:
+	if PacketHandler:
+		PacketHandler.connect("undo", self, "undo_signal_recieved")
 
 
-func _pressed():
+func _pressed() -> void:
 	if Globals.spectating:
 		return
 	if waiting_on_answer:
@@ -21,29 +23,45 @@ func _pressed():
 		elif Globals.turn == Globals.team:
 			status.set_text("It is your turn!")
 			return
-		Globals.network.send_packet({gamecode = Globals.network.game_code, question = ""}, Network.HEADERS.undo)
-		status.set_text("Undo request sent")
+		PacketHandler.send_packet({gamecode = PacketHandler.game_code, question = ""}, PacketHandler.HEADERS.undo)
+		Globals.chat.server(undo_request_message % Globals.get_team())
+		set_disabled(true)
 
 
-func undo_recieved(sig: Dictionary) -> void:
+func undo_signal_recieved(sig: Dictionary) -> void:
 	if "question" in sig:
+		Globals.chat.server(undo_request_message % Globals.str_bool(!Globals.team))
 		confirm()
 	else:
+		set_disabled(false)
 		if sig.accepted:
 			undo()
 		else:
-			Globals.chat.server("Undo request declined")
+			# declined signal reception
+			Globals.chat.server(undo_declined_message)
 
 
 func _confirmed(what: bool) -> void:
 	._confirmed(what)
-	Globals.network.send_packet({gamecode = Globals.network.game_code, accepted = what}, Network.HEADERS.undo)
+	PacketHandler.send_packet({gamecode = PacketHandler.game_code, accepted = what}, PacketHandler.HEADERS.undo)
 	if what:
 		undo()
+	else:
+		# pressed no reception
+		Globals.chat.server(undo_declined_message)
 
 
 func undo():
-	var mov = Utils.pop_move()
-	Globals.chat.server("Move %s undone" % mov)
-	Globals.grid.undo(mov)
+	var numberex = SanParse.compile("([0-9]+)\\.", false)
+	var which_move = 0
+	var mov = Utils.moves_list[-1]
+	var result = numberex.search(mov)
+	if result:
+		which_move = result.strings[1]
+	else:
+		result = numberex.search(Utils.moves_list[-2])
+		which_move = result.strings[1] if result else 0
+	var pgn = Utils.pop_move()
+	Globals.chat.server("Move (%s) %s undone" % [which_move, mov.split(" ")[-1]])
+	Globals.grid.undo(pgn)
 	status.set_text("")

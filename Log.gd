@@ -1,23 +1,36 @@
 extends Node
 
+# static class
+
 
 static func info(information) -> void:  # logs the input string
-	print("[i] %s" % to_str(information))
+	print("(%s) [i] %s" % [now(), to_str(information)])
 
 
 static func debug(information) -> void:  # logs the input string on debug builds
 	if Debug.debug:
-		print("[d] %s" % to_str(information))
+		print("(%s) [d] %s" % [now(), to_str(information)])
 
 
 static func err(information) -> void:  # logs the input string to stderr
-	printerr("[E] %s" % to_str(information))
+	printerr("(%s) [E] %s" % [now(), to_str(information)])
 
 
-static func to_str(arg) -> String:
-	if typeof(arg) == TYPE_ARRAY:
-		return arr2str(arg)
-	return str(arg)
+static func to_str(args) -> String:
+	return arr2str(args) if typeof(args) == TYPE_ARRAY else str(args)
+
+
+static func net(args) -> void:
+	file("user://network_log.log", args)
+
+
+static func file(path: String, args) -> void:
+	SaveLoad.append_string(path, "(%s)%s" % [now(), to_str(args)])
+
+
+static func now():
+	var time = OS.get_time()
+	return "%02d:%02d:%02d" % [time.hour, time.minute, time.second]
 
 
 static func arr2str(arr: Array) -> String:

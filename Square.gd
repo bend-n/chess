@@ -13,6 +13,10 @@ func _ready() -> void:
 	circle.visible = false
 	rect_min_size = Globals.grid.piece_size
 	rect_size = rect_min_size
+	if Globals.spectating:
+		mouse_default_cursor_shape = CURSOR_FORBIDDEN
+	else:
+		mouse_default_cursor_shape = CURSOR_POINTING_HAND
 
 
 func set_circle(boolean: bool) -> void:
@@ -21,5 +25,6 @@ func set_circle(boolean: bool) -> void:
 
 
 func _gui_input(event: InputEvent):
-	if event is InputEventMouseButton and Input.is_action_pressed("click"):
+	if !Globals.spectating and event is InputEventMouseButton and Input.is_action_pressed("click"):
 		emit_signal("clicked")
+		get_tree().set_input_as_handled()

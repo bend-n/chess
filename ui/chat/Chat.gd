@@ -1,13 +1,9 @@
 extends Control
 class_name Chat
 
-onready var labels = find_node("labels")
-onready var text: TextEdit = find_node("text")
-onready var scroller = find_node("scroller")
-onready var scrollbar = scroller.get_v_scrollbar()
+onready var list: MessageList = $v/MessageList
 
-var tween = Tween.new()
-var regexes: Array = [
+var regexes := [
 	[compile("_([^_]+)_"), "[i]$1[/i]"],
 	[compile("\\*\\*([^\\*\\*]+)\\*\\*"), "[b]$1[/b]"],
 	[compile("\\*([^\\*]+)\\*"), "[i]$1[/i]"],
@@ -17,12 +13,42 @@ var regexes: Array = [
 	[compile("#([^#]+)#"), "[rainbow freq=.3 sat=.7]$1[/rainbow]"],
 	[compile("%([^%]+)%"), "[shake rate=20 level=25]$1[/shake]"],
 	[compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"],
-	[compile("((res://)?(http(s)?://.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))"), "[url]$1[/url]"],
+	[compile("([-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))"), "[url]$1[/url]"],
 ]
+var emoji_replace_regex := compile(":[^:]{1,15}:")
+
+const piece_emoji_path = "res://assets/pieces/cburnett/"
+const emoji_path = "res://assets/emojis/"
+const emojis := {
+	[":cold:"]: emoji_path + "cold.png",
+	[":bigsmile:"]: emoji_path + "bigsmile.png",
+	[":cry:", ":sad:"]: emoji_path + "cry.png",
+	[":happy:"]: emoji_path + "happy.png",
+	[":hmm:"]: emoji_path + "hmm.png",
+	[":huh:"]: emoji_path + "huh.png",
+	[":smile:"]: emoji_path + "smile.png",
+	[":unhappy:"]: emoji_path + "unhappy.png",
+	[":upsidedown_smile:"]: emoji_path + "upsidedown_smile.png",
+	[":weary:"]: emoji_path + "weary.png",
+	[":what:"]: emoji_path + "what.png",
+	[":wink_tongue:"]: emoji_path + "wink_tongue.png",
+	[":wink:"]: emoji_path + "wink.png",
+	[":wow:"]: emoji_path + "wow.png",
+	[":zany:"]: emoji_path + "zany.png",
+	[":...:"]: emoji_path + "3dots.png",
+	[":R:", ":rook:"]: piece_emoji_path + "wR.png",
+	[":N:", ":knight:"]: piece_emoji_path + "wN.png",
+	[":B:", ":bishop:"]: piece_emoji_path + "wB.png",
+	[":Q:", ":queen:"]: piece_emoji_path + "wQ.png",
+	[":K:", ":king:"]: piece_emoji_path + "wK.png",
+	[":P:", ":pawn:"]: piece_emoji_path + "wP.png",
+}
+var expanded_emojis = {}
 
 
+# create smokey centered text
 func server(txt: String) -> void:
-	add_label("[b]server[color=#f0e67e]:[/color] " + md2bb(txt))
+	list.add_label("[center][b][color=#a9a9a9]%s[/color][/b][/center]" % md2bb(txt))
 
 
 func _init():
@@ -34,12 +60,16 @@ func _exit_tree():
 
 
 func _ready():
-	if Globals.network:
-		Globals.network.connect("chat", self, "add_label_with")
-	add_child(tween)
+	for trigger_list in emojis:
+		for trigger in trigger_list:
+			expanded_emojis[trigger] = emojis[trigger_list]
+
+	if PacketHandler:
+		PacketHandler.connect("chat", self, "add_label_with")
 	server("Welcome!")
 	yield(get_tree().create_timer(.4), "timeout")
 	server("You can use markdown(sort of)!")
+	$v/TextInput.setup_emojis(emojis)
 
 
 static func compile(src: String) -> RegEx:
@@ -48,41 +78,21 @@ static func compile(src: String) -> RegEx:
 	return regex
 
 
-func add_label_with(data):
-	var string = "[b]%s[color=#f0e67e]:[/color][/b] %s" % [data.who, data.text]
-	add_label(string)
+func add_label_with(data: Dictionary) -> void:
+	var string := "[b]{who}[color=#f0e67e]:[/color][/b] {text}".format(data)
+	list.add_label(string)
 
 
-func add_label(bbcode: String, name = "text", size = Vector2(rect_size.x, 0)) -> RichTextLabel:
-	var l := RichTextLabel.new()
-	l.name = name
-	l.rect_min_size = size
-	l.bbcode_enabled = true
-	l.scroll_active = false
-	labels.add_child(l)
-	l.connect("meta_clicked", self, "open_url")
-	l.bbcode_text = bbcode
-	l.fit_content_height = true
-	tween.interpolate_property(scrollbar, "value", scrollbar.value, scrollbar.max_value, .5, Tween.TRANS_BOUNCE)
-	tween.start()
-	return l
-
-
-func open_url(meta):
-	OS.shell_open(meta)
-
-
-func send(_arg = 0):
-	var t = text.get_text().strip_edges()
+func send(t: String) -> void:
+	t = t.strip_edges()
 	if !t:
 		return
-	t = md2bb(t)
-	text.text = ""
+	t = md2bb(emoji2bb(t))
 	var name_data = SaveLoad.get_data("id").name
 	var name = name_data if name_data else "Anonymous"
 	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.get_team())
-	if Globals.network:
-		Globals.network.relay_signal({"text": t, "who": name}, Network.RELAYHEADERS.chat)
+	if PacketHandler:
+		PacketHandler.relay_signal({"text": t, "who": name}, PacketHandler.RELAYHEADERS.chat)
 	else:
 		add_label_with({text = t, who = name})  # for testing
 
@@ -95,13 +105,16 @@ func md2bb(input: String) -> String:
 			var index = input.find(result.strings[0]) - 1
 			var char_before = input[index]
 			if not char_before in "\\":  # taboo characters go here
-				if replacement[1] == "[url]$1[/url]" and result.strings[3] == "res://":  # url one must avoid recognizing res://
+				if replacement[1] == "[url]$1[/url]" and "png" in result.strings[0]:  # url one must avoid recognizing res://
 					continue
 				input = replacement[0].sub(input, replacement[1], true)
 	input = input.replace("\\", "")  # remove escapers
 	return input
 
 
-func err(err: String):
-	add_label("[b][color=#ff6347]error:[i] %s" % err)
-	text.editable = false
+func emoji2bb(input: String) -> String:
+	for i in emoji_replace_regex.search_all(input):
+		var emoji = i.strings[0]
+		if emoji in expanded_emojis:
+			input = input.replace(emoji, "[img=30]%s[/img]" % expanded_emojis[emoji])
+	return input

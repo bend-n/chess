@@ -194,15 +194,15 @@ WindowDialog/icons/close = ExtResource( 2 )
 WindowDialog/icons/close_highlight = ExtResource( 2 )
 WindowDialog/styles/panel = SubResource( 13 )
 
-[node name="Game" type="Control"]
+[node name="Game" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource( 1 )
 
 [node name="Holder" type="HBoxContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
+margin_right = 1422.0
+margin_bottom = 800.0
 mouse_filter = 2
 theme = ExtResource( 10 )
 custom_constants/separation = 0
@@ -236,7 +236,12 @@ anchor_bottom = 0.0
 margin_top = 640.0
 margin_right = 640.0
 margin_bottom = 800.0
-size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SidebarRight" parent="Holder" instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 940.0
+margin_right = 1422.0
+margin_bottom = 800.0
+rect_min_size = Vector2( 400, 0 )

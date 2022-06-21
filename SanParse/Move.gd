@@ -55,15 +55,6 @@ static func to_str(type: int) -> String:
 	return " NBRQK"[type].strip_edges()  # if its a pawn, return nothing
 
 
-## tests
-#	print(Utils.to_algebraic(make_long(SanParse.parse("e4").move_kind.data, false, SanParser.PAWN)[0]) == "e2")
-# 	print(Utils.to_algebraic(make_long(SanParse.parse("Nbc3").move_kind.data, false, SanParser.KNIGHT)[0]) == "b1")
-# 	print(Utils.to_algebraic(make_long(SanParse.parse("N1c3").move_kind.data, false, SanParser.KNIGHT)[0]) == "b1")
-
-
-# 	print(Utils.to_algebraic(make_long(SanParse.parse("exe4").move_kind.data, false, SanParser.PAWN)[0]) == "e2")
-# 	print(Utils.to_algebraic(make_long(SanParse.parse("Nbxc3").move_kind.data, false, SanParser.KNIGHT)[0]) == "b1")
-# 	print(Utils.to_algebraic(make_long(SanParse.parse("N1xc3").move_kind.data, false, SanParser.KNIGHT)[0]) == "b1")
 ### fix short san
 func make_long() -> Move:
 	if move_kind.type == MoveKind.CASTLE:

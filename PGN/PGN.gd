@@ -2,41 +2,41 @@ extends Node
 class_name PGN
 
 
-func parse(string) -> Dictionary:
+func parse(pgn: String, tags := true) -> Dictionary:
 	# put tags into a dictionary,
 	# and the moves into a array
 
-	var tagex = SanParse.compile('^\\[([A-Za-z0-9_]+)\\s+"([^\\r]*)"\\]\\s*$', false)
-	var tagnameex = SanParse.compile("^[A-Za-z0-9_]+\\Z", false)
 	var movetextex = SanParse.compile(
 		"([NBKRQ]?[a-h]?[1-8]?[\\-x]?[a-h][1-8](?:=?[nbrqkNBRQK])?|[PNBRQK]?@[a-h][1-8]|--|Z0|0000|@@@@|O-O(?:-O)?|0-0(?:-0)?)|(\\{.*)|(;.*)|(\\$[0-9]+)|(\\()|(\\))|(\\*|1-0|0-1|1\\/2-1\\/2)|([\\?!]{1,2})",
 		false
 	)
-
-	# get headers
+	var lines = Array(pgn.split("\n"))
 	var headers := {}
-	var lines = Array(string.split("\n"))
-	while !lines.empty():
-		var line = lines[0].strip_edges()
-		if !line or line[0] in ["%", ";"]:
+	if tags:
+		var tagex = SanParse.compile('^\\[([A-Za-z0-9_]+)\\s+"([^\\r]*)"\\]\\s*$', false)
+		var tagnameex = SanParse.compile("^[A-Za-z0-9_]+\\Z", false)
+		# get headers
+		while !lines.empty():
+			var line = lines[0].strip_edges()
+			if !line or line[0] in ["%", ";"]:
+				lines.pop_front()
+				continue
+
+			if line[0] != "[":
+				break
+
 			lines.pop_front()
-			continue
-
-		if line[0] != "[":
-			break
-
-		lines.pop_front()
-		var tag_match = tagex.search(line)
-		if tag_match:
-			var cap = tag_match.strings
-			if tagnameex.search(cap[1]):
-				headers[cap[1]] = cap[2]
+			var tag_match = tagex.search(line)
+			if tag_match:
+				var cap = tag_match.strings
+				if tagnameex.search(cap[1]):
+					headers[cap[1]] = cap[2]
+				else:
+					# invalid headers
+					push_error("invalid headers")
+					return {}
 			else:
-				# invalid headers
-				push_error("invalid headers")
-				return {}
-		else:
-			break
+				break
 	var movetext := PoolStringArray()
 	while !lines.empty():
 		var line = lines.pop_front().strip_edges()

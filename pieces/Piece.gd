@@ -27,12 +27,14 @@ func _ready() -> void:
 	rect_pivot_offset = Globals.grid.piece_size / 2
 	frame.modulate = Globals.grid.overlay_color
 	colorrect.color = Globals.grid.overlay_color
-	sprite.flip_v = Globals.grid.flipped
-	sprite.flip_h = Globals.grid.flipped
 	load_texture()
 
+	# for undos
+	sprite.flip_v = Globals.grid.flipped
+	sprite.flip_h = Globals.grid.flipped
 
-func set_zindex(zindex: int, obj: CanvasItem = self):
+
+func set_zindex(zindex: int, obj: CanvasItem = self):  # used by the animation player
 	VisualServer.canvas_item_set_z_index(obj.get_canvas_item(), zindex)
 
 
@@ -128,13 +130,11 @@ static func at_pos(vector: Vector2) -> Piece:
 
 
 func can_move() -> bool:  # checks if you can legally move
-	if get_moves().size() != 0 or get_attacks().size() != 0:
-		return true
-	return false
+	return not get_moves().empty() or not get_attacks().empty()
 
 
-func get_moves(_no_enemys := false, _check_spots_check := true) -> PoolVector2Array:  # @Override
-	return PoolVector2Array()
+func get_moves(_no_enemys := false, _check_spots_check := true) -> PoolVector2Array:  # plz override
+	return all_dirs()
 
 
 func get_attacks(check_spots_check := true) -> PoolVector2Array:  # @Override
@@ -186,6 +186,8 @@ static func set_circle(positions: Array, type := "move") -> void:
 
 func checkcheck(pos) -> bool:  # moves to position, then checks if your king is in check
 	# TODO: figure out why this function isnt working with can_move()
+	if Globals.turn != white:
+		Log.err("@checkcheck: %s != %s" % [Globals.turn, white])
 	var mat: Array = Globals.grid.matrix.duplicate(true)  # make a copy of the matrix
 	Globals.grid.matrix[real_position.y][real_position.x] = null  # remove the piece from the matrix
 	Globals.grid.matrix[pos.y][pos.x] = self  # move the piece to the new position

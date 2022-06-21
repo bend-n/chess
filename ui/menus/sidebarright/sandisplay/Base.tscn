@@ -1,67 +1,77 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://ui/menus/sidebarright/sandisplay/Base.gd" type="Script" id=1]
+[ext_resource path="res://ui/verdana-bold-small.tres" type="DynamicFont" id=2]
 
 [node name="Base" type="HBoxContainer"]
 anchor_right = 1.0
-margin_right = -940.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 482, 0 )
+anchor_bottom = 1.0
+mouse_filter = 2
 custom_constants/separation = 0
 script = ExtResource( 1 )
 
 [node name="Number" type="ColorRect" parent="."]
 margin_right = 100.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 100, 50 )
+margin_bottom = 800.0
+rect_min_size = Vector2( 100, 25 )
+mouse_filter = 2
 color = Color( 0.368627, 0.356863, 0.341176, 1 )
 
 [node name="Number" type="Label" parent="Number"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 100, 50 )
+rect_min_size = Vector2( 100, 25 )
+custom_fonts/font = ExtResource( 2 )
 align = 1
 valign = 1
 
 [node name="Spacer" type="ColorRect" parent="."]
 margin_left = 100.0
 margin_right = 110.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 10, 0 )
+margin_bottom = 800.0
+rect_min_size = Vector2( 10, 25 )
+mouse_filter = 2
 color = Color( 0.188235, 0.180392, 0.172549, 1 )
 
 [node name="San1" type="ColorRect" parent="."]
 margin_left = 110.0
-margin_right = 291.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 100, 50 )
+margin_right = 761.0
+margin_bottom = 800.0
+rect_min_size = Vector2( 100, 25 )
+mouse_filter = 2
 size_flags_horizontal = 3
 color = Color( 0.188235, 0.180392, 0.172549, 1 )
 
 [node name="San1" type="Label" parent="San1"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 100, 50 )
+rect_min_size = Vector2( 100, 25 )
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 2 )
 valign = 1
 
 [node name="San2" type="ColorRect" parent="."]
-margin_left = 291.0
-margin_right = 472.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 100, 50 )
+margin_left = 761.0
+margin_right = 1412.0
+margin_bottom = 800.0
+rect_min_size = Vector2( 100, 25 )
+mouse_filter = 2
 size_flags_horizontal = 3
 color = Color( 0.188235, 0.180392, 0.172549, 1 )
 
 [node name="San2" type="Label" parent="San2"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 100, 50 )
+rect_min_size = Vector2( 100, 25 )
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 2 )
 align = 2
 valign = 1
 
 [node name="Spacer2" type="ColorRect" parent="."]
-margin_left = 472.0
-margin_right = 482.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 10, 0 )
+margin_left = 1412.0
+margin_right = 1422.0
+margin_bottom = 800.0
+rect_min_size = Vector2( 10, 25 )
+mouse_filter = 2
 color = Color( 0.188235, 0.180392, 0.172549, 1 )
