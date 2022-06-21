@@ -1,10 +1,12 @@
 extends Node
 
+const WHITE = 1
+const BLACK = 0
+
 var __nosethalfmove := false
 var pawns := []  # PoolPawnArray
 var team := true
 var grid: Grid = null
-var network: Network = null
 var piece_set := "california"
 var fullmove := 1
 var halfmove := 0
@@ -53,15 +55,20 @@ func add_turn() -> void:
 	Events.emit_signal("turn_over")
 
 
+func str_bool(b: bool) -> String:
+	return "white" if b else "black"
+
+
 func get_turn() -> String:
-	return "white" if turn else "black"
+	return str_bool(turn)
 
 
 func get_team() -> String:
-	return "white" if team else "black"
+	return str_bool(team)
 
 
 func _ready() -> void:
+	Log.info("startup")
 	VisualServer.set_default_clear_color(Color.black)
 	Debug.monitor(self, "fullmove")
 	Debug.monitor(self, "halfmove")

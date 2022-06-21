@@ -37,8 +37,8 @@ func _init() -> void:
 
 func _ready() -> void:
 	rect_pivot_offset = rect_size / 2
-	if Globals.network:
-		Globals.network.connect("move_data", self, "play_san")
+	if PacketHandler:
+		PacketHandler.connect("move_data", self, "play_san")
 	init_board()  # create the tile squares
 	init_matrix()  # create 2d matrix
 	init_pieces()  # create the pieces
@@ -127,13 +127,13 @@ func flip_board() -> void:
 
 
 func init_labels() -> void:
-	foreground.offset = rect_global_position
+	# foreground.offset = rect_global_position
 	for i in range(8):
 		labels.letters.append(
-			init_label(i, Vector2(i, 7), "abcdefgh"[i], Label.VALIGN_BOTTOM, Label.ALIGN_LEFT, Vector2(10, -10))
+			init_label(i, Vector2(i, 7), "abcdefgh"[i], VALIGN_BOTTOM, Label.ALIGN_LEFT, Vector2(10, -10))
 		)
 		labels.numbers.append(
-			init_label(i, Vector2(7, i), str(8 - i), Label.VALIGN_TOP, Label.ALIGN_RIGHT, Vector2(-10, 10))
+			init_label(i, Vector2(7, i), str(8 - i), VALIGN_TOP, Label.ALIGN_RIGHT, Vector2(-10, 10))
 		)
 
 
@@ -161,7 +161,7 @@ func drawed(reason := "") -> void:
 
 
 func win(winner: bool, reason := "") -> void:
-	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason], 0)  # black won the game by checkmate
+	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason], 0)  #: black won the game by checkmate
 	Events.emit_signal("game_over")
 	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.fullmove])
 	SoundFx.play("Victory")
@@ -180,6 +180,7 @@ func check_in_check(prin := false) -> bool:  # check if in_check
 						Globals.in_check = true  # set in_check
 						Globals.checking_piece = spot  # set checking_piece
 						SoundFx.play("Check")
+						Log.debug("check")
 					return true  # stop at the first check found
 	return false
 
@@ -188,9 +189,12 @@ func can_move() -> bool:
 	for i in range(0, 8):  # for each row
 		for j in range(0, 8):  # for each column
 			var spot: Piece = matrix[i][j]  # get the square
-			if spot and spot.white != Globals.team:  # enemie: checking for our enemys
+			if spot and spot.white == Globals.turn:
 				if spot.can_move():
+					Log.debug("%s %s can mov!" % [Globals.get_turn(), spot.shortname])
 					return true
+
+	Log.debug("can no mov!")
 	return false
 
 
@@ -275,7 +279,7 @@ func handle_take(position: Vector2) -> void:
 		if check_promote(last_clicked, position, "take"):
 			return
 	var mov = Move.new(SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position], true)
-	Globals.network.send_mov(mov)  # piece taking piece
+	PacketHandler.send_mov(mov)  # piece taking piece
 
 
 func handle_move(position: Vector2) -> void:
@@ -285,7 +289,7 @@ func handle_move(position: Vector2) -> void:
 			if castle_data[0] == position:
 				# send some packet
 				var mov = Move.new(SanParser.KING, castle_data[3])
-				Globals.network.send_mov(mov)
+				PacketHandler.send_mov(mov)
 				return
 	if Utils.is_pawn(last_clicked):
 		var pawn: Pawn = last_clicked
@@ -295,12 +299,12 @@ func handle_move(position: Vector2) -> void:
 				if en_passant_data[0] == position:
 					# send some packet
 					var mov = Move.new(SanParser.PAWN, [pawn.real_position, position], true)
-					Globals.network.send_mov(mov)
+					PacketHandler.send_mov(mov)
 					return
 		elif check_promote(pawn, position):
 			return
 	var mov = Move.new(SanParse.from_str(last_clicked.shortname), [last_clicked.real_position, position])
-	Globals.network.send_mov(mov)
+	PacketHandler.send_mov(mov)
 
 
 func check_promote(pawn, position, calltype: String = "move") -> bool:
@@ -318,6 +322,7 @@ func clear_fx() -> void:  # clear the circles
 			var piece: Piece = matrix[i][j]  # get the piece
 			if piece:  # if there is a piece
 				piece.set_frame(false)  # clear the frame
+			$Darken.hide()
 
 
 func _on_outoftime(who: bool) -> void:
@@ -446,11 +451,11 @@ func kill_matrix():
 	init_matrix()
 
 
-func undo(last_move := Utils.pop_move()):
+func undo(last_pgn := Utils.pop_move()):
 	Globals.turn = true
 	Globals.fullmove = 1
 	Globals.halfmove = 0
 	Globals.in_check = false
 	Globals.checking_piece = null
 	clear_fx()
-	play_pgn(last_move, true)
+	play_pgn(last_pgn, true)

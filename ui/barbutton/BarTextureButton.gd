@@ -17,7 +17,8 @@ func _ready() -> void:
 
 func set_disabled(new: bool) -> void:
 	disabled = new
-	self_modulate = Color(.1, .1, .1, 0.5) if disabled else Color.white
+	self_modulate = Color.gray if disabled else Color.white
+	mouse_default_cursor_shape = CURSOR_FORBIDDEN if disabled else CURSOR_POINTING_HAND
 
 
 func _input(_event: InputEvent):

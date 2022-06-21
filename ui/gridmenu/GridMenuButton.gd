@@ -29,7 +29,7 @@ func set_selected(index: int):
 
 
 func _pressed() -> void:
+	gridmenu.open()
 	popup.popup()
 	yield(get_tree(), "idle_frame")
 	popup.rect_global_position = rect_global_position + offset
-	gridmenu.open()

@@ -11,12 +11,11 @@ func open():
 
 
 func add_item(icon: Texture, tooltip: String, size: Vector2) -> void:
-	var pnl := PanelContainer.new()
 	var tex := texture_button.instance()
 	tex.connect("pressed", self, "_pressed", [get_child_count()])
 	tex.expand = true
 	tex.texture_normal = icon
-	tex.name = str(get_child_count() + 1)
+	tex.name = tooltip
 	tex.rect_min_size = size
 	tex.hint_tooltip = tooltip
 	tex.stretch_mode = tex.STRETCH_KEEP_ASPECT_CENTERED
@@ -26,8 +25,7 @@ func add_item(icon: Texture, tooltip: String, size: Vector2) -> void:
 	back.margin_right = 5
 	back.margin_top = -5
 	back.margin_bottom = 5
-	pnl.add_child(tex)
-	add_child(pnl)
+	add_child(tex)
 
 
 func _pressed(index: int):

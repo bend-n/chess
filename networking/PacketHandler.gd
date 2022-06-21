@@ -1,10 +1,36 @@
-extends Node
-class_name NetManager
+extends Network
 
 var lobby: Lobby = null
 signal hosting(newhosting)
-signal game_over
-signal game_started
+signal signal_recieved(what)
+signal chat(text)
+signal undo(undo)
+signal info_recieved(info)
+signal start_game
+signal move_data(data)
+## for accounts(mostly)
+signal signinresult(what)
+signal signupresult(what)
+
+const HEADERS := {
+	"joinrequest": "J",
+	"hostrequest": "H",
+	"stopgame": "K",
+	"signup": "C",
+	"signin": ">",
+	"relay": "R",  # relay goes to both
+	"signal": "S",  # signal is one way
+	"loadpgn": "L",  # server telling me to load a pgn
+	"info": "I",
+	"move": "M",
+	"undo": "<",
+	"spectate": "0"  # its a eye you see
+}
+
+var game_code := ""
+
+const RELAYHEADERS := {chat = "C"}
+const SIGNALHEADERS := {takeback = "T", draw = "D", resign = "R", info = "I"}  # subheaders for HEADERS.signal
 
 var hosting := false setget set_hosting
 var leaving := false
@@ -18,7 +44,7 @@ func set_hosting(newhosting: bool) -> void:
 func return() -> void:  # return to the void
 	if hosting:
 		leaving = true
-		Globals.network.stopgame("")  # stop hosting
+		stopgame("")  # stop hosting
 		lobby.set_status("", true)
 		set_hosting(false)
 	lobby.set_buttons(true)
@@ -26,29 +52,81 @@ func return() -> void:  # return to the void
 
 func _ready() -> void:
 	if Utils.internet and get_tree().get_root().has_node("StartMenu"):
-		var net := Network.new()
-		Events.connect("go_back", self, "_handle_game_over")
-		net.connect("join_result", self, "_on_join_result")
-		net.connect("host_result", self, "_on_host_result")
-		net.connect("game_over", self, "_handle_game_over")
-		net.connect("start_game", self, "_start_game")
-		net.connect("connection_established", self, "network_ready")
-		add_child(net)
-		Globals.network = net
 		yield(get_tree().create_timer(.1), "timeout")
+		open()  # open connection
 		lobby.set_status("Connecting", true)
 
 
-func network_ready() -> void:
+func _data_recieved() -> void:
+	var data = ws.get_peer(1).get_var()
+	Log.net(["RECIEVED:", data])
+	var header: String = data.header
+	var text = data.data
+	match header:
+		HEADERS.undo:
+			emit_signal("undo", text)
+		HEADERS.move:
+			if !OS.is_window_focused() and !Debug.debug:  # dont be annoying in debug mode
+				OS.request_attention()
+			emit_signal("move_data", text.move)
+		HEADERS.hostrequest:
+			host_result(text)
+		HEADERS.relay:
+			var relay: Dictionary = text
+			match relay.type:
+				RELAYHEADERS.chat:
+					emit_signal("chat", relay)
+		HEADERS.joinrequest:
+			join_result(text)
+		HEADERS.info:
+			yield(get_tree().create_timer(.5), "timeout")
+			emit_signal("info_recieved", text)
+		HEADERS.spectate:
+			# handle spectate here
+			if typeof(text) == TYPE_STRING:  # ew error
+				lobby.set_status(text, false)
+				lobby.set_buttons(true)
+				return
+			Globals.spectating = true
+			_start_game()
+			yield(get_tree().create_timer(.5), "timeout")
+			Globals.grid.play_pgn(text.pgn, true)
+			emit_signal("info_recieved", text)
+		HEADERS.loadpgn:
+			_start_game()
+			yield(get_tree().create_timer(.5), "timeout")
+			Log.info("load pgn " + text)
+			Globals.grid.play_pgn(text, true)  # call deferred wont work since grid obj may be null
+		HEADERS.stopgame:
+			if !leaving:  # dont emit the signal if its a stophost thing (HACK)
+				emit_signal("game_over", text, true)
+			leaving = false
+		HEADERS.signal:
+			var signal: Dictionary = text
+			match signal.type:
+				_:
+					emit_signal("signal_recieved", signal)
+		HEADERS.signup:
+			emit_signal("signupresult", text)
+		HEADERS.signin:
+			emit_signal("signinresult", text)
+		_:
+			Log.err("unknown header %s" % header)
+
+
+func _connection_established(protocol) -> void:
+	._connection_established(protocol)
 	lobby.set_status("", true)
 	lobby.set_buttons(true)
 
 
-func _on_join_result(accepted) -> void:
-	handle_result(accepted, "Joined!")
+func join_result(accepted) -> void:
+	if handle_result(accepted, "Joined!"):
+		yield(get_tree(), "idle_frame")
+		Globals.grid.flip_board()  # joine should be black; flip the board
 
 
-func _on_host_result(accepted) -> void:
+func host_result(accepted) -> void:
 	set_hosting(handle_result(accepted, "Hosted!"))
 
 
@@ -63,7 +141,7 @@ func handle_result(accepted, resultstring: String) -> bool:
 
 
 func _handle_game_over(error := "game over", isok := true) -> void:
-	Globals.network.stopgame(error)
+	stopgame(error)
 	Globals.reset_vars()
 	if has_node("/root/Game"):
 		get_node("/root/Game").queue_free()
@@ -78,5 +156,48 @@ func _start_game() -> void:
 	var board: Control = load("res://Game.tscn").instance()
 	get_tree().get_root().add_child(board)
 	lobby.toggle(false)
-	emit_signal("game_started")
+	emit_signal("start_game")
 	lobby.set_buttons(false)
+
+
+## packet sending wrapper functions
+func signin(data):
+	send_packet(data, HEADERS.signin)
+
+
+func signup(data):
+	send_packet(data, HEADERS.signup)
+
+
+func signal(body: Dictionary, header: String, _mainheader := HEADERS.signal) -> Dictionary:
+	var data: Dictionary = Utils.append_dict({"type": header}, body)
+	send_gamecode_packet(data, _mainheader)
+	return data
+
+
+func join_game(game: String = game_code) -> void:
+	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.joinrequest, game)
+
+
+func host_game(game: String = game_code) -> void:
+	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.hostrequest, game)
+
+
+func spectate(game: String = game_code) -> void:
+	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.spectate, game)
+
+
+func send_gamecode_packet(data: Dictionary, header: String, gamecode: String = game_code):
+	send_packet(Utils.append_dict({"gamecode": gamecode}, data), header)
+
+
+func relay_signal(body: Dictionary, header: String) -> Dictionary:  # its really the same thing as signal()
+	return signal(body, header, HEADERS.relay)
+
+
+func send_mov(mov: Move):
+	send_packet({move = mov.compile(), gamecode = game_code}, HEADERS.move)
+
+
+func stopgame(reason: String) -> void:
+	send_packet({"reason": reason, "gamecode": game_code}, HEADERS.stopgame)

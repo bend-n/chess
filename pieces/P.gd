@@ -50,20 +50,20 @@ func moveto(position: Vector2, instant := false) -> void:
 
 
 func get_moves(_var := false, check_spots_check := true) -> PoolVector2Array:
-	var points := [Vector2.UP, Vector2.UP * 2]
+	var points: PoolVector2Array = [Vector2.UP, Vector2.UP * 2]
 	var moves: PoolVector2Array = []
 	for i in range(len(points)):
-		var point: Vector2 = points[i]
+		var point := points[i]
 		point *= whiteint
 		point = pos_around(point)
 		if at_pos(point) == null:
-			if i == 1:
-				if has_moved or at_pos(pos_around(points[0] * whiteint)) != null:
-					continue
-			if check_spots_check and checkcheck(point):
+			if (
+				(i == 1 and (has_moved or at_pos(pos_around(points[0] * whiteint)) != null))
+				or (check_spots_check and checkcheck(point))
+				or !is_on_board(point)
+			):
 				continue
-			if is_on_board(point):
-				moves.append(point)
+			moves.append(point)
 	moves.append_array(en_passant())
 	return moves
 
@@ -90,30 +90,26 @@ func get_attacks(check_spots_check := true) -> PoolVector2Array:
 		var point: Vector2 = points[i]
 		point *= whiteint
 		point = pos_around(point)
-		if !is_on_board(point):
+		if at_pos(point) == null or at_pos(point).white == white or (check_spots_check and checkcheck(point)):
 			continue
-		if check_spots_check and checkcheck(point):
-			continue
-		if at_pos(point) != null and at_pos(point).white != white:
-			moves.append(point)
-	en_passant()  # for the fen
+		moves.append(point)
 	return moves
 
 
 func en_passant(turncheck := true, check_spots_check := true) -> Array:  # in passing
+	if turncheck and white != Globals.turn:
+		return []
 	var passants := [pos_around(Vector2.LEFT), pos_around(Vector2.RIGHT)]
 	var moves := []
 	for i in passants:
 		var spot := at_pos(i)
-		if !spot:
-			continue
-		if spot.white == white or !Utils.is_pawn(spot):
-			continue
-		if turncheck and white != Globals.turn:
-			continue
-		if !spot.just_double_stepped:
-			continue
-		if check_spots_check and checkcheck(i):
+		if (
+			!spot  # spot doesnt exist
+			or spot.white == white  # spot is my team
+			or !Utils.is_pawn(spot)  #spot isnt a pawn
+			or !spot.just_double_stepped  # spot didnt just double step
+			or (check_spots_check and checkcheck(i))
+		):  # moving there would put me in check
 			continue
 		var position: Vector2 = i + (Vector2.UP * whiteint)
 		if !at_pos(position):
@@ -124,12 +120,12 @@ func en_passant(turncheck := true, check_spots_check := true) -> Array:  # in pa
 
 func promote(position: Vector2, type: String) -> void:
 	if type == "take":
-		at_pos(position).hide()
+		at_pos(position).hide()  # only hide the visuals
 	move(position)  # only move the visuals
-	promoteposition = position
-	darken.show()
-	yield(tween, "tween_completed")
-	open_previews()
+	promoteposition = position  # save the position
+	darken.show()  # open fx
+	yield(tween, "tween_completed")  # wait till were done moving to the new position
+	open_previews()  # open the previews
 
 
 func promote_to(promote_to: int, is_capture: bool, position: Vector2, instant := false):
@@ -146,7 +142,7 @@ func _pressed(promote_to: String) -> void:
 	var is_cap = at_pos(promoteposition) != null
 	var mov = Move.new(SanParser.PAWN, [real_position, promoteposition], is_cap)
 	mov.promotion = SanParse.from_str(promote_to)
-	Globals.network.send_mov(mov)
+	PacketHandler.send_mov(mov)
 
 
 func _on_turn_over() -> void:

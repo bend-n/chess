@@ -17,6 +17,7 @@ func _on_turn_over() -> void:
 	fen = Fen.get_fen()
 	Log.info("fen: " + fen)
 	emit_signal("newfen", fen)
+	SaveLoad.save_dict("user://game.json", {"fen": fen, "pgn": get_pgn()}, true)
 
 
 func pop_move() -> String:
@@ -124,8 +125,8 @@ static func get_node_name(node: Node) -> Array:
 func request() -> int:  # returns err
 	var http := HTTPRequest.new()
 	add_child(http)
-	var httpurl := Network.url.replace("wss://", "http://")
-	var error := http.request(httpurl)
+	var httpurl: String = PacketHandler.url.replace("wss://", "http://")
+	var error := http.request(httpurl, [], true, HTTPClient.METHOD_POST)
 	http.free()
 	internet = error == OK
 	return error

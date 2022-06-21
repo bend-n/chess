@@ -6,11 +6,11 @@
 margin_right = 50.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 50, 50 )
-focus_mode = 1
-enabled_focus_mode = 1
+mouse_default_cursor_shape = 2
 expand = true
 script = ExtResource( 2 )
 normal_color = Color( 0.188235, 0.180392, 0.172549, 1 )
+disabled_color = Color( 0.188235, 0.180392, 0.172549, 1 )
 
 [node name="Background" type="ColorRect" parent="."]
 show_behind_parent = true

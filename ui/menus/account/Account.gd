@@ -25,10 +25,9 @@ func set_signed_in(new):
 func _ready():
 	loading.show()
 	tabcontainer.hide()
-	if Globals.network:
-		Globals.network.connect("signinresult", self, "_on_signin_result")
-		Globals.network.connect("signupresult", self, "_on_signup_result")
-		Globals.network.connect("connection_established", self, "attempt_autologin")
+	PacketHandler.connect("signinresult", self, "_on_signin_result")
+	PacketHandler.connect("signupresult", self, "_on_signup_result")
+	PacketHandler.connect("connection_established", self, "attempt_autologin")
 	flags.append_array(Utils.walk_dir("res://assets/flags", false, ["rainbow"]))
 	for i in flags:  # add the items
 		flagchoice.add_item(load("res://assets/flags/%s.png" % i), i.replace("_", " "))
@@ -37,7 +36,7 @@ func _ready():
 
 func attempt_autologin():
 	if data.name and data.password:
-		Globals.network.signin(data)
+		PacketHandler.signin(data)
 	else:
 		reset("", false)
 
@@ -45,7 +44,7 @@ func attempt_autologin():
 func _on_signin_pressed():
 	$choose/signin/signinbutton.disabled = true
 	update_data(tabs.signin.username, tabs.signin.pw)
-	Globals.network.signin(data)
+	PacketHandler.signin(data)
 
 
 func _on_signin_result(result):
@@ -65,7 +64,7 @@ func _on_signup_pressed():
 	$choose/signup/signupbutton.disabled = true
 	data.country = flags[flagchoice.selected]
 	update_data(tabs.signup.username, tabs.signup.pw)
-	Globals.network.signup(data)
+	PacketHandler.signup(data)
 
 
 func _on_signup_result(result: String):

@@ -1,7 +1,7 @@
 extends PanelContainer
 
-onready var flag_display = $H/Flag
-onready var name_display = $H/Name
+onready var flag_display = $MC/H/Flag
+onready var name_display = $MC/H/Name
 
 var flag := "rainbow" setget set_flag
 var _name := "name" setget set_name

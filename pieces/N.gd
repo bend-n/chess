@@ -16,9 +16,7 @@ func get_moves(no_enemys := false, check_spots_check := true) -> PoolVector2Arra
 	var final: PoolVector2Array = []
 	for i in moves:
 		if is_on_board(i):
-			if no_enemys and at_pos(i):
-				continue
-			if check_spots_check and checkcheck(i):
+			if no_enemys and at_pos(i) or (check_spots_check and checkcheck(i)):
 				continue
 			final.append(i)
 	return final

@@ -1,16 +1,16 @@
-extends ScrollContainer
+extends PanelContainer
 
 var tween := Tween.new()
 
 export(PackedScene) var Base
 
-onready var scroll_container := self
-onready var scroll_bar := get_v_scrollbar()
-onready var sans := $V
+onready var scroll_container := $Scroller
+onready var scroll_bar: VScrollBar = scroll_container.get_v_scrollbar()
+onready var sans := $Scroller/sanholder
 
 
 func _ready() -> void:
-	scroll_bar.step = .15
+	scroll_bar.step = .15  #smoth
 	add_child(tween)
 	Utils.connect("newmove", self, "on_new_move")
 	Utils.connect("pop_move", self, "reset_moves")
@@ -36,11 +36,11 @@ func on_new_move(move: String) -> void:
 	tween.start()
 
 
-func reset_moves():
+func reset_moves() -> void:
 	for i in sans.get_children():
 		i.queue_free()
 
 
-func _gui_input(event):
+func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		OS.clipboard = Utils.get_pgn()

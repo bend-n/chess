@@ -3,7 +3,7 @@ class_name ResignButton, "res://assets/ui/flag.png"
 
 
 func _signal_recieved(what: Dictionary) -> void:
-	if what.type == Network.SIGNALHEADERS.resign:
+	if what.type == PacketHandler.SIGNALHEADERS.resign:
 		Globals.grid.win(Globals.team, "resignation")
 
 
@@ -17,6 +17,6 @@ func _pressed() -> void:
 
 
 func after_confirmed():
-	Globals.network.signal({}, Network.SIGNALHEADERS.resign)
+	PacketHandler.signal({}, PacketHandler.SIGNALHEADERS.resign)
 	Globals.grid.win(!Globals.team, "resignation")
 	disabled = true
