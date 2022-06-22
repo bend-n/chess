@@ -13,7 +13,7 @@ const default_settings_data = {
 	piece_set = "california",
 	board_color1 = Color(0.870588, 0.890196, 0.901961),
 	board_color2 = Color(0.54902, 0.635294, 0.678431),
-	rainbow = true
+	rainbow = false
 }
 
 const default_id_data = {id = "", name = "", country = "rainbow", password = ""}

@@ -3,7 +3,7 @@
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
 [ext_resource path="res://ui/menus/Lobby.gd" type="Script" id=2]
 [ext_resource path="res://ui/menus/Disclaimer.gd" type="Script" id=3]
-[ext_resource path="res://ui/verdana-bold-small.tres" type="DynamicFont" id=4]
+[ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=4]
 
 [node name="Lobby" type="CenterContainer"]
 anchor_right = 1.0
@@ -13,19 +13,20 @@ script = ExtResource( 2 )
 
 [node name="Center" type="CenterContainer" parent="."]
 margin_left = 411.0
-margin_top = 286.0
+margin_top = 290.0
 margin_right = 1011.0
-margin_bottom = 513.0
+margin_bottom = 509.0
 
 [node name="HBox" type="HBoxContainer" parent="Center"]
 margin_right = 600.0
-margin_bottom = 227.0
+margin_bottom = 219.0
 
 [node name="VBox" type="VBoxContainer" parent="Center/HBox"]
 margin_right = 600.0
-margin_bottom = 227.0
+margin_bottom = 219.0
 
 [node name="stophost" type="Button" parent="Center/HBox/VBox"]
+ focus_mode = 0
 visible = false
 margin_left = 7.0
 margin_right = 343.0
@@ -35,7 +36,7 @@ text = "stop hosting"
 
 [node name="Address" type="LineEdit" parent="Center/HBox/VBox"]
 margin_right = 600.0
-margin_bottom = 106.0
+margin_bottom = 102.0
 rect_min_size = Vector2( 600, 0 )
 hint_tooltip = "place game code here"
 focus_mode = 1
@@ -47,41 +48,44 @@ caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="buttons" type="HBoxContainer" parent="Center/HBox/VBox"]
-margin_top = 121.0
+margin_top = 117.0
 margin_right = 600.0
-margin_bottom = 227.0
+margin_bottom = 219.0
 
 [node name="SpectateButton" type="Button" parent="Center/HBox/VBox/buttons"]
-margin_right = 249.0
-margin_bottom = 106.0
-focus_mode = 0
+ focus_mode = 0
+margin_right = 223.0
+margin_bottom = 102.0
+
 size_flags_horizontal = 3
 size_flags_vertical = 3
 disabled = true
-enabled_focus_mode = 0
+
 text = "spectate"
 
 [node name="JoinButton" type="Button" parent="Center/HBox/VBox/buttons"]
-margin_left = 264.0
-margin_right = 424.0
-margin_bottom = 106.0
+ focus_mode = 0
+margin_left = 238.0
+margin_right = 411.0
+margin_bottom = 102.0
 rect_min_size = Vector2( 150, 0 )
 hint_tooltip = "join the game"
-focus_mode = 0
+
 size_flags_horizontal = 7
 disabled = true
-enabled_focus_mode = 0
+
 text = "join"
 
 [node name="HostButton" type="Button" parent="Center/HBox/VBox/buttons"]
-margin_left = 439.0
+ focus_mode = 0
+margin_left = 426.0
 margin_right = 600.0
-margin_bottom = 106.0
+margin_bottom = 102.0
 hint_tooltip = "host the game"
-focus_mode = 0
+
 size_flags_horizontal = 7
 disabled = true
-enabled_focus_mode = 0
+
 text = "host"
 
 [node name="StatusOK" type="Label" parent="Center/HBox/VBox"]

@@ -29,5 +29,5 @@ func add_item(icon: Texture, tooltip: String, size: Vector2) -> void:
 
 
 func _pressed(index: int):
-	get_children()[index].get_children()[0]._focused(false)
+	get_children()[index]._focused(false)
 	emit_signal("pressed", index)

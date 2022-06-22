@@ -1,27 +1,61 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=21 format=2]
 
-[ext_resource path="res://ui/barbutton/drawbutton.gd" type="Script" id=1]
-[ext_resource path="res://ui/barbutton/resignbutton.gd" type="Script" id=2]
+[ext_resource path="res://ui/menus/sidebarright/drawbutton.gd" type="Script" id=1]
+[ext_resource path="res://ui/menus/sidebarright/resignbutton.gd" type="Script" id=2]
 [ext_resource path="res://ui/Status.gd" type="Script" id=3]
-[ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=6]
-[ext_resource path="res://assets/ui/Roboto-Medium.ttf" type="DynamicFontData" id=12]
+[ext_resource path="res://assets/ui/ubuntu-bold.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://ui/barbutton/default_highlight.tres" type="StyleBox" id=5]
+[ext_resource path="res://ui/barbutton/default_pressed.tres" type="StyleBox" id=6]
+[ext_resource path="res://ui/barbutton/default.tres" type="StyleBox" id=7]
+[ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=8]
 [ext_resource path="res://ui/menus/sidebarright/SidebarRight.gd" type="Script" id=13]
 [ext_resource path="res://ui/theme/main.tres" type="Theme" id=14]
-[ext_resource path="res://assets/ui/undo.png" type="Texture" id=15]
-[ext_resource path="res://assets/ui/draw.png" type="Texture" id=16]
-[ext_resource path="res://assets/ui/flip_board.png" type="Texture" id=17]
-[ext_resource path="res://ui/barbutton/undobutton.gd" type="Script" id=18]
-[ext_resource path="res://ui/barbutton/flipbutton.gd" type="Script" id=19]
-[ext_resource path="res://assets/ui/flag.png" type="Texture" id=20]
+[ext_resource path="res://ui/menus/sidebarright/undobutton.gd" type="Script" id=18]
+[ext_resource path="res://ui/menus/sidebarright/flipbutton.gd" type="Script" id=19]
 [ext_resource path="res://ui/menus/sidebarright/sandisplay/SanDisplay.tscn" type="PackedScene" id=21]
 [ext_resource path="res://ui/menus/sidebarright/UserPanel.tscn" type="PackedScene" id=22]
 
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 0.14902, 0.141176, 0.129412, 0.588235 )
 
+[sub_resource type="DynamicFont" id=10]
+size = 40
+font_data = ExtResource( 4 )
+
+[sub_resource type="StyleBoxEmpty" id=11]
+
+[sub_resource type="StyleBoxFlat" id=21]
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0, 0, 0, 0.694118 )
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 15
+
 [sub_resource type="DynamicFont" id=1]
-size = 35
-font_data = ExtResource( 12 )
+size = 85
+font_data = ExtResource( 4 )
+
+[sub_resource type="Theme" id=12]
+default_font = SubResource( 1 )
+Button/colors/font_color = Color( 1, 1, 1, 1 )
+Button/colors/font_color_disabled = Color( 0.643137, 0.592157, 0.592157, 0.2 )
+Button/colors/font_color_focus = Color( 1, 1, 1, 1 )
+Button/colors/font_color_hover = Color( 1, 1, 1, 1 )
+Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
+Button/fonts/font = SubResource( 10 )
+Button/styles/disabled = ExtResource( 7 )
+Button/styles/focus = SubResource( 11 )
+Button/styles/hover = ExtResource( 5 )
+Button/styles/normal = ExtResource( 7 )
+Button/styles/pressed = ExtResource( 6 )
+TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
+TooltipLabel/fonts/font = ExtResource( 8 )
+TooltipPanel/styles/panel = SubResource( 21 )
 
 [node name="SidebarRight" type="PanelContainer"]
 anchor_right = 1.0
@@ -45,14 +79,14 @@ alignment = 1
 [node name="BlackPanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 214.0
+margin_top = 212.0
 margin_right = 1422.0
-margin_bottom = 254.0
+margin_bottom = 252.0
 
 [node name="buttonbarholder" type="PanelContainer" parent="V"]
-margin_top = 254.0
+margin_top = 252.0
 margin_right = 1422.0
-margin_bottom = 304.0
+margin_bottom = 302.0
 rect_min_size = Vector2( 50, 50 )
 __meta__ = {
 "_edit_group_": true,
@@ -62,44 +96,56 @@ __meta__ = {
 [node name="buttonbar" type="HBoxContainer" parent="V/buttonbarholder"]
 margin_right = 1422.0
 margin_bottom = 50.0
+theme = SubResource( 12 )
 custom_constants/separation = 0
 alignment = 1
 
-[node name="FlipBoard" parent="V/buttonbarholder/buttonbar" instance=ExtResource( 6 )]
+[node name="FlipButton" type="Button" parent="V/buttonbarholder/buttonbar"]
 margin_right = 355.0
-hint_tooltip = "rotate the board"
+margin_bottom = 50.0
+hint_tooltip = "flip the board"
+focus_mode = 0
+mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
-texture_normal = ExtResource( 17 )
-stretch_mode = 5
+text = ""
 script = ExtResource( 19 )
 
-[node name="DrawButton" parent="V/buttonbarholder/buttonbar" instance=ExtResource( 6 )]
+[node name="DrawButton" type="Button" parent="V/buttonbarholder/buttonbar"]
 margin_left = 355.0
 margin_right = 711.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 50 )
 hint_tooltip = "request a draw"
+focus_mode = 0
+mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
-texture_normal = ExtResource( 16 )
-stretch_mode = 5
+text = "½-½"
 script = ExtResource( 1 )
 confirm_text = "Your opponent requests a draw"
 
-[node name="ResignButton" parent="V/buttonbarholder/buttonbar" instance=ExtResource( 6 )]
+[node name="ResignButton" type="Button" parent="V/buttonbarholder/buttonbar"]
 margin_left = 711.0
 margin_right = 1066.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 50 )
 hint_tooltip = "resign"
+focus_mode = 0
+mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
-texture_normal = ExtResource( 20 )
-stretch_mode = 5
+text = ""
 script = ExtResource( 2 )
 confirm_text = "Resign?"
 
-[node name="UndoButton" parent="V/buttonbarholder/buttonbar" instance=ExtResource( 6 )]
+[node name="UndoButton" type="Button" parent="V/buttonbarholder/buttonbar"]
 margin_left = 1066.0
 margin_right = 1422.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 50 )
 hint_tooltip = "request a undo"
+focus_mode = 0
+mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
-texture_normal = ExtResource( 15 )
-stretch_mode = 5
+text = "社"
 script = ExtResource( 18 )
 confirm_text = "Your opponent requests a undo"
 status = NodePath("../../../Status")
@@ -107,23 +153,22 @@ status = NodePath("../../../Status")
 [node name="SanDisplay" parent="V" instance=ExtResource( 21 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 304.0
+margin_top = 302.0
 margin_right = 1422.0
-margin_bottom = 504.0
+margin_bottom = 502.0
 rect_min_size = Vector2( 482, 200 )
 
 [node name="WhitePanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 504.0
+margin_top = 502.0
 margin_right = 1422.0
-margin_bottom = 544.0
+margin_bottom = 542.0
 
 [node name="Status" type="Label" parent="V"]
-margin_top = 544.0
+margin_top = 542.0
 margin_right = 1422.0
-margin_bottom = 586.0
-custom_fonts/font = SubResource( 1 )
+margin_bottom = 588.0
 align = 1
 autowrap = true
 script = ExtResource( 3 )

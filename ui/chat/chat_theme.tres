@@ -1,16 +1,16 @@
 [gd_resource type="Theme" load_steps=29 format=2]
 
-[ext_resource path="res://assets/ui/verdana-bold-italic.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/ui/ubuntu-bold-italic.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://assets/ui/CascadiaCode.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://assets/ui/button.png" type="Texture" id=3]
 [ext_resource path="res://assets/ui/whitespace.png" type="Texture" id=4]
 [ext_resource path="res://assets/ui/checkedbox.png" type="Texture" id=5]
-[ext_resource path="res://assets/ui/verdana.ttf" type="DynamicFontData" id=6]
-[ext_resource path="res://assets/ui/verdana-bold.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://assets/ui/ubuntu-bold.ttf" type="DynamicFontData" id=7]
 [ext_resource path="res://ui/theme/button.tres" type="StyleBox" id=8]
 [ext_resource path="res://ui/theme/buttonhover.tres" type="StyleBox" id=9]
 [ext_resource path="res://ui/theme/transblack.tres" type="StyleBox" id=10]
 [ext_resource path="res://ui/theme/flatblack.tres" type="StyleBox" id=11]
+[ext_resource path="res://assets/ui/ubuntu.ttf" type="DynamicFontData" id=12]
 
 [sub_resource type="StyleBoxTexture" id=6]
 texture = ExtResource( 3 )
@@ -54,7 +54,7 @@ font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=20]
 size = 15
-font_data = ExtResource( 6 )
+font_data = ExtResource( 12 )
 
 [sub_resource type="StyleBoxFlat" id=10]
 content_margin_left = 30.0
@@ -107,12 +107,12 @@ corner_radius_bottom_left = 30
 corner_detail = 15
 expand_margin_top = 65.0
 
-[sub_resource type="DynamicFont" id=15]
-size = 15
-font_data = ExtResource( 7 )
+[sub_resource type="DynamicFont" id=22]
+size = 20
+font_data = ExtResource( 12 )
 
 [resource]
-default_font = SubResource( 15 )
+default_font = SubResource( 22 )
 Button/colors/font_color = Color( 1, 1, 1, 1 )
 Button/colors/font_color_disabled = Color( 1, 1, 1, 0.305882 )
 Button/colors/font_color_focus = Color( 1, 1, 1, 1 )

@@ -30,7 +30,6 @@ func set_color(newcolor: Color) -> void:
 
 
 func done() -> void:
-	closebutton._focused(false)
 	emit_signal("done", color)
 
 

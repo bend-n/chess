@@ -19,10 +19,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://pieces/B.gd"
 }, {
+"base": "KeyUtils",
+"class": "CapsLock",
+"language": "GDScript",
+"path": "res://ui/virtual_keyboard/CapsLock.gd"
+}, {
 "base": "Control",
 "class": "Chat",
 "language": "GDScript",
 "path": "res://ui/chat/Chat.gd"
+}, {
+"base": "Button",
+"class": "CheckBoxButton",
+"language": "GDScript",
+"path": "res://ui/checkboxbutton/CheckBoxButton.gd"
 }, {
 "base": "Control",
 "class": "ColorPickerBetter",
@@ -44,15 +54,15 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/confirm/confirm.gd"
 }, {
-"base": "BarTextureButton",
+"base": "Button",
 "class": "ConfirmButton",
 "language": "GDScript",
-"path": "res://ui/barbutton/confirmbutton.gd"
+"path": "res://ui/menus/sidebarright/confirmbutton.gd"
 }, {
 "base": "ConfirmButton",
 "class": "DrawButton",
 "language": "GDScript",
-"path": "res://ui/barbutton/drawbutton.gd"
+"path": "res://ui/menus/sidebarright/drawbutton.gd"
 }, {
 "base": "TextEdit",
 "class": "ExpandableTextEdit",
@@ -69,10 +79,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/FENlabel.gd"
 }, {
-"base": "BarTextureButton",
+"base": "Button",
 "class": "FlipButton",
 "language": "GDScript",
-"path": "res://ui/barbutton/flipbutton.gd"
+"path": "res://ui/menus/sidebarright/flipbutton.gd"
 }, {
 "base": "Control",
 "class": "Grid",
@@ -94,6 +104,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/colorpicker/HueSlider.gd"
 }, {
+"base": "KeyUtils",
+"class": "Key",
+"language": "GDScript",
+"path": "res://ui/virtual_keyboard/Key.gd"
+}, {
+"base": "Button",
+"class": "KeyUtils",
+"language": "GDScript",
+"path": "res://ui/virtual_keyboard/KeyUtils.gd"
+}, {
 "base": "Piece",
 "class": "King",
 "language": "GDScript",
@@ -112,7 +132,7 @@ _global_script_classes=[ {
 "base": "PanelContainer",
 "class": "MessageList",
 "language": "GDScript",
-"path": "res://MessageList.gd"
+"path": "res://ui/chat/MessageList.gd"
 }, {
 "base": "Resource",
 "class": "Move",
@@ -157,7 +177,7 @@ _global_script_classes=[ {
 "base": "ConfirmButton",
 "class": "ResignButton",
 "language": "GDScript",
-"path": "res://ui/barbutton/resignbutton.gd"
+"path": "res://ui/menus/sidebarright/resignbutton.gd"
 }, {
 "base": "LineEdit",
 "class": "Restrict",
@@ -179,39 +199,58 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://saveload.gd"
 }, {
+"base": "KeyUtils",
+"class": "SpecialKey",
+"language": "GDScript",
+"path": "res://ui/virtual_keyboard/SpecialKey.gd"
+}, {
 "base": "Label",
 "class": "StatusLabel",
 "language": "GDScript",
 "path": "res://ui/Status.gd"
 }, {
+"base": "Container",
+"class": "TextEditor",
+"language": "GDScript",
+"path": "res://ui/chat/TextEditor.gd"
+}, {
 "base": "ConfirmButton",
 "class": "UndoButton",
 "language": "GDScript",
-"path": "res://ui/barbutton/undobutton.gd"
+"path": "res://ui/menus/sidebarright/undobutton.gd"
 }, {
 "base": "Control",
 "class": "UsernamePass",
 "language": "GDScript",
 "path": "res://ui/menus/account/usernamepass.gd"
+}, {
+"base": "CanvasLayer",
+"class": "VirtualKeyboard",
+"language": "GDScript",
+"path": "res://ui/virtual_keyboard/VirtualKeyboard.gd"
 } ]
 _global_script_class_icons={
 "BarTextureButton": "",
 "Bishop": "res://assets/pieces/california/wB.png",
+"CapsLock": "",
 "Chat": "",
+"CheckBoxButton": "",
 "ColorPickerBetter": "",
 "ColorPickerButtonBetter": "",
 "ColorSelect": "",
 "Confirm": "",
 "ConfirmButton": "",
-"DrawButton": "res://assets/ui/draw.png",
+"DrawButton": "",
 "ExpandableTextEdit": "",
 "FEN": "",
 "FENLabel": "",
-"FlipButton": "res://assets/ui/flip_board.png",
+"FlipButton": "",
 "Grid": "",
 "GridMenu": "",
 "GridMenuButton": "",
 "HueSlider": "",
+"Key": "",
+"KeyUtils": "",
 "King": "res://assets/pieces/california/wK.png",
 "Knight": "res://assets/pieces/california/wN.png",
 "Lobby": "",
@@ -224,14 +263,17 @@ _global_script_class_icons={
 "Piece": "res://assets/pieces/california/wP.png",
 "Preview": "",
 "Queen": "res://assets/pieces/california/wQ.png",
-"ResignButton": "res://assets/ui/flag.png",
+"ResignButton": "",
 "Restrict": "",
 "Rook": "res://assets/pieces/california/wR.png",
 "SanParser": "",
 "SaveLoader": "",
+"SpecialKey": "",
 "StatusLabel": "",
-"UndoButton": "res://assets/ui/undo.png",
-"UsernamePass": ""
+"TextEditor": "",
+"UndoButton": "",
+"UsernamePass": "",
+"VirtualKeyboard": ""
 }
 
 [application]
@@ -273,10 +315,6 @@ window/size/width=1422
 window/size/height=800
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
-
-[editor]
-
-main_run_args="debug"
 
 [editor_plugins]
 
@@ -334,6 +372,16 @@ fullscreen={
 click={
 "deadzone": 0.5,
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+caps={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777241,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+shift={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777237,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
 

@@ -33,12 +33,7 @@ func spotispiece(piece_type: int, spot: Piece) -> bool:
 
 
 static func str_bool(string: String) -> bool:
-	string = string.to_lower()
-	if string == "true":
-		return true
-	if string == "false":
-		return false
-	return false
+	return string.to_lower().strip_edges() in ["true", "1", "on", "yes", "y", ""]
 
 
 func add_move(move: String) -> void:

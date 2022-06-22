@@ -1,0 +1,654 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://ui/virtual_keyboard/SpecialKey.gd" type="Script" id=1]
+[ext_resource path="res://ui/virtual_keyboard/kb_theme.theme" type="Theme" id=2]
+[ext_resource path="res://ui/virtual_keyboard/Key.gd" type="Script" id=3]
+[ext_resource path="res://ui/virtual_keyboard/CapsLock.gd" type="Script" id=4]
+[ext_resource path="res://ui/virtual_keyboard/VirtualKeyboard.gd" type="Script" id=5]
+[ext_resource path="res://ui/chat/TextEditor.tscn" type="PackedScene" id=6]
+[ext_resource path="res://ui/virtual_keyboard/Key.tscn" type="PackedScene" id=7]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 15.0
+content_margin_right = 15.0
+content_margin_top = 15.0
+content_margin_bottom = 15.0
+bg_color = Color( 0.188235, 0.180392, 0.172549, 1 )
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="VirtualKeyboard" type="CanvasLayer"]
+script = ExtResource( 5 )
+text_editor = ExtResource( 6 )
+
+[node name="ForceDown" type="VBoxContainer" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 2
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Panel" type="PanelContainer" parent="ForceDown"]
+margin_left = 213.0
+margin_top = 450.0
+margin_right = 1208.0
+margin_bottom = 800.0
+size_flags_horizontal = 4
+theme = ExtResource( 2 )
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true,
+"_editor_description_": ""
+}
+
+[node name="V" type="VBoxContainer" parent="ForceDown/Panel"]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 980.0
+margin_bottom = 335.0
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="KeyHolder" type="VBoxContainer" parent="ForceDown/Panel/V"]
+margin_right = 965.0
+margin_bottom = 320.0
+custom_constants/separation = 5
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Row1" type="HBoxContainer" parent="ForceDown/Panel/V/KeyHolder"]
+margin_right = 965.0
+margin_bottom = 60.0
+custom_constants/separation = 5
+alignment = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="`" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_right = 60.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "`"
+key = "`"
+shift_key = "~"
+
+[node name="1" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 65.0
+margin_right = 125.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "1"
+key = "1"
+shift_key = "!"
+
+[node name="2" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 130.0
+margin_right = 190.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "2"
+key = "2"
+shift_key = "@"
+
+[node name="3" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 195.0
+margin_right = 255.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "3"
+key = "3"
+shift_key = "#"
+
+[node name="4" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 260.0
+margin_right = 320.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "4"
+key = "4"
+shift_key = "$"
+
+[node name="5" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 325.0
+margin_right = 385.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "5"
+key = "5"
+shift_key = "%"
+
+[node name="6" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 390.0
+margin_right = 450.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "6"
+key = "6"
+shift_key = "^"
+
+[node name="7" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 455.0
+margin_right = 515.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "7"
+key = "7"
+shift_key = "&"
+
+[node name="8" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 520.0
+margin_right = 580.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "8"
+key = "8"
+shift_key = "*"
+
+[node name="9" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 585.0
+margin_right = 645.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "9"
+key = "9"
+shift_key = "("
+
+[node name="0" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 650.0
+margin_right = 710.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "0"
+key = "0"
+shift_key = ")"
+
+[node name="-" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 715.0
+margin_right = 775.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "-"
+key = "-"
+shift_key = "_"
+
+[node name="=" parent="ForceDown/Panel/V/KeyHolder/Row1" instance=ExtResource( 7 )]
+margin_left = 780.0
+margin_right = 840.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "="
+key = "="
+shift_key = "+"
+
+[node name="Backspace" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row1"]
+margin_left = 845.0
+margin_right = 965.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 120, 45 )
+focus_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource( 2 )
+action_mode = 0
+text = ""
+script = ExtResource( 1 )
+k_scncode = 16777220
+
+[node name="Row2" type="HBoxContainer" parent="ForceDown/Panel/V/KeyHolder"]
+margin_top = 65.0
+margin_right = 965.0
+margin_bottom = 125.0
+custom_constants/separation = 5
+alignment = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="tab" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row2"]
+margin_right = 90.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 90, 0 )
+focus_mode = 0
+size_flags_horizontal = 3
+text = ""
+script = ExtResource( 1 )
+k_scncode = 16777218
+
+[node name="q" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 95.0
+margin_right = 155.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "q"
+key = "q"
+shift_key = "Q"
+shift_on_capslock = true
+
+[node name="w" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 160.0
+margin_right = 220.0
+margin_bottom = 60.0
+focus_mode = 0
+shift_on_capslock = true
+
+[node name="e" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 225.0
+margin_right = 285.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "e"
+key = "e"
+shift_key = "E"
+shift_on_capslock = true
+
+[node name="r" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 290.0
+margin_right = 350.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "r"
+key = "r"
+shift_key = "R"
+shift_on_capslock = true
+
+[node name="t" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 355.0
+margin_right = 415.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "t"
+key = "t"
+shift_key = "T"
+shift_on_capslock = true
+
+[node name="y" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 420.0
+margin_right = 480.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "y"
+key = "y"
+shift_key = "Y"
+shift_on_capslock = true
+
+[node name="u" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 485.0
+margin_right = 545.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "u"
+key = "u"
+shift_key = "U"
+shift_on_capslock = true
+
+[node name="i" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 550.0
+margin_right = 610.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "i"
+key = "i"
+shift_key = "I"
+shift_on_capslock = true
+
+[node name="o" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 615.0
+margin_right = 675.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "o"
+key = "o"
+shift_key = "O"
+shift_on_capslock = true
+
+[node name="p" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 680.0
+margin_right = 740.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "p"
+key = "p"
+shift_key = "P"
+shift_on_capslock = true
+
+[node name="[" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 745.0
+margin_right = 805.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "["
+key = "["
+shift_key = "{"
+
+[node name="]" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 810.0
+margin_right = 870.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "]"
+key = "]"
+shift_key = "}"
+
+[node name="\\" parent="ForceDown/Panel/V/KeyHolder/Row2" instance=ExtResource( 7 )]
+margin_left = 875.0
+margin_right = 965.0
+margin_bottom = 60.0
+focus_mode = 0
+size_flags_horizontal = 3
+text = "\\"
+key = "\\"
+shift_key = "|"
+
+[node name="Row3" type="HBoxContainer" parent="ForceDown/Panel/V/KeyHolder"]
+margin_top = 130.0
+margin_right = 965.0
+margin_bottom = 190.0
+custom_constants/separation = 5
+alignment = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="caps" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row3"]
+margin_right = 122.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 120, 45 )
+focus_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource( 2 )
+toggle_mode = true
+action_mode = 0
+text = ""
+script = ExtResource( 4 )
+
+[node name="a" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 127.0
+margin_right = 187.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "a"
+key = "a"
+shift_key = "A"
+shift_on_capslock = true
+
+[node name="s" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 192.0
+margin_right = 252.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "s"
+key = "s"
+shift_key = "S"
+shift_on_capslock = true
+
+[node name="d" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 257.0
+margin_right = 317.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "d"
+key = "d"
+shift_key = "D"
+shift_on_capslock = true
+
+[node name="f" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 322.0
+margin_right = 382.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "f"
+key = "f"
+shift_key = "F"
+shift_on_capslock = true
+
+[node name="g" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 387.0
+margin_right = 447.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "g"
+key = "g"
+shift_key = "G"
+shift_on_capslock = true
+
+[node name="h" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 452.0
+margin_right = 512.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "h"
+key = "h"
+shift_key = "H"
+shift_on_capslock = true
+
+[node name="j" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 517.0
+margin_right = 577.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "j"
+key = "j"
+shift_key = "J"
+shift_on_capslock = true
+
+[node name="k" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 582.0
+margin_right = 642.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "k"
+key = "k"
+shift_key = "K"
+shift_on_capslock = true
+
+[node name="l" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 647.0
+margin_right = 707.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "l"
+key = "l"
+shift_key = "L"
+shift_on_capslock = true
+
+[node name=";" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 712.0
+margin_right = 772.0
+margin_bottom = 60.0
+focus_mode = 0
+text = ";"
+key = ";"
+shift_key = ":"
+
+[node name="\'" parent="ForceDown/Panel/V/KeyHolder/Row3" instance=ExtResource( 7 )]
+margin_left = 777.0
+margin_right = 837.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "'"
+key = "'"
+shift_key = "\""
+
+[node name="enter" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row3"]
+margin_left = 842.0
+margin_right = 965.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 120, 45 )
+focus_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource( 2 )
+action_mode = 0
+text = ""
+script = ExtResource( 1 )
+k_scncode = 16777221
+
+[node name="Row4" type="HBoxContainer" parent="ForceDown/Panel/V/KeyHolder"]
+margin_top = 195.0
+margin_right = 965.0
+margin_bottom = 255.0
+custom_constants/separation = 5
+alignment = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="shift" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row4"]
+margin_right = 155.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 120, 45 )
+focus_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource( 2 )
+action_mode = 0
+text = "וּ"
+script = ExtResource( 1 )
+k_scncode = 16777237
+
+[node name="z" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 160.0
+margin_right = 220.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "z"
+key = "z"
+shift_key = "Z"
+shift_on_capslock = true
+
+[node name="x" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 225.0
+margin_right = 285.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "x"
+key = "x"
+shift_key = "X"
+shift_on_capslock = true
+
+[node name="c" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 290.0
+margin_right = 350.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "c"
+key = "c"
+shift_key = "C"
+shift_on_capslock = true
+
+[node name="v" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 355.0
+margin_right = 415.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "v"
+key = "v"
+shift_key = "V"
+shift_on_capslock = true
+
+[node name="b" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 420.0
+margin_right = 480.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "b"
+key = "b"
+shift_key = "B"
+shift_on_capslock = true
+
+[node name="n" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 485.0
+margin_right = 545.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "n"
+key = "n"
+shift_key = "N"
+shift_on_capslock = true
+
+[node name="m" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 550.0
+margin_right = 610.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "m"
+key = "m"
+shift_key = "M"
+shift_on_capslock = true
+
+[node name="," parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 615.0
+margin_right = 675.0
+margin_bottom = 60.0
+focus_mode = 0
+text = ","
+key = ","
+shift_key = "<"
+
+[node name="dot" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 680.0
+margin_right = 740.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "."
+key = "."
+shift_key = ">"
+
+[node name="slash" parent="ForceDown/Panel/V/KeyHolder/Row4" instance=ExtResource( 7 )]
+margin_left = 745.0
+margin_right = 805.0
+margin_bottom = 60.0
+focus_mode = 0
+text = "/"
+key = "/"
+shift_key = "?"
+
+[node name="shift2" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row4"]
+margin_left = 810.0
+margin_right = 965.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 120, 45 )
+focus_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource( 2 )
+action_mode = 0
+text = "וּ"
+script = ExtResource( 1 )
+k_scncode = 16777237
+
+[node name="Row5" type="HBoxContainer" parent="ForceDown/Panel/V/KeyHolder"]
+margin_top = 260.0
+margin_right = 965.0
+margin_bottom = 320.0
+custom_constants/separation = 5
+alignment = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Spacebar" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row5"]
+margin_right = 900.0
+margin_bottom = 60.0
+focus_mode = 0
+size_flags_horizontal = 3
+text = " "
+script = ExtResource( 3 )
+key = " "
+shift_key = " "
+
+[node name="Close" type="Button" parent="ForceDown/Panel/V/KeyHolder/Row5"]
+margin_left = 905.0
+margin_right = 965.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 60, 60 )
+focus_mode = 0
+theme = ExtResource( 2 )
+action_mode = 0
+keep_pressed_outside = true
+text = ""
+
+[connection signal="pressed" from="ForceDown/Panel/V/KeyHolder/Row5/Close" to="." method="_on_Close_pressed"]

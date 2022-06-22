@@ -8,7 +8,8 @@ bend-n/chess is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 Files|Author(s)|License(s)
 --- | --- | ---
-|Roboto in assets/ui/Roboto-Medium|[ChristianRobertson](https://fonts.google.com/specimen/Roboto)|[Apache2.0](https://www.apache.org/licenses/LICENSE-2.0)|[SILOpenFontLicense](https://www.fontspace.com/help#license-17)|
+|Cascadia Code in assets|Aaron Bell|[SILOpenFontLicense 1.1](https://github.com/eliheuer/caskaydia-cove/blob/master/OFL.txt)|
+|Ubuntu in assets|[Daiton Mag](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Ubuntu)|[Ubuntu Font License](https://ubuntu.com/legal/font-licence)|
 |assets/pieces/horsey|cham, michael1241|[CCBY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)|
 |assets/pieces/cburnett|[ColinM.L.Burnett](https://en.wikipedia.org/wiki/User:Cburnett)|[GPLv2+](https://www.gnu.org/licenses/gpl-2.0.txt)|
 |assets/pieces/pirouetti|[pirouetti](https://lichess.org/@/pirouetti)|AGPLv3+|

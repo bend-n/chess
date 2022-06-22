@@ -5,15 +5,15 @@
 [ext_resource path="res://ui/gridmenu/GridMenuButton.gd" type="Script" id=3]
 [ext_resource path="res://assets/ui/whitespace.png" type="Texture" id=4]
 [ext_resource path="res://assets/ui/CascadiaCode.ttf" type="DynamicFontData" id=5]
-[ext_resource path="res://assets/ui/verdana-bold-italic.ttf" type="DynamicFontData" id=6]
-[ext_resource path="res://assets/ui/verdana.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://assets/ui/ubuntu-bold-italic.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://assets/ui/ubuntu.ttf" type="DynamicFontData" id=7]
 [ext_resource path="res://assets/ui/checkedbox.png" type="Texture" id=8]
 [ext_resource path="res://ui/theme/transblack.tres" type="StyleBox" id=9]
 [ext_resource path="res://ui/theme/button.tres" type="StyleBox" id=10]
 [ext_resource path="res://ui/theme/flatblack.tres" type="StyleBox" id=11]
 [ext_resource path="res://assets/ui/button.png" type="Texture" id=12]
-[ext_resource path="res://ui/verdana-bold.tres" type="DynamicFont" id=13]
-[ext_resource path="res://ui/verdana-bold-small.tres" type="DynamicFont" id=14]
+[ext_resource path="res://ui/ubuntu-bold.tres" type="DynamicFont" id=13]
+[ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=14]
 [ext_resource path="res://ui/theme/buttonhover.tres" type="StyleBox" id=15]
 [ext_resource path="res://ui/theme/panel.tres" type="StyleBox" id=16]
 
@@ -215,9 +215,9 @@ WindowDialog/styles/panel = SubResource( 13 )
 [node name="GridMenuButton" type="Button"]
 margin_right = 12.0
 margin_bottom = 20.0
-focus_mode = 0
+
 theme = ExtResource( 2 )
-enabled_focus_mode = 0
+
 text = "grid menu button"
 expand_icon = true
 script = ExtResource( 3 )
