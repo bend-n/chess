@@ -1,6 +1,6 @@
-[gd_resource type="Theme" load_steps=29 format=2]
+[gd_resource type="Theme" load_steps=31 format=2]
 
-[ext_resource path="res://ui/verdana-bold.tres" type="DynamicFont" id=1]
+[ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/theme/button.tres" type="StyleBox" id=2]
 [ext_resource path="res://assets/ui/whitespace.png" type="Texture" id=3]
 [ext_resource path="res://assets/ui/button.png" type="Texture" id=4]
@@ -8,11 +8,12 @@
 [ext_resource path="res://assets/ui/checkedbox.png" type="Texture" id=6]
 [ext_resource path="res://ui/theme/flatblack.tres" type="StyleBox" id=7]
 [ext_resource path="res://ui/theme/transblack.tres" type="StyleBox" id=8]
-[ext_resource path="res://assets/ui/verdana.ttf" type="DynamicFontData" id=9]
+[ext_resource path="res://ui/ubuntu-bold.tres" type="DynamicFont" id=9]
 [ext_resource path="res://assets/ui/CascadiaCode.ttf" type="DynamicFontData" id=10]
-[ext_resource path="res://assets/ui/verdana-bold-italic.ttf" type="DynamicFontData" id=11]
-[ext_resource path="res://ui/verdana-bold-small.tres" type="DynamicFont" id=12]
+[ext_resource path="res://assets/ui/ubuntu.ttf" type="DynamicFontData" id=11]
+[ext_resource path="res://assets/ui/ubuntu-bold-italic.ttf" type="DynamicFontData" id=12]
 [ext_resource path="res://ui/theme/panel.tres" type="StyleBox" id=13]
+[ext_resource path="res://assets/ui/ubuntu-italic.ttf" type="DynamicFontData" id=14]
 
 [sub_resource type="StyleBoxTexture" id=6]
 texture = ExtResource( 4 )
@@ -44,7 +45,11 @@ expand_margin_right = 10.0
 
 [sub_resource type="DynamicFont" id=19]
 size = 20
-font_data = ExtResource( 11 )
+font_data = ExtResource( 14 )
+
+[sub_resource type="DynamicFont" id=22]
+size = 20
+font_data = ExtResource( 12 )
 
 [sub_resource type="DynamicFont" id=14]
 size = 20
@@ -52,7 +57,7 @@ font_data = ExtResource( 10 )
 
 [sub_resource type="DynamicFont" id=20]
 size = 20
-font_data = ExtResource( 9 )
+font_data = ExtResource( 11 )
 
 [sub_resource type="StyleBoxFlat" id=10]
 content_margin_left = 30.0
@@ -116,7 +121,7 @@ corner_detail = 15
 expand_margin_top = 65.0
 
 [resource]
-default_font = ExtResource( 1 )
+default_font = ExtResource( 9 )
 Button/colors/font_color = Color( 1, 1, 1, 1 )
 Button/colors/font_color_disabled = Color( 1, 1, 1, 0.305882 )
 Button/colors/font_color_focus = Color( 1, 1, 1, 1 )
@@ -139,12 +144,6 @@ ColorPicker/icons/color_sample = ExtResource( 3 )
 ColorPicker/icons/overbright_indicator = ExtResource( 3 )
 ColorPicker/icons/preset_bg = ExtResource( 3 )
 ColorPicker/icons/screen_picker = ExtResource( 3 )
-ColorPickerButton/colors/font_color = Color( 1, 1, 1, 1 )
-ColorPickerButton/colors/font_color_disabled = Color( 1, 1, 1, 0.301961 )
-ColorPickerButton/colors/font_color_focus = Color( 1, 1, 1, 1 )
-ColorPickerButton/colors/font_color_hover = Color( 1, 1, 1, 1 )
-ColorPickerButton/colors/font_color_pressed = Color( 0.913725, 0.913725, 0.913725, 1 )
-ColorPickerButton/icons/bg = ExtResource( 3 )
 HBoxContainer/constants/separation = 15
 HSlider/styles/grabber_area = SubResource( 7 )
 HSlider/styles/grabber_area_highlight = SubResource( 8 )
@@ -176,9 +175,9 @@ PopupMenu/styles/hover = SubResource( 3 )
 PopupMenu/styles/panel = ExtResource( 7 )
 PopupPanel/styles/panel = ExtResource( 8 )
 RichTextLabel/colors/default_color = Color( 1, 1, 1, 1 )
-RichTextLabel/fonts/bold_font = ExtResource( 12 )
+RichTextLabel/fonts/bold_font = ExtResource( 1 )
 RichTextLabel/fonts/bold_italics_font = SubResource( 19 )
-RichTextLabel/fonts/italics_font = SubResource( 19 )
+RichTextLabel/fonts/italics_font = SubResource( 22 )
 RichTextLabel/fonts/mono_font = SubResource( 14 )
 RichTextLabel/fonts/normal_font = SubResource( 20 )
 SpinBox/icons/updown = ExtResource( 3 )
@@ -188,7 +187,7 @@ TabContainer/styles/panel = SubResource( 10 )
 TabContainer/styles/tab_bg = SubResource( 12 )
 TabContainer/styles/tab_fg = SubResource( 11 )
 TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
-TooltipLabel/fonts/font = ExtResource( 12 )
+TooltipLabel/fonts/font = ExtResource( 1 )
 TooltipPanel/styles/panel = SubResource( 21 )
 VBoxContainer/constants/separation = 15
 VScrollBar/styles/scroll = SubResource( 5 )

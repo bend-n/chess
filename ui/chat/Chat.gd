@@ -2,6 +2,8 @@ extends Control
 class_name Chat
 
 onready var list: MessageList = $v/MessageList
+onready var kb = $v/Keyboard
+onready var dsk_input: TextEditor = $v/DesktopInput
 
 var regexes := [
 	[compile("_([^_]+)_"), "[i]$1[/i]"],
@@ -15,7 +17,7 @@ var regexes := [
 	[compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"],
 	[compile("([-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))"), "[url]$1[/url]"],
 ]
-var emoji_replace_regex := compile(":[^:]{1,15}:")
+var emoji_replace_regex := compile(":[^:]{1,30}:")
 
 const piece_emoji_path = "res://assets/pieces/cburnett/"
 const emoji_path = "res://assets/emojis/"
@@ -48,7 +50,7 @@ var expanded_emojis = {}
 
 # create smokey centered text
 func server(txt: String) -> void:
-	list.add_label("[center][b][color=#a9a9a9]%s[/color][/b][/center]" % md2bb(txt))
+	list.add_label("[center][i][b][color=#a9a9a9]%s[/color][/b][/i][/center]" % md2bb(txt))
 
 
 func _init():
@@ -59,17 +61,39 @@ func _exit_tree():
 	Globals.chat = null
 
 
-func _ready():
+func setup_triggers():
 	for trigger_list in emojis:
 		for trigger in trigger_list:
 			expanded_emojis[trigger] = emojis[trigger_list]
 
-	if PacketHandler:
-		PacketHandler.connect("chat", self, "add_label_with")
-	server("Welcome!")
+
+func setup_text_input():
+	if OS.has_touchscreen_ui_hint():
+		# dsk_input is a little dummy button that just opens the kb and shows text on mobile
+		kb.connect("done", self, "send")
+		kb.connect("closed", dsk_input, "set_text")
+		kb.text.emojibutton._setup(emojis)
+		dsk_input.textedit.connect("focus_entered", self, "open_kb")
+		print("mobile keyboard setup")
+	else:
+		kb.free()
+		dsk_input.show()
+		dsk_input.connect("done", self, "send")
+
+	dsk_input.emojibutton._setup(emojis)
+
+
+func open_kb():
+	kb.open(dsk_input.text)
+
+
+func _ready():
+	setup_triggers()
+	setup_text_input()
+	PacketHandler.connect("chat", self, "add_label_with")
+	server("Welcome!")  # say hello
 	yield(get_tree().create_timer(.4), "timeout")
-	server("You can use markdown(sort of)!")
-	$v/TextInput.setup_emojis(emojis)
+	server("You can use markdown(sort of)!")  # say hello again
 
 
 static func compile(src: String) -> RegEx:
@@ -91,7 +115,7 @@ func send(t: String) -> void:
 	var name_data = SaveLoad.get_data("id").name
 	var name = name_data if name_data else "Anonymous"
 	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.get_team())
-	if PacketHandler:
+	if PacketHandler.connected:
 		PacketHandler.relay_signal({"text": t, "who": name}, PacketHandler.RELAYHEADERS.chat)
 	else:
 		add_label_with({text = t, who = name})  # for testing

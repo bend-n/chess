@@ -25,3 +25,7 @@ func _input(_event):
 		get_node("/root/Game").queue_free()
 		get_parent().show()
 		Globals.reset_vars()
+
+
+func _on_test_chat_pressed():
+	get_tree().change_scene_to(preload("res://ui/chat/Chat.tscn"))

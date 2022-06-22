@@ -127,7 +127,7 @@ func flip_board() -> void:
 
 
 func init_labels() -> void:
-	# foreground.offset = rect_global_position
+	foreground.offset = rect_global_position
 	for i in range(8):
 		labels.letters.append(
 			init_label(i, Vector2(i, 7), "abcdefgh"[i], VALIGN_BOTTOM, Label.ALIGN_LEFT, Vector2(10, -10))
@@ -145,7 +145,7 @@ func init_label(i: int, position: Vector2, text: String, valign := 0, align := 0
 	label.rect_position = (position * piece_size) + off
 	label.text = text
 	label.add_color_override("font_color", Globals.board_color1 if i % 2 == 0 else Globals.board_color2)
-	var font: DynamicFont = load("res://ui/verdana-bold.tres").duplicate()
+	var font: DynamicFont = load("res://ui/ubuntu-bold.tres").duplicate()
 	font.size = 15
 	label.add_font_override("font", font)
 	foreground.add_child(label)
