@@ -1,6 +1,6 @@
 [gd_resource type="DynamicFont" load_steps=4 format=2]
 
-[ext_resource path="res://assets/ui/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/ui/ubuntu/ubuntu-italic.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://assets/NotoColorEmoji.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://assets/ui/ubuntu/ubuntu-normal-nerd.ttf" type="DynamicFontData" id=3]
 

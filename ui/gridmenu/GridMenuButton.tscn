@@ -1,12 +1,12 @@
 [gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://ui/gridmenu/GridMenu.gd" type="Script" id=1]
-[ext_resource path="res://ui/theme/main.tres" type="Theme" id=2]
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=2]
 [ext_resource path="res://ui/gridmenu/GridMenuButton.gd" type="Script" id=3]
 [ext_resource path="res://assets/ui/whitespace.png" type="Texture" id=4]
 [ext_resource path="res://assets/ui/CascadiaCode.ttf" type="DynamicFontData" id=5]
-[ext_resource path="res://assets/ui/ubuntu-bold-italic.ttf" type="DynamicFontData" id=6]
-[ext_resource path="res://assets/ui/ubuntu.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://assets/ui/ubuntu/ubuntu-bold-italic.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://assets/ui/ubuntu/ubuntu-normal-nerd.ttf" type="DynamicFontData" id=7]
 [ext_resource path="res://assets/ui/checkedbox.png" type="Texture" id=8]
 [ext_resource path="res://ui/theme/transblack.tres" type="StyleBox" id=9]
 [ext_resource path="res://ui/theme/button.tres" type="StyleBox" id=10]
@@ -215,9 +215,8 @@ WindowDialog/styles/panel = SubResource( 13 )
 [node name="GridMenuButton" type="Button"]
 margin_right = 12.0
 margin_bottom = 20.0
-
+focus_mode = 0
 theme = ExtResource( 2 )
-
 text = "grid menu button"
 expand_icon = true
 script = ExtResource( 3 )

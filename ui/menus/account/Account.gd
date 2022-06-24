@@ -30,7 +30,7 @@ func _ready():
 	PacketHandler.connect("connection_established", self, "attempt_autologin")
 	flags.append_array(Utils.walk_dir("res://assets/flags", false, ["rainbow"]))
 	for i in flags:  # add the items
-		flagchoice.add_item(load("res://assets/flags/%s.png" % i), i.replace("_", " "))
+		flagchoice.add_icon_item(load("res://assets/flags/%s.png" % i), i.replace("_", " "))
 	flagchoice.selected = 0
 
 

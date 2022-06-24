@@ -7,9 +7,12 @@ export(String) var confirm_text = ""
 
 
 func _ready() -> void:
-	PacketHandler.connect("game_over", self, "set_disabled", [true])
-	if PacketHandler:
-		PacketHandler.connect("signal_recieved", self, "_signal_recieved")
+	Events.connect("game_over", self, "disable")
+	PacketHandler.connect("signal_recieved", self, "_signal_recieved")
+
+
+func disable(_a: String, _ar: bool) -> void:
+	disabled = true
 
 
 func _signal_recieved(_signal: Dictionary) -> void:

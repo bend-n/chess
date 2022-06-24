@@ -45,12 +45,11 @@ func return() -> void:  # return to the void
 	if hosting:
 		leaving = true
 		stopgame("")  # stop hosting
-		lobby.set_status("", true)
 		set_hosting(false)
-	lobby.set_buttons(true)
 
 
 func _ready() -> void:
+	Events.connect("go_back", self, "go_back")
 	if Utils.internet and get_tree().get_root().has_node("StartMenu"):
 		yield(get_tree().create_timer(.1), "timeout")
 		open()  # open connection
@@ -99,7 +98,7 @@ func _data_recieved() -> void:
 			Globals.grid.play_pgn(text, true)  # call deferred wont work since grid obj may be null
 		HEADERS.stopgame:
 			if !leaving:  # dont emit the signal if its a stophost thing (HACK)
-				emit_signal("game_over", text, true)
+				go_back(text, true)
 			leaving = false
 		HEADERS.signal:
 			var signal: Dictionary = text
@@ -116,14 +115,23 @@ func _data_recieved() -> void:
 
 func _connection_established(protocol) -> void:
 	._connection_established(protocol)
-	lobby.set_status("", true)
-	lobby.set_buttons(true)
+
+
+func _connection_closed(_was_clean_closed) -> void:
+	._connection_closed(_was_clean_closed)
+	go_back("Connection closed, please reload the game", false)
+
+
+func _connection_error() -> void:
+	._connection_error()
+	go_back("Connection error, please reload the game", false)
 
 
 func join_result(accepted) -> void:
 	if handle_result(accepted, "Joined!"):
 		yield(get_tree(), "idle_frame")
-		Globals.grid.flip_board()  # joine should be black; flip the board
+		if Globals.team == Globals.BLACK:
+			Globals.grid.flip_board()
 
 
 func host_result(accepted) -> void:
@@ -140,15 +148,14 @@ func handle_result(accepted, resultstring: String) -> bool:
 	return false
 
 
-func _handle_game_over(error := "game over", isok := true) -> void:
-	stopgame(error)
+func go_back(error: String, isok: bool) -> void:
 	Globals.reset_vars()
 	if has_node("/root/Game"):
-		get_node("/root/Game").queue_free()
+		$"/root/Game".queue_free()
 	lobby.set_status(error, isok)
 	lobby.toggle(true)
+	lobby.focus()
 	lobby.set_buttons(true)
-	emit_signal("game_over")
 
 
 func _start_game() -> void:

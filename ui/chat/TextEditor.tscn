@@ -1,12 +1,13 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://ui/chat/textedit.gd" type="Script" id=1]
 [ext_resource path="res://ui/chat/emojibutton.gd" type="Script" id=2]
 [ext_resource path="res://ui/gridmenu/GridMenu.gd" type="Script" id=3]
 [ext_resource path="res://ui/chat/grayscale.shader" type="Shader" id=4]
-[ext_resource path="res://assets/emojis/happy.png" type="Texture" id=5]
+[ext_resource path="res://ui/chat/emoji_button_font.tres" type="DynamicFont" id=5]
 [ext_resource path="res://ui/chat/chat_theme.tres" type="Theme" id=6]
 [ext_resource path="res://ui/chat/TextEditor.gd" type="Script" id=7]
+[ext_resource path="res://ui/theme/richtextlabel/tiny.tres" type="DynamicFont" id=8]
 
 [sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 0.25098, 0.266667, 0.294118, 1 )
@@ -14,7 +15,8 @@ bg_color = Color( 0.25098, 0.266667, 0.294118, 1 )
 [sub_resource type="ShaderMaterial" id=3]
 shader = ExtResource( 4 )
 shader_param/saturation = 0.0
-shader_param/scale = 1.0
+
+[sub_resource type="StyleBoxEmpty" id=5]
 
 [sub_resource type="StyleBoxEmpty" id=4]
 
@@ -58,6 +60,7 @@ margin_right = 910.0
 margin_bottom = 35.0
 rect_min_size = Vector2( 200, 20 )
 size_flags_vertical = 4
+custom_fonts/font = ExtResource( 8 )
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 smooth_scrolling = true
@@ -73,28 +76,31 @@ margin_bottom = 50.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
-[node name="EmojiButton" type="TextureButton" parent="TextBar/EmojiButtonHoldler"]
+[node name="EmojiButton" type="Button" parent="TextBar/EmojiButtonHoldler"]
 material = SubResource( 3 )
 margin_right = 50.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 50, 50 )
 focus_mode = 1
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource( 5 )
-expand = true
+custom_fonts/font = ExtResource( 5 )
+custom_styles/hover = SubResource( 5 )
+custom_styles/pressed = SubResource( 5 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 5 )
+custom_styles/normal = SubResource( 5 )
+text = "😿"
+flat = true
 script = ExtResource( 2 )
-offset = Vector2( -180, -180 )
+offset = Vector2( -350, -350 )
 
 [node name="Popup" type="PopupPanel" parent="TextBar/EmojiButtonHoldler/EmojiButton"]
-margin_right = 40.0
-margin_bottom = 40.0
+visible = true
 custom_styles/panel = SubResource( 4 )
 
 [node name="EmojiMenu" type="GridContainer" parent="TextBar/EmojiButtonHoldler/EmojiButton/Popup"]
-margin_right = 40.0
-margin_bottom = 40.0
-custom_constants/vseparation = 10
-custom_constants/hseparation = 10
+custom_constants/vseparation = 0
+custom_constants/hseparation = 0
 script = ExtResource( 3 )
 
 [connection signal="send" from="TextBar/TextEditHolder/text" to="." method="_on_text_send"]

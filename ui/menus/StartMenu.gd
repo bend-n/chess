@@ -2,8 +2,8 @@ extends Control
 
 
 func _ready() -> void:
-	if OS.has_feature("HTML5"):
-		find_node("quit").queue_free()
+	if OS.has_feature("web"):
+		find_node("").queue_free()
 
 
 func _on_quit_pressed() -> void:

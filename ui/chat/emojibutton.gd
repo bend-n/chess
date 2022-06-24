@@ -1,12 +1,12 @@
-extends TextureButton
+extends Button
 
 export(float) var scale_normal := 0.8
 export(float) var scale_hover := 1.0
-var cur_scale := 0.8
+var cur_scale := scale_normal
 
 export(float) var saturation_normal := 0.0
 export(float) var saturation_hover := 1.0
-var cur_saturation := 0.0
+var cur_saturation := saturation_normal
 
 export(float) var weight := 0.35
 
@@ -20,15 +20,17 @@ signal emoji_selected(emoji)
 
 onready var emojimenu: GridMenu = $Popup/EmojiMenu
 onready var popup: PopupPanel = $Popup
+var font: DynamicFont = load("res://ui/chat/emoji_button_font.tres")
+onready var font_size = font.size
 
 
 func change_icon():
 	if emojis:
-		texture_normal = load(emojis.values()[randi() % len(emojis)])
+		text = emojis.values()[randi() % len(emojis)]
 
 
 func _ready():
-	material.set_shader_param("scale", scale_normal)
+	scale()
 	set_process(false)
 
 
@@ -36,14 +38,16 @@ func _setup(_emojis: Dictionary):
 	emojis = _emojis
 	change_icon()
 	for key in emojis.keys():
-		emojimenu.add_item(load(emojis[key]), arr2tooltip(key), Vector2(30, 30))
+		emojimenu.add_text_item(emojis[key], arr2tooltip(key), Vector2(40, 40))
 
 
-func arr2tooltip(arr: Array) -> String:
-	var string = ""
-	for i in arr:
-		string += i + " "
-	return string
+func arr2tooltip(arr) -> String:
+	if typeof(arr) == TYPE_ARRAY:
+		var string = ""
+		for i in arr:
+			string += i + " "
+		return string
+	return arr
 
 
 func _focused(q: bool):
@@ -63,8 +67,12 @@ func _process(_delta: float) -> void:
 		if is_equal_approx(cur_scale, scale_normal):
 			set_process(false)
 
-	material.set_shader_param("scale", cur_scale)
+	scale()
 	material.set_shader_param("saturation", cur_saturation)
+
+
+func scale():
+	font.size = cur_scale * font_size
 
 
 func _pressed() -> void:
@@ -75,5 +83,8 @@ func _pressed() -> void:
 
 
 func _on_EmojiMenu_pressed(index: int):
-	emit_signal("emoji_selected", emojis.keys()[index][0])
+	emit_signal(
+		"emoji_selected",
+		emojis.keys()[index] if typeof(emojis.keys()[index]) == TYPE_STRING else emojis.keys()[index][0]
+	)
 	popup.hide()

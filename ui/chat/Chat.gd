@@ -22,28 +22,87 @@ var emoji_replace_regex := compile(":[^:]{1,30}:")
 const piece_emoji_path = "res://assets/pieces/cburnett/"
 const emoji_path = "res://assets/emojis/"
 const emojis := {
-	[":cold:"]: emoji_path + "cold.png",
-	[":bigsmile:"]: emoji_path + "bigsmile.png",
-	[":cry:", ":sad:"]: emoji_path + "cry.png",
-	[":happy:"]: emoji_path + "happy.png",
-	[":hmm:"]: emoji_path + "hmm.png",
-	[":huh:"]: emoji_path + "huh.png",
-	[":smile:"]: emoji_path + "smile.png",
-	[":unhappy:"]: emoji_path + "unhappy.png",
-	[":upsidedown_smile:"]: emoji_path + "upsidedown_smile.png",
-	[":weary:"]: emoji_path + "weary.png",
-	[":what:"]: emoji_path + "what.png",
-	[":wink_tongue:"]: emoji_path + "wink_tongue.png",
-	[":wink:"]: emoji_path + "wink.png",
-	[":wow:"]: emoji_path + "wow.png",
-	[":zany:"]: emoji_path + "zany.png",
-	[":...:"]: emoji_path + "3dots.png",
-	[":R:", ":rook:"]: piece_emoji_path + "wR.png",
-	[":N:", ":knight:"]: piece_emoji_path + "wN.png",
-	[":B:", ":bishop:"]: piece_emoji_path + "wB.png",
-	[":Q:", ":queen:"]: piece_emoji_path + "wQ.png",
-	[":K:", ":king:"]: piece_emoji_path + "wK.png",
-	[":P:", ":pawn:"]: piece_emoji_path + "wP.png",
+	":grinning:": "😀",
+	":smiley:": "😃",
+	":smile:": "😄",
+	":grin:": "😁",
+	[":laughing:", ":satisfied:"]: "😆",
+	":sweat_smile:": "😅",
+	":joy:": "😂",
+	":rofl:": "🤣",
+	":blush:": "😊",
+	":innocent:": "😇",
+	[":slight_smile:", ":slightly_smiling:"]: "🙂",
+	[":upside_down:", ":upside_down:"]: "🙃",
+	":wink:": "😉",
+	":relieved:": "😌",
+	":tear_smile:": "🥲",
+	":heart_eyes:": "😍",
+	":hearty:": "🥰",
+	":stuck_out_tongue_winking_eye:": "😜",
+	":yum:": "😋",
+	":stuck_out_tongue_closed_eyes:": "😝",
+	":stuck_out_tongue:": "😛",
+	":raised_eyebrow:": "🤨",
+	":sunglasses:": "😎",
+	":nerd:": "🤓",
+	":star_struck:": "🤩",
+	":partying:": "🥳",
+	":smirk:": "😏",
+	":unamused:": "😒",
+	":disappointed:": "😞",
+	":pensive:": "😔",
+	":worried:": "😟",
+	":confused:": "😕",
+	":frown:": "🙁",
+	":persevere:": "😣",
+	":confounded:": "😖",
+	":tired:": "😫",
+	":weary:": "😩",
+	":cry:": "😢",
+	":sob:": "😭",
+	":triumph:": "😤",
+	":angry:": "😠",
+	":rage:": "😡",
+	":no_mouth:": "😶",
+	":sleeping:": "😴",
+	":cold:": "🥶",
+	":neutral:": "😐",
+	":expressionless:": "😑",
+	":hushed:": "😯",
+	":frowning:": "😦",
+	":anguished:": "😧",
+	":open_mouth:": "😮",
+	":astonished:": "😲",
+	":dizzy:": "😵",
+	":scream:": "😱",
+	":fearful:": "😨",
+	":cold_sweat:": "😰",
+	":disappointed_relieved:": "😥",
+	":sweat:": "😓",
+	":sleepy:": "😪",
+	":devil:": "😈",
+	":face_with_rolling_eyes:": "🙄",
+	":lying:": "🤥",
+	":grimacing:": "😬",
+	":zipped_mouth:": "🤐",
+	":nauseated:": "🤢",
+	":sneezing:": "🤧",
+	":mask:": "😷",
+	":face_with_thermometer:": "🤒",
+	":face_with_head_bandage:": "🤕",
+	":smiley_cat:": "😺",
+	":smile_cat:": "😸",
+	":joy_cat:": "😹",
+	":heart_eyes_cat:": "😻",
+	":turtle:": "🐢",
+	":cat:": "🐈",
+	":smirk_cat:": "😼",
+	":scream_cat:": "🙀",
+	":cat_joy:": "😹",
+	":cat_grin:": "😸",
+	":crying_cat:": "😿",
+	":pouting_cat:": "😾",
 }
 var expanded_emojis = {}
 
@@ -61,10 +120,13 @@ func _exit_tree():
 	Globals.chat = null
 
 
-func setup_triggers():
+func expand_emojis():
 	for trigger_list in emojis:
-		for trigger in trigger_list:
-			expanded_emojis[trigger] = emojis[trigger_list]
+		if typeof(trigger_list) == TYPE_ARRAY:
+			for trigger in trigger_list:
+				expanded_emojis[trigger] = emojis[trigger_list]
+		else:
+			expanded_emojis[trigger_list] = emojis[trigger_list]
 
 
 func setup_text_input():
@@ -74,7 +136,7 @@ func setup_text_input():
 		kb.connect("closed", dsk_input, "set_text")
 		kb.text.emojibutton._setup(emojis)
 		dsk_input.textedit.connect("focus_entered", self, "open_kb")
-		print("mobile keyboard setup")
+		Log.info("Mobile keyboard setup")
 	else:
 		kb.free()
 		dsk_input.show()
@@ -88,7 +150,7 @@ func open_kb():
 
 
 func _ready():
-	setup_triggers()
+	expand_emojis()
 	setup_text_input()
 	PacketHandler.connect("chat", self, "add_label_with")
 	server("Welcome!")  # say hello
@@ -140,5 +202,5 @@ func emoji2bb(input: String) -> String:
 	for i in emoji_replace_regex.search_all(input):
 		var emoji = i.strings[0]
 		if emoji in expanded_emojis:
-			input = input.replace(emoji, "[img=30]%s[/img]" % expanded_emojis[emoji])
+			input = input.replace(emoji, "%s" % expanded_emojis[emoji])
 	return input

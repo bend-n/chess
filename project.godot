@@ -322,7 +322,7 @@ enabled=PoolStringArray(  )
 
 [gui]
 
-theme/custom="res://ui/theme/main.tres"
+theme/custom="res://ui/theme/main.theme"
 
 [importer_defaults]
 

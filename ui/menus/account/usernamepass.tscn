@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://assets/ui/ubuntu-bold.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/ui/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://ui/menus/account/Secret.gd" type="Script" id=2]
-[ext_resource path="res://ui/theme/main.tres" type="Theme" id=5]
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=5]
 [ext_resource path="res://ui/menus/account/usernamepass.gd" type="Script" id=6]
 [ext_resource path="res://ui/menus/account/Password.gd" type="Script" id=7]
 [ext_resource path="res://ui/menus/account/Username.gd" type="Script" id=8]

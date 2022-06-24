@@ -1,7 +1,7 @@
 extends Node
 
-const WHITE = 1
-const BLACK = 0
+const WHITE = true
+const BLACK = false
 
 var __nosethalfmove := false
 var pawns := []  # PoolPawnArray
