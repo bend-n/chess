@@ -8,13 +8,20 @@ signal selected(index)
 
 export(Vector2) var offset = Vector2(50, -50)
 
+onready var txt = text
+
 var selected := 0 setget set_selected
 var items := []
 
 
-func add_item(icon, tooltip := "", size := Vector2(40, 30)):
+func add_text_item(text: String, tooltip := "", size := Vector2(40, 30)) -> Button:
+	items.append(text)
+	return gridmenu.add_text_item(text, tooltip, size)
+
+
+func add_icon_item(icon: Texture, tooltip := "", size := Vector2(40, 30)) -> BarTextureButton:
 	items.append(icon)
-	gridmenu.add_item(icon, tooltip, size)
+	return gridmenu.add_icon_item(icon, tooltip, size)
 
 
 func _on_GridMenu_pressed(index: int):
@@ -25,7 +32,10 @@ func _on_GridMenu_pressed(index: int):
 
 func set_selected(index: int):
 	selected = index
-	icon = items[index]
+	if typeof(items[index]) == TYPE_OBJECT:
+		icon = items[index]
+	else:
+		text = items[index] + txt
 
 
 func _pressed() -> void:

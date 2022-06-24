@@ -14,9 +14,19 @@ func toggle(onoff: bool) -> void:
 func _ready() -> void:
 	PacketHandler.lobby = self
 	PacketHandler.connect("hosting", find_node("stophost"), "set_visible")
+	PacketHandler.connect("connection_established", self, "reset")
 	if !Utils.internet:
 		set_status("no internet", false)
 		set_buttons(false)
+
+
+func reset():
+	set_status("", true)
+	set_buttons(true)
+
+
+func focus():
+	get_parent().current_tab = get_parent().get_children().find(self)
 
 
 func set_status(text: String, isok: bool) -> void:  # Simple way to show status.
@@ -74,10 +84,6 @@ func _on_spectate_pressed():
 		set_status("Invalid address", false)
 
 
-func _on_tabs_tab_changed(tab: int):
-	if self != get_parent().get_children()[tab]:
-		PacketHandler.return()
-
-
 func _on_stophost_pressed() -> void:
 	PacketHandler.return()
+	reset()

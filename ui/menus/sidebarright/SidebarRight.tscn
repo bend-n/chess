@@ -1,15 +1,15 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://ui/menus/sidebarright/drawbutton.gd" type="Script" id=1]
 [ext_resource path="res://ui/menus/sidebarright/resignbutton.gd" type="Script" id=2]
 [ext_resource path="res://ui/Status.gd" type="Script" id=3]
-[ext_resource path="res://assets/ui/ubuntu-bold.ttf" type="DynamicFontData" id=4]
 [ext_resource path="res://ui/barbutton/default_highlight.tres" type="StyleBox" id=5]
 [ext_resource path="res://ui/barbutton/default_pressed.tres" type="StyleBox" id=6]
 [ext_resource path="res://ui/barbutton/default.tres" type="StyleBox" id=7]
 [ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=8]
+[ext_resource path="res://ui/ubuntu-bold.tres" type="DynamicFont" id=9]
 [ext_resource path="res://ui/menus/sidebarright/SidebarRight.gd" type="Script" id=13]
-[ext_resource path="res://ui/theme/main.tres" type="Theme" id=14]
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=14]
 [ext_resource path="res://ui/menus/sidebarright/undobutton.gd" type="Script" id=18]
 [ext_resource path="res://ui/menus/sidebarright/flipbutton.gd" type="Script" id=19]
 [ext_resource path="res://ui/menus/sidebarright/sandisplay/SanDisplay.tscn" type="PackedScene" id=21]
@@ -17,10 +17,6 @@
 
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 0.14902, 0.141176, 0.129412, 0.588235 )
-
-[sub_resource type="DynamicFont" id=10]
-size = 40
-font_data = ExtResource( 4 )
 
 [sub_resource type="StyleBoxEmpty" id=11]
 
@@ -36,18 +32,13 @@ corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 corner_detail = 15
 
-[sub_resource type="DynamicFont" id=1]
-size = 85
-font_data = ExtResource( 4 )
-
 [sub_resource type="Theme" id=12]
-default_font = SubResource( 1 )
 Button/colors/font_color = Color( 1, 1, 1, 1 )
 Button/colors/font_color_disabled = Color( 0.643137, 0.592157, 0.592157, 0.2 )
 Button/colors/font_color_focus = Color( 1, 1, 1, 1 )
 Button/colors/font_color_hover = Color( 1, 1, 1, 1 )
 Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
-Button/fonts/font = SubResource( 10 )
+Button/fonts/font = ExtResource( 9 )
 Button/styles/disabled = ExtResource( 7 )
 Button/styles/focus = SubResource( 11 )
 Button/styles/hover = ExtResource( 5 )
@@ -107,6 +98,7 @@ hint_tooltip = "flip the board"
 focus_mode = 0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 9 )
 text = ""
 script = ExtResource( 19 )
 

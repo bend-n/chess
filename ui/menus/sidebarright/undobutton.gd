@@ -7,8 +7,7 @@ const undo_declined_message = "undo declined"
 
 
 func _ready() -> void:
-	if PacketHandler:
-		PacketHandler.connect("undo", self, "undo_signal_recieved")
+	PacketHandler.connect("undo", self, "undo_signal_recieved")
 
 
 func _pressed() -> void:
@@ -52,7 +51,7 @@ func _confirmed(what: bool) -> void:
 
 
 func undo():
-	var numberex = SanParse.compile("([0-9]+)\\.", false)
+	var numberex = SanParse.compile("(^[0-9]+)\\.", false)
 	var which_move = 0
 	var mov = Utils.moves_list[-1]
 	var result = numberex.search(mov)

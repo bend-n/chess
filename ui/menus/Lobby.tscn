@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://ui/theme/main.tres" type="Theme" id=1]
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
 [ext_resource path="res://ui/menus/Lobby.gd" type="Script" id=2]
 [ext_resource path="res://ui/menus/Disclaimer.gd" type="Script" id=3]
 [ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=4]
@@ -17,24 +17,20 @@ margin_top = 290.0
 margin_right = 1011.0
 margin_bottom = 509.0
 
-[node name="HBox" type="HBoxContainer" parent="Center"]
+[node name="VBox" type="VBoxContainer" parent="Center"]
 margin_right = 600.0
 margin_bottom = 219.0
 
-[node name="VBox" type="VBoxContainer" parent="Center/HBox"]
-margin_right = 600.0
-margin_bottom = 219.0
-
-[node name="stophost" type="Button" parent="Center/HBox/VBox"]
- focus_mode = 0
+[node name="stophost" type="Button" parent="Center/VBox"]
 visible = false
-margin_left = 7.0
-margin_right = 343.0
-margin_bottom = 106.0
+margin_left = 152.0
+margin_right = 448.0
+margin_bottom = 102.0
+focus_mode = 0
 size_flags_horizontal = 4
 text = "stop hosting"
 
-[node name="Address" type="LineEdit" parent="Center/HBox/VBox"]
+[node name="Address" type="LineEdit" parent="Center/VBox"]
 margin_right = 600.0
 margin_bottom = 102.0
 rect_min_size = Vector2( 600, 0 )
@@ -47,48 +43,42 @@ placeholder_text = "game_code"
 caret_blink = true
 caret_blink_speed = 0.5
 
-[node name="buttons" type="HBoxContainer" parent="Center/HBox/VBox"]
+[node name="buttons" type="HBoxContainer" parent="Center/VBox"]
 margin_top = 117.0
 margin_right = 600.0
 margin_bottom = 219.0
 
-[node name="SpectateButton" type="Button" parent="Center/HBox/VBox/buttons"]
- focus_mode = 0
+[node name="SpectateButton" type="Button" parent="Center/VBox/buttons"]
 margin_right = 223.0
 margin_bottom = 102.0
-
+focus_mode = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 disabled = true
-
 text = "spectate"
 
-[node name="JoinButton" type="Button" parent="Center/HBox/VBox/buttons"]
- focus_mode = 0
+[node name="JoinButton" type="Button" parent="Center/VBox/buttons"]
 margin_left = 238.0
 margin_right = 411.0
 margin_bottom = 102.0
 rect_min_size = Vector2( 150, 0 )
 hint_tooltip = "join the game"
-
+focus_mode = 0
 size_flags_horizontal = 7
 disabled = true
-
 text = "join"
 
-[node name="HostButton" type="Button" parent="Center/HBox/VBox/buttons"]
- focus_mode = 0
+[node name="HostButton" type="Button" parent="Center/VBox/buttons"]
 margin_left = 426.0
 margin_right = 600.0
 margin_bottom = 102.0
 hint_tooltip = "host the game"
-
+focus_mode = 0
 size_flags_horizontal = 7
 disabled = true
-
 text = "host"
 
-[node name="StatusOK" type="Label" parent="Center/HBox/VBox"]
+[node name="StatusOK" type="Label" parent="Center/VBox"]
 visible = false
 margin_top = 242.0
 margin_right = 350.0
@@ -96,7 +86,7 @@ margin_bottom = 292.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 autowrap = true
 
-[node name="StatusFail" type="Label" parent="Center/HBox/VBox"]
+[node name="StatusFail" type="Label" parent="Center/VBox"]
 visible = false
 margin_top = 242.0
 margin_right = 350.0
@@ -104,7 +94,7 @@ margin_bottom = 292.0
 custom_colors/font_color = Color( 0.698039, 0.415686, 0.415686, 1 )
 autowrap = true
 
-[node name="Disclaimer" type="Label" parent="Center/HBox/VBox"]
+[node name="Disclaimer" type="Label" parent="Center/VBox"]
 visible = false
 margin_top = 242.0
 margin_right = 350.0
@@ -118,15 +108,15 @@ text = "  Currently logged out.
 valign = 1
 script = ExtResource( 3 )
 
-[node name="ColorRect" type="ColorRect" parent="Center/HBox/VBox/Disclaimer"]
+[node name="ColorRect" type="ColorRect" parent="Center/VBox/Disclaimer"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -46.0
 color = Color( 0.588235, 0.560784, 0.309804, 1 )
 
-[connection signal="pressed" from="Center/HBox/VBox/stophost" to="." method="_on_stophost_pressed"]
-[connection signal="text_entered" from="Center/HBox/VBox/Address" to="." method="_on_Address_text_entered"]
-[connection signal="pressed" from="Center/HBox/VBox/buttons/SpectateButton" to="." method="_on_spectate_pressed"]
-[connection signal="pressed" from="Center/HBox/VBox/buttons/JoinButton" to="." method="_on_join_pressed"]
-[connection signal="pressed" from="Center/HBox/VBox/buttons/HostButton" to="." method="_on_HostButton_pressed"]
+[connection signal="pressed" from="Center/VBox/stophost" to="." method="_on_stophost_pressed"]
+[connection signal="text_entered" from="Center/VBox/Address" to="." method="_on_Address_text_entered"]
+[connection signal="pressed" from="Center/VBox/buttons/SpectateButton" to="." method="_on_spectate_pressed"]
+[connection signal="pressed" from="Center/VBox/buttons/JoinButton" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Center/VBox/buttons/HostButton" to="." method="_on_HostButton_pressed"]

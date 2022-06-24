@@ -1,14 +1,12 @@
 extends Node
 class_name Network
 
-var ws := WebSocketClient.new()
+const url := "wss://gd-chess-server.herokuapp.com/"
 
+var ws := WebSocketClient.new()
 var connected := false
 
-signal game_over(problem, isok)
 signal connection_established
-
-const url := "wss://gd-chess-server.herokuapp.com/"
 
 
 func _ready():
@@ -38,14 +36,12 @@ func _connection_closed(_was_clean_closed) -> void:
 	connected = false
 	Log.net("DISCONNECTED FROM %s" % url)
 	Log.err("Connection closed")
-	emit_signal("game_over", "Connection closed", false)
 
 
 func _connection_error() -> void:
 	connected = false
 	Log.err("Connection error")
 	Log.net("DISCONNECTED FROM %s" % url)
-	emit_signal("game_over", "Connection error", false)
 
 
 func _data_recieved():
@@ -58,11 +54,13 @@ func _process(_delta: float) -> void:
 		ws.poll()
 
 
-func send_packet(variant, header: String) -> void:
+func send_packet(variant, header: String) -> int:
 	var pckt = {header = header, data = variant}
 	if ws.get_peer(1).is_connected_to_host():
 		ws.get_peer(1).put_var(pckt)
 		Log.net("SENT: %s" % pckt)
+		return OK
 	else:
 		Log.err("not connected to server: packet %s not sent" % pckt)
 		Log.net("FAILED SEND: %s" % pckt)
+		return ERR_CONNECTION_ERROR

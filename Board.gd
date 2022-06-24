@@ -35,10 +35,14 @@ func _init() -> void:
 	Globals.grid = self
 
 
+func _on_game_over(_reason: String, _isok: bool):
+	stop_input = true
+
+
 func _ready() -> void:
+	Events.connect("game_over", self, "_on_game_over")
 	rect_pivot_offset = rect_size / 2
-	if PacketHandler:
-		PacketHandler.connect("move_data", self, "play_san")
+	PacketHandler.connect("move_data", self, "play_san")
 	init_board()  # create the tile squares
 	init_matrix()  # create 2d matrix
 	init_pieces()  # create the pieces
@@ -153,20 +157,22 @@ func init_label(i: int, position: Vector2, text: String, valign := 0, align := 0
 
 
 func drawed(reason := "") -> void:
-	ui.set_status("draw by " + reason, 0)
-	Events.emit_signal("game_over")
+	var string = "draw by " + reason
+	ui.set_status(string, 0)
+	Events.emit_signal("game_over", string, true)
 	SoundFx.play("Draw")
 	yield(get_tree().create_timer(5), "timeout")
-	Events.emit_signal("go_back")
+	Events.emit_signal("go_back", string, true)
 
 
 func win(winner: bool, reason := "") -> void:
-	ui.set_status("%s won the game by %s" % ["white" if winner else "black", reason], 0)  #: black won the game by checkmate
-	Events.emit_signal("game_over")
-	Log.info("%s won the game in %s turns!" % ["white" if winner else "black", Globals.fullmove])
+	var string = "%s won the game by %s" % ["white" if winner else "black", reason]
+	ui.set_status(string, 0)  #: black won the game by checkmate
+	Events.emit_signal("game_over", string, true)
+	Log.info([string, Utils.get_pgn()])
 	SoundFx.play("Victory")
 	yield(get_tree().create_timer(5), "timeout")
-	Events.emit_signal("go_back")
+	Events.emit_signal("go_back", string, true)
 
 
 func check_in_check(prin := false) -> bool:  # check if in_check

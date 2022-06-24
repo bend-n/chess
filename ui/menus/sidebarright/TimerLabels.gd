@@ -36,7 +36,7 @@ func _ready() -> void:
 	Events.connect("game_over", self, "_on_game_over")
 
 
-func _on_game_over() -> void:
+func _on_game_over(_ar: String, _arg: bool) -> void:
 	stop = true
 
 
