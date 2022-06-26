@@ -2,7 +2,7 @@ extends Node
 class_name PGN
 
 
-func parse(pgn: String, tags := true) -> Dictionary:
+func parse(pgn: String, tags := true):
 	# put tags into a dictionary,
 	# and the moves into a array
 
@@ -33,8 +33,7 @@ func parse(pgn: String, tags := true) -> Dictionary:
 					headers[cap[1]] = cap[2]
 				else:
 					# invalid headers
-					push_error("invalid headers")
-					return {}
+					return null
 			else:
 				break
 	var movetext := PoolStringArray()

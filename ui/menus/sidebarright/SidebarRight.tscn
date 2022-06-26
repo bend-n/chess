@@ -99,7 +99,7 @@ focus_mode = 0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 9 )
-text = ""
+text = "ﮨ"
 script = ExtResource( 19 )
 
 [node name="DrawButton" type="Button" parent="V/buttonbarholder/buttonbar"]
@@ -124,7 +124,7 @@ hint_tooltip = "resign"
 focus_mode = 0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
-text = ""
+text = ""
 script = ExtResource( 2 )
 confirm_text = "Resign?"
 
@@ -137,7 +137,7 @@ hint_tooltip = "request a undo"
 focus_mode = 0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
-text = "社"
+text = ""
 script = ExtResource( 18 )
 confirm_text = "Your opponent requests a undo"
 status = NodePath("../../../Status")

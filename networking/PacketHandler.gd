@@ -129,13 +129,19 @@ func _connection_error() -> void:
 
 func join_result(accepted) -> void:
 	if handle_result(accepted, "Joined!"):
-		yield(get_tree(), "idle_frame")
-		if Globals.team == Globals.BLACK:
-			Globals.grid.flip_board()
+		flip_if_black()
+
+
+func flip_if_black():
+	yield(get_tree(), "idle_frame")
+	if Globals.team == Globals.BLACK:
+		Globals.grid.flip_board()
 
 
 func host_result(accepted) -> void:
-	set_hosting(handle_result(accepted, "Hosted!"))
+	if handle_result(accepted, "Hosted!"):
+		set_hosting(true)
+		flip_if_black()
 
 
 func handle_result(accepted, resultstring: String) -> bool:
@@ -149,6 +155,7 @@ func handle_result(accepted, resultstring: String) -> bool:
 
 
 func go_back(error: String, isok: bool) -> void:
+	stopgame(game_code)
 	Globals.reset_vars()
 	if has_node("/root/Game"):
 		$"/root/Game".queue_free()
@@ -186,8 +193,12 @@ func join_game(game: String = game_code) -> void:
 	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.joinrequest, game)
 
 
-func host_game(game: String = game_code) -> void:
-	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.hostrequest, game)
+func host_game(game: String = game_code, white := true, moves_array: PoolStringArray = []) -> void:
+	send_gamecode_packet(
+		Utils.append_dict(SaveLoad.get_public_info(), {team = white, moves = moves_array}),
+		HEADERS.hostrequest,
+		game
+	)
 
 
 func spectate(game: String = game_code) -> void:

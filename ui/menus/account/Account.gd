@@ -3,7 +3,7 @@ extends Control
 onready var flags: PoolStringArray = ["rainbow"]
 onready var flagchoice: GridMenuButton = $choose/signup/flag
 onready var data: Dictionary = SaveLoad.get_data("id")
-onready var status: StatusLabel = $H/InfoLabel  # not a StatusLabel
+onready var status: InfoLabel = $H/InfoLabel  # not a StatusLabel
 onready var loading = $LoadingAnimation
 
 onready var tabs := {

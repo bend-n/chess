@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
-[ext_resource path="res://ui/menus/Lobby.gd" type="Script" id=2]
-[ext_resource path="res://ui/menus/Disclaimer.gd" type="Script" id=3]
+[ext_resource path="res://ui/menus/lobby/Lobby.gd" type="Script" id=2]
+[ext_resource path="res://ui/menus/lobby/Disclaimer.gd" type="Script" id=3]
 [ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=4]
+[ext_resource path="res://ui/menus/lobby/GameConfig.tscn" type="PackedScene" id=5]
 
 [node name="Lobby" type="CenterContainer"]
 anchor_right = 1.0
@@ -21,10 +22,16 @@ margin_bottom = 509.0
 margin_right = 600.0
 margin_bottom = 219.0
 
+[node name="GameConfig" parent="Center/VBox" instance=ExtResource( 5 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 727.0
+margin_bottom = 450.0
+
 [node name="stophost" type="Button" parent="Center/VBox"]
 visible = false
-margin_left = 152.0
-margin_right = 448.0
+margin_right = 296.0
 margin_bottom = 102.0
 focus_mode = 0
 size_flags_horizontal = 4
@@ -34,7 +41,7 @@ text = "stop hosting"
 margin_right = 600.0
 margin_bottom = 102.0
 rect_min_size = Vector2( 600, 0 )
-hint_tooltip = "place game code here"
+hint_tooltip = "people will be able to join this gamecode"
 focus_mode = 1
 text = "game_code"
 align = 1
@@ -59,7 +66,7 @@ text = "spectate"
 
 [node name="JoinButton" type="Button" parent="Center/VBox/buttons"]
 margin_left = 238.0
-margin_right = 411.0
+margin_right = 406.0
 margin_bottom = 102.0
 rect_min_size = Vector2( 150, 0 )
 hint_tooltip = "join the game"
@@ -69,14 +76,14 @@ disabled = true
 text = "join"
 
 [node name="HostButton" type="Button" parent="Center/VBox/buttons"]
-margin_left = 426.0
+margin_left = 421.0
 margin_right = 600.0
 margin_bottom = 102.0
-hint_tooltip = "host the game"
+hint_tooltip = "create a game"
 focus_mode = 0
 size_flags_horizontal = 7
 disabled = true
-text = "host"
+text = "create"
 
 [node name="StatusOK" type="Label" parent="Center/VBox"]
 visible = false
@@ -116,7 +123,6 @@ margin_right = -46.0
 color = Color( 0.588235, 0.560784, 0.309804, 1 )
 
 [connection signal="pressed" from="Center/VBox/stophost" to="." method="_on_stophost_pressed"]
-[connection signal="text_entered" from="Center/VBox/Address" to="." method="_on_Address_text_entered"]
 [connection signal="pressed" from="Center/VBox/buttons/SpectateButton" to="." method="_on_spectate_pressed"]
 [connection signal="pressed" from="Center/VBox/buttons/JoinButton" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="Center/VBox/buttons/HostButton" to="." method="_on_HostButton_pressed"]
