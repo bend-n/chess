@@ -57,19 +57,23 @@ func _on_join_pressed() -> void:
 func _on_HostButton_pressed() -> void:
 	if validate_text():
 		set_buttons(false)
-		PacketHandler.host_game()
+		$Center/VBox/GameConfig.open(self)
 	else:
 		set_status("Invalid address", false)
 
 
 func validate_text(text := address.get_text()) -> String:
 	var pos := address.caret_position
-	text = text.strip_edges()
-	text = text.replace(" ", "_")
+	text = clean_text(text)
 	address.text = text
 	address.caret_position = pos
 	PacketHandler.game_code = text
 	return text
+
+
+func clean_text(text: String) -> String:
+	text = text.strip_edges()
+	return text.replace(" ", "_")
 
 
 func _on_Address_text_entered(new_text: String) -> void:

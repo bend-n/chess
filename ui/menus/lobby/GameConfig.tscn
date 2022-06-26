@@ -1,0 +1,100 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
+[ext_resource path="res://ui/slider_button/SliderButton.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/pieces/cburnett/wK.png" type="Texture" id=3]
+[ext_resource path="res://assets/pieces/cburnett/bK.png" type="Texture" id=4]
+[ext_resource path="res://ui/menus/lobby/GameConfig.gd" type="Script" id=5]
+[ext_resource path="res://ui/menus/lobby/PGNEntry.gd" type="Script" id=6]
+
+[node name="GameConfig" type="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 5 )
+
+[node name="General" type="VBoxContainer" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 30.0
+margin_top = 86.0
+margin_right = -30.0
+margin_bottom = -30.0
+
+[node name="H" type="HBoxContainer" parent="General"]
+margin_right = 1362.0
+margin_bottom = 100.0
+custom_constants/separation = 0
+alignment = 1
+
+[node name="Black" type="TextureRect" parent="General/H"]
+margin_left = 481.0
+margin_right = 581.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+texture = ExtResource( 4 )
+expand = true
+stretch_mode = 6
+
+[node name="SliderButton" parent="General/H" instance=ExtResource( 2 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 581.0
+margin_top = 25.0
+margin_right = 781.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 200, 50 )
+size_flags_vertical = 4
+on_color = Color( 1, 1, 1, 1 )
+off_color = Color( 0, 0, 0, 1 )
+
+[node name="White" type="TextureRect" parent="General/H"]
+margin_left = 781.0
+margin_right = 881.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 6
+
+[node name="H2" type="HBoxContainer" parent="General"]
+margin_top = 115.0
+margin_right = 1362.0
+margin_bottom = 217.0
+alignment = 1
+
+[node name="Stop" type="Button" parent="General/H2"]
+margin_left = 450.0
+margin_right = 621.0
+margin_bottom = 102.0
+size_flags_horizontal = 4
+text = "exit"
+
+[node name="Continue" type="Button" parent="General/H2"]
+margin_left = 636.0
+margin_right = 911.0
+margin_bottom = 102.0
+size_flags_horizontal = 4
+text = "continue "
+
+[node name="Advanced" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 30.0
+margin_top = 86.0
+margin_right = -30.0
+margin_bottom = -30.0
+
+[node name="Pgn" type="LineEdit" parent="Advanced"]
+margin_right = 1362.0
+margin_bottom = 102.0
+placeholder_text = "1. e4"
+script = ExtResource( 6 )
+
+[connection signal="pressed" from="General/H2/Stop" to="." method="_on_Stop_pressed"]
+[connection signal="pressed" from="General/H2/Continue" to="." method="_on_Continue_pressed"]
+[connection signal="pgn_selected" from="Advanced/Pgn" to="." method="_on_pgn_selected"]
+[connection signal="text_entered" from="Advanced/Pgn" to="Advanced/Pgn" method="_text_entered"]
