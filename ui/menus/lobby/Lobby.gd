@@ -5,6 +5,7 @@ onready var address: LineEdit = find_node("Address")
 onready var buttons := find_node("buttons")
 onready var status_ok := find_node("StatusOK")
 onready var status_fail := find_node("StatusFail")
+onready var hostbutton = find_node("HostButton")
 
 
 func toggle(onoff: bool) -> void:
@@ -58,6 +59,7 @@ func _on_HostButton_pressed() -> void:
 	if validate_text():
 		set_buttons(false)
 		$Center/VBox/GameConfig.open(self)
+		hostbutton.disabled = true
 	else:
 		set_status("Invalid address", false)
 

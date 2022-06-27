@@ -6,9 +6,6 @@ var sounds := {
 	"Check": load(soundpath + "Check.ogg"),
 	"Error": load(soundpath + "Error.ogg"),
 	"Victory": load(soundpath + "Victory.ogg"),
-	"Defeat": load(soundpath + "Defeat.ogg"),
-	"Capture": load(soundpath + "Capture.ogg"),
-	"Draw": load(soundpath + "Draw.ogg"),
 	"Move": load(soundpath + "Move.ogg"),
 }
 

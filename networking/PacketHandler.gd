@@ -89,15 +89,15 @@ func _data_recieved() -> void:
 			Globals.spectating = true
 			_start_game()
 			yield(get_tree().create_timer(.5), "timeout")
-			Globals.grid.play_pgn(text.pgn, true)
+			Globals.grid.load_pgn(text.pgn)
 			emit_signal("info_recieved", text)
 		HEADERS.loadpgn:
 			_start_game()
 			yield(get_tree().create_timer(.5), "timeout")
 			Log.info("load pgn " + text)
-			Globals.grid.play_pgn(text, true)  # call deferred wont work since grid obj may be null
+			Globals.grid.load_pgn(text)  # call deferred wont work since grid obj may be null
 		HEADERS.stopgame:
-			if !leaving:  # dont emit the signal if its a stophost thing (HACK)
+			if !leaving:  # dont go back if its a stophost thing (HACK)
 				go_back(text, true)
 			leaving = false
 		HEADERS.signal:
@@ -134,7 +134,7 @@ func join_result(accepted) -> void:
 
 func flip_if_black():
 	yield(get_tree(), "idle_frame")
-	if Globals.team == Globals.BLACK:
+	if Globals.team == Chess.BLACK:
 		Globals.grid.flip_board()
 
 
@@ -146,7 +146,7 @@ func host_result(accepted) -> void:
 
 func handle_result(accepted, resultstring: String) -> bool:
 	if typeof(accepted) == TYPE_DICTIONARY:
-		Globals.team = !bool(accepted.idx)
+		Globals.team = "w" if accepted.idx == 0 else "b"
 		lobby.set_status(resultstring, true)
 		return true
 	lobby.set_status(accepted, false)
@@ -159,10 +159,10 @@ func go_back(error: String, isok: bool) -> void:
 	Globals.reset_vars()
 	if has_node("/root/Game"):
 		$"/root/Game".queue_free()
-	lobby.set_status(error, isok)
-	lobby.toggle(true)
-	lobby.focus()
-	lobby.set_buttons(true)
+		lobby.set_status(error, isok)
+		lobby.toggle(true)
+		lobby.focus()
+		lobby.set_buttons(true)
 
 
 func _start_game() -> void:
@@ -194,11 +194,8 @@ func join_game(game: String = game_code) -> void:
 
 
 func host_game(game: String = game_code, white := true, moves_array: PoolStringArray = []) -> void:
-	send_gamecode_packet(
-		Utils.append_dict(SaveLoad.get_public_info(), {team = white, moves = moves_array}),
-		HEADERS.hostrequest,
-		game
-	)
+	var pckt := Utils.append_dict(SaveLoad.get_public_info(), {team = white, moves = moves_array})
+	send_gamecode_packet(pckt, HEADERS.hostrequest, game)
 
 
 func spectate(game: String = game_code) -> void:
@@ -213,9 +210,9 @@ func relay_signal(body: Dictionary, header: String) -> Dictionary:  # its really
 	return signal(body, header, HEADERS.relay)
 
 
-func send_mov(mov: Move):
-	send_packet({move = mov.compile(), gamecode = game_code}, HEADERS.move)
+func send_mov(mov: String) -> void:
+	send_gamecode_packet({move = mov}, HEADERS.move)
 
 
 func stopgame(reason: String) -> void:
-	send_packet({"reason": reason, "gamecode": game_code}, HEADERS.stopgame)
+	send_gamecode_packet({"reason": reason}, HEADERS.stopgame)

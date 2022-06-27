@@ -1,47 +1,20 @@
 extends Node
 
 var internet := false
-signal newmove(move)
-signal newfen(fen)
-signal pop_move(fen, was_num)
-
-var moves_list: PoolStringArray = []
-var fen := ""
 
 
-func get_pgn():
-	return moves_list.join(" ")
-
-
-func _on_turn_over() -> void:
-	fen = Fen.get_fen()
-	Log.info("fen: " + fen)
-	emit_signal("newfen", fen)
-	SaveLoad.save_dict("user://game.json", {"fen": fen, "pgn": get_pgn()}, true)
-
-
-func pop_move() -> String:
-	emit_signal("pop_move")
-	moves_list.remove(moves_list.size() - 1)
-	var pgn = get_pgn()
-	moves_list.resize(0)
-	return pgn
-
-
-func spotispiece(piece_type: int, spot: Piece) -> bool:
-	return SanParse.from_str(spot.shortname.to_upper()) == piece_type if spot else false
+static func compile(src: String) -> RegEx:
+	var regex := RegEx.new()
+	regex.compile(src)
+	return regex
 
 
 static func str_bool(string: String) -> bool:
 	return string.to_lower().strip_edges() in ["true", "1", "on", "yes", "y", ""]
 
 
-func add_move(move: String) -> void:
-	if Globals.turn == false:
-		moves_list.append("%s. %s" % [Globals.fullmove, move])
-	else:
-		moves_list.append(move)
-	emit_signal("newmove", move)
+func expand_color(color: String) -> String:
+	return "white" if color == "w" else "black"
 
 
 func get_args() -> Dictionary:
@@ -56,14 +29,11 @@ func get_args() -> Dictionary:
 
 
 func _ready() -> void:
-	Events.connect("turn_over", self, "_on_turn_over")
 	if "help" in get_args():
 		print("usage: ./chess%s [debug | help]" % exec_ext())
 		print("run with command debug to enable debug mode")
 		print("run with command help to show this help")
 		get_tree().quit()  # dont wait
-	Debug.monitor(self, "fen")
-	Debug.monitor(self, "pgn", "get_pgn()")
 	var t = Timer.new()
 	add_child(t)
 	t.name = "t"
@@ -88,40 +58,11 @@ static func exec_ext() -> String:
 	return ""
 
 
-static func is_pawn(inode) -> bool:
-	return inode is Pawn
-
-
-static func is_king(inode) -> bool:
-	return inode is King
-
-
-func reset_vars() -> void:
-	moves_list.resize(0)
-
-
-static func get_node_name(node: Node) -> Array:
-	if is_pawn(node):
-		return ["♙", "P"] if node.white else ["♟", "P"]
-	elif node is King:
-		return ["♔", "K"] if node.white else ["♚", "K"]
-	elif node is Queen:
-		return ["♕", "Q"] if node.white else ["♛", "Q"]
-	elif node is Rook:
-		return ["♖", "R"] if node.white else ["♜", "R"]
-	elif node is Bishop:
-		return ["♗", "B"] if node.white else ["♝", "B"]
-	elif node is Knight:
-		return ["♘", "N"] if node.white else ["♞", "N"]
-	else:
-		return ["", ""]
-
-
 func request() -> int:  # returns err
 	var http := HTTPRequest.new()
 	add_child(http)
 	var httpurl: String = PacketHandler.url.replace("wss://", "http://")
-	var error := http.request(httpurl, [], true, HTTPClient.METHOD_POST)
+	var error := http.request(httpurl, [], true, HTTPClient.METHOD_GET)
 	http.free()
 	internet = error == OK
 	return error
@@ -155,12 +96,6 @@ func format_seconds(time: float, use_milliseconds: bool = false) -> String:
 func _notification(what: int) -> void:
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST or what == MainLoop.NOTIFICATION_WM_GO_BACK_REQUEST:
 		Log.debug("Bye!")
-
-
-static func to_algebraic(pos: Vector2) -> String:
-	var column = "abcdefgh"[pos.x] if pos.x != -1 else ""
-	var row = str(round(8 - pos.y)) if pos.y != -1 else ""
-	return column + row
 
 
 static func col_pos(col: String) -> int:
