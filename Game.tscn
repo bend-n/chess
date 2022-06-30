@@ -227,8 +227,8 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 640.0
 margin_bottom = 640.0
-ui = NodePath("../../..")
-sidebar = NodePath("../../SidebarRight")
+sidebar_path = NodePath("../../SidebarRight")
+ui_path = NodePath("../../..")
 
 [node name="Chat" parent="Holder/middle" instance=ExtResource( 9 )]
 anchor_right = 0.0
