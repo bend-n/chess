@@ -15,7 +15,7 @@ Base = ExtResource( 10 )
 [node name="Scroller" type="ScrollContainer" parent="."]
 margin_right = 1422.0
 margin_bottom = 800.0
-mouse_filter = 2
+mouse_filter = 1
 scroll_horizontal_enabled = false
 __meta__ = {
 "_edit_group_": true,
@@ -24,5 +24,6 @@ __meta__ = {
 
 [node name="sanholder" type="VBoxContainer" parent="Scroller"]
 margin_right = 1422.0
+mouse_filter = 2
 size_flags_horizontal = 3
 custom_constants/separation = 0

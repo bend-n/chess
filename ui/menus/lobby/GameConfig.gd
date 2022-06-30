@@ -28,7 +28,9 @@ func _on_Stop_pressed():
 
 
 func reset():
-	lobby.set_buttons(true)
+	moves = []
+	white = true
+	$Advanced/H/Pgn.text_changed("")
 	hide()
 
 

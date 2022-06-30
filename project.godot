@@ -9,15 +9,15 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "ColorRect",
+"class": "BackgroundSquare",
+"language": "GDScript",
+"path": "res://Square.gd"
+}, {
 "base": "TextureButton",
 "class": "BarTextureButton",
 "language": "GDScript",
 "path": "res://ui/barbutton/BarTextureButton.gd"
-}, {
-"base": "Piece",
-"class": "Bishop",
-"language": "GDScript",
-"path": "res://pieces/B.gd"
 }, {
 "base": "KeyUtils",
 "class": "CapsLock",
@@ -33,6 +33,11 @@ _global_script_classes=[ {
 "class": "CheckBoxButton",
 "language": "GDScript",
 "path": "res://ui/checkboxbutton/CheckBoxButton.gd"
+}, {
+"base": "Node",
+"class": "Chess",
+"language": "GDScript",
+"path": "res://board/chess.gd"
 }, {
 "base": "Control",
 "class": "ColorPickerBetter",
@@ -74,11 +79,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://FEN/Fen.gd"
 }, {
-"base": "LineEdit",
-"class": "FENLabel",
-"language": "GDScript",
-"path": "res://ui/menus/sidebarright/FENlabel.gd"
-}, {
 "base": "Button",
 "class": "FlipButton",
 "language": "GDScript",
@@ -119,16 +119,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/virtual_keyboard/KeyUtils.gd"
 }, {
-"base": "Piece",
-"class": "King",
-"language": "GDScript",
-"path": "res://pieces/K.gd"
-}, {
-"base": "Piece",
-"class": "Knight",
-"language": "GDScript",
-"path": "res://pieces/N.gd"
-}, {
 "base": "Control",
 "class": "Lobby",
 "language": "GDScript",
@@ -138,11 +128,6 @@ _global_script_classes=[ {
 "class": "MessageList",
 "language": "GDScript",
 "path": "res://ui/chat/MessageList.gd"
-}, {
-"base": "Resource",
-"class": "Move",
-"language": "GDScript",
-"path": "res://SanParse/Move.gd"
 }, {
 "base": "Node",
 "class": "Network",
@@ -159,25 +144,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://PGN/PGN.gd"
 }, {
-"base": "Piece",
-"class": "Pawn",
-"language": "GDScript",
-"path": "res://pieces/P.gd"
-}, {
 "base": "Control",
 "class": "Piece",
 "language": "GDScript",
-"path": "res://pieces/Piece.gd"
+"path": "res://piece/Piece.gd"
 }, {
 "base": "GridContainer",
 "class": "Preview",
 "language": "GDScript",
 "path": "res://ui/menus/settings/Preview.gd"
 }, {
-"base": "Piece",
-"class": "Queen",
+"base": "TextureButton",
+"class": "PromotionPreview",
 "language": "GDScript",
-"path": "res://pieces/Q.gd"
+"path": "res://ui/PromotionPreview.gd"
 }, {
 "base": "ConfirmButton",
 "class": "ResignButton",
@@ -188,16 +168,6 @@ _global_script_classes=[ {
 "class": "Restrict",
 "language": "GDScript",
 "path": "res://ui/menus/account/Restrict.gd"
-}, {
-"base": "Piece",
-"class": "Rook",
-"language": "GDScript",
-"path": "res://pieces/R.gd"
-}, {
-"base": "Node",
-"class": "SanParser",
-"language": "GDScript",
-"path": "res://SanParse/SanParse.gd"
 }, {
 "base": "Node",
 "class": "SaveLoader",
@@ -240,11 +210,12 @@ _global_script_classes=[ {
 "path": "res://ui/virtual_keyboard/VirtualKeyboard.gd"
 } ]
 _global_script_class_icons={
+"BackgroundSquare": "",
 "BarTextureButton": "",
-"Bishop": "res://assets/pieces/california/wB.png",
 "CapsLock": "",
 "Chat": "",
 "CheckBoxButton": "",
+"Chess": "",
 "ColorPickerBetter": "",
 "ColorPickerButtonBetter": "",
 "ColorSelect": "",
@@ -253,7 +224,6 @@ _global_script_class_icons={
 "DrawButton": "",
 "ExpandableTextEdit": "",
 "FEN": "",
-"FENLabel": "",
 "FlipButton": "",
 "Grid": "",
 "GridMenu": "",
@@ -262,22 +232,16 @@ _global_script_class_icons={
 "InfoLabel": "",
 "Key": "",
 "KeyUtils": "",
-"King": "res://assets/pieces/california/wK.png",
-"Knight": "res://assets/pieces/california/wN.png",
 "Lobby": "",
 "MessageList": "",
-"Move": "",
 "Network": "",
 "OldColorView": "",
 "PGN": "",
-"Pawn": "res://assets/pieces/california/wP.png",
-"Piece": "res://assets/pieces/california/wP.png",
+"Piece": "",
 "Preview": "",
-"Queen": "res://assets/pieces/california/wQ.png",
+"PromotionPreview": "",
 "ResignButton": "",
 "Restrict": "",
-"Rook": "res://assets/pieces/california/wR.png",
-"SanParser": "",
 "SaveLoader": "",
 "SliderButton": "",
 "SpecialKey": "",
@@ -310,7 +274,6 @@ SaveLoad="*res://saveload.gd"
 ColorBack="*res://ui/background/ColorfullBackground.tscn"
 PacketHandler="*res://networking/PacketHandler.gd"
 Debug="*res://Debug.gd"
-SanParse="*res://SanParse/SanParse.gd"
 Pgn="*res://PGN/PGN.gd"
 Log="*res://Log.gd"
 Fen="*res://FEN/Fen.gd"

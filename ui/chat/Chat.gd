@@ -6,18 +6,21 @@ onready var kb = $v/Keyboard
 onready var dsk_input: TextEditor = $v/DesktopInput
 
 var regexes := [
-	[compile("_([^_]+)_"), "[i]$1[/i]"],
-	[compile("\\*\\*([^\\*\\*]+)\\*\\*"), "[b]$1[/b]"],
-	[compile("\\*([^\\*]+)\\*"), "[i]$1[/i]"],
-	[compile("```([^`]+)```"), "[code]$1[/code]"],
-	[compile("`([^`]+)`"), "[code]$1[/code]"],
-	[compile("~~([^~]+)~~"), "[s]$1[/s]"],
-	[compile("#([^#]+)#"), "[rainbow freq=.3 sat=.7]$1[/rainbow]"],
-	[compile("%([^%]+)%"), "[shake rate=20 level=25]$1[/shake]"],
-	[compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"],
-	[compile("([-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))"), "[url]$1[/url]"],
+	[Utils.compile("_([^_]+)_"), "[i]$1[/i]"],
+	[Utils.compile("\\*\\*([^\\*\\*]+)\\*\\*"), "[b]$1[/b]"],
+	[Utils.compile("\\*([^\\*]+)\\*"), "[i]$1[/i]"],
+	[Utils.compile("```([^`]+)```"), "[code]$1[/code]"],
+	[Utils.compile("`([^`]+)`"), "[code]$1[/code]"],
+	[Utils.compile("~~([^~]+)~~"), "[s]$1[/s]"],
+	[Utils.compile("#([^#]+)#"), "[rainbow freq=.3 sat=.7]$1[/rainbow]"],
+	[Utils.compile("%([^%]+)%"), "[shake rate=20 level=25]$1[/shake]"],
+	[Utils.compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"],
+	[
+		Utils.compile("([-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))"),
+		"[url]$1[/url]"
+	],
 ]
-var emoji_replace_regex := compile(":[^:]{1,30}:")
+var emoji_replace_regex: RegEx = Utils.compile(":[^:]{1,30}:")
 
 const piece_emoji_path = "res://assets/pieces/cburnett/"
 const emoji_path = "res://assets/emojis/"
@@ -158,12 +161,6 @@ func _ready():
 	server("You can use markdown(sort of)!")  # say hello again
 
 
-static func compile(src: String) -> RegEx:
-	var regex := RegEx.new()
-	regex.compile(src)
-	return regex
-
-
 func add_label_with(data: Dictionary) -> void:
 	var string := "[b]{who}[color=#f0e67e]:[/color][/b] {text}".format(data)
 	list.add_label(string)
@@ -176,7 +173,7 @@ func send(t: String) -> void:
 	t = md2bb(emoji2bb(t))
 	var name_data = SaveLoad.get_data("id").name
 	var name = name_data if name_data else "Anonymous"
-	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.get_team())
+	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.team)
 	if PacketHandler.connected:
 		PacketHandler.relay_signal({"text": t, "who": name}, PacketHandler.RELAYHEADERS.chat)
 	else:

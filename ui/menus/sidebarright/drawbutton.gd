@@ -10,17 +10,17 @@ func _signal_recieved(what: Dictionary) -> void:
 		set_disabled(false)
 		if "question" in what:
 			confirm()
-			Globals.chat.server(draw_request_message % Globals.str_bool(!Globals.team))
+			Globals.chat.server(what.question)
 		else:
 			if what.accepted:
-				drawed()
+				draw()
 			else:
 				# declined signal recieved
 				Globals.chat.server(draw_declined_message)
 
 
-func drawed() -> GDScriptFunctionState:
-	return Globals.grid.drawed("mutual agreement")
+func draw():
+	Globals.grid.draw("mutual agreement")
 
 
 func _pressed() -> void:
@@ -30,15 +30,16 @@ func _pressed() -> void:
 		_confirmed(true)
 	else:
 		set_disabled(true)
-		PacketHandler.signal({"question": ""}, PacketHandler.SIGNALHEADERS.draw)
-		Globals.chat.server(draw_request_message % Globals.get_team())
+		var msg = draw_request_message % Utils.expand_color(Globals.team)
+		PacketHandler.signal({question = msg}, PacketHandler.SIGNALHEADERS.draw)
+		Globals.chat.server(msg)
 
 
 func _confirmed(what: bool) -> void:  # called from confirmbar.confirmed
 	._confirmed(what)
 	PacketHandler.signal({"accepted": what}, PacketHandler.SIGNALHEADERS.draw)
 	if what:
-		drawed()
+		draw()
 	else:
 		# no pressed
 		Globals.chat.server(draw_declined_message)
