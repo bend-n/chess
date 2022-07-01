@@ -29,16 +29,42 @@ func get_args() -> Dictionary:
 
 
 func _ready() -> void:
-	if "help" in get_args():
-		print("usage: ./chess%s [debug | help]" % exec_ext())
-		print("run with command debug to enable debug mode")
-		print("run with command help to show this help")
-		get_tree().quit()  # dont wait
+	cli()
 	var t = Timer.new()
 	add_child(t)
 	t.name = "t"
 	t.connect("timeout", self, "_on_timeout", [t])
 	_on_timeout(t)
+
+
+func cli() -> void:
+	var args = get_args()
+	if "help" in args or "h" in args:
+		print("usage: ./chess%s [-help] [-debug [enabled]] [--host=gamecode | --join=gamecode]" % exec_ext())
+		var options = """options:
+	--help:             show this help message and exit
+	--debug=enabled:    enable/disable debug mode
+	--host=game_code:   host a game with the given game code
+	--join=game_code:   join a game with the given game code
+		"""
+		print(options)
+		get_tree().quit()  # dont wait
+	if "host" in args or "join" in args:
+		yield(PacketHandler, "connection_established")
+		if "host" in args && args.host:
+			print("hosting game: %s" % args.host)
+			if PacketHandler.lobby.validate_text(args.host):
+				PacketHandler.host_game(args.host)
+				return
+		elif "join" in args && args.join:
+			print("joining game: %s" % args.join)
+			if PacketHandler.lobby.validate_text(args.join):
+				PacketHandler.join_game(args.join)
+				return
+		PacketHandler.lobby.set_buttons(true)
+		printerr("error: invalid game code")
+		get_tree().quit()  # dont wait
+	# "debug" is handled by Debug.gd
 
 
 func _on_timeout(timer: Timer) -> void:
