@@ -39,43 +39,36 @@ class TestChess:
 			{
 				fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 				square = "e2",
-				verbose = false,
 				moves = ["e3", "e4"],
 			},
 			{
 				fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 				square = "e9",
-				verbose = false,
 				moves = [],
 			},  #invalid square
 			{
 				fen = "rnbqk1nr/pppp1ppp/4p3/8/1b1P4/2N5/PPP1PPPP/R1BQKBNR w KQkq - 2 3",
 				square = "c3",
-				verbose = false,
 				moves = [],
 			},  # pinned piece
 			{
 				fen = "8/k7/8/8/8/8/7p/K7 b - - 0 1",
 				square = "h2",
-				verbose = false,
 				moves = ["h1=Q+", "h1=R+", "h1=B", "h1=N"],
 			},  # promotion
 			{
 				fen = "r1bq1rk1/1pp2ppp/p1np1n2/2b1p3/2B1P3/2NP1N2/PPPBQPPP/R3K2R w KQ - 0 8",
 				square = "e1",
-				verbose = false,
 				moves = ["Kf1", "Kd1", "O-O", "O-O-O"],
 			},  # castling
 			{
 				fen = "r1bq1rk1/1pp2ppp/p1np1n2/2b1p3/2B1P3/2NP1N2/PPPBQPPP/R3K2R w - - 0 8",
 				square = "e1",
-				verbose = false,
 				moves = ["Kf1", "Kd1"],
 			},  # no castling
 			{
 				fen = "8/7K/8/8/1R6/k7/1R1p4/8 b - - 0 1",
 				square = "a3",
-				verbose = false,
 				moves = [],
 			},  # trapped king
 			{
@@ -126,16 +119,21 @@ class TestChess:
 				square = "f1",
 				verbose = true,
 				moves = [],
-			},  # issue #30
+			},
+			{
+				fen = "rnbqkbnr/ppp2ppp/3pp3/8/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 0 3",
+				square = "g1",
+				moves = ["Nge2", "Nf3", "Nh3"]
+			}  # disambiguation
 		]
 		for position in positions:
 			var chess = Chess.new(position.fen)
 			var cfg = {
 				square = position.square,
-				verbose = position.verbose,
+				verbose = position.verbose if "verbose" in position else false,
 			}
 			var moves = chess.moves(cfg)
-			if position.verbose:
+			if "verbose" in position && position.verbose:
 				for i in range(len(moves)):
 					assert(
 						moves[i].hash() == position.moves[i].hash(),
@@ -224,6 +222,10 @@ class TestChess:
 	func test_move_generation():
 		var positions = [
 			{
+				fen = "r6k/8/8/8/8/8/8/7K b - - 0 1",
+				moves = """Ra7 Ra6 Ra5 Ra4 Ra3 Ra2 Ra1 Rb8 Rc8 Rd8 Re8 Rf8 Rg8 Kh7 Kg8 Kg7"""
+			},
+			{
 				fen = "7k/3R4/3p2Q1/6Q1/2N1N3/8/8/3R3K w - - 0 1",
 				moves = """Rd8# Re7 Rf7 Rg7 Rh7# R7xd6 Rc7 Rb7 Ra7 Qf7 Qe8# Qg7# Qg8# Qh7# Q6h6# Q6h5# Q6f5 Q6f6# Qe6 Qxd6 Q5f6# Qe7 Qd8# Q5h6# Q5h5# Qh4# Qg4 Qg3 Qg2 Qg1 Qf4 Qe3 Qd2 Qc1 Q5f5 Qe5+ Qd5 Qc5 Qb5 Qa5 Na5 Nb6 Ncxd6 Ne5 Ne3 Ncd2 Nb2 Na3 Nc5 Nexd6 Nf6 Ng3 Nf2 Ned2 Nc3 Rd2 Rd3 Rd4 Rd5 R1xd6 Re1 Rf1 Rg1 Rc1 Rb1 Ra1 Kg2 Kh2 Kg1""",
 			},
@@ -266,8 +268,8 @@ class TestChess:
 		SaveLoad.save_string("user://tests.log", "")  #overwrite last logs
 		Log.file(LOG_FILE, "starting algebraic conversion tests")
 		test_algebraic_conversion()
-		Log.file(LOG_FILE, "starting perft tests")
-		test_perft()
+		# Log.file(LOG_FILE, "starting perft tests")
+		# test_perft()
 		Log.file(LOG_FILE, "starting move generation tests")
 		test_single_square_move_generation()
 		Log.file(LOG_FILE, "starting checkmate tests")
@@ -281,8 +283,8 @@ class TestChess:
 		Log.file(LOG_FILE, "starting move generation tests")
 		test_move_generation()
 		Log.file(LOG_FILE, "starting random moves tests")
-		test_random_moves()  # crash testing
-		Log.file(LOG_FILE, "all tests passed")
+		# test_random_moves()  # crash testing
+		# Log.file(LOG_FILE, "all tests passed")
 
 
 func _pressed():

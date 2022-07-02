@@ -13,7 +13,7 @@ static func debug(information) -> void:  # logs the input string on debug builds
 
 
 static func err(information) -> void:  # logs the input string to stderr
-	printerr("(%s) [E] %s" % [now(), to_str(information)])
+	push_error("(%s) [E] %s" % [now(), to_str(information)])
 
 
 static func to_str(args) -> String:

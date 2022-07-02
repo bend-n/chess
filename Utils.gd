@@ -54,7 +54,10 @@ func cli() -> void:
 		if "host" in args && args.host:
 			print("hosting game: %s" % args.host)
 			if PacketHandler.lobby.validate_text(args.host):
-				PacketHandler.host_game(args.host)
+				var move_list = Pgn.parse(OS.get_environment("MOVES"), false).moves
+				if move_list:
+					print("with moves: %s" % move_list)
+				PacketHandler.host_game(args.host, true, move_list)
 				return
 		elif "join" in args && args.join:
 			print("joining game: %s" % args.join)

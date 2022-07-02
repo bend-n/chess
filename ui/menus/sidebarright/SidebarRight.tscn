@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://ui/menus/sidebarright/drawbutton.gd" type="Script" id=1]
 [ext_resource path="res://ui/menus/sidebarright/resignbutton.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://ui/barbutton/default.tres" type="StyleBox" id=7]
 [ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=8]
 [ext_resource path="res://ui/ubuntu-bold.tres" type="DynamicFont" id=9]
+[ext_resource path="res://ui/menus/sidebarright/OpeningLabel.gd" type="Script" id=10]
 [ext_resource path="res://ui/menus/sidebarright/SidebarRight.gd" type="Script" id=13]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=14]
 [ext_resource path="res://ui/menus/sidebarright/undobutton.gd" type="Script" id=18]
@@ -68,17 +69,24 @@ margin_bottom = 800.0
 custom_constants/separation = 0
 alignment = 1
 
+[node name="OpeningLabel" type="Label" parent="V"]
+margin_top = 200.0
+margin_right = 1422.0
+margin_bottom = 223.0
+custom_fonts/font = ExtResource( 8 )
+script = ExtResource( 10 )
+
 [node name="BlackPanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 212.0
+margin_top = 223.0
 margin_right = 1422.0
-margin_bottom = 252.0
+margin_bottom = 263.0
 
 [node name="buttonbarholder" type="PanelContainer" parent="V"]
-margin_top = 252.0
+margin_top = 263.0
 margin_right = 1422.0
-margin_bottom = 302.0
+margin_bottom = 313.0
 rect_min_size = Vector2( 50, 50 )
 __meta__ = {
 "_edit_group_": true,
@@ -147,22 +155,22 @@ status = NodePath("../../../Status")
 [node name="SanDisplay" parent="V" instance=ExtResource( 21 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 302.0
+margin_top = 313.0
 margin_right = 1422.0
-margin_bottom = 502.0
+margin_bottom = 513.0
 rect_min_size = Vector2( 482, 200 )
 
 [node name="WhitePanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 502.0
+margin_top = 513.0
 margin_right = 1422.0
-margin_bottom = 542.0
+margin_bottom = 553.0
 
 [node name="Status" type="Label" parent="V"]
-margin_top = 542.0
+margin_top = 553.0
 margin_right = 1422.0
-margin_bottom = 588.0
+margin_bottom = 599.0
 align = 1
 autowrap = true
 script = ExtResource( 3 )

@@ -130,21 +130,21 @@ func get_disambiguator(move: Dictionary, moves: Array) -> String:
 	var ambig_piece: String
 	var ambig_to: int
 	var ambig_from: int
-	for i in range(moves.size()):
-		ambig_from = moves[i].from
-		ambig_to = moves[i].to
-		ambig_piece = moves[i].piece
+	for m in moves:
+		ambig_from = m.from
+		ambig_to = m.to
+		ambig_piece = m.piece
 
-	# if a move of the same piece type ends on the same to square, we'll
-	# need to add a disambiguator to the algebraic notation
-	if piece == ambig_piece && from != ambig_from && to == ambig_to:
-		ambiguities += 1
+		# if a move of the same piece type ends on the same to square, we'll
+		# need to add a disambiguator to the algebraic notation
+		if piece == ambig_piece && from != ambig_from && to == ambig_to:
+			ambiguities += 1
 
-		if rank(from) == rank(ambig_from):
-			same_rank += 1
+			if rank(from) == rank(ambig_from):
+				same_rank += 1
 
-		if file(from) == file(ambig_from):
-			same_file += 1
+			if file(from) == file(ambig_from):
+				same_file += 1
 
 	if ambiguities > 0:
 		# if there exists a similar moving piece on the same rank and file as
@@ -282,7 +282,7 @@ func fen() -> String:
 	var empty := 0
 	var pieces := ""
 	var i := 0
-	while i < SQUARE_MAP.h1:
+	while i < SQUARE_MAP.h1 + 1:
 		if board[i] == null:
 			empty += 1
 		else:
@@ -395,7 +395,7 @@ func __generate_moves(options := {}) -> Array:
 	var them := __swap_color(us)
 	var second_rank := {b = RANK_7, w = RANK_2}
 
-	var first_sq: int = SQUARE_MAP.a8
+	var first_sq: int = SQUARE_MAP.a8 - 1
 	var last_sq: int = SQUARE_MAP.h1
 	var single_square := false
 
