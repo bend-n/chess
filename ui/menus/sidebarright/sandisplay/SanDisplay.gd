@@ -18,6 +18,7 @@ func _ready() -> void:
 	add_child(tween)
 	if Globals.grid:
 		Globals.grid.connect("add_to_pgn", self, "add_move")
+		Globals.grid.connect("load_pgn", self, "add_moves")
 		Globals.grid.connect("clear_pgn", self, "clear")
 		Globals.grid.connect("remove_last", self, "pop")
 	else:
@@ -40,6 +41,11 @@ func add_move(move: String) -> void:
 	added_sans += 1
 	sans.get_children()[-1].add_move(move)
 	scroll_down()
+
+
+func add_moves(moves: PoolStringArray) -> void:
+	for move in moves:
+		add_move(move)
 
 
 func scroll_down():

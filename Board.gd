@@ -7,6 +7,7 @@ const Square := preload("res://Square.tscn")
 ### for the sandisplay
 signal add_to_pgn(move)
 signal clear_pgn
+signal load_pgn(moves)
 signal remove_last
 
 const piece_size := Vector2(80, 80)
@@ -159,7 +160,8 @@ func square_clicked(clicked_square: String) -> void:
 		if !is_instance_valid(last_clicked):
 			return
 		for m in last_clicked_moves:
-			if m.to == clicked_square:
+			if m.to == clicked_square && m.from == last_clicked.position:
+				print(m)
 				move(m.san, false)
 				break
 		clear_circles()
@@ -182,7 +184,9 @@ func square_clicked(clicked_square: String) -> void:
 func move(san: String, is_recieved_move := true) -> void:
 	if is_valid_move(san):
 		var sound_handled = false
+		print(san)
 		var move_0x88 = chess.__move_from_san(san, true)
+		print(chess.__move_to_san(move_0x88))
 		chess.__make_move(move_0x88)
 		if move_0x88.flags & Chess.BITS.CAPTURE:
 			board[move_0x88.to].took()
@@ -279,9 +283,8 @@ func load_pgn(pgn: String) -> void:
 	clear_pieces()
 	create_pieces()
 	emit_signal("clear_pgn")
-	var movs = Pgn.parse(pgn).moves
-	for mov in movs:
-		emit_signal("add_to_pgn", mov)
+	var movs: PoolStringArray = Pgn.parse(pgn).moves
+	emit_signal("load_pgn", movs)
 
 
 func undo(two: bool = false) -> void:
