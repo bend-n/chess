@@ -76,6 +76,7 @@ func init_board() -> void:  # create the board
 		background.add_child(square)  # add the square to the background
 		square.connect("clicked", self, "square_clicked", [alg])  # connect the clicked event
 		background_array[i] = square  # add the square to the background array
+	$Arrows._setup(self)  # initialize the arrows
 
 
 func init_labels() -> void:
@@ -161,7 +162,6 @@ func square_clicked(clicked_square: String) -> void:
 			return
 		for m in last_clicked_moves:
 			if m.to == clicked_square && m.from == last_clicked.position:
-				print(m)
 				move(m.san, false)
 				break
 		clear_circles()
@@ -184,9 +184,7 @@ func square_clicked(clicked_square: String) -> void:
 func move(san: String, is_recieved_move := true) -> void:
 	if is_valid_move(san):
 		var sound_handled = false
-		print(san)
 		var move_0x88 = chess.__move_from_san(san, true)
-		print(chess.__move_to_san(move_0x88))
 		chess.__make_move(move_0x88)
 		if move_0x88.flags & Chess.BITS.CAPTURE:
 			board[move_0x88.to].took()
@@ -210,7 +208,7 @@ func move(san: String, is_recieved_move := true) -> void:
 				p.open_promotion_previews()
 				yield(p, "promotion_decided")
 				move_0x88["promotion"] = p.promote_to
-				PacketHandler.send_mov(chess.__move_to_san(move_0x88))  # we changed "promotion", so send update the san
+				san = chess.__move_to_san(move_0x88)  # update the san with new promotion data
 				p.queue_free()
 			else:  # was opponents turn, this is opponents move: promotion is already chosen
 				p.queue_free()  # the q_f above happens after a dozen yields
@@ -219,10 +217,10 @@ func move(san: String, is_recieved_move := true) -> void:
 			make_piece(p.position, move_0x88.promotion, p.color)
 			SoundFx.play("Move" if move_0x88.flags & Chess.BITS.NORMAL else "Capture")
 			sound_handled = true
-		else:
+		else:  # not promotion: from **always** moves to `to`
 			var _p = board[move_0x88.from].move(Chess.algebraic(move_0x88.to))
-			if !is_recieved_move:
-				PacketHandler.send_mov(san)  # move may have been modified, so recreat the san
+		if !is_recieved_move:
+			PacketHandler.send_mov(san)
 		if !sound_handled:
 			SoundFx.play("Move")
 		emit_signal("add_to_pgn", san)
@@ -285,6 +283,7 @@ func load_pgn(pgn: String) -> void:
 	emit_signal("clear_pgn")
 	var movs: PoolStringArray = Pgn.parse(pgn).moves
 	emit_signal("load_pgn", movs)
+	check_game_over()
 
 
 func undo(two: bool = false) -> void:
@@ -299,6 +298,10 @@ func undo(two: bool = false) -> void:
 
 
 func _on_turn_over():
+	check_game_over()
+
+
+func check_game_over():
 	if chess.in_checkmate():
 		# they won if its my turn, i won if its their turn.
 		win(Globals.team if Globals.team != chess.turn else Chess.__swap_color(Globals.team), "checkmate")

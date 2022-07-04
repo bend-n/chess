@@ -113,7 +113,7 @@ func walk_dir(path := "res://assets/pieces", only_dir := true, exclude := []) ->
 					files.append(split[0])  # add the file
 			file_name = dir.get_next()  # get the next file
 	else:
-		push_error("An error occurred when trying to access the path " + path)  # print the error
+		Log.err("An error occurred when trying to access the path " + path)  # print the error
 	files.sort()  # sort the files
 	return PoolStringArray(files)  # return the files
 

@@ -2,6 +2,7 @@ extends ColorRect
 class_name BackgroundSquare
 
 signal clicked
+signal right_clicked
 
 onready var circle := $CircleHolder/Circle
 
@@ -18,6 +19,6 @@ func _ready() -> void:
 
 
 func _gui_input(event: InputEvent):
-	if !Globals.spectating and event is InputEventMouseButton and Input.is_action_pressed("click"):
-		emit_signal("clicked")
+	if !Globals.spectating and event is InputEventMouseButton and event.pressed:
+		emit_signal("clicked" if event.button_index == BUTTON_LEFT else "right_clicked")
 		get_tree().set_input_as_handled()

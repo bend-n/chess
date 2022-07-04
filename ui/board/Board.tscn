@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Board.gd" type="Script" id=1]
+[ext_resource path="res://ui/board/Board.gd" type="Script" id=1]
+[ext_resource path="res://ui/board/Arrows.gd" type="Script" id=2]
 
 [node name="Board" type="Control"]
 anchor_right = 1.0
@@ -26,6 +27,13 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="Foreground" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="Arrows" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 2 )
 
 [node name="Darken" type="ColorRect" parent="."]
 visible = false
@@ -34,3 +42,6 @@ anchor_bottom = 1.0
 mouse_filter = 2
 mouse_default_cursor_shape = 7
 color = Color( 0, 0, 0, 0.784314 )
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PoolVector2Array( -500, -500, -475, -540, -523, -540 )

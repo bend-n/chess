@@ -1061,7 +1061,7 @@ func pgn() -> String:
 	return moves.join(" ")
 
 
-func load_pgn(pgn, options := {}) -> int:  # FIXME: mildly broken. move generator for a8 cannot get a4, for some reason.
+func load_pgn(pgn: String, options := {}) -> int:
 	# allow the user to specify the sloppy move parser to work around over
 	# disambiguation bugs in Fritz and Chessbase
 	var sloppy: bool = options.sloppy if "sloppy" in options else false
