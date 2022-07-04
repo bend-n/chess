@@ -2,12 +2,19 @@ name: "export"
 on:
   workflow_dispatch:
   push:
+    paths:
+      - "**.gd"
+      - "**.tscn"
+      - "**.import"
+      - "**.png"
+      - "**.svg"
     branches:
       - main
 
 env:
   GODOT_VERSION: 3.4.4
   EXPORT_NAME: chess
+  ITCH_PATH: bendn/chess
 
 jobs:
   export-windows:
@@ -18,8 +25,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          lfs: true
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/templates
@@ -94,8 +99,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          lfs: true
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/templates
@@ -109,3 +112,21 @@ jobs:
         with:
           name: mac
           path: build/mac
+
+  push-itch:
+    needs: [export-windows, export-linux, export-web, export-mac]
+    name: Push to itch.io
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v3
+
+      - name: Get butler
+        uses: jdno/setup-butler@v1
+
+      - name: Push
+        run: |
+          function push(){ channel=$1;[[ $channel == mac ]]&&echo '#!/bin/bash
+          cd "$(dirname "$0")"||exit;xattr -cr "$(pwd)/chess.app";open -n -a "$(pwd)/chess.app"'>./mac/run.sh;chmod +x ./*/**;if [[ $channel != mac&&$channel != web ]];then to_push="$channel.7z";zip='7z a -mtm=off -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on';if [[ -d $channel ]];then(cd "$channel"&&$zip "../$channel.7z" ".");else $zip "$channel.7z" "$channel";fi;butler push "$to_push" "$ITCH_PATH:$channel";else to_push="$channel.zip";(cd "$channel"&&zip -r "../$channel.zip" -9 ".");butler push "$to_push" "$ITCH_PATH:$channel";fi;rm -r "$to_push" "${channel:?}";};push "web";push "linux";push "windows";unzip mac/chess.zip -d mac/&&rm mac/chess.zip;push "mac"
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
