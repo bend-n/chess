@@ -87,7 +87,7 @@ _global_script_classes=[ {
 "base": "Control",
 "class": "Grid",
 "language": "GDScript",
-"path": "res://Board.gd"
+"path": "res://ui/board/Board.gd"
 }, {
 "base": "GridContainer",
 "class": "GridMenu",
@@ -364,6 +364,11 @@ caps={
 shift={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777237,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+rclick={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":2,"pressed":false,"doubleclick":false,"script":null)
  ]
 }
 
