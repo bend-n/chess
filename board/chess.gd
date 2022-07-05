@@ -1,4 +1,4 @@
-extends Node
+extends Resource
 class_name Chess
 # ported from https://github.com/jhlywa/chess.js
 const SYMBOLS := "pnbrqkPNBRQK"
