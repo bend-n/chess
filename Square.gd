@@ -6,7 +6,7 @@ signal right_clicked
 
 var color: Color
 
-onready var circle: TextureRect = $BackgroundSquare/CircleHolder/Circle
+onready var circle: TextureRect = $CircleHolder/Circle
 onready var move_indicator: ColorRect = $MoveIndicator
 onready var b_square: ColorRect = $BackgroundSquare
 

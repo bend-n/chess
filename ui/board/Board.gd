@@ -187,7 +187,6 @@ func square_clicked(clicked_square: String) -> void:
 func move(san: String, is_recieved_move := true) -> void:
 	var sound_handled = false
 	var move_0x88 = chess.__move_from_san(san, true)
-	Log.info(chess.moves({square = chess.algebraic(move_0x88.from), stripped = true}))
 	if (
 		chess.moves({square = chess.algebraic(move_0x88.from), stripped = true}).find(chess.stripped_san(san))
 		== -1

@@ -34,6 +34,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource( 2 )
+red_overlay = Color( 0.9, 0.216, 0.216, 0.498039 )
 
 [node name="Darken" type="ColorRect" parent="."]
 visible = false
