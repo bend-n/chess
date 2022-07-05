@@ -1,13 +1,19 @@
-extends ColorRect
+extends MarginContainer
 class_name BackgroundSquare
 
 signal clicked
 signal right_clicked
 
-onready var circle := $CircleHolder/Circle
+var color: Color
+
+onready var circle: TextureRect = $BackgroundSquare/CircleHolder/Circle
+onready var move_indicator: ColorRect = $MoveIndicator
+onready var b_square: ColorRect = $BackgroundSquare
 
 
 func _ready() -> void:
+	move_indicator.color = Globals.grid.last_move_indicator_color
+	b_square.color = color
 	circle.rect_min_size = Globals.grid.piece_size / 4
 	circle.material.set_shader_param("color", Globals.grid.overlay_color)
 	circle.visible = false

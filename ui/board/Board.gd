@@ -10,9 +10,12 @@ signal clear_pgn
 signal load_pgn(moves)
 signal remove_last
 
+var move_indicators: PoolIntArray = []
+
 const piece_size := Vector2(80, 80)
 
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
+export(Color) var last_move_indicator_color := Color(0.74902, 0.662745, 0.223529, 0.498039)
 export(Color) var clockrunning_color := Color(0.219608, 0.278431, 0.133333)
 export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
 export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
@@ -72,7 +75,7 @@ func init_board() -> void:  # create the board
 		var square := Square.instance()  # create a square
 		square.name = alg
 		square.hint_tooltip = alg
-		square.color = Globals.board_color1 if Chess.square_color(alg) == "light" else Globals.board_color2  # set the color
+		square.color = (Globals.board_color1 if Chess.square_color(alg) == "light" else Globals.board_color2)  # set the color
 		background.add_child(square)  # add the square to the background
 		square.connect("clicked", self, "square_clicked", [alg])  # connect the clicked event
 		background_array[i] = square  # add the square to the background array
@@ -283,7 +286,7 @@ func load_pgn(pgn: String) -> void:
 	emit_signal("clear_pgn")
 	var movs: PoolStringArray = Pgn.parse(pgn).moves
 	emit_signal("load_pgn", movs)
-	check_game_over()
+	Events.emit_signal("turn_over")
 
 
 func undo(two: bool = false) -> void:
@@ -295,10 +298,12 @@ func undo(two: bool = false) -> void:
 	clear_pieces()
 	clear_circles()
 	create_pieces()
+	Events.emit_signal("turn_over")
 
 
 func _on_turn_over():
 	check_game_over()
+	create_last_move_indicators()
 
 
 func check_game_over():
@@ -313,3 +318,14 @@ func check_game_over():
 		draw("insufficient material")
 	elif chess.in_threefold_repetition():
 		draw("threefold repetition")
+
+
+func create_last_move_indicators():
+	for i in move_indicators:
+		background_array[i].move_indicator.hide()
+	if !chess.__history:
+		return
+	var m: Dictionary = chess.__history[-1].move
+	background_array[m.from].move_indicator.show()
+	background_array[m.to].move_indicator.show()
+	move_indicators = [m.from, m.to]
