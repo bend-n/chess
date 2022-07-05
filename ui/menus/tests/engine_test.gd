@@ -19,7 +19,7 @@ class TestChess:
 		]
 		for perft in perfts:
 			var c = Chess.new(perft.fen)
-			var nodes = c.perft(perft.depth)
+			var _nodes = c.perft(perft.depth)
 
 	func test_single_square_move_generation():
 		var positions = [

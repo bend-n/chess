@@ -36,12 +36,18 @@ margin_right = 40.0
 margin_bottom = 40.0
 mouse_filter = 2
 
-[node name="CircleHolder" type="CenterContainer" parent="BackgroundSquare"]
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="MoveIndicator" type="ColorRect" parent="."]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
 mouse_filter = 2
 
-[node name="Circle" type="TextureRect" parent="BackgroundSquare/CircleHolder"]
+[node name="CircleHolder" type="CenterContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="Circle" type="TextureRect" parent="CircleHolder"]
 material = SubResource( 3 )
 margin_left = 20.0
 margin_top = 20.0
@@ -50,9 +56,3 @@ margin_bottom = 20.0
 mouse_filter = 2
 texture = ExtResource( 2 )
 expand = true
-
-[node name="MoveIndicator" type="ColorRect" parent="."]
-visible = false
-margin_right = 40.0
-margin_bottom = 40.0
-mouse_filter = 2
