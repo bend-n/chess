@@ -185,59 +185,55 @@ func square_clicked(clicked_square: String) -> void:
 
 
 func move(san: String, is_recieved_move := true) -> void:
-	if is_valid_move(san):
-		var sound_handled = false
-		var move_0x88 = chess.__move_from_san(san, true)
-		chess.__make_move(move_0x88)
-		if move_0x88.flags & Chess.BITS.CAPTURE:
-			board[move_0x88.to].took()
-			SoundFx.play("Capture")
-			sound_handled = true
-		elif move_0x88.flags & Chess.BITS.EP_CAPTURE:
-			var to_take := Chess.offset(move_0x88.to, Vector2(0, 1 * -1 if chess.turn == Chess.WHITE else 1))
-			get_piece(to_take).took()
-			SoundFx.play("Capture")
-			sound_handled = true
-		elif move_0x88.flags & Chess.BITS.KSIDE_CASTLE:  # kingside castling
-			var rook_pos := Chess.offset(move_0x88.to, Vector2(1, 0))
-			var _rook := get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(-1, 0)))
-		elif move_0x88.flags & Chess.BITS.QSIDE_CASTLE:  # queenside
-			var rook_pos := Chess.offset(move_0x88.to, Vector2(-2, 0))
-			var _rook := get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(1, 0)))
-		if move_0x88.flags & Chess.BITS.PROMOTION:  #promotion wow
-			var p: Piece = board[move_0x88.from].move(Chess.algebraic(move_0x88.to))
-			if !is_recieved_move:  # was my turn, this is my move
-				yield(p.tween, "tween_all_completed")
-				p.open_promotion_previews()
-				yield(p, "promotion_decided")
-				move_0x88["promotion"] = p.promote_to
-				san = chess.__move_to_san(move_0x88)  # update the san with new promotion data
-				p.queue_free()
-			else:  # was opponents turn, this is opponents move: promotion is already chosen
-				p.queue_free()  # the q_f above happens after a dozen yields
-			# the move animation is useless if its not my turn
-			# but it changes p.position, so its usefull.
-			make_piece(p.position, move_0x88.promotion, p.color)
-			SoundFx.play("Move" if move_0x88.flags & Chess.BITS.NORMAL else "Capture")
-			sound_handled = true
-		else:  # not promotion: from **always** moves to `to`
-			var _p = board[move_0x88.from].move(Chess.algebraic(move_0x88.to))
-		if !is_recieved_move:
-			PacketHandler.send_mov(san)
-		if !sound_handled:
-			SoundFx.play("Move")
-		emit_signal("add_to_pgn", san)
-		Events.emit_signal("turn_over")
-	else:
-		Log.err("move %s is invalid!" % san)
-
-
-func is_valid_move(san: String) -> bool:
-	var movs = chess.moves()
-	for mov in movs:
-		if mov == san:
-			return true
-	return false
+	var sound_handled = false
+	var move_0x88 = chess.__move_from_san(san, true)
+	Log.info(chess.moves({square = chess.algebraic(move_0x88.from), stripped = true}))
+	if (
+		chess.moves({square = chess.algebraic(move_0x88.from), stripped = true}).find(chess.stripped_san(san))
+		== -1
+	):
+		Log.err("Invalid move")
+		return
+	chess.__make_move(move_0x88)
+	if move_0x88.flags & Chess.BITS.CAPTURE:
+		board[move_0x88.to].took()
+		SoundFx.play("Capture")
+		sound_handled = true
+	elif move_0x88.flags & Chess.BITS.EP_CAPTURE:
+		var to_take := Chess.offset(move_0x88.to, Vector2(0, 1 * -1 if chess.turn == Chess.WHITE else 1))
+		get_piece(to_take).took()
+		SoundFx.play("Capture")
+		sound_handled = true
+	elif move_0x88.flags & Chess.BITS.KSIDE_CASTLE:  # kingside castling
+		var rook_pos := Chess.offset(move_0x88.to, Vector2(1, 0))
+		var _rook := get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(-1, 0)))
+	elif move_0x88.flags & Chess.BITS.QSIDE_CASTLE:  # queenside
+		var rook_pos := Chess.offset(move_0x88.to, Vector2(-2, 0))
+		var _rook := get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(1, 0)))
+	if move_0x88.flags & Chess.BITS.PROMOTION:  #promotion wow
+		var p: Piece = board[move_0x88.from].move(Chess.algebraic(move_0x88.to))
+		if !is_recieved_move:  # was my turn, this is my move
+			yield(p.tween, "tween_all_completed")
+			p.open_promotion_previews()
+			yield(p, "promotion_decided")
+			move_0x88["promotion"] = p.promote_to
+			san = chess.__move_to_san(move_0x88)  # update the san with new promotion data
+			p.queue_free()
+		else:  # was opponents turn, this is opponents move: promotion is already chosen
+			p.queue_free()  # the q_f above happens after a dozen yields
+		# the move animation is useless if its not my turn
+		# but it changes p.position, so its usefull.
+		make_piece(p.position, move_0x88.promotion, p.color)
+		SoundFx.play("Move" if move_0x88.flags & Chess.BITS.NORMAL else "Capture")
+		sound_handled = true
+	else:  # not promotion: from **always** moves to `to`
+		var _p = board[move_0x88.from].move(Chess.algebraic(move_0x88.to))
+	if !is_recieved_move:
+		PacketHandler.send_mov(san)
+	if !sound_handled:
+		SoundFx.play("Move")
+	emit_signal("add_to_pgn", san)
+	Events.emit_signal("turn_over")
 
 
 func clear_circles():

@@ -1003,6 +1003,8 @@ func moves(options := {}):
 		# SAN
 		if "verbose" in options && options.verbose:
 			moves.append(__make_pretty(ugly_move))
+		elif "stripped" in options && options.stripped:
+			moves.append(stripped_san(__move_to_san(ugly_move, __generate_moves({legal = true}), false)))
 		else:
 			moves.append(__move_to_san(ugly_move, __generate_moves({legal = true})))
 	return moves
