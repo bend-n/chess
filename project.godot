@@ -34,7 +34,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/checkboxbutton/CheckBoxButton.gd"
 }, {
-"base": "Reference",
+"base": "Resource",
 "class": "Chess",
 "language": "GDScript",
 "path": "res://board/chess.gd"
@@ -123,6 +123,16 @@ _global_script_classes=[ {
 "class": "Lobby",
 "language": "GDScript",
 "path": "res://ui/menus/lobby/Lobby.gd"
+}, {
+"base": "HBoxContainer",
+"class": "MaterialLabel",
+"language": "GDScript",
+"path": "res://ui/menus/sidebarright/material/MaterialLabel.gd"
+}, {
+"base": "Node",
+"class": "MaterialLabelManager",
+"language": "GDScript",
+"path": "res://ui/menus/sidebarright/material/MaterialLabelManager.gd"
 }, {
 "base": "PanelContainer",
 "class": "MessageList",
@@ -238,6 +248,8 @@ _global_script_class_icons={
 "Key": "",
 "KeyUtils": "",
 "Lobby": "",
+"MaterialLabel": "",
+"MaterialLabelManager": "",
 "MessageList": "",
 "Network": "",
 "OldColorView": "",

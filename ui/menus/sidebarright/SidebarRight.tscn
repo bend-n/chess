@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://ui/menus/sidebarright/drawbutton.gd" type="Script" id=1]
 [ext_resource path="res://ui/menus/sidebarright/resignbutton.gd" type="Script" id=2]
@@ -10,6 +10,8 @@
 [ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=8]
 [ext_resource path="res://ui/ubuntu-bold.tres" type="DynamicFont" id=9]
 [ext_resource path="res://ui/menus/sidebarright/OpeningLabel.gd" type="Script" id=10]
+[ext_resource path="res://ui/menus/sidebarright/material/MaterialLabelManager.gd" type="Script" id=11]
+[ext_resource path="res://ui/menus/sidebarright/material/MaterialLabel.gd" type="Script" id=12]
 [ext_resource path="res://ui/menus/sidebarright/SidebarRight.gd" type="Script" id=13]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=14]
 [ext_resource path="res://ui/menus/sidebarright/undobutton.gd" type="Script" id=18]
@@ -18,7 +20,7 @@
 [ext_resource path="res://ui/menus/sidebarright/UserPanel.tscn" type="PackedScene" id=22]
 
 [sub_resource type="StyleBoxFlat" id=9]
-bg_color = Color( 0.14902, 0.141176, 0.129412, 0.588235 )
+bg_color = Color( 0.14902, 0.141176, 0.129412, 0.784314 )
 
 [sub_resource type="StyleBoxEmpty" id=11]
 
@@ -63,6 +65,11 @@ __meta__ = {
 }
 panel_holder = NodePath("V")
 
+[node name="MaterialLabelManager" type="Node" parent="."]
+script = ExtResource( 11 )
+white_path = NodePath("../V/WhitePanel/WhiteMaterialLabel")
+black_path = NodePath("../V/BlackPanel/BlackMaterialLabel")
+
 [node name="V" type="VBoxContainer" parent="."]
 margin_right = 1422.0
 margin_bottom = 800.0
@@ -82,6 +89,12 @@ anchor_bottom = 0.0
 margin_top = 223.0
 margin_right = 1422.0
 margin_bottom = 263.0
+
+[node name="BlackMaterialLabel" type="HBoxContainer" parent="V/BlackPanel"]
+margin_right = 1422.0
+margin_bottom = 40.0
+alignment = 2
+script = ExtResource( 12 )
 
 [node name="buttonbarholder" type="PanelContainer" parent="V"]
 margin_top = 263.0
@@ -166,6 +179,12 @@ anchor_bottom = 0.0
 margin_top = 513.0
 margin_right = 1422.0
 margin_bottom = 553.0
+
+[node name="WhiteMaterialLabel" type="HBoxContainer" parent="V/WhitePanel"]
+margin_right = 1422.0
+margin_bottom = 40.0
+alignment = 2
+script = ExtResource( 12 )
 
 [node name="Status" type="Label" parent="V"]
 margin_top = 553.0
