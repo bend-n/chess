@@ -1057,6 +1057,9 @@ func pgn() -> String:
 
 		move_string += " %s" % __move_to_san(move, __generate_moves({legal = true}))
 		__make_move(move)
+	
+	if move_string.length():
+		moves.append(move_string)
 
 	# __history should be back to what it was before we started generating PGN,
 	# so join together moves
