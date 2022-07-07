@@ -11,8 +11,7 @@ on:
 
 env:
   GODOT_VERSION: 3.4.4
-  EXPORT_NAME: chess
-  ITCH_PATH: bendn/chess
+  NAME: ${{ github.event.repository.name }}
 
 jobs:
   export-windows:
@@ -21,18 +20,13 @@ jobs:
     container:
       image: docker://barichello/godot-ci:3.4.4
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          lfs: true
       - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+        uses: bend-n/chess/.github/actions/setup-godot@main
+
       - name: Windows Build
         run: |
-          mkdir -v -p build/windows
-          godot -v --export "Windows" ./build/windows/$EXPORT_NAME.exe
+          mkdir -vp build/windows
+          godot -v --export "Windows" ./build/windows/$NAME.exe
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
@@ -45,20 +39,13 @@ jobs:
     container:
       image: docker://barichello/godot-ci:3.4.4
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-      - name: Setup
+      - uses: bend-n/chess/.github/actions/setup-godot@main
+      - name: Build
         run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
-      - name: Linux Build
-        run: |
-          mkdir -v -p build/linux
-          godot -v --export "Linux" ./build/linux/$EXPORT_NAME.x86_64
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+          mkdir -vp build/linux
+          godot -v --export "Linux" ./build/linux/$NAME.x86_64
+
+      - uses: actions/upload-artifact@v1
         with:
           name: linux
           path: build/linux
@@ -69,31 +56,25 @@ jobs:
     container:
       image: docker://barichello/godot-ci:3.4.4
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-      - name: Setup
+      - uses: bend-n/chess/.github/actions/setup-godot@main
+      - name: Build
         run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
-      - name: Web Build
-        run: |
-          mkdir -v -p build/web
+          mkdir -vp build/web
           godot -v --export "HTML" ./build/web/index.html
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+
+      - uses: actions/upload-artifact@v1
         with:
           name: web
           path: build/web
-      - name: Install rsync 📚
-        run: |
-          apt-get update && apt-get install -y rsync
+
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: build/web # The folder the action should deploy.
+          branch: gh-pages
+          folder: build/web
+          git-config-name: bendn
+          git-config-email: bend.n@outlook.com
+          single-commit: true
 
   export-mac:
     name: Mac Export
@@ -101,38 +82,110 @@ jobs:
     container:
       image: docker://barichello/godot-ci:3.4.4
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-      - name: Setup
+      - uses: bend-n/chess/.github/actions/setup-godot@main
+      - name: Build
         run: |
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
-      - name: Mac Build
-        run: |
-          mkdir -v -p build/mac
-          godot -v --export "Mac" ./build/mac/$EXPORT_NAME.zip
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+          mkdir -vp build/mac
+          godot -v --export "Mac" ./build/mac/$NAME.zip
+      - uses: actions/upload-artifact@v1
         with:
           name: mac
           path: build/mac
 
+  check-android-secrets:
+    name: Check Secrets (android)
+    runs-on: ubuntu-20.04
+    outputs:
+      have-secrets: ${{ steps.check-secrets.outputs.have-secrets }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: check-secrets
+        run: |
+          if [[ "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" != "" && "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" != "" && "${{ secrets.RELEASE_KEYSTORE_USER }}" != "" && $(grep -c "Android" export_presets.cfg) -ne 0 ]]; then
+            echo "::set-output name=have-secrets::true"
+          else
+            echo "::set-output name=have-secrets::false"
+          fi
+
+  export-android:
+    needs: [check-android-secrets]
+    if: needs.check-android-secrets.outputs.have-secrets == 'true'
+    name: Android Export
+    runs-on: ubuntu-20.04
+    container:
+      image: docker://barichello/godot-ci:3.4.4
+    steps:
+      - uses: bend-n/chess/.github/actions/setup-godot@main
+      - name: Setup editor settings
+        run: | # the Dockerfile is supposed to do this for me *grumbles*
+          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999 && mv debug.keystore ~/debug.keystore
+
+          mkdir -vp ~/.config/godot
+          mv ./.github/editor-settings.tres ~/.config/godot/editor_settings-3.tres
+          sed "s@export/android/debug_keystore = \"\"@export/android/debug_keystore = \"$HOME/debug.keystore\"@" -i ~/.config/godot/editor_settings-3.tres
+
+      - name: Build
+        id: android-build
+        run: |
+          echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > ~/release.keystore
+          sed "s@keystore/release=\"\"@keystore/release=\"$HOME/release.keystore\"@g" -i export_presets.cfg
+          sed 's@keystore/release_user=".*"@keystore/release_user="'$ANDROID_KEYSTORE_USER'"@g' -i export_presets.cfg
+          sed 's@keystore/release_password=".*"@keystore/release_password="'$ANDROID_KEYSTORE_PASSWORD'"@g' -i export_presets.cfg
+          cat ~/.config/godot/editor_settings-3.tres || find ~/.config -type f | xargs cat
+          mkdir -vp build/android
+          godot -v --export "Android" ./build/android/$NAME.apk
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_USER: ${{ secrets.RELEASE_KEYSTORE_USER }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: android
+          path: build/android
+
+  check-itch-secrets:
+    name: Check Secrets (itch.io)
+    runs-on: ubuntu-20.04
+    outputs:
+      have-secrets: ${{ steps.check-secrets.outputs.have-secrets }}
+    steps:
+      - id: check-secrets
+        run: |
+          if [[ "${{ secrets.BUTLER_CREDENTIALS }}" != "" ]]; then
+            echo "::set-output name=have-secrets::true"
+          else
+            echo "::set-output name=have-secrets::false"
+          fi
+
   push-itch:
-    needs: [export-windows, export-linux, export-web, export-mac]
+    needs:
+      [
+        export-windows,
+        export-linux,
+        export-web,
+        export-mac,
+        export-android,
+        check-itch-secrets,
+      ]
+    if: needs.check-itch-secrets.outputs.have-secrets == 'true'
     name: Push to itch.io
     runs-on: ubuntu-20.04
     steps:
-      - name: Download
-        uses: actions/download-artifact@v3
-
-      - name: Get butler
-        uses: jdno/setup-butler@v1
+      - uses: actions/download-artifact@v3
+      - uses: jdno/setup-butler@v1
 
       - name: Push
         run: |
-          function push(){ channel=$1;[[ $channel == mac ]]&&echo '#!/bin/bash
-          cd "$(dirname "$0")"||exit;xattr -cr "$(pwd)/chess.app";open -n -a "$(pwd)/chess.app"'>./mac/run.sh;chmod +x ./*/**;if [[ $channel != mac&&$channel != web ]];then to_push="$channel.7z";zip='7z a -mtm=off -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on';if [[ -d $channel ]];then(cd "$channel"&&$zip "../$channel.7z" ".");else $zip "$channel.7z" "$channel";fi;butler push "$to_push" "$ITCH_PATH:$channel";else to_push="$channel.zip";(cd "$channel"&&zip -r "../$channel.zip" -9 ".");butler push "$to_push" "$ITCH_PATH:$channel";fi;rm -r "$to_push" "${channel:?}";};push "web";push "linux";push "windows";unzip mac/chess.zip -d mac/&&rm mac/chess.zip;push "mac"
+          function push() {
+            channel=$1
+            [[ $channel == mac ]] && echo -e "#!/bin/bash\n"'cd "$(dirname "$0")"||exit;xattr -cr "$(pwd)/chess.app";open -n -a "$(pwd)/chess.app"' >./mac/run.sh
+            chmod +x **; to_push="$channel"
+            [[ $(find $channel -type f | wc -l) -eq 1 && $channel != "android" ]] && to_push="$(echo $(basename $channel/*) .7z | tr -d " ")" && (cd "$channel" && 7z a -mtm=off -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on "../$to_push" ./*)
+            butler push "$to_push" "$ITCH_PATH:$channel"
+          }
+          push "web"; push "linux"; push "windows"; unzip mac/chess.zip -d mac/ && rm mac/chess.zip && push "mac"
+          [[ -d android ]] && rm android/*.idsig && push "android"
         env:
+          ITCH_PATH: bendn/${{ env.NAME }}
           BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}

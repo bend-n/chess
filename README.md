@@ -8,4 +8,4 @@
 
 ---
 
-### A mutliplayer chess client proudly made in godot.
+### A multiplayer chess client proudly made in godot.
