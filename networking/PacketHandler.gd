@@ -97,9 +97,8 @@ func _data_recieved() -> void:
 			Log.info("load pgn " + text)
 			Globals.grid.load_pgn(text)  # call deferred wont work since grid obj may be null
 		HEADERS.stopgame:
-			if !leaving:  # dont go back if its a stophost thing (HACK)
+			if !Globals.grid.chess.game_over():  # dont go back if its a stophost thing or the game is over by the st (HACK)
 				go_back(text, true)
-			leaving = false
 		HEADERS.signal:
 			var signal: Dictionary = text
 			match signal.type:
@@ -155,7 +154,6 @@ func handle_result(accepted, resultstring: String) -> bool:
 
 
 func go_back(error: String, isok: bool) -> void:
-	stopgame(game_code)
 	Globals.reset_vars()
 	if has_node("/root/Game"):
 		$"/root/Game".queue_free()
@@ -167,7 +165,7 @@ func go_back(error: String, isok: bool) -> void:
 
 func _start_game() -> void:
 	set_hosting(false)
-	var board: Control = load("res://Game.tscn").instance()
+	var board: Control = load("res://ui/board/Game.tscn").instance()
 	get_tree().get_root().add_child(board)
 	lobby.toggle(false)
 	emit_signal("start_game")
@@ -190,16 +188,16 @@ func signal(body: Dictionary, header: String, _mainheader := HEADERS.signal) -> 
 
 
 func join_game(game: String = game_code) -> void:
-	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.joinrequest, game)
+	send_gamecode_packet(Creds.get_public(), HEADERS.joinrequest, game)
 
 
 func host_game(game: String = game_code, white := true, moves_array: PoolStringArray = []) -> void:
-	var pckt := Utils.append_dict(SaveLoad.get_public_info(), {team = white, moves = moves_array})
+	var pckt := Utils.append_dict(Creds.get_public(), {team = white, moves = moves_array})
 	send_gamecode_packet(pckt, HEADERS.hostrequest, game)
 
 
 func spectate(game: String = game_code) -> void:
-	send_gamecode_packet(SaveLoad.get_public_info(), HEADERS.spectate, game)
+	send_gamecode_packet(Creds.get_public(), HEADERS.spectate, game)
 
 
 func send_gamecode_packet(data: Dictionary, header: String, gamecode: String = game_code):

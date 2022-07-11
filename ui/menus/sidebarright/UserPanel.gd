@@ -1,4 +1,5 @@
 extends PanelContainer
+class_name UserPanel
 
 onready var flag_display = $MC/H/Flag
 onready var name_display = $MC/H/Name

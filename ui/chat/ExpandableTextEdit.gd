@@ -20,7 +20,7 @@ func _ready():
 	line_count = _get_real_line_count()
 	_update_height(line_count)
 
-	connect("text_changed", self, "_text_changed")
+	connect("text_changed", self, "_on_text_changed")
 
 
 func _get_line_spacing():
@@ -65,11 +65,7 @@ func _update_height(count):
 	update()
 
 
-func _text_changed():
-	_on_text_changed(false)
-
-
-func _on_text_changed(force = false):
+func _on_text_changed(force := false):
 	var new_line_count = _get_real_line_count()
 	if force or line_count != new_line_count:
 		line_count = new_line_count

@@ -1,9 +1,6 @@
 extends Node
 class_name SaveLoader
 
-const settings_file := "user://chess.settings"
-const id := "user://.chess.id"
-
 var file: File = File.new()
 
 const default_settings_data = {
@@ -16,28 +13,6 @@ const default_settings_data = {
 	rainbow = false
 }
 
-const default_id_data = {id = "", name = "", country = "rainbow", password = ""}
-
-var files := {
-	settings = {file = settings_file, data = default_settings_data.duplicate(true)},
-	id = {file = id, data = default_id_data.duplicate()}
-}  # file types
-
-
-func get_public_info():
-	return {name = files.id.data.name, country = files.id.data.country, id = files.id.data.id}
-
-
-func get_data(type: String) -> Dictionary:
-	if !files.has(type):
-		return {}
-	return files[type].data
-
-
-func _ready() -> void:
-	SaveLoad.load_data("settings")
-	SaveLoad.load_data("id")
-
 
 static func to_base64(variant) -> String:
 	return Marshalls.variant_to_base64(variant)
@@ -47,11 +22,7 @@ static func from_base64(base64: String):
 	return Marshalls.base64_to_variant(base64)
 
 
-func save(type: String) -> void:
-	save_dict(files[type]["file"], files[type]["data"])
-
-
-func save_dict(path: String, data: Dictionary, plain := false) -> void:
+func save(path: String, data: Dictionary, plain := true) -> void:
 	file.open(path, File.WRITE)
 	file.store_string(var2str(data) if plain else to_base64(data))
 	file.close()
@@ -76,18 +47,11 @@ func load_string(path: String) -> String:
 		var string = file.get_as_text()
 		file.close()
 		return string
+	save_string(path, "")  # create file if it doesn't exist
 	return ""
 
 
-func load_data(type: String) -> Dictionary:
-	var read_dictionary = load_file(files[type]["file"])
-	if files[type]["data"].keys() == read_dictionary.keys():
-		files[type]["data"] = read_dictionary
-	save(type)  # write over old data
-	return files[type]["data"]
-
-
-func load_file(path: String) -> Dictionary:
+func load(path: String) -> Dictionary:
 	if file.file_exists(path):
 		file.open(path, File.READ)
 		var text := file.get_as_text()
@@ -100,8 +64,5 @@ func load_file(path: String) -> Dictionary:
 				dict = from_base64(text)
 		file.close()
 		return dict
+	save(path, {})  # create file if it doesn't exist
 	return {}
-
-
-func check_file(type: String) -> bool:
-	return file.file_exists(files[type]["file"])

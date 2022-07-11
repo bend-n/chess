@@ -2,8 +2,6 @@ extends Control
 class_name Chat
 
 onready var list: MessageList = $v/MessageList
-onready var kb = $v/Keyboard
-onready var dsk_input: TextEditor = $v/DesktopInput
 
 var regexes := [
 	[Utils.compile("_([^_]+)_"), "[i]$1[/i]"],
@@ -20,94 +18,6 @@ var regexes := [
 		"[url]$1[/url]"
 	],
 ]
-var emoji_replace_regex: RegEx = Utils.compile(":[^:]{1,30}:")
-
-const piece_emoji_path = "res://assets/pieces/cburnett/"
-const emoji_path = "res://assets/emojis/"
-const emojis := {
-	":grinning:": "😀",
-	":smiley:": "😃",
-	":smile:": "😄",
-	":grin:": "😁",
-	[":laughing:", ":satisfied:"]: "😆",
-	":sweat_smile:": "😅",
-	":joy:": "😂",
-	":rofl:": "🤣",
-	":blush:": "😊",
-	":innocent:": "😇",
-	[":slight_smile:", ":slightly_smiling:"]: "🙂",
-	[":upside_down:", ":upside_down:"]: "🙃",
-	":wink:": "😉",
-	":relieved:": "😌",
-	":tear_smile:": "🥲",
-	":heart_eyes:": "😍",
-	":hearty:": "🥰",
-	":stuck_out_tongue_winking_eye:": "😜",
-	":yum:": "😋",
-	":stuck_out_tongue_closed_eyes:": "😝",
-	":stuck_out_tongue:": "😛",
-	":raised_eyebrow:": "🤨",
-	":sunglasses:": "😎",
-	":nerd:": "🤓",
-	":star_struck:": "🤩",
-	":partying:": "🥳",
-	":smirk:": "😏",
-	":unamused:": "😒",
-	":disappointed:": "😞",
-	":pensive:": "😔",
-	":worried:": "😟",
-	":confused:": "😕",
-	":frown:": "🙁",
-	":persevere:": "😣",
-	":confounded:": "😖",
-	":tired:": "😫",
-	":weary:": "😩",
-	":cry:": "😢",
-	":sob:": "😭",
-	":triumph:": "😤",
-	":angry:": "😠",
-	":rage:": "😡",
-	":no_mouth:": "😶",
-	":sleeping:": "😴",
-	":cold:": "🥶",
-	":neutral:": "😐",
-	":expressionless:": "😑",
-	":hushed:": "😯",
-	":frowning:": "😦",
-	":anguished:": "😧",
-	":open_mouth:": "😮",
-	":astonished:": "😲",
-	":dizzy:": "😵",
-	":scream:": "😱",
-	":fearful:": "😨",
-	":cold_sweat:": "😰",
-	":disappointed_relieved:": "😥",
-	":sweat:": "😓",
-	":sleepy:": "😪",
-	":devil:": "😈",
-	":face_with_rolling_eyes:": "🙄",
-	":lying:": "🤥",
-	":grimacing:": "😬",
-	":zipped_mouth:": "🤐",
-	":nauseated:": "🤢",
-	":sneezing:": "🤧",
-	":mask:": "😷",
-	":face_with_thermometer:": "🤒",
-	":face_with_head_bandage:": "🤕",
-	":smiley_cat:": "😺",
-	":smile_cat:": "😸",
-	":joy_cat:": "😹",
-	":heart_eyes_cat:": "😻",
-	":turtle:": "🐢",
-	":cat:": "🐈",
-	":smirk_cat:": "😼",
-	":scream_cat:": "🙀",
-	":cat_joy:": "😹",
-	":cat_grin:": "😸",
-	":crying_cat:": "😿",
-	":pouting_cat:": "😾",
-}
-var expanded_emojis = {}
 
 
 # create smokey centered text
@@ -123,38 +33,7 @@ func _exit_tree():
 	Globals.chat = null
 
 
-func expand_emojis():
-	for trigger_list in emojis:
-		if typeof(trigger_list) == TYPE_ARRAY:
-			for trigger in trigger_list:
-				expanded_emojis[trigger] = emojis[trigger_list]
-		else:
-			expanded_emojis[trigger_list] = emojis[trigger_list]
-
-
-func setup_text_input():
-	if OS.has_touchscreen_ui_hint():
-		# dsk_input is a little dummy button that just opens the kb and shows text on mobile
-		kb.connect("done", self, "send")
-		kb.connect("closed", dsk_input, "set_text")
-		kb.text.emojibutton._setup(emojis)
-		dsk_input.textedit.connect("focus_entered", self, "open_kb")
-		Log.info("Mobile keyboard setup")
-	else:
-		kb.free()
-		dsk_input.show()
-		dsk_input.connect("done", self, "send")
-
-	dsk_input.emojibutton._setup(emojis)
-
-
-func open_kb():
-	kb.open(dsk_input.text)
-
-
 func _ready():
-	expand_emojis()
-	setup_text_input()
 	PacketHandler.connect("chat", self, "add_label_with")
 	server("Welcome!")  # say hello
 	yield(get_tree().create_timer(.4), "timeout")
@@ -167,12 +46,8 @@ func add_label_with(data: Dictionary) -> void:
 
 
 func send(t: String) -> void:
-	t = t.strip_edges()
-	if !t:
-		return
-	t = md2bb(emoji2bb(t))
-	var name_data = SaveLoad.get_data("id").name
-	var name = name_data if name_data else "Anonymous"
+	t = md2bb(t)
+	var name = Creds.get("name") if Creds.get("name") else "Anonymous"
 	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.team)
 	if PacketHandler.connected:
 		PacketHandler.relay_signal({"text": t, "who": name}, PacketHandler.RELAYHEADERS.chat)
@@ -192,12 +67,4 @@ func md2bb(input: String) -> String:
 					continue
 				input = replacement[0].sub(input, replacement[1], true)
 	input = input.replace("\\", "")  # remove escapers
-	return input
-
-
-func emoji2bb(input: String) -> String:
-	for i in emoji_replace_regex.search_all(input):
-		var emoji = i.strings[0]
-		if emoji in expanded_emojis:
-			input = input.replace(emoji, "%s" % expanded_emojis[emoji])
 	return input

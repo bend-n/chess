@@ -4,6 +4,8 @@ class_name UsernamePass
 onready var username = $Username
 onready var pw = $H/Password
 
+signal done
+
 
 func update_data(data: Dictionary) -> void:
 	username.text = data.user
@@ -24,3 +26,8 @@ func export_data() -> Dictionary:
 func set_enabled(enabled: bool) -> void:
 	username.editable = enabled
 	pw.editable = enabled
+
+
+func _entered(_nt := "") -> void:
+	if username.text and pw.text:
+		emit_signal("done")

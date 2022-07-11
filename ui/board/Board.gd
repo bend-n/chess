@@ -34,8 +34,7 @@ func set_piece(alg: String, p: Piece) -> void:
 var flipped = false
 var labels = {numbers = [], letters = []}
 var background_array = []
-var last_clicked: Piece = null
-var last_clicked_moves := []
+var last_clicked
 
 export(NodePath) var sidebar_path = @""
 onready var sidebar := get_node_or_null(sidebar_path)
@@ -62,10 +61,9 @@ func _ready():
 	PacketHandler.connect("move_data", self, "move")
 	rect_min_size = piece_size * 8
 	rect_pivot_offset = rect_min_size / 2
-	board.resize(128)
+	create_pieces()
 	init_board()
 	init_labels()
-	create_pieces()
 
 
 func init_board() -> void:  # create the board
@@ -74,6 +72,7 @@ func init_board() -> void:  # create the board
 		var alg = Chess.algebraic(i)
 		var square := Square.instance()  # create a square
 		square.name = alg
+		square.square = alg
 		square.hint_tooltip = alg
 		square.color = (Globals.board_color1 if Chess.square_color(alg) == "light" else Globals.board_color2)  # set the color
 		background.add_child(square)  # add the square to the background
@@ -105,6 +104,7 @@ func init_label(i: int, position: Vector2, text: String, off := Vector2.ZERO, va
 
 
 func create_pieces():
+	board.resize(128)
 	for k in Chess.SQUARE_MAP:
 		var piece = chess.get(k)
 		if piece:
@@ -163,34 +163,20 @@ func square_clicked(clicked_square: String) -> void:
 	if !p or p.color != Globals.team:
 		if !is_instance_valid(last_clicked):
 			return
-		for m in last_clicked_moves:
+		for m in chess.moves({square = last_clicked.position, verbose = true}):
 			if m.to == clicked_square && m.from == last_clicked.position:
 				move(m.san, false)
 				break
-		clear_circles()
-
-	elif last_clicked != p:
-		if is_instance_valid(last_clicked):
-			clear_circles()
-		last_clicked = p
-		p.background.show()
-		var movs = chess.moves({"square": clicked_square, "verbose": true})
-		for mov in movs:
-			if "c" in mov.flags:
-				get_piece(mov.to).frame.show()
-			else:
-				background_array[Chess.SQUARE_MAP[mov.to]].circle.show()
-			#e.p && castling dont really need attention here
-			last_clicked_moves.append(mov)
+		clear_last_clicked()
+		return
+	last_clicked = p
 
 
 func move(san: String, is_recieved_move := true) -> void:
 	var sound_handled = false
 	var move_0x88 = chess.__move_from_san(san, true)
-	if (
-		chess.moves({square = chess.algebraic(move_0x88.from), stripped = true}).find(chess.stripped_san(san))
-		== -1
-	):
+	var valid_moves = chess.moves({square = chess.algebraic(move_0x88.from), stripped = true})
+	if valid_moves.find(chess.stripped_san(san)) == -1:
 		Log.err("Invalid move")
 		return
 	chess.__make_move(move_0x88)
@@ -235,17 +221,9 @@ func move(san: String, is_recieved_move := true) -> void:
 	Events.emit_signal("turn_over")
 
 
-func clear_circles():
-	darken.hide()
-	if not last_clicked:
-		return
-	last_clicked.background.hide()
-	for move in last_clicked_moves:
-		if ("c" in move.flags or "e" in move.flags) and get_piece(move.to):  # the take may have been used as the move, so this may just do nothing. on enpasant
-			get_piece(move.to).frame.hide()  # for the take circle
-		background_array[Chess.SQUARE_MAP[move.to]].circle.hide()
-	last_clicked_moves = []
+func clear_last_clicked():
 	last_clicked = null
+	darken.hide()
 
 
 func clear_pieces() -> void:
@@ -259,10 +237,9 @@ func clear_pieces() -> void:
 func draw(reason := "") -> void:
 	var string = "draw by " + reason
 	ui.set_status(string, 0)
-	Events.emit_signal("game_over", string, true)
 	SoundFx.play("Victory")
-	yield(get_tree().create_timer(5), "timeout")
-	Events.emit_signal("go_back", string, true)
+	Events.emit_signal("game_over", string, true)
+	PacketHandler.stopgame("game over")
 
 
 func win(winner: String, reason := "") -> void:
@@ -270,8 +247,7 @@ func win(winner: String, reason := "") -> void:
 	ui.set_status(string, 0)  #: black won the game by checkmate
 	Events.emit_signal("game_over", string, true)
 	SoundFx.play("Victory")
-	yield(get_tree().create_timer(5), "timeout")
-	Events.emit_signal("go_back", string, true)
+	PacketHandler.stopgame("game over")
 
 
 func load_pgn(pgn: String) -> void:
@@ -291,12 +267,14 @@ func undo(two: bool = false) -> void:
 		Globals.chat.server("undid move %s" % chess.undo().san)
 		emit_signal("remove_last")
 	clear_pieces()
-	clear_circles()
+	clear_last_clicked()
 	create_pieces()
 	Events.emit_signal("turn_over")
 
 
 func _on_turn_over():
+	SaveLoad.save("user://game.json", {pgn = chess.pgn(), fen = chess.fen()})
+	clear_last_clicked()
 	check_game_over()
 	create_last_move_indicators()
 

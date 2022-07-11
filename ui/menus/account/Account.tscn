@@ -120,5 +120,7 @@ expand = true
 
 [connection signal="pressed" from="H/LogOut" to="." method="log_out"]
 [connection signal="tab_changed" from="choose" to="." method="_on_choose_tab_changed"]
-[connection signal="pressed" from="choose/signup/signupbutton" to="." method="_on_signup_pressed"]
-[connection signal="pressed" from="choose/signin/signinbutton" to="." method="_on_signin_pressed"]
+[connection signal="done" from="choose/signup/usernamepass" to="." method="signup"]
+[connection signal="pressed" from="choose/signup/signupbutton" to="." method="signup"]
+[connection signal="done" from="choose/signin/usernamepass" to="." method="signin"]
+[connection signal="pressed" from="choose/signin/signinbutton" to="." method="signin"]

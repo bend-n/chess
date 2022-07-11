@@ -20,9 +20,6 @@ onready var textedit: TextEdit = get_node(textedit_path)
 export(NodePath) var placeholder_path
 onready var placeholder := get_node(placeholder_path)
 
-export(NodePath) var emojibutton_path
-onready var emojibutton := get_node(emojibutton_path)
-
 
 func _text_changed() -> void:
 	placeholder.visible = len(textedit.text) == 0

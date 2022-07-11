@@ -21,16 +21,16 @@ func get_board() -> Node:
 
 
 func _spectate_info(info: Dictionary) -> void:
-	var whitepnl = panels[0]
+	var whitepnl: UserPanel = panels[0]
 	set_panel(whitepnl, info.white.name, info.white.country)
-	var blackpnl = panels[1]
+	var blackpnl: UserPanel = panels[1]
 	set_panel(blackpnl, info.black.name, info.black.country)
 
 
 func _on_info(info: Dictionary) -> void:
-	var enemy_int = 1 if Globals.team == "w" else 0
+	var enemy_int := int(Globals.team == "w")
 	set_panel(panels[enemy_int], info.name, info.country)  # enemy panel
-	set_panel(panels[abs(enemy_int - 1)], SaveLoad.get_data("id").name, SaveLoad.get_data("id").country)  # own panel
+	set_panel(panels[abs(enemy_int - 1)], Creds.get("name"), Creds.get("country"))  # own panel
 
 
 func set_panel(pnl, name, country) -> void:

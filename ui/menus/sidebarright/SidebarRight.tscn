@@ -171,7 +171,7 @@ anchor_bottom = 0.0
 margin_top = 313.0
 margin_right = 1422.0
 margin_bottom = 513.0
-rect_min_size = Vector2( 482, 200 )
+rect_min_size = Vector2( 0, 200 )
 
 [node name="WhitePanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0

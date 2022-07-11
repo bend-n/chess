@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://ui/chat/chat_theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui/chat/Chat.gd" type="Script" id=2]
 [ext_resource path="res://ui/chat/MessageList.tscn" type="PackedScene" id=3]
-[ext_resource path="res://ui/virtual_keyboard/VirtualKeyboard.tscn" type="PackedScene" id=4]
 [ext_resource path="res://ui/chat/TextEditor.tscn" type="PackedScene" id=5]
 
 [node name="Chat" type="MarginContainer"]
@@ -22,11 +21,12 @@ custom_constants/separation = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1422.0
-margin_bottom = 750.0
+margin_bottom = 777.0
+mouse_filter = 2
 
-[node name="DesktopInput" parent="v" instance=ExtResource( 5 )]
-margin_top = 750.0
+[node name="Input" parent="v" instance=ExtResource( 5 )]
+margin_top = 777.0
 margin_right = 1422.0
 margin_bottom = 800.0
 
-[node name="Keyboard" parent="v" instance=ExtResource( 4 )]
+[connection signal="done" from="v/Input" to="." method="send"]
