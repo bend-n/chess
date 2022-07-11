@@ -8,7 +8,6 @@ bend-n/chess is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 Files|Author(s)|License(s)
 --- | --- | ---
-|NotoColorEmoji in assets|[Google](?)|[Apache 2.0](https://github.com/googlefonts/noto-emoji/blob/main/LICENSE)|
 |Cascadia Code in assets|Aaron Bell|[SILOpenFontLicense 1.1](https://github.com/microsoft/cascadia-code/blob/main/LICENSE)|
 |[Ubuntu](https://fonts.google.com/specimen/Ubuntu) in assets ([nerd font](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Ubuntu))|Daiton Mag|[Ubuntu Font License](https://ubuntu.com/legal/font-licence)|
 |assets/pieces/horsey|cham, michael1241|[CCBY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)|

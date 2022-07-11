@@ -1,15 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://assets/ui/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://ui/barbutton/big-ubuntu-bold.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/menus/account/Secret.gd" type="Script" id=2]
+[ext_resource path="res://ui/menus/account/Restrict.gd" type="Script" id=3]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=5]
 [ext_resource path="res://ui/menus/account/usernamepass.gd" type="Script" id=6]
-[ext_resource path="res://ui/menus/account/Password.gd" type="Script" id=7]
-[ext_resource path="res://ui/menus/account/Username.gd" type="Script" id=8]
-
-[sub_resource type="DynamicFont" id=2]
-size = 85
-font_data = ExtResource( 1 )
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -17,6 +12,7 @@ font_data = ExtResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_min_size = Vector2( 0, 225 )
+mouse_filter = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource( 5 )
@@ -35,12 +31,13 @@ max_length = 20
 placeholder_text = "username goes here"
 caret_blink = true
 caret_blink_speed = 0.5
-script = ExtResource( 8 )
+script = ExtResource( 3 )
 
 [node name="H" type="HBoxContainer" parent="."]
 margin_top = 405.0
 margin_right = 1422.0
 margin_bottom = 511.0
+mouse_filter = 2
 custom_constants/separation = 2
 alignment = 1
 
@@ -58,20 +55,19 @@ context_menu_enabled = false
 placeholder_text = "password goes here"
 caret_blink = true
 caret_blink_speed = 0.5
-script = ExtResource( 7 )
+script = ExtResource( 3 )
 
 [node name="Secret" type="Button" parent="H"]
- focus_mode = 0
 margin_left = 1109.0
 margin_right = 1215.0
 margin_bottom = 106.0
 rect_min_size = Vector2( 106, 106 )
-
+focus_mode = 0
 custom_colors/font_color_focus = Color( 1, 1, 1, 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_hover = Color( 0.976471, 0.937255, 0.937255, 1 )
 custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = ExtResource( 1 )
 custom_styles/hover = SubResource( 1 )
 custom_styles/pressed = SubResource( 1 )
 custom_styles/focus = SubResource( 1 )
@@ -82,5 +78,5 @@ pressed = true
 text = ""
 script = ExtResource( 2 )
 
-[connection signal="text_changed" from="Username" to="Username" method="_on_text_changed"]
-[connection signal="text_changed" from="H/Password" to="H/Password" method="_on_text_changed"]
+[connection signal="text_entered" from="Username" to="." method="_entered"]
+[connection signal="text_entered" from="H/Password" to="." method="_entered"]

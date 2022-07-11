@@ -1,5 +1,7 @@
 extends Control
 
+const file = "user://chess.settings"
+
 onready var piece_sets := Utils.walk_dir()
 onready var piece_set_button: GridMenuButton = find_node("PieceSet")
 onready var fullscreenbutton := find_node("FullscreenButton")
@@ -10,34 +12,44 @@ onready var board_color1: ColorPickerButtonBetter = find_node("boardcolor1")
 onready var board_color2: ColorPickerButtonBetter = find_node("boardcolor2")
 onready var rainbow = find_node("rainbow")
 
-onready var settings: Dictionary = SaveLoad.get_data("settings") setget set_settings
+onready var settings: Dictionary = default_settings_data setget set_settings
+
+const default_settings_data = {
+	vsync = OS.vsync_enabled,
+	fullscreen = OS.window_fullscreen,
+	borderless = OS.window_borderless,
+	piece_set = "california",
+	board_color1 = Color(0.870588, 0.890196, 0.901961),
+	board_color2 = Color(0.54902, 0.635294, 0.678431),
+	rainbow = false
+}
 
 var ignore_set_settings = false
 
 
 func set_settings(new_settings: Dictionary) -> void:
-	if ignore_set_settings:
-		return
-	update_button_visuals(new_settings)
-	settings = new_settings
-	SaveLoad.files["settings"]["data"] = settings
-	SaveLoad.save("settings")
+	if not ignore_set_settings:
+		update_button_visuals(new_settings)
+		settings = new_settings
+		SaveLoad.save(file, settings)
 
 
 func update_button_visuals(set: Dictionary = settings) -> void:
 	ignore_set_settings = true
-	vsyncbutton.pressed = set["vsync"]
-	fullscreenbutton.pressed = set["fullscreen"]
+	vsyncbutton.pressed = set.vsync
+	fullscreenbutton.pressed = set.fullscreen
 	if is_instance_valid(borderlessbutton):
-		borderlessbutton.pressed = !set["borderless"]
-	board_color1.color = set["board_color1"]
-	board_color2.color = set["board_color2"]
-	rainbow.pressed = set["rainbow"]
-	preview.update_preview(set["board_color1"], set["board_color2"], set["piece_set"])
+		borderlessbutton.pressed = !set.borderless
+	board_color1.color = set.board_color1
+	board_color2.color = set.board_color2
+	rainbow.pressed = set.rainbow
+	preview.update_preview(set.board_color1, set.board_color2, set.piece_set)
 	ignore_set_settings = false
 
 
 func _ready() -> void:
+	var lod = SaveLoad.load(file)
+	settings = lod if Utils.dict_cmp(lod, default_settings_data) else default_settings_data
 	if OS.has_feature("HTML5"):
 		borderlessbutton.queue_free()
 	for i in piece_sets:  # add the items
@@ -55,8 +67,7 @@ func update_vars() -> void:
 	OS.window_fullscreen = settings.fullscreen
 	OS.window_borderless = settings.borderless
 	ColorBack.rainbow = settings.rainbow
-	SaveLoad.files["settings"]["data"] = settings
-	SaveLoad.save("settings")
+	SaveLoad.save(file, settings)
 
 
 func _on_PieceSet_selected(index: int) -> void:

@@ -1,6 +1,6 @@
 extends Node
 
-var internet := false
+var internet := false  # is internet available
 
 
 static func compile(src: String) -> RegEx:
@@ -29,12 +29,8 @@ func get_args() -> Dictionary:
 
 
 func _ready() -> void:
+	request()  # check internet ok?
 	cli()
-	var t = Timer.new()
-	add_child(t)
-	t.name = "t"
-	t.connect("timeout", self, "_on_timeout", [t])
-	_on_timeout(t)
 
 
 func cli() -> void:
@@ -50,6 +46,9 @@ func cli() -> void:
 		print(options)
 		get_tree().quit()  # dont wait
 	if "host" in args or "join" in args:
+		if !internet:
+			printerr("No internet")
+			get_tree().quit()
 		yield(PacketHandler, "connection_established")
 		if "host" in args && args.host:
 			print("hosting game: %s" % args.host)
@@ -68,11 +67,6 @@ func cli() -> void:
 		printerr("error: invalid game code")
 		get_tree().quit()  # dont wait
 	# "debug" is handled by Debug.gd
-
-
-func _on_timeout(timer: Timer) -> void:
-	timer.start(600)  # every 10m
-	request()  # ping server so it doesnt go down
 
 
 static func exec_ext() -> String:
@@ -148,3 +142,24 @@ static func append_dict(dict: Dictionary, newdict: Dictionary) -> Dictionary:
 	for key in newdict:
 		dict[key] = newdict[key]
 	return dict
+
+
+static func sort(arr: Array) -> Array:
+	arr.sort()
+	return arr
+
+
+static func value_types(arr: Array) -> Array:
+	var types = []
+	for value in arr:
+		types.append(typeof(value))
+	types.sort()
+	return types
+
+
+static func dict_cmp(d1: Dictionary, d2: Dictionary) -> bool:
+	return (
+		len(d1) == len(d2)
+		and sort(d1.keys()) == sort(d2.keys())
+		and value_types(d1.values()) == value_types(d2.values())
+	)

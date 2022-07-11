@@ -2,7 +2,6 @@ extends Control
 
 onready var flags: PoolStringArray = ["rainbow"]
 onready var flagchoice: GridMenuButton = $choose/signup/flag
-onready var data: Dictionary = SaveLoad.get_data("id")
 onready var status: InfoLabel = $H/InfoLabel  # not a StatusLabel
 onready var loading = $LoadingAnimation
 
@@ -35,16 +34,16 @@ func _ready():
 
 
 func attempt_autologin():
-	if data.name and data.password:
-		PacketHandler.signin(data)
+	if Creds.data.name and Creds.data.password:
+		PacketHandler.signin(Creds.data)
 	else:
 		reset("", false)
 
 
-func _on_signin_pressed():
+func signin():
 	$choose/signin/signinbutton.disabled = true
 	update_data(tabs.signin.username, tabs.signin.pw)
-	PacketHandler.signin(data)
+	PacketHandler.signin(Creds.data)
 
 
 func _on_signin_result(result):
@@ -55,57 +54,48 @@ func _on_signin_result(result):
 	$choose/signin/signinbutton.disabled = false
 	if typeof(result) == TYPE_STRING:  # ew, error, get it away from me
 		return reset(result, status_set)
-	data.id = result.id
-	data.country = result.country
-	_after_result()
+	Creds.data.uuid = result.id  # server uses `id` instead of `uuid`...
+	Creds.data.country = result.country
+	on_successful()
 
 
-func _on_signup_pressed():
+func signup():
 	$choose/signup/signupbutton.disabled = true
-	data.country = flags[flagchoice.selected]
+	Creds.data.country = flags[flagchoice.selected]
 	update_data(tabs.signup.username, tabs.signup.pw)
-	PacketHandler.signup(data)
+	PacketHandler.signup(Creds.data)
 
 
 func _on_signup_result(result: String):
 	$choose/signup/signupbutton.disabled = false
 	if "err:" in result:  # ew error go awway
 		return reset(result)
-	data.id = result
-	_after_result()
+	Creds.data.uuid = result
+	on_successful()
 
 
 func reset(reason: String, set_status := true):
 	if set_status:
 		status.set_text(reason, 0)
-	data = SaveLoad.default_id_data
+	Creds.reset()
 	tabcontainer.show()
 	loading.hide()
 	set_signed_in(false)
-	save_data()
-	tabcontainer.show()
 
 
-func _after_result():
-	save_data()
+func on_successful():
+	Creds.save()
 	loading.hide()
-	status.set_text("Signed in to " + SaveLoad.get_data("id").name, 0)
+	status.set_text("Signed in to " + Creds.get("name"), 0)
 	set_signed_in(true)  # yay
 	$H/LogOut.show()
-
 	tabcontainer.hide()
 
 
 func update_data(username, pw):
-	username.text = username.get_text().strip_edges().strip_escapes()
-	data.name = username.get_text()
-	data.password = pw.get_text()
-	save_data()
-
-
-func save_data():
-	SaveLoad.files.id.data = data
-	SaveLoad.save("id")
+	Creds.data.name = username.get_text()
+	Creds.data.password = pw.get_text()
+	Creds.save()
 
 
 func _on_choose_tab_changed(tab: int):

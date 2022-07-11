@@ -9,7 +9,12 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "MarginContainer",
+"base": "Button",
+"class": "BackButton",
+"language": "GDScript",
+"path": "res://ui/board/BackButton.gd"
+}, {
+"base": "ColorRect",
 "class": "BackgroundSquare",
 "language": "GDScript",
 "path": "res://Square.gd"
@@ -18,11 +23,6 @@ _global_script_classes=[ {
 "class": "BarTextureButton",
 "language": "GDScript",
 "path": "res://ui/barbutton/BarTextureButton.gd"
-}, {
-"base": "KeyUtils",
-"class": "CapsLock",
-"language": "GDScript",
-"path": "res://ui/virtual_keyboard/CapsLock.gd"
 }, {
 "base": "Control",
 "class": "Chat",
@@ -63,6 +63,11 @@ _global_script_classes=[ {
 "class": "ConfirmButton",
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/confirmbutton.gd"
+}, {
+"base": "Node",
+"class": "Credentials",
+"language": "GDScript",
+"path": "res://Credentials.gd"
 }, {
 "base": "ConfirmButton",
 "class": "DrawButton",
@@ -108,16 +113,6 @@ _global_script_classes=[ {
 "class": "InfoLabel",
 "language": "GDScript",
 "path": "res://ui/menus/account/InfoLabel.gd"
-}, {
-"base": "KeyUtils",
-"class": "Key",
-"language": "GDScript",
-"path": "res://ui/virtual_keyboard/Key.gd"
-}, {
-"base": "Button",
-"class": "KeyUtils",
-"language": "GDScript",
-"path": "res://ui/virtual_keyboard/KeyUtils.gd"
 }, {
 "base": "Control",
 "class": "Lobby",
@@ -194,11 +189,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/slider_button/SliderButton.gd"
 }, {
-"base": "KeyUtils",
-"class": "SpecialKey",
-"language": "GDScript",
-"path": "res://ui/virtual_keyboard/SpecialKey.gd"
-}, {
 "base": "Label",
 "class": "StatusLabel",
 "language": "GDScript",
@@ -214,20 +204,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/undobutton.gd"
 }, {
+"base": "PanelContainer",
+"class": "UserPanel",
+"language": "GDScript",
+"path": "res://ui/menus/sidebarright/UserPanel.gd"
+}, {
 "base": "Control",
 "class": "UsernamePass",
 "language": "GDScript",
 "path": "res://ui/menus/account/usernamepass.gd"
-}, {
-"base": "CanvasLayer",
-"class": "VirtualKeyboard",
-"language": "GDScript",
-"path": "res://ui/virtual_keyboard/VirtualKeyboard.gd"
 } ]
 _global_script_class_icons={
+"BackButton": "",
 "BackgroundSquare": "",
 "BarTextureButton": "",
-"CapsLock": "",
 "Chat": "",
 "CheckBoxButton": "",
 "Chess": "",
@@ -236,6 +226,7 @@ _global_script_class_icons={
 "ColorSelect": "",
 "Confirm": "",
 "ConfirmButton": "",
+"Credentials": "",
 "DrawButton": "",
 "ExpandableTextEdit": "",
 "FEN": "",
@@ -245,8 +236,6 @@ _global_script_class_icons={
 "GridMenuButton": "",
 "HueSlider": "",
 "InfoLabel": "",
-"Key": "",
-"KeyUtils": "",
 "Lobby": "",
 "MaterialLabel": "",
 "MaterialLabelManager": "",
@@ -262,12 +251,11 @@ _global_script_class_icons={
 "Restrict": "",
 "SaveLoader": "",
 "SliderButton": "",
-"SpecialKey": "",
 "StatusLabel": "",
 "TextEditor": "",
 "UndoButton": "",
-"UsernamePass": "",
-"VirtualKeyboard": ""
+"UserPanel": "",
+"UsernamePass": ""
 }
 
 [application]
@@ -295,6 +283,7 @@ Debug="*res://Debug.gd"
 Pgn="*res://PGN/PGN.gd"
 Log="*res://Log.gd"
 Fen="*res://FEN/Fen.gd"
+Creds="*res://Credentials.gd"
 
 [debug]
 

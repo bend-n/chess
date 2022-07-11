@@ -12,7 +12,7 @@ func _ready():
 
 func _load(i: int):
 	in_sim = true
-	var boar = load("res://Game.tscn").instance()
+	var boar = load("res://ui/board/Game.tscn").instance()
 	get_tree().get_root().add_child(boar)
 	boar = boar.get_board()
 	boar.load_pgn(pgns[i])

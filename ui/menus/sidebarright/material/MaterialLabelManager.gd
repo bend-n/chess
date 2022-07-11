@@ -50,4 +50,4 @@ func show_material_imbalance():
 	var d = get_material_diff()
 	var score = get_material_score(d)
 	w.display(d.w, score if score > 0 else 0)
-	b.display(d.b, abs(score) if score < 0 else 0)
+	b.display(d.b, int(abs(score)) if score < 0 else 0)
