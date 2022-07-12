@@ -192,7 +192,7 @@ func join_game(game: String = game_code) -> void:
 
 
 func host_game(game: String = game_code, white := true, moves_array: PoolStringArray = []) -> void:
-	var pckt := Utils.append_dict(Creds.get_public(), {team = white, moves = moves_array})
+	var pckt = Utils.append_dict(Creds.get_public(), {team = white, moves = moves_array})
 	send_gamecode_packet(pckt, HEADERS.hostrequest, game)
 
 

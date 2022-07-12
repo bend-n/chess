@@ -11,13 +11,6 @@ const offset := Vector2(10, 10)
 const vertical := 15
 
 
-static func is_debug() -> bool:
-	var args := Utils.get_args()
-	if "debug" in args:
-		return Utils.str_bool(args.debug)
-	return OS.is_debug_build()
-
-
 func _ready() -> void:
 	z_index = 5  # put on top
 	add_child(timer)
@@ -25,7 +18,6 @@ func _ready() -> void:
 	timer.start(.1)  # only redraw every .1 seconds
 	font = font.duplicate()
 	font.size = vertical * 0.8
-	debug = is_debug()
 	visible = debug
 
 
