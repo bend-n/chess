@@ -2,7 +2,7 @@ extends Control
 
 const file = "user://chess.settings"
 
-onready var piece_sets := Utils.walk_dir()
+onready var piece_sets: PoolStringArray = Utils.walk_dir()
 onready var piece_set_button: GridMenuButton = find_node("PieceSet")
 onready var fullscreenbutton := find_node("FullscreenButton")
 onready var vsyncbutton := find_node("VsyncButton")

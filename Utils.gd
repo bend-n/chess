@@ -17,40 +17,66 @@ func expand_color(color: String) -> String:
 	return "white" if color == "w" else "black"
 
 
-func get_args() -> Dictionary:
-	var arguments := {}
-	for argument in OS.get_cmdline_args():
-		var key_value = argument.split("=")
-		if len(key_value) == 2:
-			arguments[key_value[0].lstrip("--")] = key_value[1]
-		else:
-			arguments[key_value[0].lstrip("--")] = "true"
-	return arguments
-
-
 func _ready() -> void:
 	request()  # check internet ok?
 	cli()
 
 
 func cli() -> void:
-	var args = get_args()
-	if "help" in args or "h" in args:
-		print("usage: ./chess%s [-help] [-debug [enabled]] [--host=gamecode | --join=gamecode]" % exec_ext())
-		var options = """options:
-	--help:             show this help message and exit
-	--debug=enabled:    enable/disable debug mode
-	--host=game_code:   host a game with the given game code
-	--join=game_code:   join a game with the given game code
-		"""
-		print(options)
+	var parser := Parser.new()
+	parser.add_argument(
+		Arg.new(
+			{
+				triggers = ["--help", "-h", "-?"],
+				n_args = 0,
+				help = "show this help message and exit",
+				action = "store_true",
+			}
+		)
+	)
+	parser.add_argument(
+		Arg.new(
+			{
+				triggers = ["--host", "-h"],
+				n_args = 1,
+				default = "game_code",
+				help = "host a game",
+				arg_names = "game code"
+			}
+		)
+	)
+	parser.add_argument(
+		Arg.new(
+			{
+				triggers = ["--join", "-j"],
+				n_args = 1,
+				default = "game_code",
+				help = "join a game",
+				arg_names = "game code"
+			}
+		)
+	)
+	parser.add_argument(
+		Arg.new(
+			{
+				triggers = ["--debug", "-d"],
+				n_args = 1,
+				help = "toggle debug mode",
+				arg_names = "enabled",
+			}
+		)
+	)
+	var args = parser.parse_arguments()
+	Debug.debug = str_bool(args["debug"]) if args.has("debug") else OS.is_debug_build()
+	if args.has("help") and args["help"]:
+		print(parser.help("chess game"))
 		get_tree().quit()  # dont wait
-	if "host" in args or "join" in args:
+	elif args.has("host") or args.has("join"):
 		if !internet:
 			printerr("No internet")
 			get_tree().quit()
 		yield(PacketHandler, "connection_established")
-		if "host" in args && args.host:
+		if args.has("host") and args.host:
 			print("hosting game: %s" % args.host)
 			if PacketHandler.lobby.validate_text(args.host):
 				var move_list = Pgn.parse(OS.get_environment("MOVES"), false).moves
@@ -58,27 +84,13 @@ func cli() -> void:
 					print("with moves: %s" % move_list)
 				PacketHandler.host_game(args.host, true, move_list)
 				return
-		elif "join" in args && args.join:
+		elif args.has("join") and args.join:
 			print("joining game: %s" % args.join)
 			if PacketHandler.lobby.validate_text(args.join):
 				PacketHandler.join_game(args.join)
 				return
-		PacketHandler.lobby.set_buttons(true)
 		printerr("error: invalid game code")
 		get_tree().quit()  # dont wait
-	# "debug" is handled by Debug.gd
-
-
-static func exec_ext() -> String:
-	if OS.has_feature("Windows"):
-		return ".exe"
-	elif OS.has_feature("OSX"):
-		return ".app/Contents/MacOS/chess"
-	elif OS.has_feature("X11"):
-		return ".x86_64"
-	elif OS.has_feature("web"):
-		return ".html"
-	return ""
 
 
 func request() -> int:  # returns err
