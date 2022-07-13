@@ -6,6 +6,8 @@ on:
       - "**.gd"
       - "**.tscn"
       - "**.import"
+      - "**.tres"
+      - "**.ttf"
     branches:
       - main
 
