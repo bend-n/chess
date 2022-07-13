@@ -12,11 +12,8 @@ var regexes := [
 	[Utils.compile("~~([^~]+)~~"), "[s]$1[/s]"],
 	[Utils.compile("#([^#]+)#"), "[rainbow freq=.3 sat=.7]$1[/rainbow]"],
 	[Utils.compile("%([^%]+)%"), "[shake rate=20 level=25]$1[/shake]"],
-	[Utils.compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"],
-	[
-		Utils.compile("([-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))"),
-		"[url]$1[/url]"
-	],
+	[Utils.compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"], # [foo](bar)
+	[Utils.compile("[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)"),"[url]$0[/url]"],
 ]
 
 
@@ -62,9 +59,9 @@ func md2bb(input: String) -> String:
 		if result:
 			var index = input.find(result.strings[0]) - 1
 			var char_before = input[index]
+			if replacement[1] == "[url]$0[/url]" and char_before == "[":
+				continue
 			if not char_before in "\\":  # taboo characters go here
-				if replacement[1] == "[url]$1[/url]" and "png" in result.strings[0]:  # url one must avoid recognizing res://
-					continue
 				input = replacement[0].sub(input, replacement[1], true)
 	input = input.replace("\\", "")  # remove escapers
 	return input
