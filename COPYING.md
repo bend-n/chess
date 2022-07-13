@@ -8,6 +8,7 @@ bend-n/chess is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 Files|Author(s)|License(s)
 --- | --- | ---
+|Migu in assets||[IPA Font License 1.0](http://mix-mplus-ipa.osdn.jp/migmix/IPA_Font_License_Agreement_v1.0.txt)|
 |Cascadia Code in assets|Aaron Bell|[SILOpenFontLicense 1.1](https://github.com/microsoft/cascadia-code/blob/main/LICENSE)|
 |[Ubuntu](https://fonts.google.com/specimen/Ubuntu) in assets ([nerd font](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Ubuntu))|Daiton Mag|[Ubuntu Font License](https://ubuntu.com/legal/font-licence)|
 |assets/pieces/horsey|cham, michael1241|[CCBY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)|
