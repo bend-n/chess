@@ -29,12 +29,24 @@ mouse_filter = 2
 [node name="Foreground" type="CanvasLayer" parent="."]
 layer = 0
 
-[node name="Arrows" type="Control" parent="."]
+[node name="Canvas" type="ViewportContainer" parent="."]
+modulate = Color( 1, 1, 1, 0.588235 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+stretch = true
+
+[node name="Viewport" type="Viewport" parent="Canvas"]
+size = Vector2( 1422, 800 )
+transparent_bg = true
+handle_input_locally = false
+disable_3d = true
+usage = 0
+
+[node name="Arrows" type="Control" parent="Canvas/Viewport"]
 script = ExtResource( 2 )
-red_overlay = Color( 0.9, 0.216, 0.216, 0.498039 )
+red_overlay = Color( 0.729412, 0.254902, 0.254902, 1 )
+green_overlay = Color( 0.1272, 0.53, 0.18762, 1 )
 
 [node name="Darken" type="ColorRect" parent="."]
 visible = false
@@ -43,6 +55,3 @@ anchor_bottom = 1.0
 mouse_filter = 2
 mouse_default_cursor_shape = 7
 color = Color( 0, 0, 0, 0.784314 )
-
-[node name="Polygon2D" type="Polygon2D" parent="."]
-polygon = PoolVector2Array( -500, -500, -475, -540, -523, -540 )

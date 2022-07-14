@@ -6,9 +6,12 @@ var first: Vector2
 var ev: Vector2
 var b: Grid
 
-const w = 15
+var t := 0.0
+
+const w := 15
 
 export(Color) var red_overlay
+export(Color) var green_overlay
 
 
 func _setup(_b: Grid):
@@ -16,13 +19,21 @@ func _setup(_b: Grid):
 	Events.connect("turn_over", self, "on_turn_over")
 	for k in Chess.SQUARE_MAP:
 		b.background_array[Chess.SQUARE_MAP[k]].connect("right_clicked", self, "right_clicked", [k])
+		b.background_array[Chess.SQUARE_MAP[k]].connect("clicked", self, "left_clicked", [k])
 
 
 func right_clicked(clicked: String) -> void:
+	t = 0
 	first = ((Chess.algebraic2vec(clicked) * b.piece_size) + b.piece_size / 2)
 
 
-func _process(_delta):
+func left_clicked(sq: String) -> void:
+	if !b.get_piece(sq):
+		clear_arrows()
+
+
+func _process(delta):
+	t += delta
 	update()
 
 
@@ -30,19 +41,17 @@ func _draw():
 	if !b:
 		return
 	var s = b.piece_size
-	var c = b.overlay_color
 	if first:
 		var shift = Input.is_action_pressed("shift")
 		var loc_m = ((get_local_mouse_position() / s) - Vector2(.5, .5)).round()
 		loc_m = Vector2(clamp(loc_m.x, 0, 7), clamp(loc_m.y, 0, 7))
-		var m_pos = (loc_m * s) + s / 2
-		var clr = red_overlay if shift else c
+		var m_pos = ((loc_m * s) + s / 2).move_toward(first, 25)
+		var clr = red_overlay if shift else green_overlay
 		if Input.is_action_pressed("rclick"):  # previews
 			if first != m_pos:
-				draw_line(first, m_pos, clr, w, true)
-				draw_triangle(first.angle_to_point(m_pos), m_pos, clr)
-			else:
-				draw_arc(first, (s.x / 2) - 5, 0, PI * 2, 40, clr, 10, true)
+				draw_arrow(first, m_pos, clr)
+			elif t <= .25:
+				draw_arc(first, (s.x / 2) - 6, 0, PI * 2, 40, clr, 10, true)
 		else:
 			var flag := true  # no for-else :c
 			if first != m_pos:
@@ -54,7 +63,7 @@ func _draw():
 						break
 				if flag:
 					arrows.append(arr)
-			else:
+			elif t <= .25:
 				var arr := [first, clr]
 				for i in range(len(circles)):
 					if circles[i][0] == arr[0]:
@@ -64,12 +73,18 @@ func _draw():
 				if flag:
 					circles.append(arr)
 			first = Vector2.ZERO
+			t = 0
 
 	for a in arrows:
-		draw_line(a[0], a[1], a[2], w, true)
-		draw_triangle(a[0].angle_to_point(a[1]), a[1], a[2])
+		draw_arrow(a[0], a[1], a[2])
 	for ci in circles:
-		draw_arc(ci[0], (s.x / 2) - 5, 0, PI * 2, 40, ci[1], 10, true)
+		draw_arc(ci[0], (s.x / 2) - 6, 0, PI * 2, 40, ci[1], 10, true)
+
+
+func draw_arrow(start: Vector2, end: Vector2, clr: Color):
+	draw_circle(start, float(w) / 2, clr)
+	draw_line(start, end, clr, w, true)
+	draw_triangle(start.angle_to_point(end), end, clr)
 
 
 # r: the radians of rotation.
