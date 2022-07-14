@@ -78,7 +78,7 @@ func init_board() -> void:  # create the board
 		background.add_child(square)  # add the square to the background
 		square.connect("clicked", self, "square_clicked", [alg])  # connect the clicked event
 		background_array[i] = square  # add the square to the background array
-	$Arrows._setup(self)  # initialize the arrows
+	find_node("Arrows")._setup(self)  # initialize the arrows
 
 
 func init_labels() -> void:
