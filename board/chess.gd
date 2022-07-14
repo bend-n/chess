@@ -559,8 +559,7 @@ func __move_to_san(move, moves := __generate_moves({legal = true}), annotations 
 
 
 func __attacked(color: String, square: int):
-	var i := 0
-
+	var i := -1
 	while i < SQUARE_MAP.h1:
 		i += 1
 		# did we run off the end of the board
@@ -626,7 +625,7 @@ func insufficient_material():
 	var bishops := []
 	var num_pieces := 0
 	var sq_color := 0
-	var i := 0
+	var i := -1
 	while i < SQUARE_MAP.h1:
 		i += 1
 
@@ -1015,7 +1014,7 @@ func moves(options := {}):
 func board():
 	var output := []
 	var row := []
-	var i := 0
+	var i := -1
 	while i < SQUARE_MAP.h1:
 		i += 1
 		if board[i] == null:
