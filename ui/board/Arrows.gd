@@ -3,7 +3,6 @@ extends Control
 var arrows := []  # [from, to, color]
 var circles := []  # [position, color]
 var first: Vector2
-var ev: Vector2
 var b: Grid
 
 var t := 0.0
@@ -43,7 +42,7 @@ func _draw():
 	var s = b.piece_size
 	if first:
 		var shift = Input.is_action_pressed("shift")
-		var loc_m = ((get_local_mouse_position() / s) - Vector2(.5, .5)).round()
+		var loc_m = ((b.get_local_mouse_position() / s) - Vector2(.5, .5)).round()
 		loc_m = Vector2(clamp(loc_m.x, 0, 7), clamp(loc_m.y, 0, 7))
 		var m_pos = ((loc_m * s) + s / 2).move_toward(first, 25)
 		var clr = red_overlay if shift else green_overlay
