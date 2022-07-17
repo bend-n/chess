@@ -14,10 +14,10 @@ onready var rainbow = find_node("rainbow")
 
 onready var settings: Dictionary = default_settings_data setget set_settings
 
-const default_settings_data = {
-	vsync = OS.vsync_enabled,
-	fullscreen = OS.window_fullscreen,
-	borderless = OS.window_borderless,
+const default_settings_data := {
+	vsync = false,
+	fullscreen = false,
+	borderless = false,
 	piece_set = "california",
 	board_color1 = Color(0.870588, 0.890196, 0.901961),
 	board_color2 = Color(0.54902, 0.635294, 0.678431),
@@ -95,13 +95,21 @@ func _on_boardcolor1_newcolor(color: Color) -> void:
 	self.settings.board_color1 = color
 
 
+func _on_boardcolor1_changed(color: Color):
+	preview.update_preview(color, settings.board_color2, settings.piece_set)
+
+
 func _on_boardcolor2_newcolor(color: Color) -> void:
 	Globals.board_color2 = color
 	self.settings.board_color2 = color
 
 
+func _on_boardcolor2_changed(color: Color):
+	preview.update_preview(settings.board_color1, color, settings.piece_set)
+
+
 func _on_resetbutton_pressed() -> void:
-	self.settings = SaveLoad.default_settings_data.duplicate(true)
+	self.settings = default_settings_data.duplicate()
 	update_vars()
 
 

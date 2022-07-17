@@ -39,4 +39,6 @@ margin_top = 10.0
 margin_right = -10.0
 margin_bottom = -10.0
 
-[connection signal="done" from="Popup/ColorPicker" to="." method="_on_ColorPicker_done"]
+[connection signal="popup_hide" from="Popup" to="." method="_on_popup_hidden"]
+[connection signal="color_changed" from="Popup/ColorPicker" to="." method="changed"]
+[connection signal="done" from="Popup/ColorPicker" to="." method="done"]
