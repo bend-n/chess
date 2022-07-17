@@ -4,6 +4,7 @@ class_name ColorPickerButtonBetter
 onready var popup: Popup = $Popup
 onready var colorpicker := $Popup/ColorPicker
 
+signal changed(color)
 signal newcolor(color)
 
 var color: Color setget set_color
@@ -14,10 +15,10 @@ func set_color(newcolor: Color) -> void:
 	add_color_override("font_color", color)
 
 
-func _on_ColorPicker_done(newcolor: Color) -> void:
-	set_color(newcolor)
+func done(clr: Color) -> void:
+	set_color(clr)
 	popup.hide()
-	emit_signal("newcolor", color)
+	emit_signal("newcolor", clr)
 
 
 func _pressed() -> void:
@@ -25,3 +26,12 @@ func _pressed() -> void:
 	rect.position = rect_global_position + Vector2(50, 50)
 	popup.popup(rect)
 	colorpicker.open(color)
+
+
+func _on_popup_hidden():
+	done(colorpicker.color)
+
+
+func changed(clr: Color):
+	set_color(clr)
+	emit_signal("changed", clr)
