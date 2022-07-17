@@ -24,13 +24,14 @@ func open(_lobby: Lobby):
 
 
 func _on_Stop_pressed():
+	lobby.set_buttons(true)
 	reset()
 
 
 func reset():
 	moves = []
 	white = true
-	$Advanced/H/Pgn.text_changed("")
+	$Advanced/H/Pgn.text = ""
 	hide()
 
 
