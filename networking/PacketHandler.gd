@@ -127,20 +127,11 @@ func _connection_error() -> void:
 
 
 func join_result(accepted) -> void:
-	if handle_result(accepted, "Joined!"):
-		flip_if_black()
-
-
-func flip_if_black():
-	yield(get_tree(), "idle_frame")
-	if Globals.team == Chess.BLACK:
-		Globals.grid.flip_board()
+	handle_result(accepted, "Joined!")
 
 
 func host_result(accepted) -> void:
-	if handle_result(accepted, "Hosted!"):
-		set_hosting(true)
-		flip_if_black()
+	set_hosting(handle_result(accepted, "Hosted!"))
 
 
 func handle_result(accepted, resultstring: String) -> bool:
@@ -170,6 +161,8 @@ func _start_game() -> void:
 	lobby.toggle(false)
 	emit_signal("start_game")
 	lobby.set_buttons(false)
+	if Globals.team == Chess.BLACK:
+		board.get_board().flip_board()
 
 
 ## packet sending wrapper functions
