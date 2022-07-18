@@ -103,24 +103,23 @@ tracks/0/keys = {
 "values": [ 0.0, 20.0, 0.0 ]
 }
 
-[node name="Piece" type="Control" groups=["piece"]]
+[node name="Piece" type="AspectRatioContainer" groups=["piece"]]
 margin_right = 80.0
 margin_bottom = 80.0
-rect_min_size = Vector2( 80, 80 )
 rect_pivot_offset = Vector2( 40, 40 )
 mouse_filter = 2
 script = ExtResource( 3 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
 visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
+margin_right = 80.0
+margin_bottom = 80.0
 mouse_filter = 2
 color = Color( 0.0784314, 0.333333, 0.117647, 0.498039 )
 
 [node name="Sprite" type="TextureRect" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
+margin_right = 80.0
+margin_bottom = 80.0
 mouse_filter = 2
 texture = ExtResource( 1 )
 expand = true

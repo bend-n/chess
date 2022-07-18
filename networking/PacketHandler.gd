@@ -162,6 +162,7 @@ func _start_game() -> void:
 	emit_signal("start_game")
 	lobby.set_buttons(false)
 	if Globals.team == Chess.BLACK:
+		yield(get_tree(), "idle_frame")
 		board.get_board().flip_board()
 
 

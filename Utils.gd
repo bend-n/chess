@@ -46,6 +46,20 @@ func cli() -> void:
 		)
 	)
 	parser.add_argument(
+		Arg.new({triggers = ["--moves", "-m"], n_args = "*", help = "pgn to start with", arg_names = "pgn"})
+	)
+	parser.add_argument(
+		Arg.new(
+			{
+				triggers = ["--color", "-c"],
+				n_args = 1,
+				default = "white",
+				help = "color to play as (defaults to white)",
+				arg_names = "color"
+			}
+		)
+	)
+	parser.add_argument(
 		Arg.new(
 			{
 				triggers = ["--join", "-j"],
@@ -79,10 +93,17 @@ func cli() -> void:
 		if args.has("host") and args.host:
 			print("hosting game: %s" % args.host)
 			if PacketHandler.lobby.validate_text(args.host):
-				var move_list = Pgn.parse(OS.get_environment("MOVES"), false).moves
+				var s = args.get("moves", PoolStringArray()).join(" ")
+				var move_list = Pgn.parse(s, false).moves
 				if move_list:
 					print("with moves: %s" % move_list)
-				PacketHandler.host_game(args.host, true, move_list)
+				var clr = (
+					(true if args.color.to_lower() in ["w", "white"] or str_bool(args.color) else false)
+					if args.has("color")
+					else (true)
+				)  # default white
+				prints("as", "white" if clr else "black")
+				PacketHandler.host_game(args.host, clr, move_list)
 				return
 		elif args.has("join") and args.join:
 			print("joining game: %s" % args.join)
