@@ -12,7 +12,7 @@ signal remove_last
 
 var move_indicators: PoolIntArray = []
 
-const piece_size := Vector2(80, 80)
+var piece_size: Vector2
 
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
 export(Color) var last_move_indicator_color := Color(0.74902, 0.662745, 0.223529, 0.498039)
@@ -56,20 +56,41 @@ func _exit_tree():
 	Globals.grid = null
 
 
+func _resized():
+	rect_pivot_offset = (piece_size * 8) / 2
+	piece_size = rect_size / 8
+	piece_size.x = clamp(piece_size.x, 0, piece_size.y)
+	piece_size.y = clamp(piece_size.y, 0, piece_size.x)
+	print(piece_size)
+	if !(board.empty() && background_array.empty()):
+		resize_board()
+
+
 func _ready():
+	if !piece_size:
+		_resized()
 	Events.connect("turn_over", self, "_on_turn_over")
 	PacketHandler.connect("move_data", self, "move")
-	rect_min_size = piece_size * 8
-	rect_pivot_offset = rect_min_size / 2
 	create_pieces()
-	init_board()
-	init_labels()
+	create_squares()
+	create_labels()
 
 
-func init_board() -> void:  # create the board
+func resize_board():
+	resize_squares()
+	resize_pieces()
+
+
+func resize_squares() -> void:
+	for i in Chess.SQUARE_MAP.values():
+		var square: BackgroundSquare = background_array[i]
+		square.size()
+
+
+func create_squares() -> void:  # create the board
 	background_array.resize(128)
 	for i in Chess.SQUARE_MAP.values():
-		var alg = Chess.algebraic(i)
+		var alg := Chess.algebraic(i)
 		var square := Square.instance()  # create a square
 		square.name = alg
 		square.square = alg
@@ -81,8 +102,7 @@ func init_board() -> void:  # create the board
 	find_node("Arrows")._setup(self)  # initialize the arrows
 
 
-func init_labels() -> void:
-	foreground.offset = rect_global_position
+func create_labels() -> void:
 	for i in range(8):
 		labels.letters.append(init_label(i, Vector2(i, 7), "abcdefgh"[i], Vector2(10, -10), Label.VALIGN_BOTTOM))
 		labels.numbers.append(init_label(i, Vector2(7, i), str(8 - i), Vector2(-10, 10), 0, Label.VALIGN_BOTTOM))
@@ -103,6 +123,21 @@ func init_label(i: int, position: Vector2, text: String, off := Vector2.ZERO, va
 	return label
 
 
+func clear_pieces() -> void:
+	for i in Chess.SQUARE_MAP.values():
+		var p: Piece = board[i]
+		if p:
+			p.queue_free()
+			board[i] = null
+
+
+func resize_pieces():
+	for i in Chess.SQUARE_MAP.values():
+		var p: Piece = board[i]
+		if p:
+			p.size()
+
+
 func create_pieces():
 	board.resize(128)
 	for k in Chess.SQUARE_MAP:
@@ -113,13 +148,10 @@ func create_pieces():
 
 func make_piece(algebraic: String, piece_type: String, color := "w") -> void:  # make peace
 	var piece := PieceScene.instance()  # create a piece
-	var position = Chess.algebraic2vec(algebraic)  # get the position
 	piece.name = "%s@%s" % [piece_type, algebraic]
 	piece.position = algebraic
 	piece.type = piece_type
-	piece.rect_global_position = position * piece_size  # set the global position
-	piece.rect_min_size = piece_size
-	piece.rect_pivot_offset = piece_size / 2  # rotate around center
+	piece.size()
 	piece.color = color
 	pieces.add_child(piece)  # add the piece to the grid
 	set_piece(algebraic, piece)
@@ -224,14 +256,6 @@ func move(san: String, is_recieved_move := true) -> void:
 func clear_last_clicked():
 	last_clicked = null
 	darken.hide()
-
-
-func clear_pieces() -> void:
-	for i in Chess.SQUARE_MAP.values():
-		var p = board[i]
-		if p:
-			p.queue_free()
-			board[i] = null
 
 
 func draw(reason := "") -> void:

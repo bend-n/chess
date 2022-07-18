@@ -18,13 +18,17 @@ func _ready() -> void:
 	connect("clicked", self, "clicked")
 	check_piece_above()
 	move_indicator.color = Globals.grid.last_move_indicator_color
-	circle.rect_min_size = Globals.grid.piece_size / 4
 	circle.material.set_shader_param("color", Globals.grid.overlay_color)
-	rect_min_size = Globals.grid.piece_size
 	if Globals.spectating:
 		mouse_default_cursor_shape = CURSOR_FORBIDDEN
 	else:
 		mouse_default_cursor_shape = CURSOR_POINTING_HAND
+	size()
+
+
+func size():
+	circle.rect_min_size = Globals.grid.piece_size / 4
+	rect_min_size = Globals.grid.piece_size
 
 
 func check_piece_above():

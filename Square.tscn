@@ -27,8 +27,10 @@ shader_param/amt = 1.0
 shader_param/color = Color( 0.431373, 0.584314, 0.388235, 0.639216 )
 
 [node name="Square" type="ColorRect"]
-margin_right = 40.0
-margin_bottom = 40.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1372.0
+margin_bottom = -750.0
 focus_mode = 1
 script = ExtResource( 1 )
 
@@ -46,10 +48,10 @@ mouse_filter = 2
 [node name="Circle" type="TextureRect" parent="CircleHolder"]
 visible = false
 material = SubResource( 3 )
-margin_left = 20.0
-margin_top = 20.0
-margin_right = 20.0
-margin_bottom = 20.0
+margin_left = 25.0
+margin_top = 25.0
+margin_right = 25.0
+margin_bottom = 25.0
 mouse_filter = 2
 texture = ExtResource( 2 )
 expand = true

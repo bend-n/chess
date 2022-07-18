@@ -19,9 +19,16 @@ signal promotion_decided
 var promote_to := ""
 
 
+func size() -> void:  # size the control
+	rect_min_size = Globals.grid.piece_size
+	rect_position = Chess.algebraic2vec(position) * Globals.grid.piece_size
+	rect_pivot_offset = Globals.grid.piece_size / 2
+
+
 func _ready():
 	add_child(tween)
 	load_texture()
+	size()
 	frame.modulate = Globals.grid.overlay_color
 	background.color = Globals.grid.overlay_color
 

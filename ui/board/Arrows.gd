@@ -15,7 +15,6 @@ export(Color) var green_overlay
 
 func _setup(_b: Grid):
 	b = _b
-	Events.connect("turn_over", self, "on_turn_over")
 	for k in Chess.SQUARE_MAP:
 		b.background_array[Chess.SQUARE_MAP[k]].connect("right_clicked", self, "right_clicked", [k])
 		b.background_array[Chess.SQUARE_MAP[k]].connect("clicked", self, "left_clicked", [k])
@@ -98,8 +97,3 @@ func clear_arrows():
 	arrows.resize(0)
 	circles.resize(0)
 	first = Vector2.ZERO
-
-
-func on_turn_over():
-	if b.chess.turn != Globals.team:  # i just went; arrows can go away now
-		clear_arrows()
