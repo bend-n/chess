@@ -12,6 +12,9 @@ onready var panels := [
 func _ready() -> void:
 	PacketHandler.connect("info_recieved", self, "_spectate_info" if Globals.spectating else "_on_info")
 
+	# Fix weird board resizing that gives padding offset on bottom and right
+	chat.visible = false
+	chat.call_deferred("set_visible", true)
 	sidebar.visible = false
 	sidebar.call_deferred("set_visible", true)
 
