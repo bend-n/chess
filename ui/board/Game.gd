@@ -12,6 +12,9 @@ onready var panels := [
 func _ready() -> void:
 	PacketHandler.connect("info_recieved", self, "_spectate_info" if Globals.spectating else "_on_info")
 
+	sidebar.visible = false
+	sidebar.call_deferred("set_visible", true)
+
 
 func set_status(text: String, length := 5) -> void:
 	status.set_text(text, length)

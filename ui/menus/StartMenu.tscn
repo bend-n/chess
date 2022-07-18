@@ -33,7 +33,7 @@ size_flags_vertical = 0
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 
-[node name="🇿🇦" parent="tabs" instance=ExtResource( 5 )]
+[node name="  " parent="tabs" instance=ExtResource( 5 )]
 margin_left = 30.0
 margin_top = 86.0
 margin_right = -30.0
