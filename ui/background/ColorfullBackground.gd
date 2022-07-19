@@ -1,19 +1,6 @@
 extends ColorRect
 
-export(PoolColorArray) var colors := [
-	Color(0.784314, 0.427451, 0.427451, 1),
-	Color(0.913725, 0.847059, 0.403922, 1),
-	Color(0.380392, 0.741176, 0.647059, 1),
-	Color(0.321569, 0.368627, 0.858824, 1),
-	Color(0.596078, 0.188235, 0.619608),
-	Color(0.109804, 0.160784, 0.564706, 1),
-	Color(0.376471, 0.796078, 0.317647, 1),
-	Color(0.8, 0.364706, 0.588235, 1),
-	Color(0.984314, 0.858824, 0.282353, 1),
-	Color(0.164706, 0.0862745, 0.247059, 1),
-	Color(0.509804, 0.509804, 0.509804, 1),
-	Color("262421")
-]
+export(PoolColorArray) var colors
 export(float) var length := 2.8
 
 var rainbow := true setget set_rainbow
