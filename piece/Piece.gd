@@ -22,6 +22,8 @@ var promote_to := ""
 func size() -> void:  # size the control
 	rect_size = Globals.grid.piece_size
 	rect_position = Chess.algebraic2vec(position) * Globals.grid.piece_size
+	sprite.flip_v = Globals.grid.flipped
+	sprite.flip_h = Globals.grid.flipped
 
 
 func _ready():
@@ -30,9 +32,6 @@ func _ready():
 	size()
 	frame.modulate = Globals.grid.overlay_color
 	background.color = Globals.grid.overlay_color
-
-	sprite.flip_v = Globals.grid.flipped
-	sprite.flip_h = Globals.grid.flipped
 
 	if type == Chess.PAWN:
 		popup = PopupPanel.new()

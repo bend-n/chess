@@ -64,6 +64,7 @@ func _resized():
 	rect_pivot_offset = (piece_size * 8) / 2
 	if !(board.empty() && background_array.empty()) and piece_size != old_pc:
 		resize_board()
+		Log.debug("Resizing board")
 
 
 func _ready():
@@ -173,7 +174,6 @@ func make_piece(algebraic: String, piece_type: String, color := "w") -> void:  #
 	piece.name = "%s@%s" % [piece_type, algebraic]
 	piece.position = algebraic
 	piece.type = piece_type
-	piece.size()
 	piece.color = color
 	pieces.add_child(piece)  # add the piece to the grid
 	set_piece(algebraic, piece)
@@ -197,9 +197,10 @@ func flip_labels() -> void:
 
 
 func flip_board() -> void:
-	flipped = !flipped
 	rect_rotation = 0 if rect_rotation == 180 else 180
 	foreground.rect_rotation = rect_rotation
+	flipped = rect_rotation == 180
+	Log.debug(["Flipped the board, now", "flipped" if flipped else "not flipped"])
 	sidebar.flip_panels()
 	flip_pieces()
 	flip_labels()
@@ -222,6 +223,7 @@ func square_clicked(clicked_square: String) -> void:
 
 
 func move(san: String, is_recieved_move := true) -> void:
+	resize_board()
 	var sound_handled = false
 	var move_0x88 = chess.__move_from_san(san, true)
 	var valid_moves = chess.moves({square = chess.algebraic(move_0x88.from), stripped = true})

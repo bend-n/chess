@@ -137,6 +137,7 @@ func host_result(accepted) -> void:
 func handle_result(accepted, resultstring: String) -> bool:
 	if typeof(accepted) == TYPE_DICTIONARY:
 		Globals.team = "w" if accepted.idx == 0 else "b"
+		Log.debug("Team set to " + Utils.expand_color(Globals.team))
 		lobby.set_status(resultstring, true)
 		return true
 	lobby.set_status(accepted, false)
@@ -161,8 +162,10 @@ func _start_game() -> void:
 	lobby.toggle(false)
 	emit_signal("start_game")
 	lobby.set_buttons(false)
+	SoundFx.play("Victory")
+	yield(get_tree(), "idle_frame")
+	Log.debug("Flipping board" if Globals.team == Chess.BLACK else "Not flipping board")
 	if Globals.team == Chess.BLACK:
-		yield(get_tree(), "idle_frame")
 		board.get_board().flip_board()
 
 

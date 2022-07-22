@@ -25,7 +25,9 @@ static func net(args) -> void:
 
 
 static func file(path: String, args) -> void:
-	SaveLoad.append_string(path, "(%s)%s" % [now(), to_str(args)])
+	var arg_string := to_str(args)
+	debug(arg_string)
+	SaveLoad.append_string(path, "(%s)%s" % [now(), arg_string])
 
 
 static func now():
