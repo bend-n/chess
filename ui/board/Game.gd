@@ -37,6 +37,6 @@ func set_panel(pnl: UserPanel, name: String, country: String) -> void:
 	pnl.set_flag(country)
 
 
-func _input(event: InputEvent):
+func _unhandled_input(event: InputEvent):
 	if event is InputEventKey and event.pressed and event.scancode == KEY_Z:
 		chat.visible = !chat.visible
