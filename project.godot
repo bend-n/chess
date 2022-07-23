@@ -223,6 +223,11 @@ _global_script_classes=[ {
 "class": "UsernamePass",
 "language": "GDScript",
 "path": "res://ui/menus/account/usernamepass.gd"
+}, {
+"base": "Label",
+"class": "VersionLabel",
+"language": "GDScript",
+"path": "res://ui/menus/startmenu/VersionLabel.gd"
 } ]
 _global_script_class_icons={
 "Arg": "",
@@ -267,14 +272,15 @@ _global_script_class_icons={
 "TextEditor": "",
 "UndoButton": "",
 "UserPanel": "",
-"UsernamePass": ""
+"UsernamePass": "",
+"VersionLabel": ""
 }
 
 [application]
 
 config/name="chess"
 config/description="pog"
-run/main_scene="res://ui/menus/StartMenu.tscn"
+run/main_scene="res://ui/menus/startmenu/StartMenu.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chess"
 boot_splash/image="res://icon.png"

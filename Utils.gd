@@ -17,6 +17,10 @@ func expand_color(color: String) -> String:
 	return "white" if color == "w" else "black"
 
 
+func get_version() -> String:
+	return SaveLoad.load_string("res://version")
+
+
 func _ready() -> void:
 	request()  # check internet ok?
 	cli()
@@ -30,6 +34,16 @@ func cli() -> void:
 				triggers = ["--help", "-h", "-?"],
 				n_args = 0,
 				help = "show this help message and exit",
+				action = "store_true",
+			}
+		)
+	)
+	parser.add_argument(
+		Arg.new(
+			{
+				triggers = ["--version", "-v", "-V"],
+				n_args = 0,
+				help = "show version and exit",
 				action = "store_true",
 			}
 		)
@@ -82,8 +96,11 @@ func cli() -> void:
 	)
 	var args = parser.parse_arguments()
 	Debug.debug = str_bool(args["debug"]) if args.has("debug") else OS.is_debug_build()
-	if args.has("help") and args["help"]:
+	if args.get("help", false):
 		print(parser.help("chess game"))
+		get_tree().quit()  # dont wait
+	elif args.get("version", false):
+		print("chess %s" % get_version())
 		get_tree().quit()  # dont wait
 	elif args.has("host") or args.has("join"):
 		if !internet:
@@ -170,10 +187,8 @@ static func to_str(type: int) -> String:
 	return "PNBRQK"[type]
 
 
-# cant wait for 4.0 dict.merge(dict) :C
 static func append_dict(dict: Dictionary, newdict: Dictionary) -> Dictionary:
-	for key in newdict:
-		dict[key] = newdict[key]
+	dict.merge(newdict)
 	return dict
 
 

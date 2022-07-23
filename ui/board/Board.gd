@@ -107,8 +107,8 @@ func create_labels() -> void:
 	font.size = 15
 	for k in Chess.SQUARE_MAP:
 		if k == "h1":
-			var l = init_label(font,k,k[0],VALIGN_BOTTOM,0,false)
-			var n = init_label(font,k, k[1], 0,VALIGN_BOTTOM,false)
+			var l = init_label(font, k, k[0], VALIGN_BOTTOM, 0, false)
+			var n = init_label(font, k, k[1], 0, VALIGN_BOTTOM, false)
 			var h = HBoxContainer.new()
 			h.mouse_filter = MOUSE_FILTER_IGNORE
 			h.add_child(l)
@@ -116,9 +116,9 @@ func create_labels() -> void:
 			labels.numbers.append(n)
 			labels.letters.append(l)
 			foreground.add_child(h)
-		elif k[0] == "h": # file h contains numbers
+		elif k[0] == "h":  # file h contains numbers
 			labels.numbers.append(init_label(font, k, k[1], 0, VALIGN_BOTTOM))
-		elif k[1] == "1": # rank 1 contains letters
+		elif k[1] == "1":  # rank 1 contains letters
 			labels.letters.append(init_label(font, k, k[0], VALIGN_BOTTOM))
 		else:
 			var spacer = Control.new()
@@ -129,7 +129,7 @@ func create_labels() -> void:
 			foreground.add_child(spacer)
 
 
-func init_label(font: DynamicFont, alg: String, text: String, valign := 0, align := 0, add:=true) -> Label:
+func init_label(font: DynamicFont, alg: String, text: String, valign := 0, align := 0, add := true) -> Label:
 	var label := Label.new()
 	label.align = align
 	label.valign = valign

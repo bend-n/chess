@@ -30,6 +30,7 @@ margin_right = 727.0
 margin_bottom = 450.0
 
 [node name="stophost" type="Button" parent="Center/VBox"]
+unique_name_in_owner = true
 visible = false
 margin_right = 296.0
 margin_bottom = 102.0
@@ -38,6 +39,7 @@ size_flags_horizontal = 4
 text = "stop hosting"
 
 [node name="Address" type="LineEdit" parent="Center/VBox"]
+unique_name_in_owner = true
 margin_right = 600.0
 margin_bottom = 102.0
 rect_min_size = Vector2( 600, 0 )
@@ -76,6 +78,7 @@ disabled = true
 text = "join"
 
 [node name="HostButton" type="Button" parent="Center/VBox/buttons"]
+unique_name_in_owner = true
 margin_left = 421.0
 margin_right = 600.0
 margin_bottom = 102.0
@@ -86,6 +89,7 @@ disabled = true
 text = "create"
 
 [node name="StatusOK" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
 visible = false
 margin_top = 242.0
 margin_right = 350.0
@@ -94,6 +98,7 @@ custom_colors/font_color = Color( 1, 1, 1, 1 )
 autowrap = true
 
 [node name="StatusFail" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
 visible = false
 margin_top = 242.0
 margin_right = 350.0

@@ -8,12 +8,13 @@ on:
       - "**.import"
       - "**.tres"
       - "**.ttf"
+      - "**.yml"
     branches:
       - main
 
 env:
   GODOT_VERSION: 3.5
-  RELEASE: rc6
+  RELEASE: rc
   NAME: ${{ github.event.repository.name }}
 
 jobs:
@@ -21,7 +22,7 @@ jobs:
     name: Windows Export
     runs-on: ubuntu-20.04
     container:
-      image: ghcr.io/theorioli/godot-ci:3.5.rc6
+      image: ghcr.io/bend-n/godot-2d:3.5.rc
     steps:
       - name: Build
         uses: bend-n/godot-actions/.github/actions/export-windows@main
@@ -30,7 +31,7 @@ jobs:
     name: Linux Export
     runs-on: ubuntu-20.04
     container:
-      image: ghcr.io/theorioli/godot-ci:3.5.rc6
+      image: ghcr.io/bend-n/godot-2d:3.5.rc
     steps:
       - name: Build
         uses: bend-n/godot-actions/.github/actions/export-linux@main
@@ -39,7 +40,7 @@ jobs:
     name: Web Export
     runs-on: ubuntu-20.04
     container:
-      image: ghcr.io/theorioli/godot-ci:3.5.rc6
+      image: ghcr.io/bend-n/godot-2d:3.5.rc
     steps:
       - name: Build
         uses: bend-n/godot-actions/.github/actions/export-web@main
@@ -48,7 +49,7 @@ jobs:
     name: Mac Export
     runs-on: ubuntu-20.04
     container:
-      image: ghcr.io/theorioli/godot-ci:3.5.rc6
+      image: ghcr.io/bend-n/godot-2d:3.5.rc
     steps:
       - name: Build
         uses: bend-n/godot-actions/.github/actions/export-mac@main
@@ -57,7 +58,7 @@ jobs:
     name: Android Export
     runs-on: ubuntu-20.04
     container:
-      image: ghcr.io/theorioli/godot-ci:3.5.rc6
+      image: ghcr.io/bend-n/godot-2d:3.5.rc
     steps:
       - name: Build
         uses: bend-n/godot-actions/.github/actions/export-android@main

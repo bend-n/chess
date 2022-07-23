@@ -1,11 +1,11 @@
 extends Control
 class_name Lobby
 
-onready var address: LineEdit = find_node("Address")
+onready var address: LineEdit = $"%Address"
 onready var buttons := find_node("buttons")
-onready var status_ok := find_node("StatusOK")
-onready var status_fail := find_node("StatusFail")
-onready var hostbutton = find_node("HostButton")
+onready var status_ok := $"%StatusOK"
+onready var status_fail := $"%StatusFail"
+onready var hostbutton = $"%HostButton"
 
 
 func toggle(onoff: bool) -> void:
@@ -14,7 +14,7 @@ func toggle(onoff: bool) -> void:
 
 func _ready() -> void:
 	PacketHandler.lobby = self
-	PacketHandler.connect("hosting", find_node("stophost"), "set_visible")
+	PacketHandler.connect("hosting", $"%stophost", "set_visible")
 	PacketHandler.connect("connection_established", self, "reset")
 	if !Utils.internet:
 		set_status("no internet", false)
