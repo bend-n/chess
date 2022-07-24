@@ -15,15 +15,19 @@ func get_text() -> String:
 
 signal done(text)
 
-export(NodePath) var textedit_path
-onready var textedit: TextEdit = get_node(textedit_path)
-export(NodePath) var placeholder_path
-onready var placeholder := get_node(placeholder_path)
+onready var textedit: TextEdit = $"%text"
+onready var placeholder := $"%placeholder"
+onready var sendbutton := $"%SendButton"
 
 
 func _text_changed() -> void:
 	placeholder.visible = len(textedit.text) == 0
+	sendbutton.visible = len(textedit.text) != 0
 
 
-func _on_text_send(msg: String) -> void:
-	emit_signal("done", msg)
+func send(msg := textedit.text) -> void:
+	msg = msg.strip_edges()
+	if msg:
+		textedit.text = ""
+		textedit.emit_signal("text_changed")
+		emit_signal("done", msg)

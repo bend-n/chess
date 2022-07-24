@@ -1,6 +1,6 @@
 extends ExpandableTextEdit
 
-signal send(msg)
+signal send()
 
 
 func _input(event: InputEvent) -> void:
@@ -13,8 +13,6 @@ func _input(event: InputEvent) -> void:
 		if has_focus():
 			text = text.strip_edges()
 			if text:
-				emit_signal("send", text)
-				text = ""
-				emit_signal("text_changed")
+				emit_signal("send")
 		else:
 			grab_focus()

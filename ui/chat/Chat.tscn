@@ -23,11 +23,11 @@ custom_constants/separation = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1422.0
-margin_bottom = 777.0
+margin_bottom = 780.0
 mouse_filter = 2
 
 [node name="Input" parent="v" instance=ExtResource( 5 )]
-margin_top = 777.0
+margin_top = 780.0
 margin_right = 1422.0
 margin_bottom = 800.0
 
