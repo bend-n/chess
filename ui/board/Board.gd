@@ -16,6 +16,7 @@ var piece_size: Vector2
 
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
 export(Color) var last_move_indicator_color := Color(0.74902, 0.662745, 0.223529, 0.498039)
+export(Color) var last_move_take_indicator := Color(0.74902, 0.407843, 0.223529, 0.498039)
 export(Color) var clockrunning_color := Color(0.219608, 0.278431, 0.133333)
 export(Color) var clockrunninglow := Color(0.47451, 0.172549, 0.164706)
 export(Color) var clocklow := Color(0.313726, 0.156863, 0.14902)
@@ -338,10 +339,13 @@ func check_game_over():
 
 func create_last_move_indicators():
 	for i in move_indicators:
+		background_array[i].move_indicator.color = last_move_indicator_color
 		background_array[i].move_indicator.hide()
 	if !chess.__history:
 		return
 	var m: Dictionary = chess.__history[-1].move
 	background_array[m.from].move_indicator.show()
+	if m.flags & Chess.BITS.CAPTURE:
+		background_array[m.to].move_indicator.color = last_move_take_indicator
 	background_array[m.to].move_indicator.show()
 	move_indicators = [m.from, m.to]
