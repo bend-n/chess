@@ -42,9 +42,6 @@ jobs:
             platform: android
 
     steps:
-      - name: Ckeckout(bypass lfs)
-        run: echo "::group::Checkout";wget -nv --no-check-certificate 'https://docs.google.com/uc?export=download&id=10AMw1fV0plROQ93koJCi4T5Mgew4en4f' -O main.zip;unzip -z main.zip | tail -n1 | head -c 7 > version;unzip main.zip;rm main.zip;echo "::endgroup::"
-
       - name: Build (Windows)
         if: matrix.platform == 'windows'
         uses: bend-n/godot-actions/.github/actions/export-windows@main
