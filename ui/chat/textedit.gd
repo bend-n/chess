@@ -1,6 +1,6 @@
 extends ExpandableTextEdit
 
-signal send()
+signal send
 
 
 func _input(event: InputEvent) -> void:

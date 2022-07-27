@@ -10,15 +10,10 @@ onready var tabs := {
 	"signin": $choose/signin/usernamepass,
 }
 
-var signed_in = false setget set_signed_in
+var signed_in = false
 var autologin = true
 
 onready var tabcontainer = $choose
-
-
-func set_signed_in(new):
-	signed_in = new
-	Events.emit_signal("set_signed_in", new)
 
 
 func _ready():
@@ -74,20 +69,21 @@ func _on_signup_result(result: String):
 	on_successful()
 
 
-func reset(reason: String, set_status := true):
-	if set_status:
+func reset(reason: String, reset_creds := true):
+	if reason:
 		status.set_text(reason, 0)
-	Creds.reset()
+	if reset_creds:
+		Creds.reset()
 	tabcontainer.show()
 	loading.hide()
-	set_signed_in(false)
+	signed_in = false
 
 
 func on_successful():
 	Creds.save()
 	loading.hide()
 	status.set_text("Signed in to " + Creds.get("name"), 0)
-	set_signed_in(true)  # yay
+	signed_in = true  # yay
 	$H/LogOut.show()
 	tabcontainer.hide()
 
