@@ -1,14 +1,15 @@
 extends Control
 class_name Piece
 
-var position := ""
-var color := "w"
-var type := ""
+var position: String
+var color: String
+var type: String
 var tween := Tween.new()
 
 onready var sprite = $Sprite
-onready var frame = $Sprite/Frame
-onready var background = $ColorRect
+onready var frame = $"%Frame"
+onready var background = $"%Background"
+onready var check = $"%Check"
 onready var anim = $AnimationPlayer
 onready var rotate = $RotatePlayer
 
@@ -30,6 +31,7 @@ func _ready():
 	add_child(tween)
 	load_texture()
 	size()
+
 	frame.modulate = Globals.grid.overlay_color
 	background.color = Globals.grid.overlay_color
 
@@ -49,6 +51,12 @@ func _ready():
 			newsprite.name = p
 			newsprite.connect("pressed", self, "_pressed", [p])
 			previews.add_child(newsprite)
+	elif type == Chess.KING:
+		Events.connect("turn_over", self, "check_in_check")
+
+
+func check_in_check():
+	check.visible = Globals.grid.chess.__king_attacked(color)
 
 
 func _pressed(p: String) -> void:

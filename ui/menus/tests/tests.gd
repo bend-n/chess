@@ -1,6 +1,6 @@
 extends VBoxContainer
 
-export(PoolStringArray) var pgns = []
+export(PoolStringArray) var pgns
 
 var in_sim = false
 

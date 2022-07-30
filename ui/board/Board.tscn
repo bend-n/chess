@@ -8,7 +8,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -1122.0
 margin_bottom = -500.0
-rect_min_size = Vector2( 300, 300 )
+rect_min_size = Vector2( 600, 600 )
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -20,27 +20,27 @@ __meta__ = {
 }
 
 [node name="Background" type="GridContainer" parent="."]
-margin_right = 300.0
-margin_bottom = 300.0
+margin_right = 600.0
+margin_bottom = 600.0
 mouse_filter = 2
 custom_constants/vseparation = 0
 custom_constants/hseparation = 0
 columns = 8
 
 [node name="Pieces" type="Control" parent="."]
-margin_right = 300.0
-margin_bottom = 300.0
+margin_right = 600.0
+margin_bottom = 600.0
 mouse_filter = 2
 
 [node name="Canvas" type="ViewportContainer" parent="."]
 modulate = Color( 1, 1, 1, 0.588235 )
-margin_right = 300.0
-margin_bottom = 300.0
+margin_right = 600.0
+margin_bottom = 600.0
 mouse_filter = 2
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="Canvas"]
-size = Vector2( 300, 300 )
+size = Vector2( 600, 600 )
 transparent_bg = true
 handle_input_locally = false
 disable_3d = true
@@ -53,8 +53,8 @@ red_overlay = Color( 0.729412, 0.254902, 0.254902, 1 )
 green_overlay = Color( 0.1272, 0.53, 0.18762, 1 )
 
 [node name="Foreground" type="GridContainer" parent="."]
-margin_right = 300.0
-margin_bottom = 300.0
+margin_right = 600.0
+margin_bottom = 600.0
 mouse_filter = 2
 custom_constants/vseparation = 0
 custom_constants/hseparation = 0
@@ -62,8 +62,8 @@ columns = 8
 
 [node name="Darken" type="ColorRect" parent="."]
 visible = false
-margin_right = 300.0
-margin_bottom = 300.0
+margin_right = 600.0
+margin_bottom = 600.0
 mouse_filter = 2
 mouse_default_cursor_shape = 8
 color = Color( 0, 0, 0, 0.784314 )

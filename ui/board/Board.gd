@@ -36,6 +36,8 @@ var flipped = false
 var labels = {numbers = [], letters = []}
 var background_array = []
 var last_clicked
+var check_circle: GradientTexture2D = load("res://piece/check-circle.tres")
+var take_circle: GradientTexture2D = load("res://piece/takeable-circle.tres")
 
 export(NodePath) var sidebar_path = @""
 onready var sidebar := get_node_or_null(sidebar_path)
@@ -63,12 +65,17 @@ func _resized():
 	piece_size.x = clamp(piece_size.x, 0, piece_size.y)
 	piece_size.y = clamp(piece_size.y, 0, piece_size.x)
 	rect_pivot_offset = (piece_size * 8) / 2
+	check_circle.width = piece_size.x
+	check_circle.height = piece_size.y
+	take_circle.width = piece_size.x
+	take_circle.height = piece_size.y
 	if !(board.empty() && background_array.empty()) and piece_size != old_pc:
 		resize_board()
 		Log.debug("Resizing board")
 
 
 func _ready():
+	take_circle.gradient.colors[1] = Color(overlay_color.r, overlay_color.g, overlay_color.b, 1)
 	_resized()
 	Events.connect("turn_over", self, "_on_turn_over")
 	PacketHandler.connect("move_data", self, "move")
