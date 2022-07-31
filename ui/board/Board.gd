@@ -119,8 +119,10 @@ func create_labels() -> void:
 			var n = init_label(font, k, k[1], 0, VALIGN_BOTTOM, false)
 			var h = HBoxContainer.new()
 			h.mouse_filter = MOUSE_FILTER_IGNORE
-			h.add_child(l)
-			h.add_child(n)
+			for i in [l, n]:
+				var ic = create_margin_container()
+				ic.add_child(i)
+				h.add_child(ic)
 			labels.numbers.append(n)
 			labels.letters.append(l)
 			foreground.add_child(h)
@@ -150,8 +152,19 @@ func init_label(font: DynamicFont, alg: String, text: String, valign := 0, align
 	)
 	label.add_font_override("font", font)
 	if add:
-		foreground.add_child(label)
+		var container := create_margin_container()
+		container.add_child(label)
+		foreground.add_child(container)
 	return label
+
+
+func create_margin_container(margin := 5) -> MarginContainer:
+	var container := MarginContainer.new()
+	container.add_constant_override("margin_top", margin)
+	container.add_constant_override("margin_left", margin)
+	container.add_constant_override("margin_right", margin)
+	container.add_constant_override("margin_bottom", margin)
+	return container
 
 
 func clear_pieces() -> void:
