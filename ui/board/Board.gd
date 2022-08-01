@@ -65,6 +65,7 @@ func _resized():
 	piece_size.x = clamp(piece_size.x, 0, piece_size.y)
 	piece_size.y = clamp(piece_size.y, 0, piece_size.x)
 	rect_pivot_offset = (piece_size * 8) / 2
+	foreground.rect_pivot_offset = rect_pivot_offset
 	check_circle.width = piece_size.x
 	check_circle.height = piece_size.y
 	take_circle.width = piece_size.x
