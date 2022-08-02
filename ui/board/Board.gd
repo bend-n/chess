@@ -322,6 +322,7 @@ func load_pgn(pgn: String) -> void:
 	emit_signal("clear_pgn")
 	var movs: PoolStringArray = Pgn.parse(pgn).moves
 	emit_signal("load_pgn", movs)
+	Log.info("load pgn " + pgn)
 	Events.emit_signal("turn_over")
 
 

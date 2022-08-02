@@ -46,7 +46,7 @@ func send(t: String) -> void:
 	t = md2bb(t)
 	var name = Creds.get("name") if Creds.get("name") else "Anonymous"
 	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.team)
-	if PacketHandler.connected:
+	if PacketHandler.is_open_connection():
 		PacketHandler.relay_signal({"text": t, "who": name}, PacketHandler.RELAYHEADERS.chat)
 	else:
 		add_label_with({text = t, who = name})  # for testing

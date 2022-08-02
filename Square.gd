@@ -28,7 +28,7 @@ func size():
 
 
 func check_piece_above() -> bool:
-	return is_instance_valid(Globals.grid.get_piece(square))
+	return is_instance_valid(Globals.grid.get_piece(square)) if Globals.playing else false
 
 
 func _gui_input(event: InputEvent):

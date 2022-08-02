@@ -1,6 +1,7 @@
 extends Network
 
 var lobby: Lobby = null
+var reconnecting = false
 signal hosting(newhosting)
 signal signal_recieved(what)
 signal chat(text)
@@ -8,6 +9,8 @@ signal undo(undo)
 signal info_recieved(info)
 signal start_game
 signal move_data(data)
+signal load_pgn(pgn)
+signal request_result(what)  # join/host true accepted, false rejected
 ## for accounts(mostly)
 signal signinresult(what)
 signal signupresult(what)
@@ -34,6 +37,12 @@ const SIGNALHEADERS := {takeback = "T", draw = "D", resign = "R", info = "I"}  #
 
 var hosting := false setget set_hosting
 var leaving := false
+var lock_lobby_status := false
+
+
+func set_lobby_status(status: String, isok: bool) -> void:
+	if !lock_lobby_status:
+		lobby.set_status(status, isok)
 
 
 func set_hosting(newhosting: bool) -> void:
@@ -52,8 +61,16 @@ func _ready() -> void:
 	Events.connect("go_back", self, "go_back")
 	if Utils.internet and get_tree().get_root().has_node("StartMenu"):
 		yield(get_tree().create_timer(.1), "timeout")
-		open()  # open connection
-		lobby.set_status("Connecting", true)
+		open_connection()
+		set_lobby_status("Connecting", true)
+		connect("load_pgn", self, "load_pgn")
+
+
+func load_pgn(pgn: String) -> void:
+	if !Globals.grid:
+		_start_game()
+	yield(get_tree(), "idle_frame")
+	Globals.grid.load_pgn(pgn)  # call deferred wont work since grid obj may be null
 
 
 func _data_recieved() -> void:
@@ -83,7 +100,7 @@ func _data_recieved() -> void:
 		HEADERS.spectate:
 			# handle spectate here
 			if typeof(text) == TYPE_STRING:  # ew error
-				lobby.set_status(text, false)
+				set_lobby_status(text, false)
 				lobby.set_buttons(true)
 				return
 			Globals.spectating = true
@@ -92,10 +109,7 @@ func _data_recieved() -> void:
 			Globals.grid.load_pgn(text.pgn)
 			emit_signal("info_recieved", text)
 		HEADERS.loadpgn:
-			_start_game()
-			yield(get_tree().create_timer(.5), "timeout")
-			Log.info("load pgn " + text)
-			Globals.grid.load_pgn(text)  # call deferred wont work since grid obj may be null
+			emit_signal("load_pgn", text)
 		HEADERS.stopgame:
 			if !Globals.grid.chess.game_over():  # dont go back if its a stophost thing or the game is over by the st (HACK)
 				go_back(text, true)
@@ -118,12 +132,16 @@ func _connection_established(protocol) -> void:
 
 func _connection_closed(_was_clean_closed) -> void:
 	._connection_closed(_was_clean_closed)
-	go_back("Connection closed, please reload the game", false)
+	var err = yield(rejoin(), "completed")
+	if err:
+		go_back("Connection closed, please check your internet, and reload the game.", false)
 
 
 func _connection_error() -> void:
 	._connection_error()
-	go_back("Connection error, please reload the game", false)
+	var err = yield(rejoin(), "completed")
+	if err:
+		go_back("Connection error, please check your internet, and reload the game.", false)
 
 
 func join_result(accepted) -> void:
@@ -135,12 +153,13 @@ func host_result(accepted) -> void:
 
 
 func handle_result(accepted, resultstring: String) -> bool:
+	emit_signal("request_result", false if typeof(accepted) != TYPE_DICTIONARY else true)
 	if typeof(accepted) == TYPE_DICTIONARY:
 		Globals.team = "w" if accepted.idx == 0 else "b"
 		Log.debug("Team set to " + Utils.expand_color(Globals.team))
-		lobby.set_status(resultstring, true)
+		set_lobby_status(resultstring, true)
 		return true
-	lobby.set_status(accepted, false)
+	set_lobby_status(accepted, false)
 	lobby.set_buttons(true)
 	return false
 
@@ -149,13 +168,14 @@ func go_back(error: String, isok: bool) -> void:
 	Globals.reset_vars()
 	if has_node("/root/Game"):
 		$"/root/Game".queue_free()
-		lobby.set_status(error, isok)
+		set_lobby_status(error, isok)
 		lobby.toggle(true)
 		lobby.focus()
 		lobby.set_buttons(true)
 
 
 func _start_game() -> void:
+	Globals.playing = true
 	set_hosting(false)
 	var board: Control = load("res://ui/board/Game.tscn").instance()
 	get_tree().get_root().add_child(board)
@@ -167,6 +187,43 @@ func _start_game() -> void:
 	Log.debug("Flipping board" if Globals.team == Chess.BLACK else "Not flipping board")
 	if Globals.team == Chess.BLACK:
 		board.get_board().flip_board()
+
+
+func rejoin(tries := 5, interval := 2) -> int:  # on disconnect, try to rejoin
+	var err = yield(open_connection(tries, interval), "completed")
+	if reconnecting == true:
+		return ERR_ALREADY_IN_USE
+	reconnecting = true
+	Log.info("reconnecting...")
+	if not err:
+		if Globals.playing:
+			Log.info("reconnecting(rejoining)...")
+			lock_lobby_status = true
+			var rejoined = false
+			for try in tries + 1:
+				join_game()
+				var result = yield(self, "request_result")
+				if result:
+					disconnect("load_pgn", self, "load_pgn")
+					var pgn = yield(self, "load_pgn")
+					if Globals.grid.chess.pgn() != pgn:
+						Log.info("attempting to load %s" % pgn)
+						Globals.grid.load_pgn(pgn)
+					connect("load_pgn", self, "load_pgn")
+					Log.info("reconnected(rejoined)!")
+					rejoined = true
+					break
+			lock_lobby_status = false
+			if rejoined == false:
+				Log.err("reconnect failed(rejoin)!")
+				reconnecting = false
+				return ERR_INVALID_DATA
+		else:  # not playing: just reconnect
+			Log.info("reconnected!")
+	else:
+		Log.err("reconnect failed!")
+	reconnecting = false
+	return err
 
 
 ## packet sending wrapper functions
