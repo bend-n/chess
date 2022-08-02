@@ -304,7 +304,6 @@ func draw(reason := "") -> void:
 	ui.set_status(string, 0)
 	SoundFx.play("Victory")
 	Events.emit_signal("game_over", string, true)
-	PacketHandler.stopgame("game over")
 
 
 func win(winner: String, reason := "") -> void:
@@ -312,7 +311,6 @@ func win(winner: String, reason := "") -> void:
 	ui.set_status(string, 0)  #: black won the game by checkmate
 	Events.emit_signal("game_over", string, true)
 	SoundFx.play("Victory")
-	PacketHandler.stopgame("game over")
 
 
 func load_pgn(pgn: String) -> void:

@@ -18,7 +18,6 @@ signal signupresult(what)
 const HEADERS := {
 	"joinrequest": "J",
 	"hostrequest": "H",
-	"stopgame": "K",
 	"signup": "C",
 	"signin": ">",
 	"relay": "R",  # relay goes to both
@@ -53,7 +52,6 @@ func set_hosting(newhosting: bool) -> void:
 func return() -> void:  # return to the void
 	if hosting:
 		leaving = true
-		stopgame("")  # stop hosting
 		set_hosting(false)
 
 
@@ -110,9 +108,6 @@ func _data_recieved() -> void:
 			emit_signal("info_recieved", text)
 		HEADERS.loadpgn:
 			emit_signal("load_pgn", text)
-		HEADERS.stopgame:
-			if !Globals.grid.chess.game_over():  # dont go back if its a stophost thing or the game is over by the st (HACK)
-				go_back(text, true)
 		HEADERS.signal:
 			var signal: Dictionary = text
 			match signal.type:
@@ -264,7 +259,3 @@ func relay_signal(body: Dictionary, header: String) -> Dictionary:  # its really
 
 func send_mov(mov: String) -> void:
 	send_gamecode_packet({move = mov}, HEADERS.move)
-
-
-func stopgame(reason: String) -> void:
-	send_gamecode_packet({"reason": reason}, HEADERS.stopgame)
