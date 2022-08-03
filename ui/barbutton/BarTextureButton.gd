@@ -3,10 +3,10 @@ class_name BarTextureButton
 
 var focused: bool setget _focused
 
-export(Color) var normal_color := Color.black
-export(Color) var highlight_color := Color(0.670588, 0.352941, 0.352941)
-export(Color) var pressed_color := Color(0.356863, 0.572549, 0.647059)
-export(Color) var disabled_color := Color(0.501961, 0.501961, 0.501961)
+export(Color) var normal_color: Color
+export(Color) var highlight_color: Color
+export(Color) var pressed_color: Color
+export(Color) var disabled_color: Color
 
 onready var background := $Background
 
@@ -25,7 +25,7 @@ func set_disabled(new: bool) -> void:
 
 
 func _process(_delta):
-	if visible and Engine.get_idle_frames() % n == 0:
+	if visible:
 		_update()
 
 

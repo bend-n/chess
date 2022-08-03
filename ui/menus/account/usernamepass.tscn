@@ -1,10 +1,18 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://ui/barbutton/big-ubuntu-bold.tres" type="DynamicFont" id=1]
+[ext_resource path="res://assets/fonts/ubuntu/ubuntu-normal-nerd.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://ui/menus/account/Secret.gd" type="Script" id=2]
 [ext_resource path="res://ui/menus/account/Restrict.gd" type="Script" id=3]
+[ext_resource path="res://assets/fonts/migu.ttf" type="DynamicFontData" id=4]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=5]
 [ext_resource path="res://ui/menus/account/usernamepass.gd" type="Script" id=6]
+[ext_resource path="res://assets/fonts/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=7]
+
+[sub_resource type="DynamicFont" id=2]
+size = 60
+font_data = ExtResource( 7 )
+fallback/0 = ExtResource( 1 )
+fallback/1 = ExtResource( 4 )
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -20,33 +28,33 @@ alignment = 1
 script = ExtResource( 6 )
 
 [node name="Username" type="LineEdit" parent="."]
-margin_left = 361.0
-margin_top = 288.0
-margin_right = 1061.0
-margin_bottom = 390.0
-rect_min_size = Vector2( 700, 0 )
+margin_left = 511.0
+margin_top = 334.0
+margin_right = 911.0
+margin_bottom = 388.0
+rect_min_size = Vector2( 400, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 0
-max_length = 20
+max_length = 15
 placeholder_text = "username goes here"
 caret_blink = true
 caret_blink_speed = 0.5
 script = ExtResource( 3 )
 
 [node name="H" type="HBoxContainer" parent="."]
-margin_top = 405.0
+margin_top = 398.0
 margin_right = 1422.0
-margin_bottom = 511.0
+margin_bottom = 466.0
 mouse_filter = 2
 custom_constants/separation = 2
 alignment = 1
 
 [node name="Password" type="LineEdit" parent="H"]
-margin_left = 207.0
-margin_top = 2.0
-margin_right = 1107.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 900, 0 )
+margin_left = 480.0
+margin_top = 7.0
+margin_right = 880.0
+margin_bottom = 61.0
+rect_min_size = Vector2( 400, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
 max_length = 20
@@ -58,16 +66,15 @@ caret_blink_speed = 0.5
 script = ExtResource( 3 )
 
 [node name="Secret" type="Button" parent="H"]
-margin_left = 1109.0
-margin_right = 1215.0
-margin_bottom = 106.0
-rect_min_size = Vector2( 106, 106 )
+margin_left = 882.0
+margin_right = 942.0
+margin_bottom = 68.0
 focus_mode = 0
 custom_colors/font_color_focus = Color( 1, 1, 1, 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_hover = Color( 0.976471, 0.937255, 0.937255, 1 )
 custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
-custom_fonts/font = ExtResource( 1 )
+custom_fonts/font = SubResource( 2 )
 custom_styles/hover = SubResource( 1 )
 custom_styles/pressed = SubResource( 1 )
 custom_styles/focus = SubResource( 1 )

@@ -87,7 +87,7 @@ func cli() -> void:
 	parser.add_argument(
 		Arg.new(
 			{
-				triggers = ["--debug", "-d"],
+				triggers = ["--debug", "-D"],
 				n_args = 1,
 				help = "toggle debug mode",
 				arg_names = "enabled",

@@ -14,7 +14,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/gdcli/Arg.gd"
 }, {
-"base": "Button",
+"base": "CenterContainer",
 "class": "BackButton",
 "language": "GDScript",
 "path": "res://ui/board/BackButton.gd"
@@ -95,6 +95,11 @@ _global_script_classes=[ {
 "path": "res://ui/menus/sidebarright/flipbutton.gd"
 }, {
 "base": "Control",
+"class": "GameUI",
+"language": "GDScript",
+"path": "res://ui/board/Game.gd"
+}, {
+"base": "Control",
 "class": "Grid",
 "language": "GDScript",
 "path": "res://ui/board/Board.gd"
@@ -113,11 +118,6 @@ _global_script_classes=[ {
 "class": "HueSlider",
 "language": "GDScript",
 "path": "res://ui/colorpicker/HueSlider.gd"
-}, {
-"base": "Label",
-"class": "InfoLabel",
-"language": "GDScript",
-"path": "res://ui/menus/account/InfoLabel.gd"
 }, {
 "base": "Control",
 "class": "Lobby",
@@ -214,7 +214,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/undobutton.gd"
 }, {
-"base": "PanelContainer",
+"base": "MarginContainer",
 "class": "UserPanel",
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/UserPanel.gd"
@@ -247,11 +247,11 @@ _global_script_class_icons={
 "ExpandableTextEdit": "",
 "FEN": "",
 "FlipButton": "",
+"GameUI": "",
 "Grid": "",
 "GridMenu": "",
 "GridMenuButton": "",
 "HueSlider": "",
-"InfoLabel": "",
 "Lobby": "",
 "MaterialLabel": "",
 "MaterialLabelManager": "",
@@ -323,7 +323,7 @@ enabled=PoolStringArray(  )
 [gui]
 
 theme/custom="res://ui/theme/main.theme"
-theme/custom_font="res://ui/ubuntu-bold.tres"
+theme/custom_font="res://ui/ubuntu-bold-medium.tres"
 
 [importer_defaults]
 

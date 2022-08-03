@@ -3,7 +3,12 @@ class_name StatusLabel
 
 
 func set_text(newtext: String, time := 7) -> void:
-	text = newtext
+	__set_text(newtext)
 	if time != 0:
 		yield(get_tree().create_timer(time), "timeout")
-		text = ""
+		__set_text("")
+
+
+func __set_text(_text: String = ""):
+	text = _text
+	visible = text != ""

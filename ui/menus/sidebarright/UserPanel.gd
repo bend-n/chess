@@ -1,8 +1,8 @@
-extends PanelContainer
+extends MarginContainer
 class_name UserPanel
 
-onready var flag_display = $MC/H/Flag
-onready var name_display = $MC/H/Name
+onready var flag_display = $"%Flag"
+onready var name_display = $"%Name"
 
 var flag := "rainbow" setget set_flag
 var _name := "name" setget set_name

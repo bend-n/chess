@@ -56,8 +56,6 @@ green_overlay = Color( 0.1272, 0.53, 0.18762, 1 )
 margin_right = 600.0
 margin_bottom = 600.0
 mouse_filter = 2
-custom_constants/vseparation = 0
-custom_constants/hseparation = 0
 columns = 8
 
 [node name="Darken" type="ColorRect" parent="."]

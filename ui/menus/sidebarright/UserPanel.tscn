@@ -1,51 +1,44 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=1]
+[ext_resource path="res://ui/ubuntu-bold-regular.tres" type="DynamicFont" id=1]
 [ext_resource path="res://assets/flags/rainbow.png" type="Texture" id=2]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=3]
 [ext_resource path="res://ui/menus/sidebarright/UserPanel.gd" type="Script" id=4]
 
-[node name="UserPanel" type="PanelContainer"]
+[node name="UserPanel" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_min_size = Vector2( 0, 40 )
 theme = ExtResource( 3 )
+custom_constants/margin_top = 2
+custom_constants/margin_bottom = 2
 script = ExtResource( 4 )
 
-[node name="MC" type="MarginContainer" parent="."]
+[node name="H" type="HBoxContainer" parent="."]
+margin_top = 2.0
 margin_right = 1422.0
-margin_bottom = 800.0
-custom_constants/margin_left = 10
-
-[node name="H" type="HBoxContainer" parent="MC"]
-margin_left = 10.0
-margin_right = 1422.0
-margin_bottom = 800.0
+margin_bottom = 798.0
 custom_constants/separation = 10
 
-[node name="Name" type="Label" parent="MC/H"]
-margin_top = 380.0
-margin_right = 61.0
-margin_bottom = 420.0
+[node name="Name" type="Label" parent="H"]
+unique_name_in_owner = true
+margin_top = 378.0
+margin_right = 52.0
+margin_bottom = 418.0
 rect_min_size = Vector2( 0, 40 )
 custom_fonts/font = ExtResource( 1 )
 text = "name"
 valign = 1
 
-[node name="Flag" type="TextureRect" parent="MC/H"]
-margin_left = 71.0
-margin_top = 390.0
-margin_right = 97.0
-margin_bottom = 410.0
+[node name="Flag" type="TextureRect" parent="H"]
+unique_name_in_owner = true
+margin_left = 62.0
+margin_top = 388.0
+margin_right = 88.0
+margin_bottom = 408.0
 rect_min_size = Vector2( 26, 20 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource( 2 )
 expand = true
 stretch_mode = 6
-
-[node name="Spacer2" type="Control" parent="MC/H"]
-margin_left = 107.0
-margin_right = 1412.0
-margin_bottom = 800.0
-size_flags_horizontal = 3

@@ -7,7 +7,7 @@ var l := Label.new()
 func _ready():
 	add_constant_override("separation", 0)
 	add_child(l)
-	l.add_font_override("font", load("res://ui/ubuntu-bold-small.tres"))
+	l.add_font_override("font", load("res://ui/ubuntu-bold-regular.tres"))
 	l.name = "Label"
 
 

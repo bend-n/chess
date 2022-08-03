@@ -2,15 +2,24 @@
 
 [ext_resource path="res://ui/chat/textedit.gd" type="Script" id=1]
 [ext_resource path="res://ui/barbutton/BarButton.theme" type="Theme" id=2]
-[ext_resource path="res://assets/ui/ubuntu/ubuntu-normal-nerd.ttf" type="DynamicFontData" id=3]
-[ext_resource path="res://assets/ui/migu.ttf" type="DynamicFontData" id=4]
-[ext_resource path="res://assets/ui/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=5]
-[ext_resource path="res://ui/chat/chat_theme.tres" type="Theme" id=6]
+[ext_resource path="res://assets/fonts/ubuntu/ubuntu-normal-nerd.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://assets/fonts/migu.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://assets/fonts/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=6]
 [ext_resource path="res://ui/chat/TextEditor.gd" type="Script" id=7]
-[ext_resource path="res://ui/theme/richtextlabel/tiny.tres" type="DynamicFont" id=8]
+[ext_resource path="res://ui/ubuntu-regular.tres" type="DynamicFont" id=8]
 
-[sub_resource type="StyleBoxFlat" id=2]
-bg_color = Color( 0.1, 0.0948, 0.087, 0.784314 )
+[sub_resource type="StyleBoxFlat" id=4]
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color( 0, 0.168627, 0.211765, 1 )
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color( 0.027451, 0.211765, 0.258824, 1 )
 
 [sub_resource type="DynamicFont" id=3]
 size = 40
@@ -22,38 +31,29 @@ fallback/1 = ExtResource( 4 )
 margin_right = 965.0
 margin_bottom = 50.0
 theme = ExtResource( 6 )
-custom_styles/panel = SubResource( 2 )
+custom_styles/panel = SubResource( 4 )
 script = ExtResource( 7 )
 
 [node name="H" type="HBoxContainer" parent="."]
-margin_right = 965.0
-margin_bottom = 50.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 955.0
+margin_bottom = 40.0
 
 [node name="TextEditHolder" type="MarginContainer" parent="H"]
-margin_right = 965.0
-margin_bottom = 50.0
+margin_right = 945.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_right = 5
 custom_constants/margin_left = 5
 
-[node name="placeholder" type="Label" parent="H/TextEditHolder"]
-unique_name_in_owner = true
-margin_left = 5.0
-margin_top = 24.0
-margin_right = 20.0
-margin_bottom = 26.0
-size_flags_horizontal = 0
-custom_colors/font_color = Color( 1, 1, 1, 0.509804 )
-text = "write text here"
-valign = 2
-
 [node name="text" type="TextEdit" parent="H/TextEditHolder"]
 unique_name_in_owner = true
 margin_left = 5.0
-margin_top = 15.0
-margin_right = 960.0
-margin_bottom = 35.0
+margin_top = 5.0
+margin_right = 940.0
+margin_bottom = 25.0
 rect_min_size = Vector2( 200, 20 )
 size_flags_vertical = 4
 custom_fonts/font = ExtResource( 8 )
@@ -64,6 +64,18 @@ caret_blink = true
 caret_blink_speed = 0.45
 script = ExtResource( 1 )
 max_lines = 4
+
+[node name="placeholder" type="Label" parent="H/TextEditHolder"]
+unique_name_in_owner = true
+margin_left = 5.0
+margin_top = 3.0
+margin_right = 141.0
+margin_bottom = 26.0
+size_flags_horizontal = 0
+custom_colors/font_color = Color( 0.929412, 0.905882, 0.827451, 0.576471 )
+custom_fonts/font = ExtResource( 8 )
+text = "write text here"
+valign = 2
 
 [node name="SendButton" type="Button" parent="H"]
 unique_name_in_owner = true

@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
 [ext_resource path="res://ui/menus/lobby/Lobby.gd" type="Script" id=2]
 [ext_resource path="res://ui/menus/lobby/GameConfig.tscn" type="PackedScene" id=5]
+
+[sub_resource type="ButtonGroup" id=1]
 
 [node name="Lobby" type="CenterContainer"]
 anchor_right = 1.0
@@ -11,14 +13,14 @@ theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
 [node name="Center" type="CenterContainer" parent="."]
-margin_left = 411.0
-margin_top = 290.0
-margin_right = 1011.0
-margin_bottom = 509.0
+margin_left = 536.0
+margin_top = 341.0
+margin_right = 886.0
+margin_bottom = 459.0
 
 [node name="VBox" type="VBoxContainer" parent="Center"]
-margin_right = 600.0
-margin_bottom = 219.0
+margin_right = 350.0
+margin_bottom = 118.0
 
 [node name="GameConfig" parent="Center/VBox" instance=ExtResource( 5 )]
 visible = false
@@ -26,6 +28,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 727.0
 margin_bottom = 450.0
+button_group = SubResource( 1 )
 
 [node name="stophost" type="Button" parent="Center/VBox"]
 unique_name_in_owner = true
@@ -36,39 +39,26 @@ focus_mode = 0
 size_flags_horizontal = 4
 text = "stop hosting"
 
-[node name="Address" type="LineEdit" parent="Center/VBox"]
-unique_name_in_owner = true
-margin_right = 600.0
-margin_bottom = 102.0
-rect_min_size = Vector2( 600, 0 )
-hint_tooltip = "people will be able to join this gamecode"
-focus_mode = 1
-text = "game_code"
-align = 1
-max_length = 10
-placeholder_text = "game_code"
-caret_blink = true
-caret_blink_speed = 0.5
-
 [node name="buttons" type="HBoxContainer" parent="Center/VBox"]
-margin_top = 117.0
-margin_right = 600.0
-margin_bottom = 219.0
+margin_right = 350.0
+margin_bottom = 54.0
 
 [node name="SpectateButton" type="Button" parent="Center/VBox/buttons"]
-margin_right = 223.0
-margin_bottom = 102.0
+margin_right = 110.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 110, 0 )
+hint_tooltip = "watch the game"
 focus_mode = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 disabled = true
-text = "spectate"
+text = "watch"
 
 [node name="JoinButton" type="Button" parent="Center/VBox/buttons"]
-margin_left = 238.0
-margin_right = 406.0
-margin_bottom = 102.0
-rect_min_size = Vector2( 150, 0 )
+margin_left = 120.0
+margin_right = 230.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 110, 0 )
 hint_tooltip = "join the game"
 focus_mode = 0
 size_flags_horizontal = 7
@@ -77,14 +67,30 @@ text = "join"
 
 [node name="HostButton" type="Button" parent="Center/VBox/buttons"]
 unique_name_in_owner = true
-margin_left = 421.0
-margin_right = 600.0
-margin_bottom = 102.0
-hint_tooltip = "create a game"
+margin_left = 240.0
+margin_right = 350.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 110, 0 )
+hint_tooltip = "host the game"
 focus_mode = 0
 size_flags_horizontal = 7
 disabled = true
-text = "create"
+text = "host"
+
+[node name="Address" type="LineEdit" parent="Center/VBox"]
+unique_name_in_owner = true
+margin_top = 64.0
+margin_right = 350.0
+margin_bottom = 118.0
+rect_min_size = Vector2( 200, 0 )
+hint_tooltip = "name the game"
+focus_mode = 1
+text = "a_game_name"
+align = 1
+max_length = 11
+placeholder_text = "game_name"
+caret_blink = true
+caret_blink_speed = 0.5
 
 [node name="StatusOK" type="Label" parent="Center/VBox"]
 unique_name_in_owner = true

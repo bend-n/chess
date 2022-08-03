@@ -3,7 +3,7 @@
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
 [ext_resource path="res://ui/barbutton/BarButton.theme" type="Theme" id=2]
 [ext_resource path="res://ui/confirm/confirm.gd" type="Script" id=4]
-[ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=6]
+[ext_resource path="res://ui/ubuntu-bold-regular.tres" type="DynamicFont" id=6]
 
 [node name="Confirm" type="WindowDialog"]
 margin_right = 400.0

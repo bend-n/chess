@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=2]
 
-[ext_resource path="res://assets/ui/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/fonts/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=2]
 [ext_resource path="res://ui/menus/startmenu/StartMenu.gd" type="Script" id=3]
-[ext_resource path="res://ui/ubuntu-bold-small.tres" type="DynamicFont" id=4]
+[ext_resource path="res://ui/ubuntu-bold-regular.tres" type="DynamicFont" id=4]
 [ext_resource path="res://ui/menus/lobby/Lobby.tscn" type="PackedScene" id=5]
 [ext_resource path="res://ui/menus/tests/test_runner.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/menus/settings/Settings.tscn" type="PackedScene" id=7]
@@ -28,10 +28,10 @@ mouse_filter = 2
 theme = ExtResource( 2 )
 
 [node name="tabs" type="TabContainer" parent="CenterContainer"]
-margin_left = 147.0
-margin_top = 57.0
-margin_right = 1275.0
-margin_bottom = 743.0
+margin_left = 283.0
+margin_top = 104.0
+margin_right = 1139.0
+margin_bottom = 696.0
 rect_min_size = Vector2( 2, 2 )
 mouse_filter = 1
 size_flags_horizontal = 0
@@ -39,11 +39,11 @@ size_flags_vertical = 0
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 
-[node name="" parent="CenterContainer/tabs" instance=ExtResource( 5 )]
-margin_left = 30.0
-margin_top = 86.0
-margin_right = -30.0
-margin_bottom = -30.0
+[node name="" parent="CenterContainer/tabs" instance=ExtResource( 5 )]
+margin_left = 25.0
+margin_top = 79.0
+margin_right = -25.0
+margin_bottom = -25.0
 
 [node name="漣" parent="CenterContainer/tabs" instance=ExtResource( 7 )]
 visible = false

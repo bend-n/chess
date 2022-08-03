@@ -3,17 +3,7 @@
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
 [ext_resource path="res://ui/colorpicker/ColorPickerButton.gd" type="Script" id=2]
 [ext_resource path="res://ui/colorpicker/ColorPicker.tscn" type="PackedScene" id=3]
-
-[sub_resource type="StyleBoxFlat" id=1]
-content_margin_left = 10.0
-content_margin_right = 10.0
-content_margin_top = 10.0
-content_margin_bottom = 10.0
-bg_color = Color( 0, 0, 0, 0.784314 )
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[ext_resource path="res://ui/theme/panel.tres" type="StyleBox" id=4]
 
 [node name="ColorPickerButton" type="Button"]
 margin_right = 232.0
@@ -29,7 +19,7 @@ margin_top = 50.0
 margin_right = 195.0
 margin_bottom = 195.0
 rect_min_size = Vector2( 125, 125 )
-custom_styles/panel = SubResource( 1 )
+custom_styles/panel = ExtResource( 4 )
 
 [node name="ColorPicker" parent="Popup" instance=ExtResource( 3 )]
 anchor_right = 1.0

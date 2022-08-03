@@ -9,15 +9,17 @@ rect_min_size = Vector2( 50, 50 )
 mouse_default_cursor_shape = 2
 expand = true
 script = ExtResource( 2 )
-normal_color = Color( 0.188235, 0.180392, 0.172549, 1 )
-disabled_color = Color( 0.188235, 0.180392, 0.172549, 1 )
+normal_color = Color( 0.027451, 0.211765, 0.258824, 1 )
+highlight_color = Color( 0.345098, 0.431373, 0.458824, 1 )
+pressed_color = Color( 0.14902, 0.545098, 0.823529, 1 )
+disabled_color = Color( 0, 0.168627, 0.211765, 1 )
 
 [node name="Background" type="ColorRect" parent="."]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0.188235, 0.180392, 0.172549, 1 )
+color = Color( 0.027451, 0.211765, 0.258824, 1 )
 
 [connection signal="mouse_entered" from="." to="." method="_focused" binds= [ true ]]
 [connection signal="mouse_exited" from="." to="." method="_focused" binds= [ false ]]

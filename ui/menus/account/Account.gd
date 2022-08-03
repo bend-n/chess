@@ -2,7 +2,7 @@ extends Control
 
 onready var flags: PoolStringArray = ["rainbow"]
 onready var flagchoice: GridMenuButton = $choose/signup/flag
-onready var status: InfoLabel = $H/InfoLabel  # not a StatusLabel
+onready var status: StatusLabel = $H/InfoLabel
 onready var loading = $LoadingAnimation
 
 onready var tabs := {
@@ -71,7 +71,7 @@ func _on_signup_result(result: String):
 
 func reset(reason: String, reset_creds := true):
 	if reason:
-		status.set_text(reason, 0)
+		status.set_text(reason, 5)
 	if reset_creds:
 		Creds.reset()
 	tabcontainer.show()
@@ -82,7 +82,8 @@ func reset(reason: String, reset_creds := true):
 func on_successful():
 	Creds.save()
 	loading.hide()
-	status.set_text("Signed in to " + Creds.get("name"), 0)
+	Log.info("Signed in as %s" % Creds.get("name"))
+	status.set_text("Signed in as " + Creds.get("name"), 0)
 	signed_in = true  # yay
 	$H/LogOut.show()
 	tabcontainer.hide()

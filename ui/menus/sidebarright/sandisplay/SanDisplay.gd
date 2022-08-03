@@ -50,6 +50,7 @@ func add_moves(moves: PoolStringArray) -> void:
 
 
 func scroll_down():
+	yield(get_tree(), "idle_frame")
 	tween.interpolate_property(scroll_bar, "value", scroll_bar.value, scroll_bar.max_value, 0.5, 9)  # bouncy
 	tween.start()
 

@@ -1,8 +1,9 @@
 extends Control
+class_name GameUI
 
 onready var status: StatusLabel = find_node("Status")
 onready var chat: Chat = find_node("Chat")
-onready var sidebar := $Holder/SidebarRight
+onready var sidebar := $"%Sidebar"
 onready var panels := [
 	sidebar.whitepanel,
 	sidebar.blackpanel,

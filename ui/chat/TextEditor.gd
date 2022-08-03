@@ -17,12 +17,14 @@ signal done(text)
 
 onready var textedit: TextEdit = $"%text"
 onready var placeholder := $"%placeholder"
-onready var sendbutton := $"%SendButton"
+
+
+func _ready():
+	$"%SendButton".visible = OS.has_touchscreen_ui_hint()
 
 
 func _text_changed() -> void:
 	placeholder.visible = len(textedit.text) == 0
-	sendbutton.visible = len(textedit.text) != 0
 
 
 func send(msg := textedit.text) -> void:

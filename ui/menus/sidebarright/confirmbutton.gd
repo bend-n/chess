@@ -11,8 +11,8 @@ func _ready() -> void:
 	PacketHandler.connect("signal_recieved", self, "_signal_recieved")
 
 
-func disable(_a: String, _ar: bool) -> void:
-	disabled = true
+func disable(_a: String) -> void:
+	set_disabled(true)
 
 
 func _signal_recieved(_signal: Dictionary) -> void:

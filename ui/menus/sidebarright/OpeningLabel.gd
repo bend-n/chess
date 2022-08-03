@@ -18,11 +18,11 @@ func _ready():
 
 func update_opening(_var := null) -> void:
 	if Utils.internet:
-		var fen := Globals.grid.chess.fen()
+		var fen: String = Globals.grid.chess.fen()
 		if fen != Globals.grid.chess.DEFAULT_POSITION && fen != current_req:
 			if current_req:
 				http_request.cancel_request()
-			text = ""
+			set_text("")
 			current_req = fen
 			var u = url % fen.replace(" ", "_").http_escape()
 			Log.net(["REQUEST: get opening with url:", u])
@@ -30,7 +30,7 @@ func update_opening(_var := null) -> void:
 
 
 func _request_completed(result, _response_code, _headers, byte_body):
-	text = ""
+	set_text("")  # empty text and hide self
 	current_req = ""
 	if result != OK:  # technically REQUEST_SUCCESS but i cant find it
 		return
@@ -39,4 +39,9 @@ func _request_completed(result, _response_code, _headers, byte_body):
 	var response = parse_json(body)
 
 	if response.opening != null and "name" in response.opening:
-		text = " %s" % response.opening.name
+		set_text(" %s" % response.opening.name)
+
+
+func set_text(_text := ""):
+	visible = _text != ""
+	text = _text

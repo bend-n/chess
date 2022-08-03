@@ -1,20 +1,22 @@
 extends TabContainer
 
 var moves := PoolStringArray()
-var white := true setget set_white
+var color := true
 var lobby: Lobby
+
+export(ButtonGroup) var button_group: ButtonGroup
 
 
 func _ready():
-	find_node("SliderButton").connect("toggled", self, "set_white")
+	button_group.connect("pressed", self, "_button_pressed")
 
 
-func set_white(new_white: bool) -> void:
-	white = new_white
+func _button_pressed(button: BarTextureButton) -> void:
+	color = button.name == "White"
 
 
 func _on_Continue_pressed():
-	PacketHandler.host_game(PacketHandler.game_code, white, moves)
+	PacketHandler.host_game(PacketHandler.game_code, color, moves)
 	reset()
 
 
@@ -30,8 +32,8 @@ func _on_Stop_pressed():
 
 func reset():
 	moves = []
-	white = true
-	$Advanced/H/Pgn.text = ""
+	color = true
+	$"%PgnInput".text = ""
 	hide()
 
 

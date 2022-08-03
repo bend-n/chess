@@ -3,6 +3,8 @@ extends ColorRect
 export(PoolColorArray) var colors
 export(float) var length := 2.8
 
+onready var fallback_color = color
+
 var rainbow := true setget set_rainbow
 var tween := Tween.new()
 var timer := Timer.new()
@@ -33,5 +35,5 @@ func change_color() -> void:
 		clr = Color(rand(clr.r), rand(clr.g), rand(clr.b), 1)
 		tween.interpolate_property(self, "color", color, clr, length, Tween.TRANS_ELASTIC)
 	else:
-		tween.interpolate_property(self, "color", color, colors[-1], length, Tween.TRANS_ELASTIC)
+		tween.interpolate_property(self, "color", color, fallback_color, length, Tween.TRANS_ELASTIC)
 	tween.start()

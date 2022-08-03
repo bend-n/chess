@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://ui/chat/chat_theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
 [ext_resource path="res://ui/chat/Chat.gd" type="Script" id=2]
 [ext_resource path="res://ui/chat/MessageList.tscn" type="PackedScene" id=3]
 [ext_resource path="res://ui/chat/TextEditor.tscn" type="PackedScene" id=5]
@@ -23,11 +23,11 @@ custom_constants/separation = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1422.0
-margin_bottom = 780.0
+margin_bottom = 757.0
 mouse_filter = 2
 
 [node name="Input" parent="v" instance=ExtResource( 5 )]
-margin_top = 780.0
+margin_top = 757.0
 margin_right = 1422.0
 margin_bottom = 800.0
 

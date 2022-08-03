@@ -1,14 +1,15 @@
-extends Button
+extends CenterContainer
 class_name BackButton
+
+var button := Button.new()
 
 
 func _ready():
-	Events.connect("game_over", self, "game_over")
+	add_child(button)
+	Events.connect("game_over", self, "_game_over")
+	button.text = "go back"
+	button.connect("pressed", Events, "emit_signal", ["go_back", "", true])
 
 
-func _pressed():
-	Events.emit_signal("go_back", "", true)
-
-
-func game_over(_reason: String, _ok: bool) -> void:
+func _game_over(_why: String) -> void:
 	show()

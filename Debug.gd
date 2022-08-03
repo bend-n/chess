@@ -1,8 +1,8 @@
 extends Node2D
 
 var refs := []  # = [[ node : object, variable : string, (code : string) ]]
-var style: StyleBox = load("res://ui/theme/transblack.tres")
-var font: Font = load("res://ui/ubuntu-bold.tres")
+var style: StyleBox = load("res://ui/theme/transpanel.tres")
+var font: Font = load("res://ui/ubuntu-bold-regular.tres")
 var debug := false  # in debug mode or not
 var timer := Timer.new()
 var expr := Expression.new()

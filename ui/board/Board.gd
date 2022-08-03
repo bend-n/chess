@@ -39,11 +39,9 @@ var last_clicked
 var check_circle: GradientTexture2D = load("res://piece/check-circle.tres")
 var take_circle: GradientTexture2D = load("res://piece/takeable-circle.tres")
 
-export(NodePath) var sidebar_path = @""
-onready var sidebar := get_node_or_null(sidebar_path)
-export(NodePath) var ui_path = @""
+onready var sidebar := get_node_or_null("%Sidebar")
+onready var game: GameUI = owner if owner is GameUI else null
 onready var darken = $Darken
-onready var ui := get_node_or_null(ui_path)
 onready var foreground := $Foreground
 onready var background := $Background
 onready var pieces := $Pieces
@@ -64,13 +62,14 @@ func _resized():
 	piece_size = rect_size / 8
 	piece_size.x = clamp(piece_size.x, 0, piece_size.y)
 	piece_size.y = clamp(piece_size.y, 0, piece_size.x)
-	rect_pivot_offset = (piece_size * 8) / 2
-	foreground.rect_pivot_offset = rect_pivot_offset
 	check_circle.width = piece_size.x
 	check_circle.height = piece_size.y
 	take_circle.width = piece_size.x
 	take_circle.height = piece_size.y
-	if !(board.empty() && background_array.empty()) and piece_size != old_pc:
+	if foreground:
+		rect_pivot_offset = (piece_size * 8) / 2
+		foreground.rect_pivot_offset = rect_pivot_offset
+	if not (board.empty() && background_array.empty()) && piece_size != old_pc:
 		resize_board()
 		Log.debug("Resizing board")
 
@@ -112,7 +111,7 @@ func create_squares() -> void:  # create the board
 
 
 func create_labels() -> void:
-	var font: DynamicFont = load("res://ui/ubuntu-bold.tres").duplicate()
+	var font: DynamicFont = load("res://ui/ubuntu-bold-regular.tres").duplicate()
 	font.size = 15
 	for k in Chess.SQUARE_MAP:
 		if k == "h1":
@@ -144,9 +143,10 @@ func init_label(font: DynamicFont, alg: String, text: String, valign := 0, align
 	var label := Label.new()
 	label.align = align
 	label.valign = valign
-	label.name = text
 	label.size_flags_horizontal = SIZE_EXPAND_FILL
 	label.size_flags_vertical = SIZE_EXPAND_FILL
+	label.mouse_filter = MOUSE_FILTER_IGNORE
+	label.name = text
 	label.text = text
 	label.add_color_override(
 		"font_color", Globals.board_color1 if Chess.square_color(alg) == "dark" else Globals.board_color2
@@ -160,12 +160,15 @@ func init_label(font: DynamicFont, alg: String, text: String, valign := 0, align
 
 
 func create_margin_container(margin := 5) -> MarginContainer:
-	var container := MarginContainer.new()
-	container.add_constant_override("margin_top", margin)
-	container.add_constant_override("margin_left", margin)
-	container.add_constant_override("margin_right", margin)
-	container.add_constant_override("margin_bottom", margin)
-	return container
+	var c := MarginContainer.new()
+	c.add_constant_override("margin_top", margin)
+	c.add_constant_override("margin_left", margin)
+	c.add_constant_override("margin_right", margin)
+	c.add_constant_override("margin_bottom", margin)
+	c.size_flags_horizontal = SIZE_EXPAND_FILL
+	c.size_flags_vertical = SIZE_EXPAND_FILL
+	c.mouse_filter = MOUSE_FILTER_IGNORE
+	return c
 
 
 func clear_pieces() -> void:
@@ -301,15 +304,15 @@ func clear_last_clicked():
 
 func draw(reason := "") -> void:
 	var string = "draw by " + reason
-	ui.set_status(string, 0)
+	game.set_status(string, 0)
 	SoundFx.play("Victory")
-	Events.emit_signal("game_over", string, true)
+	Events.emit_signal("game_over", string)
 
 
 func win(winner: String, reason := "") -> void:
 	var string = "%s won the game by %s" % [Utils.expand_color(winner), reason]
-	ui.set_status(string, 0)  #: black won the game by checkmate
-	Events.emit_signal("game_over", string, true)
+	game.set_status(string, 0)  #: black won the game by checkmate
+	Events.emit_signal("game_over", string)
 	SoundFx.play("Victory")
 
 
