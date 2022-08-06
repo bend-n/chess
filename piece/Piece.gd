@@ -13,14 +13,13 @@ onready var anim = $AnimationPlayer
 onready var rotate = $RotatePlayer
 
 # for pawn promotion
-var previews: VBoxContainer = null
-var popup: PopupPanel = null
 signal promotion_decided
 var promote_to := ""
 
 
 func size() -> void:  # size the control
 	rect_size = Globals.grid.piece_size
+	rect_pivot_offset = rect_size / 2
 	rect_position = Chess.algebraic2vec(position) * Globals.grid.piece_size
 	sprite.flip_v = Globals.grid.flipped
 	sprite.flip_h = Globals.grid.flipped
@@ -28,29 +27,14 @@ func size() -> void:  # size the control
 
 func _ready():
 	load_texture()
-	size()
 
 	frame.modulate = Globals.grid.overlay_color
 	background.color = Globals.grid.overlay_color
 
-	if type == Chess.PAWN:
-		popup = PopupPanel.new()
-		popup.popup_exclusive = true
-		popup.add_stylebox_override("panel", StyleBoxEmpty.new())
-		previews = VBoxContainer.new()
-		previews.add_constant_override("separation", 0)
-		popup.add_child(previews)
-		add_child(popup)
-		for p in "qnrb":
-			var newsprite := PromotionPreview.new()
-			newsprite.hint_tooltip = p
-			var img_path = "res://assets/pieces/%s/%s%s.png" % [Globals.piece_set, color.to_lower(), p.to_upper()]
-			newsprite.texture_normal = load(img_path)
-			newsprite.name = p
-			newsprite.connect("pressed", self, "_pressed", [p])
-			previews.add_child(newsprite)
-	elif type == Chess.KING:
+	if type == Chess.KING:
 		Events.connect("turn_over", self, "check_in_check")
+
+	size()
 
 
 func check_in_check():
@@ -58,18 +42,32 @@ func check_in_check():
 
 
 func _pressed(p: String) -> void:
-	popup.hide()
-	$"../../Darken".hide()
 	promote_to = p
 	emit_signal("promotion_decided")
+	queue_free()
 
 
 func open_promotion_previews():
-	popup.set_as_minsize()
-	var rect := popup.get_global_rect()
-	rect.position = rect_global_position
+	var popup := PopupPanel.new()
+	popup.name = "previews"
+	popup.popup_exclusive = true
+	popup.add_stylebox_override("panel", StyleBoxEmpty.new())
+	var previews := VBoxContainer.new()
+	previews.name = "previews"
+	previews.add_constant_override("separation", 0)
+	popup.add_child(previews)
+	add_child(popup)
+	for p in "QNRB":
+		var newsprite := PromotionPreview.new()
+		newsprite.hint_tooltip = p
+		var img_path = "res://assets/pieces/%s/%s%s.png" % [Globals.piece_set, color, p]
+		newsprite.texture_normal = load(img_path)
+		newsprite.name = p
+		newsprite.connect("pressed", self, "_pressed", [p])
+		previews.add_child(newsprite)
+
+	var rect = Rect2(rect_global_position, Vector2(Globals.grid.piece_size.x, Globals.grid.piece_size.y * 4))
 	popup.popup(rect)
-	$"../../Darken".show()
 
 
 func load_texture(path := "res://assets/pieces/%s/%s%s.png" % [Globals.piece_set, color, type.to_upper()]) -> void:
@@ -81,19 +79,26 @@ func set_zindex(zindex: int, obj: CanvasItem = self) -> void:  # used by the ani
 
 
 # returns self for function chaining
-func move(to: String) -> Piece:
+func move(to: String, synchronized := false) -> Piece:
+	if synchronized:
+		yield(get_tree(), "idle_frame")
+
+	name = "%s-%s" % [type, to]
 	Globals.grid.set_piece(position, null)
 	Globals.grid.set_piece(to, self)
 	var go_to = Chess.algebraic2vec(to)
-	var tween = create_tween().set_trans(Tween.TRANS_BACK)
-	tween.tween_property(self, @"rect_position", go_to * Globals.grid.piece_size, 0.3)
 	var signresult := int(sign(Chess.algebraic2vec(position).x - go_to.x))
+
 	if signresult == 1:
 		rotate.play("Right")
 	elif signresult == -1:
 		rotate.play("Left")
 	anim.play("Move")
 	position = to
+	var tween = create_tween().set_trans(Tween.TRANS_BACK)
+	tween.tween_property(self, @"rect_position", go_to * Globals.grid.piece_size, 0.3)
+	if synchronized:
+		yield(tween, "finished")
 	return self
 
 

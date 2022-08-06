@@ -203,7 +203,7 @@ func create_pieces():
 
 func make_piece(algebraic: String, piece_type: String, color := "w") -> void:  # make peace
 	var piece := PieceScene.instance()  # create a piece
-	piece.name = "%s@%s" % [piece_type, algebraic]
+	piece.name = "%s-%s" % [piece_type, algebraic]
 	piece.position = algebraic
 	piece.type = piece_type
 	piece.color = color
@@ -273,21 +273,21 @@ func move(san: String, is_recieved_move := true) -> void:
 		sound_handled = true
 	elif move_0x88.flags & Chess.BITS.KSIDE_CASTLE:  # kingside castling
 		var rook_pos := Chess.offset(move_0x88.to, Vector2(1, 0))
-		var _rook := get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(-1, 0)))
+		get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(-1, 0)))
 	elif move_0x88.flags & Chess.BITS.QSIDE_CASTLE:  # queenside
 		var rook_pos := Chess.offset(move_0x88.to, Vector2(-2, 0))
-		var _rook := get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(1, 0)))
+		get_piece(rook_pos).move(Chess.offset(move_0x88.to, Vector2(1, 0)))
 	if move_0x88.flags & Chess.BITS.PROMOTION:  #promotion wow
-		var p: Piece = board[move_0x88.from].move(Chess.algebraic(move_0x88.to))
+		var p: Piece = yield(board[move_0x88.from].move(Chess.algebraic(move_0x88.to), true), "completed")
 		if !is_recieved_move:  # was my turn, this is my move
-			yield(p.tween, "tween_all_completed")
+			darken.show()
 			p.open_promotion_previews()
-			yield(p, "promotion_decided")
+			yield(p, "promotion_decided")  # piece kills itself now
 			move_0x88["promotion"] = p.promote_to
 			san = chess.__move_to_san(move_0x88)  # update the san with new promotion data
-			p.queue_free()
+			darken.hide()
 		else:  # was opponents turn, this is opponents move: promotion is already chosen
-			p.queue_free()  # the q_f above happens after a dozen yields
+			p.queue_free()
 		# the move animation is useless if its not my turn
 		# but it changes p.position, so its usefull.
 		make_piece(p.position, move_0x88.promotion, p.color)
@@ -305,7 +305,6 @@ func move(san: String, is_recieved_move := true) -> void:
 
 func clear_last_clicked():
 	last_clicked = null
-	darken.hide()
 
 
 func draw(reason := "") -> void:
