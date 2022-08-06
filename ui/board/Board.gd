@@ -12,6 +12,8 @@ signal remove_last
 
 var move_indicators: PoolIntArray = []
 
+var rot :float = 0
+
 var piece_size: Vector2
 
 export(Color) var overlay_color := Color(0.078431, 0.333333, 0.117647, 0.498039)
@@ -56,6 +58,10 @@ func _init():
 func _exit_tree():
 	Globals.grid = null
 
+
+func _process(_delta):
+	rect_rotation = rot
+	foreground.rect_rotation = rot
 
 func _resized():
 	var old_pc = piece_size
@@ -222,9 +228,8 @@ func flip_labels() -> void:
 
 
 func flip_board() -> void:
-	rect_rotation = 0 if rect_rotation == 180 else 180
-	foreground.rect_rotation = rect_rotation
-	flipped = rect_rotation == 180
+	rot = 0 if rot == 180 else 180
+	flipped = rot == 180
 	Log.debug(["Flipped the board, now", "flipped" if flipped else "not flipped"])
 	sidebar.flip_panels()
 	flip_pieces()
