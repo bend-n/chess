@@ -2,7 +2,7 @@ extends Control
 
 var arrows := []  # [from, to, color]
 var circles := []  # [position, color]
-var first: Vector2
+var arrow_origin: Vector2
 var b: Grid
 
 var t := 0.0
@@ -21,8 +21,8 @@ func _setup(_b: Grid):
 
 
 func right_clicked(clicked: String) -> void:
+	arrow_origin = Chess.algebraic2vec(clicked)
 	t = 0
-	first = ((Chess.algebraic2vec(clicked) * b.piece_size) + b.piece_size / 2)
 
 
 func left_clicked(sq: String) -> void:
@@ -35,34 +35,44 @@ func _process(delta):
 	update()
 
 
+func scale_vector(v: Vector2) -> Vector2:
+	return (v * b.piece_size) + b.piece_size / 2
+
+
+func descale_vector(v: Vector2) -> Vector2:
+	return ((v / b.piece_size) - Vector2(.5, .5)).round()
+
+
+func shorten(v: Vector2, origin: Vector2, by: float) -> Vector2:
+	return (v).move_toward(origin, by)
+
+
 func _draw():
 	if !b:
 		return
-	var s = b.piece_size
-	if first:
+	if arrow_origin:
 		var shift = Input.is_action_pressed("shift")
-		var loc_m = ((b.get_local_mouse_position() / s) - Vector2(.5, .5)).round()
-		loc_m = Vector2(clamp(loc_m.x, 0, 7), clamp(loc_m.y, 0, 7))
-		var m_pos = ((loc_m * s) + s / 2).move_toward(first, 25)
+		var mouse_position = shorten(descale_vector(b.get_local_mouse_position()), arrow_origin, .25)
+		mouse_position = Vector2(clamp(mouse_position.x, 0, 7), clamp(mouse_position.y, 0, 7))  # clamp to board limits
 		var clr = red_overlay if shift else green_overlay
 		if Input.is_action_pressed("rclick"):  # previews
-			if first != m_pos:
-				draw_arrow(first, m_pos, clr)
+			if arrow_origin != mouse_position:
+				draw_arrow(arrow_origin, mouse_position, clr)
 			elif t <= .25:
-				draw_arc(first, (s.x / 2) - 6, 0, PI * 2, 40, clr, 10, true)
+				draw_ring(arrow_origin, clr)
 		else:
 			var flag := true  # no for-else :c
-			if first != m_pos:
-				var arr := [first, m_pos, clr]
+			if arrow_origin != mouse_position:
+				var arr := [arrow_origin, mouse_position, clr]
 				for i in range(len(arrows)):
-					if arrows[i][0] == first and arrows[i][1] == m_pos:
+					if arrows[i][0] == arrow_origin and arrows[i][1] == mouse_position:
 						arrows.remove(i)
 						flag = false
 						break
 				if flag:
 					arrows.append(arr)
 			elif t <= .25:
-				var arr := [first, clr]
+				var arr := [arrow_origin, clr]
 				for i in range(len(circles)):
 					if circles[i][0] == arr[0]:
 						circles.remove(i)
@@ -70,16 +80,18 @@ func _draw():
 						break
 				if flag:
 					circles.append(arr)
-			first = Vector2.ZERO
+			arrow_origin = Vector2.ZERO
 			t = 0
 
 	for a in arrows:
 		draw_arrow(a[0], a[1], a[2])
 	for ci in circles:
-		draw_arc(ci[0], (s.x / 2) - 6, 0, PI * 2, 40, ci[1], 10, true)
+		draw_ring(ci[0], ci[1])
 
 
 func draw_arrow(start: Vector2, end: Vector2, clr: Color):
+	start = scale_vector(start)
+	end = scale_vector(end)
 	draw_circle(start, float(w) / 2, clr)
 	draw_line(start, end, clr, w, true)
 	draw_triangle(start.angle_to_point(end), end, clr)
@@ -93,7 +105,12 @@ func draw_triangle(r: float, p: Vector2, c: Color) -> void:
 	draw_primitive(tri, [c, c, c], [])
 
 
+func draw_ring(at: Vector2, clr: Color) -> void:
+	at = scale_vector(at)
+	draw_arc(at, (b.piece_size.x / 2) - 6, 0, PI * 2, 40, clr, 10, true)
+
+
 func clear_arrows():
 	arrows.resize(0)
 	circles.resize(0)
-	first = Vector2.ZERO
+	arrow_origin = Vector2.ZERO
