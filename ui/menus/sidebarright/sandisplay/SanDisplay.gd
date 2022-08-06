@@ -1,8 +1,6 @@
 # its really a PGNDisplay but im in no mood to change it
 extends PanelContainer
 
-var tween := Tween.new()
-
 export(PackedScene) var Base
 
 onready var scroll_container := $Scroller
@@ -15,7 +13,6 @@ var added_sans := 0
 func _ready() -> void:
 	scroll_bar.hide()
 	scroll_bar.step = .15  #smoth
-	add_child(tween)
 	Globals.grid.connect("add_to_pgn", self, "add_to_pgn")
 	Globals.grid.connect("load_pgn", self, "add_moves")
 	Globals.grid.connect("clear_pgn", self, "clear")
@@ -37,7 +34,7 @@ func add_to_pgn(m: String) -> void:
 
 func add_move(move: String) -> void:
 	if added_sans % 2 == 0:
-		# warning-ignore:integer_division
+		# warning-ignore-all:integer_division
 		create_number_label((added_sans / 2) + 1)
 	added_sans += 1
 	sans.get_children()[-1].add_move(move)
@@ -51,8 +48,8 @@ func add_moves(moves: PoolStringArray) -> void:
 
 func scroll_down():
 	yield(get_tree(), "idle_frame")
-	tween.interpolate_property(scroll_bar, "value", scroll_bar.value, scroll_bar.max_value, 0.5, 9)  # bouncy
-	tween.start()
+	var tween = create_tween().set_trans(Tween.TRANS_LINEAR)
+	tween.tween_property(scroll_bar, "value", scroll_bar.max_value, 0.5)
 
 
 func clear() -> void:

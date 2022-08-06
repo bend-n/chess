@@ -4,18 +4,19 @@ var refs := []  # = [[ node : object, variable : string, (code : string) ]]
 var style: StyleBox = load("res://ui/theme/transpanel.tres")
 var font: Font = load("res://ui/ubuntu-bold-regular.tres")
 var debug := false  # in debug mode or not
-var timer := Timer.new()
 var expr := Expression.new()
 
 const offset := Vector2(10, 10)
 const vertical := 15
 
 
+func create_timer():
+	get_tree().create_timer(.1).connect("timeout", self, "update")
+
+
 func _ready() -> void:
 	z_index = 5  # put on top
-	add_child(timer)
-	timer.connect("timeout", self, "update")
-	timer.start(.1)  # only redraw every .1 seconds
+	create_timer()
 	font = font.duplicate()
 	font.size = vertical * 0.8
 	visible = debug
@@ -35,7 +36,7 @@ func calculate_size() -> Rect2:
 
 
 func update() -> void:
-	timer.start(.1)
+	create_timer()
 	.update()
 
 

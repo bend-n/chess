@@ -4,7 +4,6 @@ class_name Piece
 var position: String
 var color: String
 var type: String
-var tween := Tween.new()
 
 onready var sprite = $Sprite
 onready var frame = $"%Frame"
@@ -28,7 +27,6 @@ func size() -> void:  # size the control
 
 
 func _ready():
-	add_child(tween)
 	load_texture()
 	size()
 
@@ -87,16 +85,14 @@ func move(to: String) -> Piece:
 	Globals.grid.set_piece(position, null)
 	Globals.grid.set_piece(to, self)
 	var go_to = Chess.algebraic2vec(to)
-	tween.interpolate_property(
-		self, "rect_position", rect_position, go_to * Globals.grid.piece_size, 0.3, Tween.TRANS_BACK
-	)
+	var tween = create_tween().set_trans(Tween.TRANS_BACK)
+	tween.tween_property(self, @"rect_position", go_to * Globals.grid.piece_size, 0.3)
 	var signresult := int(sign(Chess.algebraic2vec(position).x - go_to.x))
 	if signresult == 1:
 		rotate.play("Right")
 	elif signresult == -1:
 		rotate.play("Left")
 	anim.play("Move")
-	tween.start()
 	position = to
 	return self
 

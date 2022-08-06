@@ -5,12 +5,6 @@ onready var labels = find_node("labels")
 onready var scroller = find_node("scroller")
 onready var scrollbar = scroller.get_v_scrollbar()
 
-var tween := Tween.new()
-
-
-func _ready():
-	add_child(tween)
-
 
 func add_label(bbcode: String):
 	var l := RichTextLabel.new()
@@ -20,8 +14,9 @@ func add_label(bbcode: String):
 	l.connect("meta_clicked", self, "open_url")
 	l.bbcode_text = bbcode
 	l.fit_content_height = true
-	tween.interpolate_property(scrollbar, "value", scrollbar.value, scrollbar.max_value, .5, Tween.TRANS_BOUNCE)
-	tween.start()
+	yield(get_tree(), "idle_frame")
+	var tween = create_tween().set_trans(Tween.TRANS_LINEAR)
+	tween.tween_property(scrollbar, "value", scrollbar.max_value, .5)
 
 
 func open_url(meta):

@@ -12,7 +12,7 @@ signal remove_last
 
 var move_indicators: PoolIntArray = []
 
-var rot :float = 0
+var rot: float = 0
 
 var piece_size: Vector2
 
@@ -62,6 +62,7 @@ func _exit_tree():
 func _process(_delta):
 	rect_rotation = rot
 	foreground.rect_rotation = rot
+
 
 func _resized():
 	var old_pc = piece_size
