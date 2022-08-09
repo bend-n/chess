@@ -5,7 +5,7 @@ offsets = PoolRealArray( 0, 0.3, 0.9, 1 )
 colors = PoolColorArray( 0.941176, 0, 0, 1, 0.905882, 0, 0, 1, 0.662745, 0, 0, 0, 0.619608, 0, 0, 0 )
 
 [resource]
-flags = 28
+flags = 12
 gradient = SubResource( 1 )
 width = 80
 height = 80

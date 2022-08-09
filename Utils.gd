@@ -9,8 +9,10 @@ static func compile(src: String) -> RegEx:
 	return regex
 
 
-static func str_bool(string: String) -> bool:
-	return string.to_lower().strip_edges() in ["true", "1", "on", "yes", "y", ""]
+static func str_bool(string: String, extra_cases: PoolStringArray = []) -> bool:
+	var cases = ["true", "1", "on", "yes", "y"]
+	cases.append_array(extra_cases)
+	return string.to_lower().strip_edges() in cases
 
 
 func expand_color(color: String) -> String:
@@ -88,9 +90,20 @@ func cli() -> void:
 		Arg.new(
 			{
 				triggers = ["--debug", "-D"],
+				default = "yes",
 				n_args = 1,
 				help = "toggle debug mode",
 				arg_names = "enabled",
+			}
+		)
+	)
+	parser.add_argument(
+		Arg.new(
+			{
+				triggers = ["--test", "-t", "-T"],
+				n_args = 0,
+				help = "run engine tests",
+				action = "store_true",
 			}
 		)
 	)
@@ -102,24 +115,25 @@ func cli() -> void:
 	elif args.get("version", false):
 		print("chess %s" % get_version())
 		get_tree().quit()  # dont wait
+	elif args.get("test", false):
+		print("Starting tests")
+		TestButton.TestChess.new()
+		print("Tests passed")
+		get_tree().quit()  # dont wait
 	elif args.has("host") or args.has("join"):
 		if !internet:
 			printerr("No internet")
 			get_tree().quit()
 		yield(PacketHandler, "connection_established")
 		if args.has("host") and args.host:
-			print("hosting game: %s" % args.host)
 			if PacketHandler.lobby.validate_text(args.host):
-				var s = args.get("moves", PoolStringArray()).join(" ")
-				var move_list = Pgn.parse(s, false).moves
-				if move_list:
-					print("with moves: %s" % move_list)
-				var clr = (
-					(true if args.color.to_lower() in ["w", "white"] or str_bool(args.color) else false)
-					if args.has("color")
-					else (true)
-				)  # default white
-				prints("as", "white" if clr else "black")
+				var pgn_input = args.get("moves", PoolStringArray()).join(" ")
+				var move_list = Pgn.parse(pgn_input, false).moves
+				var clr = str_bool(args.color, ["w", "white"]) if args.has("color") else true  # default white
+				var string = "hosting game: %s" % args.host
+				string += ", with moves: %s" % move_list if move_list else ""
+				string += ", as " + ("white" if clr else "black")
+				print(string)
 				PacketHandler.host_game(args.host, clr, move_list)
 				return
 		elif args.has("join") and args.join:

@@ -161,7 +161,7 @@ func handle_result(accepted, resultstring: String) -> bool:
 
 func go_back(error: String, isok: bool) -> void:
 	Globals.reset_vars()
-	if has_node("/root/Game"):
+	if Globals.playing:
 		$"/root/Game".queue_free()
 		set_lobby_status(error, isok)
 		lobby.toggle(true)
@@ -170,7 +170,6 @@ func go_back(error: String, isok: bool) -> void:
 
 
 func _start_game() -> void:
-	Globals.playing = true
 	set_hosting(false)
 	var board: Control = load("res://ui/board/Game.tscn").instance()
 	get_tree().get_root().add_child(board)

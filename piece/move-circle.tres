@@ -1,8 +1,8 @@
 [gd_resource type="GradientTexture2D" load_steps=2 format=2]
 
 [sub_resource type="Gradient" id=1]
-offsets = PoolRealArray( 0.7, 0.716381 )
-colors = PoolColorArray( 0, 0, 0, 0, 0.0784314, 0.333333, 0.117647, 0.498039 )
+offsets = PoolRealArray( 0.163814, 0.210269 )
+colors = PoolColorArray( 0.0784314, 0.333333, 0.117647, 0.498039, 0.00425922, 0.0181017, 0.00638883, 0.0564515 )
 
 [resource]
 flags = 12

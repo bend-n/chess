@@ -13,8 +13,7 @@ onready var anim = $AnimationPlayer
 onready var rotate = $RotatePlayer
 
 # for pawn promotion
-signal promotion_decided
-var promote_to := ""
+signal promotion_decided(promote_to)
 
 
 func size() -> void:  # size the control
@@ -27,14 +26,20 @@ func size() -> void:  # size the control
 
 func _ready():
 	load_texture()
-
-	frame.modulate = Globals.grid.overlay_color
 	background.color = Globals.grid.overlay_color
 
 	if type == Chess.KING:
 		Events.connect("turn_over", self, "check_in_check")
 
 	size()
+	Events.connect("turn_over", self, "turn_over")
+
+
+func turn_over():
+	if Globals.grid.chess.turn == Globals.team:
+		background.color = Globals.grid.overlay_color
+	else:
+		background.color = Globals.grid.premove_color
 
 
 func check_in_check():
@@ -42,32 +47,36 @@ func check_in_check():
 
 
 func _pressed(p: String) -> void:
-	promote_to = p
-	emit_signal("promotion_decided")
-	queue_free()
+	emit_signal("promotion_decided", p.to_lower())
 
 
-func open_promotion_previews():
-	var popup := PopupPanel.new()
-	popup.name = "previews"
-	popup.popup_exclusive = true
-	popup.add_stylebox_override("panel", StyleBoxEmpty.new())
-	var previews := VBoxContainer.new()
-	previews.name = "previews"
-	previews.add_constant_override("separation", 0)
-	popup.add_child(previews)
-	add_child(popup)
-	for p in "QNRB":
-		var newsprite := PromotionPreview.new()
-		newsprite.hint_tooltip = p
-		var img_path = "res://assets/pieces/%s/%s%s.png" % [Globals.piece_set, color, p]
-		newsprite.texture_normal = load(img_path)
-		newsprite.name = p
-		newsprite.connect("pressed", self, "_pressed", [p])
-		previews.add_child(newsprite)
+func open_promotion_previews(darken: ColorRect):
+	darken.show()
+	var popup = get_node_or_null("previews")
+	if not popup:
+		popup = PopupPanel.new()
+		popup.name = "previews"
+		popup.popup_exclusive = true
+		popup.add_stylebox_override("panel", StyleBoxEmpty.new())
+		var previews := VBoxContainer.new()
+		previews.name = "previews"
+		previews.add_constant_override("separation", 0)
+		popup.add_child(previews)
+		add_child(popup)
+		for p in "QNRB":
+			var newsprite := PromotionPreview.new()
+			newsprite.hint_tooltip = p
+			var img_path = "res://assets/pieces/%s/%s%s.png" % [Globals.piece_set, color, p]
+			newsprite.texture_normal = load(img_path)
+			newsprite.name = p
+			newsprite.connect("pressed", self, "_pressed", [p])
+			previews.add_child(newsprite)
 
 	var rect = Rect2(rect_global_position, Vector2(Globals.grid.piece_size.x, Globals.grid.piece_size.y * 4))
 	popup.popup(rect)
+	yield(self, "promotion_decided")
+	darken.hide()
+	popup.hide()
 
 
 func load_texture(path := "res://assets/pieces/%s/%s%s.png" % [Globals.piece_set, color, type.to_upper()]) -> void:

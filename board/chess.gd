@@ -119,7 +119,7 @@ static func stripped_san(move: String) -> String:
 
 
 # this func is used to uniquely identify ambiguous moves
-func get_disambiguator(move: Dictionary, moves: Array) -> String:
+static func get_disambiguator(move: Dictionary, moves: Array) -> String:
 	var from: int = move.from
 	var to: int = move.to
 	var piece: String = move.piece
@@ -171,6 +171,67 @@ static func infer_piece_type(san: String) -> String:
 	return piece_type
 
 
+# WARNING: If `localized` is disabled, you must use localize_piece_move on the returned piece object.
+func piece_moves(_square_: String, piece: String, color := turn, localize := true) -> Array:
+	var moves := []
+	var second_rank := {b = RANK_7, w = RANK_2}
+	var sq: int = SQUARE_MAP[_square_]
+	if piece == PAWN:
+		# single square, non capturing
+		var square = sq + PAWN_OFFSETS[color][0]
+		if square <= SQUARE_MAP.h1:
+			__add_piece_move(moves, sq, square, piece)
+
+			# double square
+			var _square: int = sq + PAWN_OFFSETS[color][1]
+			if second_rank[color] == rank(sq):
+				__add_piece_move(moves, sq, _square, piece, BITS.BIG_PAWN)
+
+		# pawn captures
+		for j in range(2, 4):
+			var _square: int = sq + PAWN_OFFSETS[color][j]
+			if _square & 0x88:  # off the board
+				continue
+			__add_piece_move(moves, sq, _square, piece, BITS.CAPTURE)
+	else:
+		for offset in PIECE_OFFSETS[piece]:
+			var square := sq
+			while true:
+				square += offset
+				if square & 0x88:
+					break
+
+				__add_piece_move(moves, sq, square, piece)
+				if piece in KNIGHT + KING:
+					break
+
+	if piece == KING and _square_ in ["e1", "e8"]:
+		__add_piece_move(moves, sq, sq + 2, piece, BITS.KSIDE_CASTLE)
+		__add_piece_move(moves, sq, sq - 2, piece, BITS.QSIDE_CASTLE)
+
+	if localize:
+		for i in range(len(moves)):
+			moves[i] = localize_piece_move(moves[i])
+	return moves
+
+
+static func __add_piece_move(moves: Array, from: int, to: int, piece: String, flags := BITS.NORMAL) -> void:
+	var mov = {from = from, to = to, flags = flags}
+	if piece == PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1):
+		for p in [QUEEN, ROOK, BISHOP, KNIGHT]:
+			var m = mov.duplicate()
+			m["promotion"] = p
+			m.flags |= BITS.PROMOTION
+			moves.append(m)
+	else:
+		moves.append(mov)
+
+
+# Please only use the returned object if the team the move was created for is the current turn.
+func localize_piece_move(piece_move: Dictionary) -> Dictionary:
+	return __build_move(piece_move.from, piece_move.to, piece_move.flags, piece_move.get("promotion", ""))
+
+
 ###
 ### utility functions
 ###
@@ -180,6 +241,10 @@ static func rank(i: int) -> int:
 
 static func file(i: int) -> int:
 	return i & 15
+
+
+static func vecfrom0x88(i: int) -> Vector2:
+	return Vector2(file(i), rank(i))
 
 
 static func vec2algebraic(pos: Vector2) -> String:
@@ -206,7 +271,7 @@ static func offset(pos, offset: Vector2) -> String:
 	if typeof(pos) == TYPE_STRING:  # algbraic
 		return vec2algebraic(algebraic2vec(pos) + offset)
 	elif typeof(pos) == TYPE_INT:  # board pos
-		return offset(algebraic(pos), offset)  # supreme lazy
+		return vec2algebraic(vecfrom0x88(pos) + offset)
 	return ""
 
 
@@ -357,36 +422,33 @@ func remove(square) -> Dictionary:
 	return piece
 
 
-# warning-ignore:shadowed_variable
-func __build_move(board: Array, from: int, to: int, flags: int, promotion := ""):
+func __add_move(moves: Array, from: int, to: int, flags := BITS.NORMAL, b := board) -> void:
+	# if pawn promotion
+	if b[from].type == PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1):
+		for p in [QUEEN, ROOK, BISHOP, KNIGHT]:
+			moves.append(__build_move(from, to, flags, p))
+	else:
+		moves.append(__build_move(from, to, flags))
+
+
+func __build_move(from: int, to: int, flags: int = BITS.NORMAL, promotion := "", _board: Array = board):
 	var move := {
 		color = turn,
 		from = from,
 		to = to,
 		flags = flags,
-		piece = board[from].type,
+		piece = _board[from].type,
 	}
 
 	if promotion:
 		move.flags |= BITS.PROMOTION
 		move.promotion = promotion
 
-	if board[to]:
-		move.captured = board[to].type
+	if _board[to]:
+		move.captured = _board[to].type
 	elif flags & BITS.EP_CAPTURE:
 		move.captured = PAWN
 	return move
-
-
-# warning-ignore:shadowed_variable
-func __add_move(board: Array, moves: Array, from: int, to: int, flags: int) -> void:
-	# if pawn promotion
-	if board[from].type == PAWN && (rank(to) == RANK_8 || rank(to) == RANK_1):
-		var pieces := [QUEEN, ROOK, BISHOP, KNIGHT]
-		for p in pieces:
-			moves.append(__build_move(board, from, to, flags, p))
-	else:
-		moves.append(__build_move(board, from, to, flags))
 
 
 func __generate_moves(options := {}) -> Array:
@@ -430,12 +492,12 @@ func __generate_moves(options := {}) -> Array:
 			# single square, non capturing
 			var square = i + PAWN_OFFSETS[us][0]
 			if square <= SQUARE_MAP.h1 and board[square] == null:
-				__add_move(board, moves, i, square, BITS.NORMAL)
+				__add_move(moves, i, square, BITS.NORMAL)
 
 				# double square
 				var _square: int = i + PAWN_OFFSETS[us][1]
 				if second_rank[us] == rank(i) && board[_square] == null:
-					__add_move(board, moves, i, _square, BITS.BIG_PAWN)
+					__add_move(moves, i, _square, BITS.BIG_PAWN)
 
 			# pawn captures
 			for j in range(2, 4):
@@ -444,9 +506,9 @@ func __generate_moves(options := {}) -> Array:
 					continue
 
 				if board[_square] != null && board[_square].color == them:
-					__add_move(board, moves, i, _square, BITS.CAPTURE)
+					__add_move(moves, i, _square, BITS.CAPTURE)
 				elif _square == ep_square:
-					__add_move(board, moves, i, ep_square, BITS.EP_CAPTURE)
+					__add_move(moves, i, ep_square, BITS.EP_CAPTURE)
 		elif piece_type == "-1" || piece_type == piece.type:
 			for offset in PIECE_OFFSETS[piece.type]:
 				var square := i
@@ -457,11 +519,11 @@ func __generate_moves(options := {}) -> Array:
 						break
 
 					if board[square] == null:
-						__add_move(board, moves, i, square, BITS.NORMAL)
+						__add_move(moves, i, square, BITS.NORMAL)
 					else:
 						if board[square].color == us:
 							break
-						__add_move(board, moves, i, square, BITS.CAPTURE)
+						__add_move(moves, i, square, BITS.CAPTURE)
 						break
 
 					# break, if knight or king
@@ -484,7 +546,7 @@ func __generate_moves(options := {}) -> Array:
 					&& !__attacked(them, castling_from + 1)
 					&& !__attacked(them, castling_to)
 				):
-					__add_move(board, moves, kings[us], castling_to, BITS.KSIDE_CASTLE)
+					__add_move(moves, kings[us], castling_to, BITS.KSIDE_CASTLE)
 
 			# queen-side castling
 			if castling[us] & BITS.QSIDE_CASTLE:
@@ -499,7 +561,7 @@ func __generate_moves(options := {}) -> Array:
 					&& !__attacked(them, castling_from - 1)
 					&& !__attacked(them, castling_to)
 				):
-					__add_move(board, moves, kings[us], castling_to, BITS.QSIDE_CASTLE)
+					__add_move(moves, kings[us], castling_to, BITS.QSIDE_CASTLE)
 
 	# return all pseudo-legal moves (this includes moves that allow the king
 	# to be captured)
@@ -714,10 +776,7 @@ func __make_move(move: Dictionary):
 
 	# if ep capture, remove the captured pawn
 	if move.flags & BITS.EP_CAPTURE:
-		if turn == BLACK:
-			board[move.to - 16] = null
-		else:
-			board[move.to + 16] = null
+		board[move.to + (-16 if us == BLACK else 16)] = null
 
 	# if pawn promotion, replace with new piece
 	if move.flags & BITS.PROMOTION:
@@ -756,24 +815,12 @@ func __make_move(move: Dictionary):
 				break
 
 	# if big pawn move, update the en passant square
-	if move.flags & BITS.BIG_PAWN:
-		if turn == "b":
-			ep_square = move.to - 16
-		else:
-			ep_square = move.to + 16
-	else:
-		ep_square = EMPTY
+	ep_square = (move.to + (-16 if turn == BLACK else 16)) if move.flags & BITS.BIG_PAWN else EMPTY
 
 	# reset the 50 move counter if a pawn is moved or a piece is captured
-	if move.piece == PAWN:
-		half_moves = 0
-	elif move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE):
-		half_moves = 0
-	else:
-		half_moves += 1
+	half_moves = 0 if move.piece == PAWN or move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE) else (half_moves + 1)
 
-	if turn == BLACK:
-		fullmoves += 1
+	fullmoves += 1 if turn == BLACK else 0
 	turn = __swap_color(turn)
 
 
@@ -785,8 +832,6 @@ func __undo_move() -> Dictionary:
 	var move: Dictionary = old.move
 	kings = old.kings
 	turn = old.turn
-	if typeof(old.castling.w) != TYPE_INT || typeof(old.castling.b) != TYPE_INT:
-		breakpoint
 	castling = old.castling
 	ep_square = old.ep_square
 	half_moves = old.half_moves
@@ -798,16 +843,10 @@ func __undo_move() -> Dictionary:
 	board[move.from] = board[move.to]
 	board[move.from].type = move.piece  # to undo any promotions
 	board[move.to] = null
-
 	if move.flags & BITS.CAPTURE:
 		board[move.to] = {type = move.captured, color = them}
 	elif move.flags & BITS.EP_CAPTURE:
-		var index
-		if us == BLACK:
-			index = move.to - 16
-		else:
-			index = move.to + 16
-		board[index] = {type = PAWN, color = them}
+		board[move.to + (-16 if us == BLACK else 16)] = {type = PAWN, color = them}
 
 	if move.flags & (BITS.KSIDE_CASTLE | BITS.QSIDE_CASTLE):
 		var castling_to
@@ -888,7 +927,7 @@ func __move_from_san(move, sloppy := false) -> Dictionary:
 					to = matches[3]
 					promotion = matches[4]
 
-			if from.length() == 1:
+			if from and from.length() == 1:
 				overly_disambiguated = true
 
 		var piece_type := infer_piece_type(clean_move)
@@ -1056,7 +1095,7 @@ func pgn() -> String:
 
 		move_string += " %s" % __move_to_san(move, __generate_moves({legal = true}))
 		__make_move(move)
-	
+
 	if move_string.length():
 		moves.append(move_string)
 

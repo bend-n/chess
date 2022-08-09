@@ -1,30 +1,7 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Square.gd" type="Script" id=1]
-[ext_resource path="res://assets/blank.png" type="Texture" id=2]
-
-[sub_resource type="Shader" id=2]
-code = "shader_type canvas_item;
-
-uniform float amt : hint_range(0.0, 1.0);
-uniform vec4 color : hint_color;
-
-void fragment() 
-{
-	if (distance(UV, vec2(0.5,0.5)) > amt/2.0) 
-	{
-		COLOR = vec4(0.0);
-	}
-	else 
-	{
-		COLOR = vec4(color);
-	}
-}"
-
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
-shader_param/amt = 1.0
-shader_param/color = Color( 0.431373, 0.584314, 0.388235, 0.639216 )
+[ext_resource path="res://piece/move-circle.tres" type="Texture" id=2]
 
 [node name="Square" type="ColorRect"]
 anchor_right = 1.0
@@ -42,20 +19,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="CircleHolder" type="CenterContainer" parent="."]
+[node name="PremoveIndicator" type="ColorRect" parent="."]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Circle" type="TextureRect" parent="CircleHolder"]
+[node name="Circle" type="TextureRect" parent="."]
 visible = false
-material = SubResource( 3 )
-margin_left = 25.0
-margin_top = 25.0
-margin_right = 25.0
-margin_bottom = 25.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 mouse_filter = 2
 texture = ExtResource( 2 )
 expand = true
+stretch_mode = 6
 
 [connection signal="focus_exited" from="." to="." method="_focus_exited"]

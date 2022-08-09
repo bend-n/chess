@@ -8,27 +8,20 @@ signal right_clicked
 var move_indicators := []
 var square: String
 
-onready var circle: TextureRect = $CircleHolder/Circle
+onready var circle: TextureRect = $Circle
 onready var move_indicator: ColorRect = $MoveIndicator
+onready var premove_indicator: ColorRect = $PremoveIndicator
 
 
 func _ready() -> void:
-	connect("clicked", self, "clicked")
 	move_indicator.color = Globals.grid.last_move_indicator_color
-	circle.material.set_shader_param("color", Globals.grid.overlay_color)
-	if Globals.spectating:
-		mouse_default_cursor_shape = CURSOR_FORBIDDEN
-	else:
-		mouse_default_cursor_shape = CURSOR_POINTING_HAND
-	size()
-
-
-func size():
-	circle.rect_min_size = Globals.grid.piece_size / 4
+	premove_indicator.color = Globals.grid.premove_color
+	mouse_default_cursor_shape = CURSOR_FORBIDDEN if Globals.spectating else CURSOR_POINTING_HAND
+	Events.connect("turn_over", self, "clear_move_indicators")
 
 
 func check_piece_above() -> bool:
-	return is_instance_valid(Globals.grid.get_piece(square)) if Globals.playing else false
+	return is_instance_valid(Globals.grid.get_piece(square))
 
 
 func _gui_input(event: InputEvent):
@@ -38,6 +31,10 @@ func _gui_input(event: InputEvent):
 
 
 func _focus_exited():
+	clear_move_indicators()
+
+
+func clear_move_indicators():
 	if check_piece_above():
 		Globals.grid.get_piece(square).background.hide()
 	for m in move_indicators:
@@ -46,14 +43,28 @@ func _focus_exited():
 	move_indicators.clear()
 
 
-func clicked():
+func show_move_indicators():
+	clear_move_indicators()
 	var b = Globals.grid
-	if check_piece_above() and b.chess.turn == Globals.team and not Globals.spectating:
-		var p = b.get_piece(square)
-		if p.color == Globals.team:
-			p.background.show()
-			var movs = b.chess.__generate_moves({"square": square, "verbose": true})
-			for m in movs:
-				var i = b.board[m.to].frame if m.flags & Chess.BITS.CAPTURE else b.background_array[m.to].circle
-				move_indicators.append(i)
-				i.show()
+	var p = b.get_piece(square)
+	p.background.show()
+	var movs = b.chess.__generate_moves({"square": square})
+	for m in movs:
+		var i = b.board[m.to].frame if m.flags & Chess.BITS.CAPTURE else b.background_array[m.to].circle
+		move_indicators.append(i)
+		i.show()
+
+
+func show_premove_indicators():
+	clear_move_indicators()
+	var b = Globals.grid
+	var p = b.get_piece(square)
+	p.background.show()
+	var movs = b.chess.piece_moves(square, p.type, Globals.team, false)
+	for m in movs:
+		var _p = b.board[m.to]
+		var i = b.background_array[m.to].circle
+		if is_instance_valid(_p):
+			i = _p.frame
+		move_indicators.append(i)
+		i.show()

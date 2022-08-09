@@ -1,8 +1,9 @@
 extends Button
+class_name TestButton
 
 
 class TestChess:
-	extends Resource
+	extends Reference
 
 	const LOG_FILE = "user://tests.log"
 
@@ -10,7 +11,7 @@ class TestChess:
 		for k in Chess.SQUARE_MAP:
 			assert(Chess.algebraic(Chess.SQUARE_MAP[k]) == k)
 
-	func test_perft():
+	func test_perf():
 		var perfts = [
 			{fen = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1", depth = 3},
 			{fen = "8/PPP4k/8/8/8/8/4Kppp/8 w - - 0 1", depth = 4, nodes = 84923},
@@ -20,6 +21,16 @@ class TestChess:
 		for perft in perfts:
 			var c = Chess.new(perft.fen)
 			var _nodes = c.perft(perft.depth)
+
+	func test_piece_move_generation():
+		var c = Chess.new()
+		c.load_pgn("1. e4 d5 2. f3 dxe4")
+		c.move("h4")
+		var m = c.localize_piece_move(c.piece_moves("e4", "p", c.turn, false)[1])
+		var san = c.__move_to_san(m)
+		var m2 = c.__move_from_san(san)
+		assert(m2.hash() == m.hash())
+		c.__make_move(m2)
 
 	func test_single_square_move_generation():
 		var positions = [
@@ -255,8 +266,10 @@ class TestChess:
 		SaveLoad.save_string("user://tests.log", "")  #overwrite last logs
 		Log.file(LOG_FILE, "starting algebraic conversion tests")
 		test_algebraic_conversion()
-		Log.file(LOG_FILE, "starting perft tests")
-		test_perft()
+		Log.file(LOG_FILE, "starting performance tests")
+		test_perf()
+		Log.file(LOG_FILE, "starting piece move generation tests")
+		test_piece_move_generation()
 		Log.file(LOG_FILE, "starting move generation tests")
 		test_single_square_move_generation()
 		Log.file(LOG_FILE, "starting checkmate tests")

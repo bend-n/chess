@@ -18,6 +18,13 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
+overlay_color = Color( 0.0784314, 0.333333, 0.117647, 0.498039 )
+premove_color = Color( 0.55575, 0.455, 0.65, 0.784314 )
+last_move_indicator_color = Color( 0.74902, 0.662745, 0.223529, 0.498039 )
+last_move_take_indicator = Color( 0.74902, 0.407843, 0.223529, 0.498039 )
+clockrunning_color = Color( 0.219608, 0.278431, 0.133333, 1 )
+clockrunninglow = Color( 0.47451, 0.172549, 0.164706, 1 )
+clocklow = Color( 0.313726, 0.156863, 0.14902, 1 )
 
 [node name="Background" type="GridContainer" parent="."]
 margin_right = 600.0
@@ -48,6 +55,7 @@ usage = 0
 render_target_update_mode = 3
 
 [node name="Arrows" type="Control" parent="Canvas/Viewport"]
+unique_name_in_owner = true
 script = ExtResource( 2 )
 red_overlay = Color( 0.729412, 0.254902, 0.254902, 1 )
 green_overlay = Color( 0.1272, 0.53, 0.18762, 1 )
