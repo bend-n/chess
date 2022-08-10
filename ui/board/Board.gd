@@ -249,7 +249,7 @@ func square_clicked(clicked_square: BackgroundSquare) -> void:
 		return
 
 	var p := get_piece(clicked_square.square)
-	
+
 	if chess.turn != Globals.team and is_instance_valid(last_clicked):
 		# PREMOVE AREA
 		var p_sq: int = Chess.SQUARE_MAP[clicked_square.square]
@@ -383,14 +383,14 @@ func _on_turn_over():
 		if premove:
 			background_array[premove.from].premove_indicator.hide()
 			background_array[premove.to].premove_indicator.hide()
-			if board[premove.from]: # see if its valid
+			if board[premove.from]:  # see if its valid
 				if premove.flags & (Chess.BITS.CAPTURE | Chess.BITS.EP_CAPTURE) && not board[premove.to]:
 					return
-				var san = chess.__move_to_san(premove,chess.__generate_moves({legal = true}),false)
+				var san = chess.__move_to_san(premove, chess.__generate_moves({legal = true}), false)
 				if san:
 					var legal_moves = chess.moves({square = chess.algebraic(premove.from), stripped = true})
 					var is_possible_move = legal_moves.find(chess.stripped_san(san)) != -1
-					if chess.__move_from_san(san, true) and (is_possible_move): # it is valid
+					if chess.__move_from_san(san, true) and (is_possible_move):  # it is valid
 						Log.debug(["Executing premove:", san])
 						move(san, true, false)  # make the move, send it to the opponent, dont prompt for premoves
 					premove = {}

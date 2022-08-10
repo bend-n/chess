@@ -20,6 +20,7 @@ func open(newcolor: Color) -> void:
 
 func update_color() -> void:
 	newcolorpreview.color = color
+	hueslider.hue = color.h
 	colorselect.color = color
 
 

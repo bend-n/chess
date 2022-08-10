@@ -15,7 +15,7 @@ theme = ExtResource( 1 )
 script = ExtResource( 5 )
 button_group = ExtResource( 2 )
 
-[node name="General" type="VBoxContainer" parent="."]
+[node name="" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 25.0
@@ -23,13 +23,13 @@ margin_top = 79.0
 margin_right = -25.0
 margin_bottom = -25.0
 
-[node name="H" type="HBoxContainer" parent="General"]
+[node name="H" type="HBoxContainer" parent=""]
 margin_right = 1372.0
 margin_bottom = 100.0
 custom_constants/separation = 0
 alignment = 1
 
-[node name="Black" parent="General/H" instance=ExtResource( 7 )]
+[node name="Black" parent="/H" instance=ExtResource( 7 )]
 margin_left = 586.0
 margin_right = 686.0
 margin_bottom = 100.0
@@ -39,7 +39,7 @@ group = ExtResource( 2 )
 texture_normal = ExtResource( 4 )
 pressed_color = Color( 0.576471, 0.631373, 0.631373, 1 )
 
-[node name="White" parent="General/H" instance=ExtResource( 7 )]
+[node name="White" parent="/H" instance=ExtResource( 7 )]
 margin_left = 686.0
 margin_right = 786.0
 margin_bottom = 100.0
@@ -50,27 +50,27 @@ group = ExtResource( 2 )
 texture_normal = ExtResource( 3 )
 pressed_color = Color( 0.576471, 0.631373, 0.631373, 1 )
 
-[node name="H2" type="HBoxContainer" parent="General"]
+[node name="H2" type="HBoxContainer" parent=""]
 margin_top = 110.0
 margin_right = 1372.0
 margin_bottom = 164.0
 alignment = 1
 
-[node name="Stop" type="Button" parent="General/H2"]
+[node name="Stop" type="Button" parent="/H2"]
 margin_left = 535.0
 margin_right = 642.0
 margin_bottom = 54.0
 size_flags_horizontal = 4
 text = "exit"
 
-[node name="Continue" type="Button" parent="General/H2"]
+[node name="Continue" type="Button" parent="/H2"]
 margin_left = 652.0
 margin_right = 836.0
 margin_bottom = 54.0
 size_flags_horizontal = 4
 text = "continue "
 
-[node name="Advanced" type="VBoxContainer" parent="."]
+[node name="" type="VBoxContainer" parent="."]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -79,16 +79,16 @@ margin_top = 56.0
 margin_right = -30.0
 margin_bottom = -30.0
 
-[node name="Pgn" type="HBoxContainer" parent="Advanced"]
+[node name="Pgn" type="HBoxContainer" parent=""]
 margin_right = 1362.0
 margin_bottom = 54.0
 
-[node name="Label" type="Label" parent="Advanced/Pgn"]
+[node name="Label" type="Label" parent="/Pgn"]
 margin_right = 40.0
 margin_bottom = 34.0
 text = "pgn: "
 
-[node name="PgnInput" type="LineEdit" parent="Advanced/Pgn"]
+[node name="PgnInput" type="LineEdit" parent="/Pgn"]
 unique_name_in_owner = true
 margin_right = 1352.0
 margin_bottom = 54.0
@@ -96,13 +96,13 @@ size_flags_horizontal = 3
 placeholder_text = "1. e4"
 script = ExtResource( 6 )
 
-[node name="Checkmark" type="Label" parent="Advanced/Pgn"]
+[node name="Checkmark" type="Label" parent="/Pgn"]
 margin_left = 1362.0
 margin_top = 10.0
 margin_right = 1362.0
 margin_bottom = 44.0
 
-[connection signal="pressed" from="General/H2/Stop" to="." method="_on_Stop_pressed"]
-[connection signal="pressed" from="General/H2/Continue" to="." method="_on_Continue_pressed"]
-[connection signal="pgn_selected" from="Advanced/Pgn/PgnInput" to="." method="_on_pgn_selected"]
-[connection signal="text_changed" from="Advanced/Pgn/PgnInput" to="Advanced/Pgn/PgnInput" method="text_changed"]
+[connection signal="pressed" from="/H2/Stop" to="." method="_on_Stop_pressed"]
+[connection signal="pressed" from="/H2/Continue" to="." method="_on_Continue_pressed"]
+[connection signal="pgn_selected" from="/Pgn/PgnInput" to="." method="_on_pgn_selected"]
+[connection signal="text_changed" from="/Pgn/PgnInput" to="/Pgn/PgnInput" method="text_changed"]

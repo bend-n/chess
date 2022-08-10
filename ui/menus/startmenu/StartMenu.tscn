@@ -88,6 +88,7 @@ anchor_bottom = 1.0
 margin_top = -34.0
 margin_right = -11.0
 margin_bottom = -11.0
+custom_colors/font_color = Color( 0.345098, 0.431373, 0.458824, 1 )
 custom_fonts/font = ExtResource( 4 )
 text = "ver   "
 align = 2

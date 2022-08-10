@@ -65,7 +65,7 @@ rect_min_size = Vector2( 200, 60 )
 size_flags_horizontal = 4
 text = "piece set"
 icon = ExtResource( 7 )
-offset = null
+offset = Vector2( 50, -50 )
 
 [node name="" type="VBoxContainer" parent="H/TabContainer"]
 visible = false
@@ -110,12 +110,12 @@ toggle_mode = true
 text = "borders"
 script = ExtResource( 3 )
 
-[node name="" type="VBoxContainer" parent="H/TabContainer"]
+[node name="" type="VBoxContainer" parent="H/TabContainer"]
 visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="rainbow" type="Button" parent="H/TabContainer/"]
+[node name="rainbow" type="Button" parent="H/TabContainer/"]
 margin_right = 609.0
 margin_bottom = 140.0
 focus_mode = 0
@@ -168,5 +168,5 @@ __meta__ = {
 [connection signal="toggled" from="H/TabContainer//FullscreenButton" to="." method="_on_FullscreenButton_toggled"]
 [connection signal="toggled" from="H/TabContainer//VsyncButton" to="." method="_on_VsyncButton_toggled"]
 [connection signal="toggled" from="H/TabContainer//Borderless" to="." method="_on_Borderless_toggled"]
-[connection signal="toggled" from="H/TabContainer//rainbow" to="." method="_on_rainbow_toggled"]
+[connection signal="toggled" from="H/TabContainer//rainbow" to="." method="_on_rainbow_toggled"]
 [connection signal="pressed" from="H/Container/resetbutton" to="." method="_on_resetbutton_pressed"]

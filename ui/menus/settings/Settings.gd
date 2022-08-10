@@ -53,7 +53,7 @@ func _ready() -> void:
 	if OS.has_feature("HTML5"):
 		borderlessbutton.queue_free()
 	for i in piece_sets:  # add the items
-		piece_set_button.add_icon_item(load("res://assets/pieces/" + i + "/wP.png"), i, Vector2(50, 50))
+		piece_set_button.add_icon_item(load("res://assets/pieces/" + i + "/wP.png"), i, Vector2(75, 75))
 	piece_set_button.selected = Array(piece_sets).find(settings.piece_set)
 	update_vars()
 	update_button_visuals()
