@@ -60,9 +60,9 @@ jobs:
       - name: Build (Android)
         if: matrix.platform == 'android'
         uses: bend-n/godot-actions/.github/actions/export-android@main
-        # with:
-        #   android-keystore-base64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
-        #   android-password: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+        with:
+          android-keystore-base64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          android-password: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
 
   push-itch:
     needs: [export]
