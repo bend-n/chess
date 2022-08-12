@@ -37,9 +37,6 @@ jobs:
           - name: Web export
             platform: web
 
-          - name: Android export
-            platform: android
-
     steps:
       - name: Build (Windows)
         if: matrix.platform == 'windows'
@@ -57,15 +54,20 @@ jobs:
         if: matrix.platform == 'web'
         uses: bend-n/godot-actions/.github/actions/export-web@main
 
+  build-android:
+    name: Android export
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/bend-n/godot:3.5 # use normal builds, as android builds are broken for adnroid
+    steps:
       - name: Build (Android)
-        if: matrix.platform == 'android'
         uses: bend-n/godot-actions/.github/actions/export-android@main
         with:
           android-keystore-base64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
           android-password: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
 
   push-itch:
-    needs: [export]
+    needs: [export, build-android]
     name: Push to itch.io
     runs-on: ubuntu-20.04
     steps:
