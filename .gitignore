@@ -7,3 +7,4 @@ logs/
 exports/
 *.x86_64
 version
+addons/gdcli

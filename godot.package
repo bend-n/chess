@@ -1,0 +1,6 @@
+{
+    "name": "chess",
+    "packages": {
+        "@bendn/gdcli": "1.2.5"
+    }
+}
