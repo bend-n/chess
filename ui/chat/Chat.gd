@@ -19,7 +19,7 @@ var regexes := [
 
 # create smokey centered text
 func server(txt: String) -> void:
-	list.add_label("[center][i][b][color=#a9a9a9]%s[/color][/b][/i][/center]" % md2bb(txt))
+	list.add_label("[center][i][b][color=#93a1a1]%s[/color][/b][/i][/center]" % md2bb(txt))
 
 
 func _init():
@@ -38,7 +38,8 @@ func _ready():
 
 
 func add_label_with(data: Dictionary) -> void:
-	var string := "[b]{who}[color=#f0e67e]:[/color][/b] {text}".format(data)
+	# b c /c c /c /b c
+	var string := "[b][color=#eee8d5]{who}[/color][color=#b58900]:[/color][/b][color=#eee8d5] {text}".format(data)
 	list.add_label(string)
 
 

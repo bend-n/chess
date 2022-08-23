@@ -98,7 +98,6 @@ visible = false
 margin_top = 242.0
 margin_right = 350.0
 margin_bottom = 292.0
-custom_colors/font_color = Color( 1, 1, 1, 1 )
 autowrap = true
 
 [node name="StatusFail" type="Label" parent="Center/VBox"]
@@ -107,7 +106,7 @@ visible = false
 margin_top = 242.0
 margin_right = 350.0
 margin_bottom = 292.0
-custom_colors/font_color = Color( 0.698039, 0.415686, 0.415686, 1 )
+custom_colors/font_color = Color( 0.862745, 0.196078, 0.184314, 1 )
 autowrap = true
 
 [connection signal="pressed" from="Center/VBox/stophost" to="." method="_on_stophost_pressed"]
