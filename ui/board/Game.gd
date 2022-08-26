@@ -18,8 +18,8 @@ func set_status(text: String, length := 5) -> void:
 	status.set_text(text, length)
 
 
-func get_board() -> Node:
-	return $Holder/middle/Board
+func get_board() -> AspectRatioContainer:
+	return $Holder/middle/Board as AspectRatioContainer
 
 
 func _spectate_info(info: Dictionary) -> void:
@@ -28,7 +28,7 @@ func _spectate_info(info: Dictionary) -> void:
 
 
 func _on_info(info: Dictionary) -> void:
-	var enemy_int := int(Globals.team == "w")
+	var enemy_int := int(Globals.grid.team == "w")
 	set_panel(panels[enemy_int], info.name, info.country)  # enemy panel
 	set_panel(panels[abs(enemy_int - 1)], Creds.get("name"), Creds.get("country"))  # own panel
 

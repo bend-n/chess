@@ -2,12 +2,18 @@ extends TabContainer
 
 var moves := PoolStringArray()
 var color := true
-var lobby: Lobby
+
+export(bool) var color_config := true
+
+signal back
+signal done(color, moves)
 
 export(ButtonGroup) var button_group: ButtonGroup
 
 
 func _ready():
+	if not color_config:
+		$"".queue_free()
 	button_group.connect("pressed", self, "_button_pressed")
 
 
@@ -16,17 +22,15 @@ func _button_pressed(button: BarTextureButton) -> void:
 
 
 func _on_Continue_pressed():
-	PacketHandler.host_game(PacketHandler.game_code, color, moves)
+	if color_config:
+		emit_signal("done", color, moves)
+	else:
+		emit_signal("done", moves)
 	reset()
 
 
-func open(_lobby: Lobby):
-	show()
-	lobby = _lobby
-
-
 func _on_Stop_pressed():
-	lobby.set_buttons(true)
+	emit_signal("back")
 	reset()
 
 

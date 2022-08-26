@@ -171,16 +171,21 @@ func go_back(error: String, isok: bool) -> void:
 
 func _start_game() -> void:
 	set_hosting(false)
-	var board: Control = load("res://ui/board/Game.tscn").instance()
-	get_tree().get_root().add_child(board)
+	Log.debug("Created board")
+	var ui: Control = load("res://ui/board/Game.tscn").instance()
+	var b: Grid = ui.get_board()
+	b.team = Globals.team
+	Log.debug("Set board team to %s" % Utils.expand_color(b.team))
+	get_tree().get_root().add_child(ui)
+	b.spectating = Globals.spectating
 	lobby.toggle(false)
 	emit_signal("start_game")
 	lobby.set_buttons(false)
 	SoundFx.play("Victory")
-	yield(get_tree(), "idle_frame")
-	Log.debug("Flipping board" if Globals.team == Chess.BLACK else "Not flipping board")
+
 	if Globals.team == Chess.BLACK:
-		board.get_board().flip_board()
+		yield(get_tree(), "idle_frame")
+		b.flip_board()
 
 
 func rejoin(tries := 5, interval := 2) -> int:  # on disconnect, try to rejoin

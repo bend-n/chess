@@ -52,6 +52,9 @@ onready var pieces := $Pieces
 onready var arrows := $"%Arrows"
 
 var chess := Chess.new()
+var local := false
+var spectating := false
+var team: String
 
 
 func _init():
@@ -65,7 +68,7 @@ func _exit_tree():
 func _process(_delta):
 	rect_rotation = rot
 	foreground.rect_rotation = rot
-	if Input.is_action_just_pressed("debug"):
+	if Input.is_action_just_pressed("debug") and Debug.debug:
 		print(chess.ascii())
 
 
@@ -96,6 +99,9 @@ func set_take_move_circle_color(
 
 
 func _ready():
+	if !team:
+		team = "w"
+		local = true
 	set_take_move_circle_color()
 	_resized()
 	Events.connect("turn_over", self, "_on_turn_over")
@@ -103,6 +109,7 @@ func _ready():
 	create_pieces()
 	create_squares()
 	create_labels()
+	Log.debug("board: ready")
 
 
 func resize_board():
@@ -115,6 +122,7 @@ func create_squares() -> void:  # create the board
 		var alg := Chess.algebraic(i)
 		var square := Square.instance()  # create a square
 		square.name = alg
+		square.b = self
 		square.square = alg
 		square.hint_tooltip = alg
 		square.color = (Globals.board_color1 if Chess.square_color(alg) == "light" else Globals.board_color2)  # set the color
@@ -211,6 +219,7 @@ func create_pieces():
 func make_piece(algebraic: String, piece_type: String, color := "w") -> void:  # make peace
 	var piece := PieceScene.instance()  # create a piece
 	piece.name = "%s-%s" % [piece_type, algebraic]
+	piece.b = self
 	piece.position = algebraic
 	piece.type = piece_type
 	piece.color = color
@@ -239,9 +248,14 @@ func flip_board() -> void:
 	rot = 0 if rot == 180 else 180
 	flipped = rot == 180
 	Log.debug(["Flipped the board, now", "flipped" if flipped else "not flipped"])
-	sidebar.flip_panels()
+	if sidebar:
+		sidebar.flip_panels()
 	flip_pieces()
 	flip_labels()
+
+
+func is_my_turn() -> bool:
+	return team == chess.turn
 
 
 func square_clicked(clicked_square: BackgroundSquare) -> void:
@@ -250,10 +264,10 @@ func square_clicked(clicked_square: BackgroundSquare) -> void:
 
 	var p := get_piece(clicked_square.square)
 
-	if chess.turn != Globals.team and is_instance_valid(last_clicked):
+	if not is_my_turn() and is_instance_valid(last_clicked):
 		# PREMOVE AREA
 		var p_sq: int = Chess.SQUARE_MAP[clicked_square.square]
-		for m in chess.piece_moves(last_clicked.position, last_clicked.type, Globals.team):
+		for m in chess.piece_moves(last_clicked.position, last_clicked.type, team):
 			if m.to == p_sq && m.from == Chess.SQUARE_MAP[last_clicked.position]:
 				if "from" in premove and "to" in premove:
 					background_array[premove.from].premove_indicator.hide()  # hide premove indicators
@@ -271,7 +285,7 @@ func square_clicked(clicked_square: BackgroundSquare) -> void:
 					Log.debug("Selected premove: %s" % premove)
 					clear_last_clicked()
 					return
-	elif (!p or p.color != Globals.team) and is_instance_valid(last_clicked):
+	elif (!p or p.color != team) and is_instance_valid(last_clicked):
 		# Attempt to make the move (NORMAL MOVE AREA)
 		for m in chess.moves({square = last_clicked.position, verbose = true}):
 			if m.to == clicked_square.square && m.from == last_clicked.position:
@@ -279,8 +293,8 @@ func square_clicked(clicked_square: BackgroundSquare) -> void:
 				clear_last_clicked()
 				return
 
-	if p and p.color == Globals.team:
-		if chess.turn != Globals.team:
+	if p and p.color == team:
+		if chess.turn != team:
 			clicked_square.show_premove_indicators()
 		else:
 			clicked_square.show_move_indicators()
@@ -324,7 +338,7 @@ func move(san: String, send := true, create_promotion_input := true) -> void:
 		sound_handled = true
 	else:  # not promotion: from **always** moves to `to`
 		var _p = board[move_0x88.from].move(Chess.algebraic(move_0x88.to))
-	if send:
+	if send && !local:
 		PacketHandler.send_mov(san)
 	if !sound_handled:
 		SoundFx.play("Move")
@@ -374,10 +388,11 @@ func undo(two: bool = false) -> void:
 
 
 func _on_turn_over():
-	if get_parent() == get_viewport():  # for testing
-		Globals.team = chess.turn
+	if local:  # for testing
+		team = chess.turn
+		flip_board()
 
-	if Globals.grid.chess.turn == Globals.team:
+	if is_my_turn():
 		set_take_move_circle_color()
 		# use the premove if possible
 		if premove:
@@ -405,7 +420,7 @@ func _on_turn_over():
 func check_game_over():
 	if chess.in_checkmate():
 		# they won if its my turn, i won if its their turn.
-		win(Globals.team if Globals.team != chess.turn else Chess.__swap_color(Globals.team), "checkmate")
+		win(team if is_my_turn() else Chess.__swap_color(team), "checkmate")
 	elif chess.half_moves >= 50:
 		draw("fifty move rule")
 	elif chess.in_stalemate():

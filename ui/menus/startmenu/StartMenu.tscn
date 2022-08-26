@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://assets/fonts/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://ui/menus/settings/Settings.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/menus/account/Account.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/menus/startmenu/VersionLabel.gd" type="Script" id=9]
+[ext_resource path="res://ui/menus/LocalMultiplayer.tscn" type="PackedScene" id=10]
 
 [sub_resource type="DynamicFont" id=1]
 size = 400
@@ -39,7 +40,22 @@ size_flags_vertical = 0
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 
-[node name="" parent="CenterContainer/tabs" instance=ExtResource( 5 )]
+[node name="" type="TabContainer" parent="CenterContainer/tabs"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 25.0
+margin_top = 79.0
+margin_right = -25.0
+margin_bottom = -25.0
+
+[node name="local" parent="CenterContainer/tabs/" instance=ExtResource( 10 )]
+margin_left = 25.0
+margin_top = 79.0
+margin_right = -25.0
+margin_bottom = -25.0
+
+[node name="multiplayer" parent="CenterContainer/tabs/" instance=ExtResource( 5 )]
+visible = false
 margin_left = 25.0
 margin_top = 79.0
 margin_right = -25.0

@@ -16,3 +16,8 @@ func set_flag(newflag: String):
 func set_name(newname: String):
 	_name = newname
 	name_display.text = _name
+
+
+func hide_children():
+	flag_display.hide()
+	name_display.hide()

@@ -1,8 +1,9 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://ui/menus/sidebarright/drawbutton.gd" type="Script" id=1]
 [ext_resource path="res://ui/menus/sidebarright/resignbutton.gd" type="Script" id=2]
 [ext_resource path="res://ui/Status.gd" type="Script" id=3]
+[ext_resource path="res://ui/menus/sidebarright/buttonbar.gd" type="Script" id=4]
 [ext_resource path="res://ui/barbutton/default_highlight.tres" type="StyleBox" id=5]
 [ext_resource path="res://ui/barbutton/default_pressed.tres" type="StyleBox" id=6]
 [ext_resource path="res://ui/barbutton/default.tres" type="StyleBox" id=7]
@@ -83,7 +84,9 @@ visible = false
 margin_top = 176.0
 margin_right = 1402.0
 margin_bottom = 199.0
+rect_min_size = Vector2( 0, 25 )
 custom_fonts/font = ExtResource( 8 )
+valign = 1
 script = ExtResource( 10 )
 
 [node name="BlackPanel" parent="V" instance=ExtResource( 22 )]
@@ -116,6 +119,7 @@ margin_bottom = 50.0
 theme = SubResource( 24 )
 custom_constants/separation = 0
 alignment = 1
+script = ExtResource( 4 )
 
 [node name="FlipButton" type="Button" parent="V/buttonbarholder/buttonbar"]
 margin_right = 350.0

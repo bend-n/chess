@@ -30,7 +30,7 @@ func _pressed() -> void:
 		_confirmed(true)
 	else:
 		set_disabled(true)
-		var msg = draw_request_message % Utils.expand_color(Globals.team)
+		var msg = draw_request_message % Utils.expand_color(Globals.grid.team)
 		PacketHandler.signal({question = msg}, PacketHandler.SIGNALHEADERS.draw)
 		Globals.chat.server(msg)
 

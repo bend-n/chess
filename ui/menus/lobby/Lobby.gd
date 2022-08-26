@@ -2,20 +2,23 @@ extends Control
 class_name Lobby
 
 onready var address: LineEdit = $"%Address"
-onready var buttons := find_node("buttons")
+onready var buttons := $"%buttons"
 onready var status_ok := $"%StatusOK"
 onready var status_fail := $"%StatusFail"
-onready var hostbutton = $"%HostButton"
+onready var hostbutton := $"%HostButton"
+onready var gameconfig := $"%GameConfig"
 
 
 func toggle(onoff: bool) -> void:
-	get_parent().visible = onoff
+	get_parent().get_parent().visible = onoff
 
 
 func _ready() -> void:
 	PacketHandler.lobby = self
 	PacketHandler.connect("hosting", $"%stophost", "set_visible")
 	PacketHandler.connect("connection_established", self, "reset")
+	gameconfig.connect("back", self, "reset")
+	gameconfig.connect("done", self, "host")
 	if !Utils.internet:
 		set_status("no internet", false)
 		set_buttons(false)
@@ -24,6 +27,10 @@ func _ready() -> void:
 func reset():
 	set_status("", true)
 	set_buttons(true)
+
+
+func host(color: bool, moves: PoolStringArray) -> void:
+	PacketHandler.host_game(PacketHandler.game_code, color, moves)
 
 
 func focus():
@@ -56,10 +63,13 @@ func _on_join_pressed() -> void:
 
 
 func _on_HostButton_pressed() -> void:
+	if gameconfig.visible:
+		gameconfig.hide()
+		host(gameconfig.color, gameconfig.moves)
+		return
 	if validate_text():
 		set_buttons(false)
-		$Center/VBox/GameConfig.open(self)
-		hostbutton.disabled = true
+		gameconfig.show()
 	else:
 		set_status("Invalid address", false)
 

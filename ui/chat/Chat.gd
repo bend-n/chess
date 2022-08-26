@@ -46,7 +46,7 @@ func add_label_with(data: Dictionary) -> void:
 func send(t: String) -> void:
 	t = md2bb(t)
 	var name = Creds.get("name") if Creds.get("name") else "Anonymous"
-	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.team)
+	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.grid.team)
 	if PacketHandler.is_open_connection():
 		PacketHandler.relay_signal({"text": t, "who": name}, PacketHandler.RELAYHEADERS.chat)
 	else:

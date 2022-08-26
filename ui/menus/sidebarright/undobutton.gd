@@ -16,12 +16,12 @@ func _pressed() -> void:
 	if waiting_on_answer:
 		_confirmed(true)
 	else:
-		var two_undos = true if Globals.grid.chess.turn == Globals.team else false
+		var two_undos = true if Globals.grid.chess.turn == Globals.grid.team else false
 		var completed_moves = Globals.grid.chess.history().size()
 		if completed_moves == 0 or (two_undos && completed_moves == 1):
 			status.set_text("No moves to undo!")
 			return
-		var msg = undo_request_message % Utils.expand_color(Globals.team)
+		var msg = undo_request_message % Utils.expand_color(Globals.grid.team)
 		var pckt = {gamecode = PacketHandler.game_code, question = msg, two = two_undos}
 		status.set_text("")
 		PacketHandler.send_packet(pckt, PacketHandler.HEADERS.undo)
@@ -44,7 +44,7 @@ func undo_signal_recieved(sig: Dictionary) -> void:
 
 func _confirmed(what: bool) -> void:
 	._confirmed(what)
-	var two_undos = false if Globals.grid.chess.turn == Globals.team else true
+	var two_undos = not Globals.grid.is_my_turn()  # not my turn
 	var pckt = {gamecode = PacketHandler.game_code, accepted = what, two = two_undos}
 	PacketHandler.send_packet(pckt, PacketHandler.HEADERS.undo)
 	if what:
