@@ -11,6 +11,7 @@ signal start_game
 signal move_data(data)
 signal load_pgn(pgn)
 signal request_result(what)  # join/host true accepted, false rejected
+signal rematch_result(what)
 ## for accounts(mostly)
 signal signinresult(what)
 signal signupresult(what)
@@ -26,6 +27,7 @@ const HEADERS := {
 	"info": "I",
 	"move": "M",
 	"undo": "<",
+	"rematch": "r",
 	"spectate": "0"  # its a eye you see
 }
 
@@ -117,6 +119,8 @@ func _data_recieved() -> void:
 			emit_signal("signupresult", text)
 		HEADERS.signin:
 			emit_signal("signinresult", text)
+		HEADERS.rematch:
+			emit_signal("rematch_result", text)
 		_:
 			Log.err("unknown header %s" % header)
 

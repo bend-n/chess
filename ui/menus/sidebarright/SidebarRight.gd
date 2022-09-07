@@ -2,7 +2,7 @@ extends Control
 
 onready var whitepanel = find_node("WhitePanel")
 onready var blackpanel = find_node("BlackPanel")
-export(NodePath) onready var panel_holder = get_node(panel_holder)
+onready var panel_holder = $"V"
 
 
 func flip_panels():

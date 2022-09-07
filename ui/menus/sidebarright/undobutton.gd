@@ -1,7 +1,7 @@
 extends ConfirmButton
 class_name UndoButton
 
-export(NodePath) onready var status = get_node(status) as StatusLabel
+onready var status := get_node("%Status") as StatusLabel
 const undo_request_message = "%s requested a undo"
 const undo_declined_message = "undo declined"
 
@@ -23,7 +23,7 @@ func _pressed() -> void:
 			return
 		var msg = undo_request_message % Utils.expand_color(Globals.grid.team)
 		var pckt = {gamecode = PacketHandler.game_code, question = msg, two = two_undos}
-		status.set_text("")
+		status.clear_text()
 		PacketHandler.send_packet(pckt, PacketHandler.HEADERS.undo)
 		Globals.chat.server(msg)
 		set_disabled(true)
@@ -56,4 +56,4 @@ func _confirmed(what: bool) -> void:
 
 func undo(two_undos := false):
 	Globals.grid.undo(two_undos)
-	status.set_text("")
+	status.clear_text()

@@ -12,6 +12,14 @@ onready var panels := [
 
 func _ready() -> void:
 	PacketHandler.connect("info_recieved", self, "_spectate_info" if Globals.spectating else "_on_info")
+	Events.connect("game_over", self, "_game_over")
+	if Globals.grid.local:
+		get_tree().call_group("freeinlocalmultiplayer", "queue_free")
+
+
+func _game_over(_why: String) -> void:
+	get_tree().call_group("showongameover", "show")
+	get_tree().call_group("hideongameover", "hide")
 
 
 func set_status(text: String, length := 5) -> void:

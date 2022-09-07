@@ -19,4 +19,4 @@ func _pressed() -> void:
 func after_confirmed():
 	PacketHandler.signal({}, PacketHandler.SIGNALHEADERS.resign)
 	Globals.grid.win("w" if Globals.grid.team == "b" else "b", "resignation")
-	disabled = true
+	hide()

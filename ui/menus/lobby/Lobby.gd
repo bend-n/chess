@@ -39,11 +39,11 @@ func focus():
 
 func set_status(text: String, isok: bool) -> void:  # Simple way to show status.
 	if isok:
-		status_ok.set_text(text)
-		status_fail.set_text("")
+		status_ok.text = text
+		status_fail.text = ""
 	else:
-		status_ok.set_text("")
-		status_fail.set_text(text)
+		status_ok.text = ("")
+		status_fail.text = (text)
 	status_ok.visible = len(status_ok.text) > 0
 	status_fail.visible = len(status_fail.text) > 0
 

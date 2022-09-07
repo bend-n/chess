@@ -33,8 +33,6 @@ func _exit_tree():
 func _ready():
 	PacketHandler.connect("chat", self, "add_label_with")
 	server("Welcome!")  # say hello
-	yield(get_tree().create_timer(.4), "timeout")
-	server("You can use markdown(sort of)!")  # say hello again
 
 
 func add_label_with(data: Dictionary) -> void:

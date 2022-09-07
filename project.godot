@@ -180,6 +180,11 @@ _global_script_classes=[ {
 "path": "res://ui/PromotionPreview.gd"
 }, {
 "base": "ConfirmButton",
+"class": "RematchButton",
+"language": "GDScript",
+"path": "res://ui/menus/sidebarright/rematchbutton.gd"
+}, {
+"base": "ConfirmButton",
 "class": "ResignButton",
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/resignbutton.gd"
@@ -269,6 +274,7 @@ _global_script_class_icons={
 "Piece": "",
 "Preview": "",
 "PromotionPreview": "",
+"RematchButton": "",
 "ResignButton": "",
 "Restrict": "",
 "SaveLoader": "",

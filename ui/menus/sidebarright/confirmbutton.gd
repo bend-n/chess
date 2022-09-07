@@ -7,7 +7,6 @@ export(String) var confirm_text = ""
 
 
 func _ready() -> void:
-	Events.connect("game_over", self, "disable")
 	PacketHandler.connect("signal_recieved", self, "_signal_recieved")
 
 

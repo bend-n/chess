@@ -388,7 +388,7 @@ func undo(two: bool = false) -> void:
 
 
 func _on_turn_over():
-	if local:  # for testing
+	if local:
 		team = chess.turn
 		flip_board()
 
@@ -443,3 +443,14 @@ func create_last_move_indicators():
 		background_array[m.to].move_indicator.color = last_move_take_indicator
 	background_array[m.to].move_indicator.show()
 	move_indicators = [m.from, m.to]
+
+
+func reload():
+	premove = {}
+	chess = Chess.new()
+	clear_last_clicked()
+	clear_pieces()
+	create_pieces()
+	create_last_move_indicators()  # it hides the indicators :/
+	Events.emit_signal("turn_over")
+	emit_signal("clear_pgn")  # clears the san displays
