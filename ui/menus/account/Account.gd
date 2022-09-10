@@ -41,14 +41,16 @@ func signin():
 	PacketHandler.signin(Creds.data)
 
 
-func _on_signin_result(result):
-	var status_set = !autologin
+func _on_signin_result(result: Dictionary) -> void:
+	var status_set = not autologin  # not a autologin
 	if autologin:
 		autologin = false
-		yield(get_tree().create_timer(.5), "timeout")
+		yield(get_tree().create_timer(.25), "timeout")
 	$choose/signin/signinbutton.disabled = false
-	if typeof(result) == TYPE_STRING:  # ew, error, get it away from me
-		return reset(result, status_set)
+	var err = result.get("err", false)
+	if err:
+		var err_table := {"INVALID_DATA": "Username/password incorrect."}
+		return reset(PacketHandler.construct_errstr(result, err_table) if status_set else "", status_set)
 	Creds.data.uuid = result.id  # server uses `id` instead of `uuid`...
 	Creds.data.country = result.country
 	on_successful()
@@ -61,15 +63,17 @@ func signup():
 	PacketHandler.signup(Creds.data)
 
 
-func _on_signup_result(result: String):
+func _on_signup_result(result: Dictionary):
 	$choose/signup/signupbutton.disabled = false
-	if "err:" in result:  # ew error go awway
-		return reset(result)
-	Creds.data.uuid = result
+	var err = result.get("err", false)
+	if err:
+		var err_table = {"ALREADY_EXISTS": "That user already exists. Pick a different username."}
+		return reset(PacketHandler.construct_errstr(result, err_table))
+	Creds.data.uuid = result.id
 	on_successful()
 
 
-func reset(reason: String, reset_creds := true):
+func reset(reason: String, reset_creds := true) -> void:
 	if reason:
 		status.set_text(reason, 5)
 	if reset_creds:

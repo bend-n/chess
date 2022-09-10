@@ -16,6 +16,7 @@ signal rematch_result(what)
 signal signinresult(what)
 signal signupresult(what)
 
+const DEFAULT_ERROR_MESSAGE = "Error. Please report this issue to bendn."
 const HEADERS := {
 	"joinrequest": "J",
 	"hostrequest": "H",
@@ -98,16 +99,7 @@ func _data_recieved() -> void:
 			yield(get_tree().create_timer(.5), "timeout")
 			emit_signal("info_recieved", text)
 		HEADERS.spectate:
-			# handle spectate here
-			if typeof(text) == TYPE_STRING:  # ew error
-				set_lobby_status(text, false)
-				lobby.set_buttons(true)
-				return
-			Globals.spectating = true
-			_start_game()
-			yield(get_tree().create_timer(.5), "timeout")
-			Globals.grid.load_pgn(text.pgn)
-			emit_signal("info_recieved", text)
+			spectate_result(text)
 		HEADERS.loadpgn:
 			emit_signal("load_pgn", text)
 		HEADERS.signal:
@@ -143,22 +135,53 @@ func _connection_error() -> void:
 		go_back("Connection error, please check your internet, and reload the game.", false)
 
 
+const join_err_table := {
+	"FULL": "This game is full. Double check your spelling, or host your own game..",
+	"NOT_EXIST": "This game does not exist. Double check your spelling, or host it.",
+	"NO_GAMECODE": "Your game name is empty.",
+	"NO_ID": "Your id is undefined. Please report this issue to bendn."
+}
+
+
 func join_result(accepted) -> void:
-	handle_result(accepted, "Joined!")
+	handle_result(accepted, "Joined!", join_err_table)
+
+
+const host_err_table := {
+	"ALREADY_EXISTS": "This game name is taken. Pick a new name.",  # game is full
+	"ALREADY_EXISTS_EMPTY": "This game name is taken. Pick a new name, or join.",  # someone else hosted, but noone is joining them :(
+	"NO_GAMECODE": "Your game name is empty.",
+	"NO_ID": "Your id is undefined. Please report this issue to bendn."
+}
 
 
 func host_result(accepted) -> void:
-	set_hosting(handle_result(accepted, "Hosted!"))
+	set_hosting(handle_result(accepted, "Hosted!", host_err_table))
 
 
-func handle_result(accepted, resultstring: String) -> bool:
-	emit_signal("request_result", false if typeof(accepted) != TYPE_DICTIONARY else true)
-	if typeof(accepted) == TYPE_DICTIONARY:
+const spectate_err_table := {"NOT_EXIST": "This game does not exist. Double check your spelling, or host it."}
+
+
+func spectate_result(accepted) -> void:
+	if handle_result(accepted, "Watching", spectate_err_table, true):
+		Globals.spectating = true
+		_start_game()
+		yield(get_tree().create_timer(.5), "timeout")
+		Globals.grid.load_pgn(accepted.pgn)
+		emit_signal("info_recieved", accepted)
+
+
+func handle_result(accepted, resultstring: String, err_table: Dictionary, quick_return := false) -> bool:
+	var err = accepted.get("err", false)
+	emit_signal("request_result", false if err else true)
+	if !err:
+		if quick_return:
+			return true
 		Globals.team = "w" if accepted.idx == 0 else "b"
 		Log.debug("Team set to " + Utils.expand_color(Globals.team))
 		set_lobby_status(resultstring, true)
 		return true
-	set_lobby_status(accepted, false)
+	set_lobby_status(err_table.get(err, "Error. Please report this issue to bendn."), false)
 	lobby.set_buttons(true)
 	return false
 
@@ -267,3 +290,14 @@ func relay_signal(body: Dictionary, header: String) -> Dictionary:  # its really
 
 func send_mov(mov: String) -> void:
 	send_gamecode_packet({move = mov}, HEADERS.move)
+
+
+static func construct_errstr(packet, err_table, default_message := DEFAULT_ERROR_MESSAGE) -> String:
+	var errstr: String = ""
+	var err: String = packet.get("err", false)
+	if err:
+		errstr = err_table.get(err, default_message)
+		var stack = packet.get("stack", false)
+		if stack:
+			errstr += " (Stack trace: %s) " % stack
+	return errstr
