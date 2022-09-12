@@ -293,6 +293,8 @@ func square_clicked(clicked_square: BackgroundSquare) -> void:
 				clear_last_clicked()
 				return
 
+	clear_last_clicked()
+
 	if p and p.color == team:
 		if chess.turn != team:
 			clicked_square.show_premove_indicators()
