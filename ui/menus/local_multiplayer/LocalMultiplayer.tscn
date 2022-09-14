@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://ui/menus/LocalMultiplayer.gd" type="Script" id=1]
-[ext_resource path="res://ui/menus/lobby/GameConfig.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/menus/local_multiplayer/LocalMultiplayer.gd" type="Script" id=1]
+[ext_resource path="res://ui/menus/local_multiplayer/GameConfig.tscn" type="PackedScene" id=2]
 
 [sub_resource type="ButtonGroup" id=1]
 
@@ -19,11 +19,14 @@ margin_bottom = 427.0
 [node name="GameConfig" parent="V" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 visible = false
+anchor_left = 0.0
+anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 351.0
-margin_bottom = 268.0
-color_config = false
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 568.0
+margin_bottom = 250.0
 button_group = SubResource( 1 )
 
 [node name="PlayButton" type="Button" parent="V"]

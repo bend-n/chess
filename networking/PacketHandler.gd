@@ -210,9 +210,8 @@ func _start_game() -> void:
 	lobby.set_buttons(false)
 	SoundFx.play("Victory")
 
-	if Globals.team == Chess.BLACK:
-		yield(get_tree(), "idle_frame")
-		b.flip_board()
+	yield(get_tree(), "idle_frame")
+	b.auto_flip()
 
 
 func rejoin(tries := 5, interval := 2) -> int:  # on disconnect, try to rejoin

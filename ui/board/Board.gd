@@ -55,6 +55,7 @@ var chess := Chess.new()
 var local := false
 var spectating := false
 var team: String
+var auto_change_team := false
 
 
 func _init():
@@ -99,9 +100,6 @@ func set_take_move_circle_color(
 
 
 func _ready():
-	if !team:
-		team = "w"
-		local = true
 	set_take_move_circle_color()
 	_resized()
 	Events.connect("turn_over", self, "_on_turn_over")
@@ -109,6 +107,10 @@ func _ready():
 	create_pieces()
 	create_squares()
 	create_labels()
+	yield(get_tree(), "idle_frame")
+	if !team:
+		team = chess.turn
+		auto_change_team = true
 	Log.debug("board: ready")
 
 
@@ -308,8 +310,9 @@ func move(san: String, send := true, create_promotion_input := true) -> void:
 	var move_0x88 = chess.__move_from_san(san, true)
 	var valid_moves = chess.moves({square = chess.algebraic(move_0x88.from), stripped = true})
 	if valid_moves.find(chess.stripped_san(san)) == -1:
-		Log.err("Invalid move")
+		Log.err("Invalid move " + san)
 		return
+	Log.debug("Making move " + san)
 	chess.__make_move(move_0x88)
 	if move_0x88.flags & Chess.BITS.CAPTURE:
 		board[move_0x88.to].took()
@@ -371,7 +374,8 @@ func load_pgn(pgn: String) -> void:
 	clear_pieces()
 	create_pieces()
 	emit_signal("clear_pgn")
-	var movs: PoolStringArray = Pgn.parse(pgn).moves
+	var pgn_parser := PGN.new()
+	var movs: PoolStringArray = pgn_parser.parse(pgn).moves
 	emit_signal("load_pgn", movs)
 	Log.info("load pgn " + pgn)
 	Events.emit_signal("turn_over")
@@ -389,10 +393,17 @@ func undo(two: bool = false) -> void:
 	Events.emit_signal("turn_over")
 
 
-func _on_turn_over():
-	if local:
-		team = chess.turn
+func auto_flip():
+	if team == Chess.WHITE and flipped:
 		flip_board()
+	elif team == Chess.BLACK and not flipped:
+		flip_board()
+
+
+func _on_turn_over():
+	if auto_change_team:
+		team = chess.turn
+		auto_flip()
 
 	if is_my_turn():
 		set_take_move_circle_color()

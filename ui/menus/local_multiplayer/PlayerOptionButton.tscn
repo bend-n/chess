@@ -1,0 +1,13 @@
+[gd_scene format=2]
+
+[node name="PlayerButton" type="OptionButton"]
+margin_left = 103.0
+margin_right = 253.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 160, 0 )
+hint_tooltip = "Stockfish is a chess engine. It will play automatically."
+text = "Human"
+align = 1
+expand_icon = true
+items = [ "Human", null, false, 0, null, "Stockfish", null, false, 1, null ]
+selected = 0

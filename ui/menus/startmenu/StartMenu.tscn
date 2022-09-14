@@ -9,7 +9,7 @@
 [ext_resource path="res://ui/menus/settings/Settings.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/menus/account/Account.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/menus/startmenu/VersionLabel.gd" type="Script" id=9]
-[ext_resource path="res://ui/menus/LocalMultiplayer.tscn" type="PackedScene" id=10]
+[ext_resource path="res://ui/menus/local_multiplayer/LocalMultiplayer.tscn" type="PackedScene" id=10]
 
 [sub_resource type="DynamicFont" id=1]
 size = 400
@@ -48,13 +48,13 @@ margin_top = 79.0
 margin_right = -25.0
 margin_bottom = -25.0
 
-[node name="local" parent="CenterContainer/tabs/" instance=ExtResource( 10 )]
+[node name="multiplayer" parent="CenterContainer/tabs/" instance=ExtResource( 5 )]
 margin_left = 25.0
 margin_top = 79.0
 margin_right = -25.0
 margin_bottom = -25.0
 
-[node name="multiplayer" parent="CenterContainer/tabs/" instance=ExtResource( 5 )]
+[node name="local" parent="CenterContainer/tabs/" instance=ExtResource( 10 )]
 visible = false
 margin_left = 25.0
 margin_top = 79.0

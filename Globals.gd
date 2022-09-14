@@ -5,6 +5,7 @@ var piece_set := "california"
 var board_color1: Color = Color(0.870588, 0.890196, 0.901961)
 var board_color2: Color = Color(0.54902, 0.635294, 0.678431)
 var spectating := false
+var local := false
 var playing := false setget , get_playing
 var chat: Chat = null
 var grid: Grid = null
@@ -14,6 +15,7 @@ func reset_vars() -> void:
 	team = "w"
 	grid = null
 	chat = null
+	local = false
 	spectating = false
 
 

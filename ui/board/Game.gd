@@ -13,7 +13,7 @@ onready var panels := [
 func _ready() -> void:
 	PacketHandler.connect("info_recieved", self, "_spectate_info" if Globals.spectating else "_on_info")
 	Events.connect("game_over", self, "_game_over")
-	if Globals.grid.local:
+	if Globals.local:
 		get_tree().call_group("freeinlocalmultiplayer", "queue_free")
 
 
@@ -47,5 +47,5 @@ func set_panel(pnl: UserPanel, name: String, country: String) -> void:
 
 
 func _unhandled_input(event: InputEvent):
-	if event is InputEventKey and event.pressed and event.scancode == KEY_Z:
+	if event is InputEventKey and event.pressed and event.scancode == KEY_Z and not Globals.local:
 		chat.visible = !chat.visible

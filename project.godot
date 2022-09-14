@@ -39,10 +39,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/checkboxbutton/CheckBoxButton.gd"
 }, {
-"base": "Resource",
+"base": "Reference",
 "class": "Chess",
 "language": "GDScript",
-"path": "res://board/chess.gd"
+"path": "res://addons/stockfish.gd/chess.gd"
 }, {
 "base": "Control",
 "class": "ColorPickerBetter",
@@ -84,15 +84,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/chat/ExpandableTextEdit.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "FEN",
 "language": "GDScript",
-"path": "res://FEN/Fen.gd"
+"path": "res://addons/stockfish.gd/fen.gd"
 }, {
 "base": "Button",
 "class": "FlipButton",
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/flipbutton.gd"
+}, {
+"base": "Control",
+"class": "GameConfig",
+"language": "GDScript",
+"path": "res://ui/menus/lobby/GameConfig.gd"
 }, {
 "base": "Control",
 "class": "GameUI",
@@ -124,6 +129,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/menus/lobby/Lobby.gd"
 }, {
+"base": "Node",
+"class": "Log",
+"language": "GDScript",
+"path": "res://Log.gd"
+}, {
 "base": "HBoxContainer",
 "class": "MaterialLabel",
 "language": "GDScript",
@@ -154,10 +164,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/menus/sidebarright/OpeningLabel.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PGN",
 "language": "GDScript",
-"path": "res://PGN/PGN.gd"
+"path": "res://addons/stockfish.gd/pgn.gd"
 }, {
 "base": "Reference",
 "class": "Parser",
@@ -209,6 +219,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/Status.gd"
 }, {
+"base": "Reference",
+"class": "Stockfish",
+"language": "GDScript",
+"path": "res://addons/stockfish.gd/stockfish_wrapper.gd"
+}, {
+"base": "Reference",
+"class": "StockfishLoader",
+"language": "GDScript",
+"path": "res://addons/stockfish.gd/stockfish_loader.gd"
+}, {
 "base": "Button",
 "class": "TestButton",
 "language": "GDScript",
@@ -257,12 +277,14 @@ _global_script_class_icons={
 "ExpandableTextEdit": "",
 "FEN": "",
 "FlipButton": "",
+"GameConfig": "",
 "GameUI": "",
 "Grid": "",
 "GridMenu": "",
 "GridMenuButton": "",
 "HueSlider": "",
 "Lobby": "",
+"Log": "",
 "MaterialLabel": "",
 "MaterialLabelManager": "",
 "MessageList": "",
@@ -280,6 +302,8 @@ _global_script_class_icons={
 "SaveLoader": "",
 "SliderButton": "",
 "StatusLabel": "",
+"Stockfish": "",
+"StockfishLoader": "",
 "TestButton": "",
 "TextEditor": "",
 "UndoButton": "",
@@ -291,7 +315,9 @@ _global_script_class_icons={
 [application]
 
 config/name="chess"
-config/description="pog"
+config/description="Chess multiplayer client.
+
+Includes stockfish cross-platform support."
 run/main_scene="res://ui/menus/startmenu/StartMenu.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chess"
@@ -310,9 +336,6 @@ SaveLoad="*res://saveload.gd"
 ColorBack="*res://ui/background/ColorfullBackground.tscn"
 PacketHandler="*res://networking/PacketHandler.gd"
 Debug="*res://Debug.gd"
-Pgn="*res://PGN/PGN.gd"
-Log="*res://Log.gd"
-Fen="*res://FEN/Fen.gd"
 Creds="*res://Credentials.gd"
 
 [debug]
@@ -327,10 +350,6 @@ window/size/width=1422
 window/size/height=800
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
-
-[editor]
-
-main_run_args="--join __tests__"
 
 [editor_plugins]
 

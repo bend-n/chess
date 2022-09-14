@@ -1,37 +1,54 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://ui/theme/main.theme" type="Theme" id=1]
+[ext_resource path="res://ui/menus/sidebarright/buttonbar.theme" type="Theme" id=1]
 [ext_resource path="res://ui/menus/lobby/color.tres" type="ButtonGroup" id=2]
 [ext_resource path="res://assets/pieces/cburnett/wK.png" type="Texture" id=3]
 [ext_resource path="res://assets/pieces/cburnett/bK.png" type="Texture" id=4]
 [ext_resource path="res://ui/menus/lobby/GameConfig.gd" type="Script" id=5]
 [ext_resource path="res://ui/menus/lobby/PGNEntry.gd" type="Script" id=6]
 [ext_resource path="res://ui/barbutton/BarTextureButton.tscn" type="PackedScene" id=7]
+[ext_resource path="res://ui/theme/main.theme" type="Theme" id=8]
 
-[node name="GameConfig" type="TabContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme = ExtResource( 1 )
+[node name="GameConfig" type="PanelContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -210.0
+margin_top = -93.0
+margin_right = 210.0
+margin_bottom = 93.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource( 8 )
 script = ExtResource( 5 )
 button_group = ExtResource( 2 )
 
-[node name="" type="VBoxContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 25.0
-margin_top = 79.0
-margin_right = -25.0
-margin_bottom = -25.0
+[node name="V" type="VBoxContainer" parent="."]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 410.0
+margin_bottom = 176.0
 
-[node name="H" type="HBoxContainer" parent=""]
-margin_right = 1372.0
+[node name="Colors" type="HBoxContainer" parent="V"]
+unique_name_in_owner = true
+margin_right = 400.0
 margin_bottom = 100.0
+mouse_filter = 2
 custom_constants/separation = 0
-alignment = 1
 
-[node name="Black" parent="/H" instance=ExtResource( 7 )]
-margin_left = 586.0
-margin_right = 686.0
+[node name="ColorLabel" type="Label" parent="V/Colors"]
+margin_top = 33.0
+margin_right = 100.0
+margin_bottom = 67.0
+rect_min_size = Vector2( 100, 0 )
+text = "Color: "
+align = 1
+valign = 1
+
+[node name="Black" parent="V/Colors" instance=ExtResource( 7 )]
+margin_left = 100.0
+margin_right = 200.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 100, 100 )
 toggle_mode = true
@@ -39,9 +56,9 @@ group = ExtResource( 2 )
 texture_normal = ExtResource( 4 )
 pressed_color = Color( 0.576471, 0.631373, 0.631373, 1 )
 
-[node name="White" parent="/H" instance=ExtResource( 7 )]
-margin_left = 686.0
-margin_right = 786.0
+[node name="White" parent="V/Colors" instance=ExtResource( 7 )]
+margin_left = 200.0
+margin_right = 300.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 100, 100 )
 toggle_mode = true
@@ -50,59 +67,42 @@ group = ExtResource( 2 )
 texture_normal = ExtResource( 3 )
 pressed_color = Color( 0.576471, 0.631373, 0.631373, 1 )
 
-[node name="H2" type="HBoxContainer" parent=""]
+[node name="Stop" type="Button" parent="V/Colors"]
+margin_left = 360.0
+margin_right = 400.0
+margin_bottom = 46.0
+size_flags_horizontal = 10
+size_flags_vertical = 0
+theme = ExtResource( 1 )
+text = "窱"
+
+[node name="PGNInput" type="HBoxContainer" parent="V"]
 margin_top = 110.0
-margin_right = 1372.0
+margin_right = 400.0
 margin_bottom = 164.0
-alignment = 1
+rect_min_size = Vector2( 400, 0 )
+size_flags_horizontal = 3
 
-[node name="Stop" type="Button" parent="/H2"]
-margin_left = 535.0
-margin_right = 642.0
-margin_bottom = 54.0
-size_flags_horizontal = 4
-text = "exit"
-
-[node name="Continue" type="Button" parent="/H2"]
-margin_left = 652.0
-margin_right = 836.0
-margin_bottom = 54.0
-size_flags_horizontal = 4
-text = "continue "
-
-[node name="" type="VBoxContainer" parent="."]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 30.0
-margin_top = 56.0
-margin_right = -30.0
-margin_bottom = -30.0
-
-[node name="Pgn" type="HBoxContainer" parent=""]
-margin_right = 1362.0
-margin_bottom = 54.0
-
-[node name="Label" type="Label" parent="/Pgn"]
-margin_right = 40.0
-margin_bottom = 34.0
+[node name="Label" type="Label" parent="V/PGNInput"]
+margin_top = 10.0
+margin_right = 68.0
+margin_bottom = 44.0
 text = "pgn: "
 
-[node name="PgnInput" type="LineEdit" parent="/Pgn"]
+[node name="PgnInput" type="LineEdit" parent="V/PGNInput"]
 unique_name_in_owner = true
-margin_right = 1352.0
+margin_left = 78.0
+margin_right = 400.0
 margin_bottom = 54.0
 size_flags_horizontal = 3
 placeholder_text = "1. e4"
 script = ExtResource( 6 )
 
-[node name="Checkmark" type="Label" parent="/Pgn"]
-margin_left = 1362.0
+[node name="Checkmark" type="Label" parent="V/PGNInput"]
+visible = false
+margin_left = 500.0
 margin_top = 10.0
-margin_right = 1362.0
+margin_right = 500.0
 margin_bottom = 44.0
 
-[connection signal="pressed" from="/H2/Stop" to="." method="_on_Stop_pressed"]
-[connection signal="pressed" from="/H2/Continue" to="." method="_on_Continue_pressed"]
-[connection signal="pgn_selected" from="/Pgn/PgnInput" to="." method="_on_pgn_selected"]
-[connection signal="text_changed" from="/Pgn/PgnInput" to="/Pgn/PgnInput" method="text_changed"]
+[connection signal="pressed" from="V/Colors/Stop" to="." method="_on_Stop_pressed"]

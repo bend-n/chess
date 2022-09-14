@@ -18,7 +18,6 @@ func _ready() -> void:
 	PacketHandler.connect("hosting", $"%stophost", "set_visible")
 	PacketHandler.connect("connection_established", self, "reset")
 	gameconfig.connect("back", self, "reset")
-	gameconfig.connect("done", self, "host")
 	if !Utils.internet:
 		set_status("no internet", false)
 		set_buttons(false)
@@ -59,19 +58,24 @@ func _on_join_pressed() -> void:
 		set_buttons(false)
 		PacketHandler.join_game()
 	else:
-		set_status("Invalid address", false)
+		set_status("Invalid game code", false)
 
 
 func _on_HostButton_pressed() -> void:
 	if gameconfig.visible:
+		if not validate_text():
+			set_status("Invalid game code", false)
+			return
 		gameconfig.hide()
 		host(gameconfig.color, gameconfig.moves)
+		set_buttons(false)
 		return
 	if validate_text():
-		set_buttons(false)
+		for c in buttons.get_children().slice(0, 1):
+			c.disabled = true
 		gameconfig.show()
 	else:
-		set_status("Invalid address", false)
+		set_status("Invalid game code", false)
 
 
 func validate_text(text := address.get_text()) -> String:

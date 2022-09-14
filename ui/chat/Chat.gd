@@ -12,8 +12,7 @@ var regexes := [
 	[Utils.compile("~~([^~]+)~~"), "[s]$1[/s]"],
 	[Utils.compile("#([^#]+)#"), "[rainbow freq=.3 sat=.7]$1[/rainbow]"],
 	[Utils.compile("%([^%]+)%"), "[shake rate=20 level=25]$1[/shake]"],
-	[Utils.compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"], # [foo](bar)
-	[Utils.compile("[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)"),"[url]$0[/url]"],
+	[Utils.compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "[url=$2]$1[/url]"],  # [foo](bar)
 ]
 
 
@@ -43,12 +42,12 @@ func add_label_with(data: Dictionary) -> void:
 
 func send(t: String) -> void:
 	t = md2bb(t)
-	var name = Creds.get("name") if Creds.get("name") else "Anonymous"
-	name += "(%s)" % ("Spectator" if Globals.spectating else Globals.grid.team)
 	if PacketHandler.is_open_connection():
+		var name = Creds.get("name") if Creds.get("name") else "Anonymous"
+		name += "(%s)" % ("Spectator" if Globals.spectating else Globals.grid.team)
 		PacketHandler.relay_signal({"text": t, "who": name}, PacketHandler.RELAYHEADERS.chat)
 	else:
-		add_label_with({text = t, who = name})  # for testing
+		add_label_with({text = t, who = Creds.get("name")})  # for testing
 
 
 # markdown to bbcode
@@ -58,8 +57,6 @@ func md2bb(input: String) -> String:
 		if result:
 			var index = input.find(result.strings[0]) - 1
 			var char_before = input[index]
-			if replacement[1] == "[url]$0[/url]" and char_before == "[":
-				continue
 			if not char_before in "\\":  # taboo characters go here
 				input = replacement[0].sub(input, replacement[1], true)
 	input = input.replace("\\", "")  # remove escapers

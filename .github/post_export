@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ $1 == "web" ]]; then
+    mkdir -p build/web/lib
+    wget -nv "https://cdn.jsdelivr.net/npm/stockfish-nnue.wasm/stockfish.js" -O build/web/lib/stockfish.js &
+    wget -nv "https://cdn.jsdelivr.net/npm/stockfish-nnue.wasm/stockfish.worker.js" -O build/web/lib/stockfish.worker.js &
+    wget -nv "https://cdn.jsdelivr.net/npm/stockfish-nnue.wasm/stockfish.wasm" -O build/web/lib/stockfish.wasm &
+    wait
+fi

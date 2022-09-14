@@ -1,6 +1,7 @@
 {
     "name": "chess",
     "packages": {
-        "@bendn/gdcli": "1.2.5"
+        "@bendn/gdcli": "1.2.5",
+        "@bendn/stockfish.gd": "2.0.0"
     }
 }

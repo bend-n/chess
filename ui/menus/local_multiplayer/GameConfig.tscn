@@ -1,0 +1,158 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://ui/menus/lobby/GameConfig.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/menus/local_multiplayer/PlayerOptionButton.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/menus/local_multiplayer/GameConfig.gd" type="Script" id=3]
+[ext_resource path="res://ui/menus/local_multiplayer/EngineDepthSlider.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/fonts/ubuntu/ubuntu-normal-nerd.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://assets/fonts/migu.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://assets/fonts/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://ui/menus/local_multiplayer/color.tres" type="ButtonGroup" id=8]
+[ext_resource path="res://ui/menus/local_multiplayer/NoEngineLabel.gd" type="Script" id=9]
+
+[sub_resource type="DynamicFont" id=4]
+size = 15
+font_data = ExtResource( 7 )
+fallback/0 = ExtResource( 5 )
+fallback/1 = ExtResource( 6 )
+
+[sub_resource type="ButtonGroup" id=3]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.396078, 0.482353, 0.513726, 1 )
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color( 0.396078, 0.482353, 0.513726, 1 )
+corner_detail = 1
+
+[node name="GameConfig" instance=ExtResource( 1 )]
+margin_left = -335.0
+margin_top = -124.0
+margin_right = 335.0
+margin_bottom = 124.0
+script = ExtResource( 3 )
+button_group = ExtResource( 8 )
+
+[node name="V" parent="." index="0"]
+margin_right = 660.0
+margin_bottom = 282.0
+
+[node name="Colors" parent="V" index="0"]
+margin_right = 650.0
+
+[node name="Labels" type="VBoxContainer" parent="V/Colors" index="0" groups=["freeifnoengine"]]
+margin_right = 210.0
+margin_bottom = 100.0
+custom_constants/separation = 0
+
+[node name="Label" type="Label" parent="V/Colors/Labels" index="0"]
+margin_right = 210.0
+margin_bottom = 34.0
+rect_min_size = Vector2( 210, 0 )
+text = "Player1 color: "
+align = 1
+valign = 1
+
+[node name="Label2" type="Label" parent="V/Colors/Labels" index="1"]
+margin_top = 34.0
+margin_right = 210.0
+margin_bottom = 51.0
+custom_fonts/font = SubResource( 4 )
+text = "(only matters in p v engine)"
+align = 1
+
+[node name="ColorLabel" parent="V/Colors" index="1"]
+visible = false
+margin_left = 210.0
+margin_right = 310.0
+
+[node name="Black" parent="V/Colors" index="2" groups=["freeifnoengine"]]
+margin_left = 210.0
+margin_right = 310.0
+group = SubResource( 3 )
+
+[node name="White" parent="V/Colors" index="3" groups=["freeifnoengine"]]
+margin_left = 310.0
+margin_right = 410.0
+group = SubResource( 3 )
+
+[node name="Stop" parent="V/Colors" index="4"]
+margin_left = 610.0
+margin_right = 650.0
+
+[node name="PGNInput" parent="V" index="1"]
+margin_right = 650.0
+
+[node name="PgnInput" parent="V/PGNInput" index="1"]
+margin_right = 650.0
+
+[node name="Checkmark" parent="V/PGNInput" index="2"]
+margin_left = 548.0
+margin_right = 548.0
+
+[node name="Players" type="HBoxContainer" parent="V" index="2" groups=["freeifnoengine"]]
+margin_top = 174.0
+margin_right = 650.0
+margin_bottom = 228.0
+
+[node name="1" type="HBoxContainer" parent="V/Players" index="0"]
+margin_right = 335.0
+margin_bottom = 54.0
+
+[node name="Label" type="Label" parent="V/Players/1" index="0"]
+margin_top = 10.0
+margin_right = 115.0
+margin_bottom = 44.0
+text = "player1:"
+
+[node name="PlayerButton" parent="V/Players/1" index="1" instance=ExtResource( 2 )]
+margin_left = 125.0
+margin_right = 335.0
+rect_min_size = Vector2( 210, 0 )
+text = "Human (you)"
+items = [ "Human (you)", null, false, 0, null, "Stockfish", null, false, 1, null ]
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Seperator" type="Panel" parent="V/Players" index="1"]
+margin_left = 345.0
+margin_right = 355.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 10, 0 )
+custom_styles/panel = SubResource( 2 )
+
+[node name="2" type="HBoxContainer" parent="V/Players" index="2"]
+margin_left = 365.0
+margin_right = 650.0
+margin_bottom = 54.0
+
+[node name="Label" type="Label" parent="V/Players/2" index="0"]
+margin_top = 10.0
+margin_right = 115.0
+margin_bottom = 44.0
+text = "player2:"
+
+[node name="PlayerButton" parent="V/Players/2" index="1" instance=ExtResource( 2 )]
+margin_left = 125.0
+margin_right = 285.0
+items = [ "Human", null, false, 0, null, "Stockfish", null, false, 1, null ]
+
+[node name="EngineDepth" parent="V" index="3" instance=ExtResource( 4 )]
+
+[node name="NoEngine" type="RichTextLabel" parent="V" index="4" groups=["showifnoengine"]]
+visible = false
+margin_top = 238.0
+margin_right = 650.0
+margin_bottom = 262.0
+bbcode_enabled = true
+fit_content_height = true
+script = ExtResource( 9 )
+color = Color( 0.709804, 0.537255, 0, 1 )
+
+[connection signal="pgn_selected" from="V/PGNInput/PgnInput" to="." method="_on_pgn_selected"]
+[connection signal="item_selected" from="V/Players/1/PlayerButton" to="." method="_player_selected" binds= [ 1 ]]
+[connection signal="item_selected" from="V/Players/2/PlayerButton" to="." method="_player_selected" binds= [ 2 ]]
+[connection signal="depth_changed" from="V/EngineDepth" to="." method="_depth_changed"]

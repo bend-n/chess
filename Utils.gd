@@ -128,7 +128,8 @@ func cli() -> void:
 		if args.has("host") and args.host:
 			if PacketHandler.lobby.validate_text(args.host):
 				var pgn_input = args.get("moves", PoolStringArray()).join(" ")
-				var move_list = Pgn.parse(pgn_input, false).moves
+				var pgn_parser = PGN.new()
+				var move_list = pgn_parser.parse(pgn_input, false).moves
 				var clr = str_bool(args.color, ["w", "white"]) if args.has("color") else true  # default white
 				var string = "hosting game: %s" % args.host
 				string += ", with moves: %s" % move_list if move_list else ""

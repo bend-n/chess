@@ -2,5 +2,9 @@
 	"@bendn/gdcli": {
 		"version": "1.2.5",
 		"integrity": "sha512-/YOAd1+K4JlKvPTmpX8B7VWxGtFrxKq4R0A6u5qOaaVPK6uGsl4dGZaIHpxuqcurEcwPEOabkoShXKZaOXB0lw=="
+	},
+	"@bendn/stockfish.gd": {
+		"version": "2.0.0",
+		"integrity": "sha512-ks0zjROWWATbU1FpKlp3Lm9Cxz7GWNnRWhiE1+Ogks+CD7UX5GL+E85mVxp8dv+gsB3mcn2ZSrbn59XQT1IcvA=="
 	}
 }
