@@ -1,5 +1,4 @@
 extends CenterContainer
-class_name BackButton
 
 var button := Button.new()
 

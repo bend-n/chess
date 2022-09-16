@@ -39,6 +39,7 @@ func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, 
 	b.load_pgn(moves.join(" "))  # load_pgn emits Events.turn_over
 	b.auto_flip()
 	Globals.chat.hide()
+	in_game = true
 
 
 func assign_mode(players: PoolIntArray) -> void:
@@ -59,7 +60,17 @@ func _pressed():
 
 
 func _input(_event):
-	if Input.is_action_pressed("ui_cancel") and Globals.local == true:
+	if Input.is_action_pressed("ui_cancel") and Globals.local == true and in_game:
+		Events.emit_signal("go_back", "", true)
+
+
+func _init() -> void:
+	Events.connect("go_back", self, "go_back")
+
+
+func go_back(_reason: String, _isok: bool) -> void:
+	if in_game:
+		in_game = false
 		if board_engine_bridge:
 			board_engine_bridge.kill()
 			board_engine_bridge = null

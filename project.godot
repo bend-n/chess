@@ -14,11 +14,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/gdcli/Arg.gd"
 }, {
-"base": "CenterContainer",
-"class": "BackButton",
-"language": "GDScript",
-"path": "res://ui/board/BackButton.gd"
-}, {
 "base": "ColorRect",
 "class": "BackgroundSquare",
 "language": "GDScript",
@@ -261,7 +256,6 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Arg": "",
-"BackButton": "",
 "BackgroundSquare": "",
 "BarTextureButton": "",
 "Chat": "",

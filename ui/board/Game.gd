@@ -15,11 +15,14 @@ func _ready() -> void:
 	Events.connect("game_over", self, "_game_over")
 	if Globals.local:
 		get_tree().call_group("freeinlocalmultiplayer", "queue_free")
+		get_tree().call_group("showiflocalmultiplayer", "show")
 
 
 func _game_over(_why: String) -> void:
 	get_tree().call_group("showongameover", "show")
 	get_tree().call_group("hideongameover", "hide")
+	if not Globals.local:
+		get_tree().call_group("hideongameoverifnolocalmultiplayer", "hide")
 
 
 func set_status(text: String, length := 5) -> void:

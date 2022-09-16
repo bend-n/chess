@@ -1,8 +1,9 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://ui/menus/sidebarright/drawbutton.gd" type="Script" id=1]
 [ext_resource path="res://ui/menus/sidebarright/resignbutton.gd" type="Script" id=2]
 [ext_resource path="res://ui/Status.gd" type="Script" id=3]
+[ext_resource path="res://ui/menus/sidebarright/backbutton.gd" type="Script" id=4]
 [ext_resource path="res://ui/menus/sidebarright/buttonbar.theme" type="Theme" id=5]
 [ext_resource path="res://assets/fonts/migu.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://assets/fonts/ubuntu/ubuntu-bold.ttf" type="DynamicFontData" id=7]
@@ -155,7 +156,19 @@ text = "社"
 script = ExtResource( 18 )
 confirm_text = "Your opponent requests a undo"
 
-[node name="RematchButton" type="Button" parent="V" groups=["showongameover"]]
+[node name="BackButton" type="Button" parent="V/buttonbarholder/buttonbar" groups=["showiflocalmultiplayer"]]
+visible = false
+margin_left = 1121.0
+margin_right = 1402.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 50 )
+hint_tooltip = "exit"
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+text = ""
+script = ExtResource( 4 )
+
+[node name="RematchButton" type="Button" parent="V" groups=["freeinlocalmultiplayer", "showongameover"]]
 visible = false
 margin_top = 207.0
 margin_right = 1402.0
@@ -167,7 +180,7 @@ text = "⠀"
 script = ExtResource( 9 )
 confirm_text = "Would you like to play again?"
 
-[node name="SanDisplay" parent="V" groups=["hideongameover"] instance=ExtResource( 21 )]
+[node name="SanDisplay" parent="V" groups=["hideongameoverifnolocalmultiplayer"] instance=ExtResource( 21 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 320.0
