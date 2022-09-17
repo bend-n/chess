@@ -1,7 +1,7 @@
 extends Control
 
-var arrows := []  # [from, to, color]
-var circles := []  # [position, color]
+var arrows := []
+var circles := []
 var arrow_origin: Vector2
 var b: Grid
 
@@ -11,6 +11,10 @@ const w := 15
 
 export(Color) var red_overlay
 export(Color) var green_overlay
+
+const arrow_default_offset := .5
+const arrow_incrementing_offset := .1
+const arrow_max_incrementing_offset := .3
 
 
 func _setup(_b: Grid):
@@ -47,46 +51,60 @@ func shorten(v: Vector2, origin: Vector2, by: float) -> Vector2:
 	return (v).move_toward(origin, by)
 
 
+func shorten_arrows_at(v: Vector2) -> void:
+	var shortenable := []
+	for arrow in arrows:
+		if arrow.coord_dest == v:
+			shortenable.append(arrow)
+	var shorten := (
+		arrow_default_offset
+		+ min((len(shortenable) - 1) * arrow_incrementing_offset, arrow_max_incrementing_offset)
+	)
+	for arrow in shortenable:
+		arrow.dest = shorten(arrow.coord_dest, arrow.origin, shorten)
+
+
 func _draw():
 	if !b:
 		return
 	if arrow_origin:
-		var shift = Input.is_action_pressed("shift")
-		var mouse_position = shorten(descale_vector(b.get_local_mouse_position()), arrow_origin, .25)
-		mouse_position = Vector2(clamp(mouse_position.x, 0, 7), clamp(mouse_position.y, 0, 7))  # clamp to board limits
-		var clr = red_overlay if shift else green_overlay
+		var shift := Input.is_action_pressed("shift")
+		var mouse_position := descale_vector(b.get_local_mouse_position())
+		mouse_position = Vector2(clamp(mouse_position.x, 0, 7), clamp(mouse_position.y, 0, 7))
+		var clr: Color = red_overlay if shift else green_overlay
 		if Input.is_action_pressed("rclick"):  # previews
 			if arrow_origin != mouse_position:
-				draw_arrow(arrow_origin, mouse_position, clr)
+				draw_arrow(arrow_origin, shorten(mouse_position, arrow_origin, arrow_default_offset), clr)
 			elif t <= .25:
 				draw_ring(arrow_origin, clr)
 		else:
 			var flag := true  # no for-else :c
 			if arrow_origin != mouse_position:
-				var arr := [arrow_origin, mouse_position, clr]
 				for i in range(len(arrows)):
-					if arrows[i][0] == arrow_origin and arrows[i][1] == mouse_position:
+					if arrows[i].origin == arrow_origin and arrows[i].coord_dest == mouse_position:
 						arrows.remove(i)
 						flag = false
 						break
 				if flag:
-					arrows.append(arr)
+					arrows.append(
+						{origin = arrow_origin, dest = mouse_position, color = clr, coord_dest = mouse_position}
+					)
+					shorten_arrows_at(mouse_position)
 			elif t <= .25:
-				var arr := [arrow_origin, clr]
 				for i in range(len(circles)):
-					if circles[i][0] == arr[0]:
+					if circles[i].origin == arrow_origin:
 						circles.remove(i)
 						flag = false
 						break
 				if flag:
-					circles.append(arr)
+					circles.append({origin = arrow_origin, color = clr})
 			arrow_origin = Vector2.ZERO
 			t = 0
 
 	for a in arrows:
-		draw_arrow(a[0], a[1], a[2])
+		draw_arrow(a.origin, a.dest, a.color)
 	for ci in circles:
-		draw_ring(ci[0], ci[1])
+		draw_ring(ci.origin, ci.color)
 
 
 func draw_arrow(start: Vector2, end: Vector2, clr: Color):
