@@ -54,3 +54,4 @@ func rematch():
 	Globals.grid.reload()
 	get_tree().call_group("showongameover", "hide")  # they go back to hidden now.
 	get_tree().call_group("hideongameover", "show")  # and vice versa
+	get_tree().call_group("hideongameoverifnolocalmultiplayer", "show")
