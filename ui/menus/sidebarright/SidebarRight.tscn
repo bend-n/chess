@@ -68,12 +68,13 @@ alignment = 1
 
 [node name="OpeningLabel" type="Label" parent="V"]
 visible = false
-margin_top = 176.0
+margin_top = 213.0
 margin_right = 1402.0
-margin_bottom = 199.0
+margin_bottom = 238.0
 rect_min_size = Vector2( 0, 25 )
 custom_fonts/font = ExtResource( 8 )
 valign = 1
+autowrap = true
 script = ExtResource( 10 )
 
 [node name="BlackPanel" parent="V" instance=ExtResource( 22 )]

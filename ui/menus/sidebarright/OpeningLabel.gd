@@ -22,15 +22,16 @@ func update_opening(_var := null) -> void:
 		if fen != Globals.grid.chess.DEFAULT_POSITION && fen != current_req:
 			if current_req:
 				http_request.cancel_request()
-			text = ""
 			current_req = fen
 			var u = url % fen.replace(" ", "_").http_escape()
 			Log.net(["REQUEST: get opening with url:", u])
 			http_request.request(u)
+	else:
+		set_text("")
 
 
 func _request_completed(result, _response_code, _headers, byte_body):
-	text = ""  # empty text and hide self
+	set_text("")  # empty text and hide self
 	current_req = ""
 	if result != OK:  # technically REQUEST_SUCCESS but i cant find it
 		return
