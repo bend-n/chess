@@ -77,6 +77,13 @@ valign = 1
 autowrap = true
 script = ExtResource( 10 )
 
+[node name="Spacer" type="Control" parent="V" groups=["showiflocalmultiplayer"]]
+visible = false
+margin_top = 226.0
+margin_right = 1402.0
+margin_bottom = 226.0
+rect_min_size = Vector2( 0, 10 )
+
 [node name="BlackPanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0
 anchor_bottom = 0.0

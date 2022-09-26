@@ -32,7 +32,7 @@ func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, 
 			b.team = b.chess.turn
 			Globals.spectating = true
 			board_engine_bridge = BoardEngineBridge.new(b, ["w", "b"], get_tree(), engine_depth)
-	get_tree().call_group("userpanel", "hide_children")
+	get_tree().call_group("userpanel", "hide")
 	get_tree().call_group("backbutton", "queue_free")
 
 	yield(get_tree(), "idle_frame")
