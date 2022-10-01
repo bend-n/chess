@@ -88,6 +88,7 @@ focus_mode = 1
 text = "a_game_name"
 align = 1
 max_length = 11
+context_menu_enabled = false
 placeholder_text = "game_name"
 caret_blink = true
 caret_blink_speed = 0.5

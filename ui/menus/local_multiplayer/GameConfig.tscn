@@ -32,6 +32,7 @@ margin_left = -335.0
 margin_top = -124.0
 margin_right = 335.0
 margin_bottom = 124.0
+rect_min_size = Vector2( 450, 0 )
 script = ExtResource( 3 )
 button_group = ExtResource( 8 )
 

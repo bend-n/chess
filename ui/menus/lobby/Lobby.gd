@@ -14,6 +14,8 @@ func toggle(onoff: bool) -> void:
 
 
 func _ready() -> void:
+	address.grab_focus()
+	address.caret_position = len(address.text)
 	PacketHandler.lobby = self
 	PacketHandler.connect("hosting", $"%stophost", "set_visible")
 	PacketHandler.connect("connection_established", self, "reset")

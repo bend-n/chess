@@ -2,11 +2,11 @@ extends RichTextLabel
 
 export var color: Color
 
-const vague_error = "[color=#%s][/color] You unable to use chess engine functionality."
-const web_noengine := """[color=#%s][/color] Your browser does not support [url=https://stockfishchess.org/]Stockfish[/url].
-Try  chrome for access to [url=https://stockfishchess.org/]Stockfish[/url]."""
-const desktop_noengine := """[color=#%s][/color] [url=https://stockfishchess.org/]Stockfish[/url] is not yet implemented for desktop.
-Try it on [url=https://bendn.itch.io/chess]web[/url] to use [url=https://stockfishchess.org/]Stockfish[/url]."""
+const vague_error = "[color=#%s][/color] You are unable to use chess engine functionality."
+const web_noengine := """[color=#%s][/color] Your browser does not [i]yet[/i] support [url=https://stockfishchess.org/]Stockfish[/url].
+     Try  chrome for access to [url=https://stockfishchess.org/]Stockfish[/url]."""
+const desktop_noengine := """[color=#%s][/color] [url=https://stockfishchess.org/]Stockfish[/url] is not [i]yet[/i] implemented for desktop.
+     Try it on [url=https://bendn.itch.io/chess]web[/url] to use [url=https://stockfishchess.org/]Stockfish[/url]."""
 
 
 func _ready() -> void:
