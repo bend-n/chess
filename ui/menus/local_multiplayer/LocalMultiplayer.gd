@@ -11,28 +11,33 @@ var mode: int = -1
 
 var board_engine_bridge: BoardEngineBridge = null
 
+var ui: GameUI
+
 
 func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, engine_depth: int) -> void:
 	assign_mode(players)
 	Globals.local = true
-	var ui: Control = load("res://ui/board/Game.tscn").instance()
-	var b: Grid = ui.get_board()
+	ui = load("res://ui/board/Game.tscn").instance()
+	var b: Grid = ui.get_board() as Grid
 	b.local = true
 	Log.debug("Set board team to %s" % Utils.expand_color(b.team))
 	get_tree().get_root().add_child(ui)
 	PacketHandler.lobby.toggle(false)
-
 	match mode:
 		MODES.PVP:
 			pass  # nothing to do ?
 		MODES.PVE:
 			b.team = "w" if player1_color == true else "b"
 			board_engine_bridge = BoardEngineBridge.new(b, [Chess.__swap_color(b.team)], get_tree(), engine_depth)
+			ui._on_info(BoardEngineBridge.info)
+			board_engine_bridge.connect("nps", self, "set_nps", [1 if player1_color == true else 0])
 		MODES.EVE:
 			b.team = b.chess.turn
 			Globals.spectating = true
 			board_engine_bridge = BoardEngineBridge.new(b, ["w", "b"], get_tree(), engine_depth)
-	get_tree().call_group("userpanel", "hide")
+			ui._spectate_info({white = BoardEngineBridge.info, black = BoardEngineBridge.info})
+			board_engine_bridge.connect("nps", self, "set_nps")
+
 	get_tree().call_group("backbutton", "queue_free")
 
 	yield(get_tree(), "idle_frame")
@@ -40,6 +45,12 @@ func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, 
 	b.auto_flip()
 	Globals.chat.hide()
 	in_game = true
+
+
+func set_nps(nps: int, on: int = 0 if board_engine_bridge.stockfish.game.turn == "w" else 1) -> void:
+	if is_instance_valid(ui.panels[on]):
+		ui.panels[on].nps = nps
+		ui.panels[1 if on == 0 else 0].nps = 0  # turn it off
 
 
 func assign_mode(players: PoolIntArray) -> void:
@@ -83,15 +94,19 @@ func go_back(_reason: String, _isok: bool) -> void:
 
 class BoardEngineBridge:
 	extends Reference
+	signal nps(nps)
 
+	const info := {name = "Stockfish", country = "antartica"}
+
+	var curr_bestmove: Dictionary
 	var b: Grid
 	var stockfish: Stockfish
 	var playing := PoolStringArray()
 	var tree: SceneTree
 	var depth: int
+	var searching: bool = false
 
 	func _init(board: Grid, teams: PoolStringArray, _tree: SceneTree, _depth: int) -> void:
-		connect_signals()
 		depth = _depth
 		tree = _tree
 		playing = teams
@@ -99,9 +114,19 @@ class BoardEngineBridge:
 		var loader = StockfishLoader.new()
 		stockfish = loader.load_stockfish()
 		stockfish.game = b.chess
+		connect_signals()
 
 	func connect_signals():
+		stockfish.connect("info", self, "_info")
 		Events.connect("turn_over", self, "turn_over")
+
+	func _info(info: Dictionary):
+		if searching == false:
+			return
+		if info.get("nps", false):
+			emit_signal("nps", info.nps)
+		if info.get("pv", false):
+			curr_bestmove = stockfish.game.__move_from_uci(info.pv[0])
 
 	func turn_over():
 		set_engine_position()
@@ -110,7 +135,10 @@ class BoardEngineBridge:
 
 	func play_bestmove():
 		yield(tree, "idle_frame")
+		searching = true
 		var move: String = yield(bestmove(), "completed")
+		searching = false
+		emit_signal("nps", 0)
 		b.move(move, false, false)
 
 	func set_engine_position():

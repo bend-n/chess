@@ -45,4 +45,4 @@ func _request_completed(result, _response_code, _headers, byte_body):
 
 func set_text(_text := ""):
 	visible = _text != ""
-	text = _text
+	text = _text.strip_edges()

@@ -29,10 +29,10 @@ mouse_filter = 2
 theme = ExtResource( 2 )
 
 [node name="tabs" type="TabContainer" parent="CenterContainer"]
-margin_left = 253.0
-margin_top = 89.0
-margin_right = 1169.0
-margin_bottom = 711.0
+margin_left = 201.0
+margin_top = 84.0
+margin_right = 1221.0
+margin_bottom = 716.0
 rect_min_size = Vector2( 2, 2 )
 mouse_filter = 1
 size_flags_horizontal = 0

@@ -199,8 +199,8 @@ func go_back(error: String, isok: bool) -> void:
 func _start_game() -> void:
 	set_hosting(false)
 	Log.debug("Created board")
-	var ui: Control = load("res://ui/board/Game.tscn").instance()
-	var b: Grid = ui.get_board()
+	var ui: GameUI = load("res://ui/board/Game.tscn").instance()
+	var b: Grid = ui.get_board() as Grid
 	b.team = Globals.team
 	Log.debug("Set board team to %s" % Utils.expand_color(b.team))
 	get_tree().get_root().add_child(ui)

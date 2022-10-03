@@ -29,8 +29,8 @@ func set_status(text: String, length := 5) -> void:
 	status.set_text(text, length)
 
 
-func get_board() -> AspectRatioContainer:
-	return $"%Board" as AspectRatioContainer
+func get_board() -> Control:
+	return $"%Board" as Control
 
 
 func _spectate_info(info: Dictionary) -> void:

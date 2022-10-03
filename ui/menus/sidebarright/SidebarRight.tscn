@@ -68,33 +68,26 @@ alignment = 1
 
 [node name="OpeningLabel" type="Label" parent="V"]
 visible = false
-margin_top = 213.0
+margin_top = 217.0
 margin_right = 1402.0
-margin_bottom = 238.0
+margin_bottom = 242.0
 rect_min_size = Vector2( 0, 25 )
 custom_fonts/font = ExtResource( 8 )
 valign = 1
 autowrap = true
 script = ExtResource( 10 )
 
-[node name="Spacer" type="Control" parent="V" groups=["showiflocalmultiplayer"]]
-visible = false
-margin_top = 226.0
-margin_right = 1402.0
-margin_bottom = 226.0
-rect_min_size = Vector2( 0, 10 )
-
 [node name="BlackPanel" parent="V" instance=ExtResource( 22 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 226.0
+margin_top = 230.0
 margin_right = 1402.0
 margin_bottom = 270.0
 
 [node name="BlackMaterialLabel" type="HBoxContainer" parent="V/BlackPanel"]
 margin_top = 2.0
 margin_right = 1402.0
-margin_bottom = 42.0
+margin_bottom = 38.0
 alignment = 2
 script = ExtResource( 12 )
 
@@ -201,12 +194,12 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 520.0
 margin_right = 1402.0
-margin_bottom = 564.0
+margin_bottom = 560.0
 
 [node name="WhiteMaterialLabel" type="HBoxContainer" parent="V/WhitePanel"]
 margin_top = 2.0
 margin_right = 1402.0
-margin_bottom = 42.0
+margin_bottom = 38.0
 alignment = 2
 script = ExtResource( 12 )
 

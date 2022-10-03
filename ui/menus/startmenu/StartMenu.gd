@@ -3,7 +3,7 @@ extends Control
 
 func _ready() -> void:
 	if OS.has_feature("web"):
-		get_node("%").queue_free()
+		get_node("% exit").queue_free()
 
 
 func _on_quit_pressed() -> void:
