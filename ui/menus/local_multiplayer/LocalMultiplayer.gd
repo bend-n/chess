@@ -25,7 +25,9 @@ func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, 
 	PacketHandler.lobby.toggle(false)
 	match mode:
 		MODES.PVP:
-			pass  # nothing to do ?
+			b.auto_change_team = true
+			b.team = "w"
+			ui._on_info({name = "Anonymous", country = "rainbow"})
 		MODES.PVE:
 			b.team = "w" if player1_color == true else "b"
 			board_engine_bridge = BoardEngineBridge.new(b, [Chess.__swap_color(b.team)], get_tree(), engine_depth)
