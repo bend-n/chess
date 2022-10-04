@@ -33,26 +33,44 @@ func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, 
 			board_engine_bridge = BoardEngineBridge.new(b, [Chess.__swap_color(b.team)], get_tree(), engine_depth)
 			ui._on_info(BoardEngineBridge.info)
 			board_engine_bridge.connect("nps", self, "set_nps", [1 if player1_color == true else 0])
+			board_engine_bridge.connect("depth", self, "set_thinking", [1 if player1_color == true else 0])
 		MODES.EVE:
 			b.team = b.chess.turn
 			Globals.spectating = true
 			board_engine_bridge = BoardEngineBridge.new(b, ["w", "b"], get_tree(), engine_depth)
 			ui._spectate_info({white = BoardEngineBridge.info, black = BoardEngineBridge.info})
 			board_engine_bridge.connect("nps", self, "set_nps")
+			board_engine_bridge.connect("depth", self, "set_thinking")
 
 	get_tree().call_group("backbutton", "queue_free")
 
 	yield(get_tree(), "idle_frame")
+	if mode in [MODES.EVE, MODES.PVE]:
+		for panel in ui.panels:
+			panel.thinking_display.max_value = engine_depth
+
 	b.load_pgn(moves.join(" "))  # load_pgn emits Events.turn_over
 	b.auto_flip()
 	Globals.chat.hide()
 	in_game = true
 
 
-func set_nps(nps: int, on: int = 0 if board_engine_bridge.stockfish.game.turn == "w" else 1) -> void:
+func flip_int(i: int) -> int:
+	return 1 if i == 0 else 0
+
+
+func set_nps(nps: int, on: int = 0 if board_engine_bridge.turn == "w" else 1) -> void:
 	if is_instance_valid(ui.panels[on]):
 		ui.panels[on].nps = nps
-		ui.panels[1 if on == 0 else 0].nps = 0  # turn it off
+		ui.panels[flip_int(on)].nps = 0  # turn it off
+
+
+#                 thinking: depth
+func set_thinking(thinking: int, on: int = 0 if board_engine_bridge.turn == "w" else 1):
+	if is_instance_valid(ui.panels[on]):
+		if thinking == 0 || ui.panels[on].thinking < thinking:  # depth can go down too
+			ui.panels[on].thinking = thinking
+		ui.panels[flip_int(on)].thinking = 0
 
 
 func assign_mode(players: PoolIntArray) -> void:
@@ -97,6 +115,7 @@ func go_back(_reason: String, _isok: bool) -> void:
 class BoardEngineBridge:
 	extends Reference
 	signal nps(nps)
+	signal depth(depth)
 
 	const info := {name = "Stockfish", country = "antartica"}
 
@@ -106,6 +125,11 @@ class BoardEngineBridge:
 	var tree: SceneTree
 	var depth: int
 	var searching: bool = false
+
+	var turn: String = "" setget , get_turn
+
+	func get_turn() -> String:
+		return stockfish.game.turn
 
 	func _init(board: Grid, teams: PoolStringArray, _tree: SceneTree, _depth: int) -> void:
 		depth = _depth
@@ -127,6 +151,8 @@ class BoardEngineBridge:
 			return
 		if info.get("nps", false):
 			emit_signal("nps", info.nps)
+		if info.get("depth", false):
+			emit_signal("depth", info.depth)
 		if info.get("pv", false):
 			var bm = stockfish.game.__move_from_uci(info.pv[0])
 			clear_arrows()
@@ -154,6 +180,7 @@ class BoardEngineBridge:
 		yield(tree, "idle_frame")
 		var move: String = yield(bestmove(), "completed")
 		emit_signal("nps", 0)
+		emit_signal("depth", 0)
 		b.move(move, false, false)
 
 	func set_engine_position():

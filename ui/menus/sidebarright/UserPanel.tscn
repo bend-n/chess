@@ -1,9 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/ubuntu-bold-regular.tres" type="DynamicFont" id=1]
 [ext_resource path="res://assets/flags/rainbow.png" type="Texture" id=2]
 [ext_resource path="res://ui/theme/main.theme" type="Theme" id=3]
 [ext_resource path="res://ui/menus/sidebarright/UserPanel.gd" type="Script" id=4]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.372549, 0.564706, 0.152941, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 0 )
 
 [node name="UserPanel" type="MarginContainer" groups=["userpanel"]]
 anchor_right = 1.0
@@ -56,3 +62,15 @@ margin_bottom = 53.0
 custom_fonts/font = ExtResource( 1 )
 text = "000004n/s"
 valign = 1
+
+[node name="ThinkingProgress" type="ProgressBar" parent="V"]
+unique_name_in_owner = true
+visible = false
+margin_top = 30.0
+margin_right = 1422.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 0, 10 )
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+step = 1.0
+percent_visible = false
