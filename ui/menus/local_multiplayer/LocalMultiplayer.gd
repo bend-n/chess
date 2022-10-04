@@ -98,7 +98,6 @@ class BoardEngineBridge:
 
 	const info := {name = "Stockfish", country = "antartica"}
 
-	var curr_bestmove: Dictionary
 	var b: Grid
 	var stockfish: Stockfish
 	var playing := PoolStringArray()
@@ -118,6 +117,7 @@ class BoardEngineBridge:
 
 	func connect_signals():
 		stockfish.connect("info", self, "_info")
+		stockfish.connect("bestmove", self, "clear_arrows")
 		Events.connect("turn_over", self, "turn_over")
 
 	func _info(info: Dictionary):
@@ -126,7 +126,22 @@ class BoardEngineBridge:
 		if info.get("nps", false):
 			emit_signal("nps", info.nps)
 		if info.get("pv", false):
-			curr_bestmove = stockfish.game.__move_from_uci(info.pv[0])
+			var bm = stockfish.game.__move_from_uci(info.pv[0])
+			clear_arrows()
+			var arrows := b.arrows
+			var arrow: Dictionary = arrows.build_arrow(
+				Chess.vecfrom0x88(bm.from), Chess.vecfrom0x88(bm.to), Color(0.286275, 0.564706, 0.768627)
+			)
+			arrow["engine_arrow"] = true
+			arrows.arrows.append(arrow)
+			arrows.shorten_arrows_at(Chess.vecfrom0x88(bm.to))
+
+	func clear_arrows(_arg = ""):
+		var good_array := []
+		for arrow in b.arrows.arrows:
+			if arrow.get("engine_arrow", false) == false:
+				good_array.append(arrow)
+		b.arrows.arrows = good_array
 
 	func turn_over():
 		set_engine_position()
@@ -135,9 +150,7 @@ class BoardEngineBridge:
 
 	func play_bestmove():
 		yield(tree, "idle_frame")
-		searching = true
 		var move: String = yield(bestmove(), "completed")
-		searching = false
 		emit_signal("nps", 0)
 		b.move(move, false, false)
 
@@ -146,7 +159,9 @@ class BoardEngineBridge:
 
 	func bestmove() -> String:
 		stockfish.go(depth)
+		searching = true
 		var bestmove = yield(stockfish, "bestmove")
+		searching = false
 		return bestmove.san
 
 	func kill() -> void:

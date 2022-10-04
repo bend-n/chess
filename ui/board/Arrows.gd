@@ -64,6 +64,10 @@ func shorten_arrows_at(v: Vector2) -> void:
 		arrow.dest = shorten(arrow.coord_dest, arrow.origin, shorten)
 
 
+func build_arrow(from: Vector2, to: Vector2, color: Color) -> Dictionary:
+	return {origin = from, dest = to, coord_dest = to, color = color}
+
+
 func _draw():
 	if !b:
 		return
@@ -86,9 +90,7 @@ func _draw():
 						flag = false
 						break
 				if flag:
-					arrows.append(
-						{origin = arrow_origin, dest = mouse_position, color = clr, coord_dest = mouse_position}
-					)
+					arrows.append(build_arrow(arrow_origin, mouse_position, clr))
 					shorten_arrows_at(mouse_position)
 			elif t <= .25:
 				for i in range(len(circles)):
