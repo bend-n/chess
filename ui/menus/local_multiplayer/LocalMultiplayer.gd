@@ -1,4 +1,5 @@
 extends Control
+class_name LocalMultiplayer
 
 onready var gameconfig := $"%GameConfig"
 
@@ -16,7 +17,7 @@ var ui: GameUI
 
 func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, engine_depth: int) -> void:
 	assign_mode(players)
-	Globals.local = true
+	Globals.local = self
 	ui = load("res://ui/board/Game.tscn").instance()
 	var b: Grid = ui.get_board() as Grid
 	b.local = true
@@ -91,7 +92,7 @@ func _pressed():
 
 
 func _input(_event):
-	if Input.is_action_pressed("ui_cancel") and Globals.local == true and in_game:
+	if Input.is_action_pressed("ui_cancel") and Globals.local and in_game:
 		Events.emit_signal("go_back", "", true)
 
 
@@ -110,6 +111,10 @@ func go_back(_reason: String, _isok: bool) -> void:
 		PacketHandler.lobby.toggle(true)
 		Globals.reset_vars()
 		get_parent().current_tab = get_parent().get_children().find(self)
+
+
+func undo(two: bool = false) -> void:
+	board_engine_bridge.undo(two)
 
 
 class BoardEngineBridge:
@@ -144,7 +149,13 @@ class BoardEngineBridge:
 	func connect_signals():
 		stockfish.connect("info", self, "_info")
 		stockfish.connect("bestmove", self, "clear_arrows")
+		stockfish.connect("bestmove", self, "play_bestmove")
 		Events.connect("turn_over", self, "turn_over")
+
+	func undo(two: bool = false) -> void:
+		stockfish.stop()
+		b.undo(two)
+		set_engine_position()
 
 	func _info(info: Dictionary):
 		if searching == false:
@@ -174,24 +185,21 @@ class BoardEngineBridge:
 	func turn_over():
 		set_engine_position()
 		if stockfish.game.turn in playing:
-			play_bestmove()
+			find_bestmove()
 
-	func play_bestmove():
+	# play_bestmove() will play the move when its found
+	func find_bestmove():
 		yield(tree, "idle_frame")
-		var move: String = yield(bestmove(), "completed")
-		emit_signal("nps", 0)
+		stockfish.go(depth)
+		searching = true
+
+	func play_bestmove(move: Dictionary) -> void:
 		emit_signal("depth", 0)
-		b.move(move, false, false)
+		emit_signal("nps", 0)
+		b.move(move.san, false, false)
 
 	func set_engine_position():
 		stockfish._position()
-
-	func bestmove() -> String:
-		stockfish.go(depth)
-		searching = true
-		var bestmove = yield(stockfish, "bestmove")
-		searching = false
-		return bestmove.san
 
 	func kill() -> void:
 		stockfish.kill()

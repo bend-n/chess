@@ -144,7 +144,7 @@ text = ""
 script = ExtResource( 2 )
 confirm_text = "Resign?"
 
-[node name="UndoButton" type="Button" parent="V/buttonbarholder/buttonbar" groups=["freeinlocalmultiplayer", "hideongameover"]]
+[node name="UndoButton" type="Button" parent="V/buttonbarholder/buttonbar" groups=["hideongameover"]]
 margin_left = 1051.0
 margin_right = 1402.0
 margin_bottom = 50.0

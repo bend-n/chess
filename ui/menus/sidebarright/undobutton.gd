@@ -13,7 +13,15 @@ func _ready() -> void:
 func _pressed() -> void:
 	if Globals.spectating:
 		return
-	if waiting_on_answer:
+	if Globals.local:
+		var two_undos = true if Globals.grid.chess.turn == Globals.grid.team else false
+		var completed_moves = Globals.grid.chess.history().size()
+		if completed_moves == 0 or (two_undos && completed_moves == 1):
+			status.set_text("No moves to undo!")
+			return
+		Globals.local.undo(two_undos)
+
+	elif waiting_on_answer:
 		_confirmed(true)
 	else:
 		var two_undos = true if Globals.grid.chess.turn == Globals.grid.team else false

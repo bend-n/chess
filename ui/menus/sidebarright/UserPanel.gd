@@ -29,9 +29,9 @@ func set_nps(new_nps: int) -> void:
 		nps_display.hide()
 	else:
 		nps_display.show()
-		if OS.has_feature('JavaScript'):
+		if OS.has_feature("JavaScript"):
 			var localized = JavaScript.eval("(%d).toLocaleString(document.documentElement.lang || 'en')" % new_nps)
-			nps_display.text = "%sn/s" % (localized if localized else format_n(new_nps)) # fallback
+			nps_display.text = "%sn/s" % (localized if localized else format_n(new_nps))  # fallback
 		else:
 			nps_display.text = "%sn/s" % format_n(new_nps)
 	nps = new_nps
@@ -47,6 +47,7 @@ func format_n(n: int) -> String:
 		i += 1
 		strn = strn.insert(i, ",")
 	return strn
+
 
 func set_thinking(new_thinking: int) -> void:
 	if new_thinking == thinking:

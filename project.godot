@@ -124,6 +124,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ui/menus/lobby/Lobby.gd"
 }, {
+"base": "Control",
+"class": "LocalMultiplayer",
+"language": "GDScript",
+"path": "res://ui/menus/local_multiplayer/LocalMultiplayer.gd"
+}, {
 "base": "Node",
 "class": "Log",
 "language": "GDScript",
@@ -278,6 +283,7 @@ _global_script_class_icons={
 "GridMenuButton": "",
 "HueSlider": "",
 "Lobby": "",
+"LocalMultiplayer": "",
 "Log": "",
 "MaterialLabel": "",
 "MaterialLabelManager": "",
