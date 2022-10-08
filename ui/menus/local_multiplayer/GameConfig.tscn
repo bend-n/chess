@@ -153,7 +153,6 @@ fit_content_height = true
 script = ExtResource( 9 )
 color = Color( 0.709804, 0.537255, 0, 1 )
 
-[connection signal="pgn_selected" from="V/PGNInput/PgnInput" to="." method="_on_pgn_selected"]
 [connection signal="item_selected" from="V/Players/1/PlayerButton" to="." method="_player_selected" binds= [ 1 ]]
 [connection signal="item_selected" from="V/Players/2/PlayerButton" to="." method="_player_selected" binds= [ 2 ]]
 [connection signal="depth_changed" from="V/EngineDepth" to="." method="_depth_changed"]

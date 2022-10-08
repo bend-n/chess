@@ -4,6 +4,8 @@ class_name GameConfig
 var moves := PoolStringArray()
 var color := true
 
+onready var pgn_input = $"%PgnInput"
+
 signal back
 
 export(ButtonGroup) var button_group: ButtonGroup
@@ -11,6 +13,7 @@ export(ButtonGroup) var button_group: ButtonGroup
 
 func _ready():
 	button_group.connect("pressed", self, "_button_pressed")
+	pgn_input.connect("pgn_selected", self, "_on_pgn_selected")
 
 
 func _button_pressed(button: BarTextureButton) -> void:
@@ -25,7 +28,7 @@ func _on_Stop_pressed():
 func reset():
 	moves = []
 	color = true
-	$"%PgnInput".text = ""
+	pgn_input.text = ""
 	hide()
 
 
