@@ -262,7 +262,7 @@ func signup(data):
 
 func signal(body: Dictionary, header: String, _mainheader := HEADERS.signal) -> Dictionary:
 	var data: Dictionary = Utils.append_dict({"type": header}, body)
-	send_gamecode_packet(data, _mainheader)
+	send_packet(data, _mainheader)
 	return data
 
 
@@ -288,7 +288,7 @@ func relay_signal(body: Dictionary, header: String) -> Dictionary:  # its really
 
 
 func send_mov(mov: String) -> void:
-	send_gamecode_packet({move = mov}, HEADERS.move)
+	send_packet({move = mov}, HEADERS.move)
 
 
 static func construct_errstr(packet, err_table, default_message := DEFAULT_ERROR_MESSAGE) -> String:
