@@ -5,11 +5,13 @@ onready var flag_display = $"%Flag"
 onready var name_display = $"%Name"
 onready var nps_display = $"%Nps"
 onready var thinking_display = $"%ThinkingProgress"
+onready var loading_display = $"%LoadingAnimation"
 
 var flag := "rainbow" setget set_flag
 var _name := "name" setget set_name
 var nps := 0 setget set_nps
 var thinking := 0 setget set_thinking
+var loading := false setget set_loading, get_loading  # reference to loading_display.visible
 
 
 func set_flag(newflag: String) -> void:
@@ -60,3 +62,11 @@ func set_thinking(new_thinking: int) -> void:
 		create_tween().tween_property(thinking_display, "value", float(new_thinking), .25)
 
 	thinking = new_thinking
+
+
+func set_loading(new_loading: bool) -> void:
+	loading_display.visible = new_loading
+
+
+func get_loading() -> bool:
+	return loading_display.visible

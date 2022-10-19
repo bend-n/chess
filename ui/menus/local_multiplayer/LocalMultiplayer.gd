@@ -35,6 +35,10 @@ func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, 
 			ui._on_info(BoardEngineBridge.info)
 			board_engine_bridge.connect("nps", self, "set_nps", [1 if player1_color == true else 0])
 			board_engine_bridge.connect("depth", self, "set_thinking", [1 if player1_color == true else 0])
+			if board_engine_bridge.is_ready() == false:
+				var engine_p: UserPanel = ui.panels[int(Globals.grid.team == "w")]
+				engine_p.loading = true
+				board_engine_bridge.connect("ready", engine_p, "set_loading", [false])
 		MODES.EVE:
 			b.team = b.chess.turn
 			Globals.spectating = true
@@ -42,6 +46,10 @@ func create(moves: PoolStringArray, player1_color: bool, players: PoolIntArray, 
 			ui._spectate_info({white = BoardEngineBridge.info, black = BoardEngineBridge.info})
 			board_engine_bridge.connect("nps", self, "set_nps")
 			board_engine_bridge.connect("depth", self, "set_thinking")
+			if board_engine_bridge.is_ready() == false:
+				for e_p in ui.panels:
+					e_p.loading = true
+					board_engine_bridge.connect("ready", e_p, "set_loading", [false])
 
 	get_tree().call_group("backbutton", "queue_free")
 
@@ -121,6 +129,8 @@ class BoardEngineBridge:
 	extends Reference
 	signal nps(nps)
 	signal depth(depth)
+	# warning-ignore:unused_signal
+	signal ready  # is emitted by connect_signals[#l4]
 
 	const info := {name = "Stockfish", country = "antartica"}
 
@@ -130,11 +140,15 @@ class BoardEngineBridge:
 	var tree: SceneTree
 	var depth: int
 	var searching: bool = false
+	var ready: bool setget , is_ready
 
 	var turn: String = "" setget , get_turn
 
 	func get_turn() -> String:
 		return stockfish.game.turn
+
+	func is_ready() -> bool:
+		return stockfish.engine_ready
 
 	func _init(board: Grid, teams: PoolStringArray, _tree: SceneTree, _depth: int) -> void:
 		depth = _depth
@@ -150,6 +164,7 @@ class BoardEngineBridge:
 		stockfish.connect("info", self, "_info")
 		stockfish.connect("bestmove", self, "clear_arrows")
 		stockfish.connect("bestmove", self, "play_bestmove")
+		stockfish.connect("engine_ready", self, "emit_signal", ["ready"])
 		Events.connect("turn_over", self, "turn_over")
 
 	func undo(two: bool = false) -> void:
