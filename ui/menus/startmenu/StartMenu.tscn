@@ -47,6 +47,7 @@ margin_left = 40.0
 margin_top = 94.0
 margin_right = -40.0
 margin_bottom = -40.0
+drag_to_rearrange_enabled = true
 
 [node name=" multiplayer" parent="CenterContainer/tabs/ play" instance=ExtResource( 5 )]
 margin_left = 40.0
