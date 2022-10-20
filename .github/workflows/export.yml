@@ -17,10 +17,11 @@ jobs:
   export:
     uses: bend-n/godot-actions/.github/workflows/callable-export.yml@main
     with:
-      export-name: ${{ github.event.repository.name }}
+      export-name: chess
       godot-version: 3.5
       image: ghcr.io/bend-n/godot-2d:3.5
       platforms: "windows linux web android mac"
+      itch-path: bendn/chess
     secrets:
       android-keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       android-keystore-password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
