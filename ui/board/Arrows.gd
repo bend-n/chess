@@ -1,8 +1,10 @@
 extends Control
 
+const INVALID := Vector2(-1, -1)
+
 var arrows := []
 var circles := []
-var arrow_origin: Vector2
+var arrow_origin: Vector2 = INVALID
 var b: Grid
 
 var t := 0.0
@@ -71,7 +73,7 @@ func build_arrow(from: Vector2, to: Vector2, color: Color) -> Dictionary:
 func _draw():
 	if !b:
 		return
-	if arrow_origin:
+	if arrow_origin != INVALID:
 		var shift := Input.is_action_pressed("shift")
 		var mouse_position := descale_vector(b.get_local_mouse_position())
 		mouse_position = Vector2(clamp(mouse_position.x, 0, 7), clamp(mouse_position.y, 0, 7))
@@ -100,7 +102,7 @@ func _draw():
 						break
 				if flag:
 					circles.append({origin = arrow_origin, color = clr})
-			arrow_origin = Vector2.ZERO
+			arrow_origin = INVALID
 			t = 0
 
 	for a in arrows:
@@ -133,4 +135,4 @@ func draw_ring(at: Vector2, clr: Color) -> void:
 func clear_arrows():
 	arrows.resize(0)
 	circles.resize(0)
-	arrow_origin = Vector2.ZERO
+	arrow_origin = INVALID
