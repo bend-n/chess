@@ -50,14 +50,14 @@ rect_min_size = Vector2( 0, 24 )
 [node name="TabContainer" type="TabContainer" parent="V/H/V"]
 margin_top = 34.0
 margin_right = 400.0
-margin_bottom = 356.0
+margin_bottom = 222.0
 rect_min_size = Vector2( 400, 0 )
-size_flags_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 custom_constants/hseparation = 20
 drag_to_rearrange_enabled = true
-use_hidden_tabs_for_min_size = true
 
-[node name=" board" type="VBoxContainer" parent="V/H/V/TabContainer"]
+[node name=" gameplay" type="VBoxContainer" parent="V/H/V/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 40.0
@@ -66,33 +66,17 @@ margin_right = -40.0
 margin_bottom = -40.0
 alignment = 1
 
-[node name="boardcolor1" parent="V/H/V/TabContainer/ board" instance=ExtResource( 5 )]
-margin_left = 63.0
-margin_right = 257.0
+[node name="premoves" type="Button" parent="V/H/V/TabContainer/ gameplay"]
+unique_name_in_owner = true
+margin_left = 78.0
+margin_right = 241.0
 margin_bottom = 54.0
+hint_tooltip = "allows you to makea move before your opponent moves"
 size_flags_horizontal = 4
-text = "boardcolor1"
+text = "premoves"
+script = ExtResource( 3 )
 
-[node name="boardcolor2" parent="V/H/V/TabContainer/ board" instance=ExtResource( 5 )]
-margin_left = 63.0
-margin_top = 64.0
-margin_right = 257.0
-margin_bottom = 118.0
-size_flags_horizontal = 4
-text = "boardcolor2"
-
-[node name="PieceSet" parent="V/H/V/TabContainer/ board" instance=ExtResource( 6 )]
-margin_left = 60.0
-margin_top = 128.0
-margin_right = 260.0
-margin_bottom = 188.0
-rect_min_size = Vector2( 200, 60 )
-size_flags_horizontal = 4
-text = "piece set"
-icon = ExtResource( 7 )
-offset = Vector2( 50, -50 )
-
-[node name=" win" type="VBoxContainer" parent="V/H/V/TabContainer"]
+[node name=" view" type="VBoxContainer" parent="V/H/V/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -103,52 +87,92 @@ margin_bottom = -40.0
 mouse_filter = 2
 alignment = 1
 
-[node name="FullscreenButton" type="Button" parent="V/H/V/TabContainer/ win"]
-margin_left = 77.0
-margin_top = 3.0
-margin_right = 243.0
-margin_bottom = 57.0
-focus_mode = 0
+[node name="board" type="HBoxContainer" parent="V/H/V/TabContainer/ view"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="boardcolor1" parent="V/H/V/TabContainer/ view/board" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+margin_left = 63.0
+margin_right = 257.0
+margin_bottom = 54.0
 size_flags_horizontal = 4
+text = "boardcolor1"
+
+[node name="boardcolor2" parent="V/H/V/TabContainer/ view/board" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+margin_left = 63.0
+margin_top = 64.0
+margin_right = 257.0
+margin_bottom = 118.0
+size_flags_horizontal = 4
+text = "boardcolor2"
+
+[node name="PieceSet" parent="V/H/V/TabContainer/ view/board" instance=ExtResource( 6 )]
+unique_name_in_owner = true
+margin_left = 60.0
+margin_top = 128.0
+margin_right = 260.0
+margin_bottom = 188.0
+rect_min_size = Vector2( 200, 60 )
+size_flags_horizontal = 4
+text = "piece set"
+icon = ExtResource( 7 )
+offset = Vector2( 50, -50 )
+
+[node name="screen" type="HBoxContainer" parent="V/H/V/TabContainer/ view"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="FullscreenButton" type="Button" parent="V/H/V/TabContainer/ view/screen"]
+unique_name_in_owner = true
+margin_left = 77.0
+margin_top = 262.0
+margin_right = 243.0
+margin_bottom = 316.0
+hint_tooltip = "to go fullscreen"
+focus_mode = 0
+size_flags_horizontal = 3
 toggle_mode = true
 text = "fullscreen"
 script = ExtResource( 3 )
 
-[node name="VsyncButton" type="Button" parent="V/H/V/TabContainer/ win"]
+[node name="VsyncButton" type="Button" parent="V/H/V/TabContainer/ view/screen"]
+unique_name_in_owner = true
 margin_left = 109.0
-margin_top = 67.0
+margin_top = 326.0
 margin_right = 210.0
-margin_bottom = 121.0
+margin_bottom = 380.0
+hint_tooltip = "syncs the refresh rate with the monitor preventing screen tearing
+"
 focus_mode = 0
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 toggle_mode = true
 text = "vsync"
 script = ExtResource( 3 )
 
-[node name="Borderless" type="Button" parent="V/H/V/TabContainer/ win"]
+[node name="Borderless" type="Button" parent="V/H/V/TabContainer/ view/screen"]
+unique_name_in_owner = true
 margin_left = 93.0
-margin_top = 131.0
+margin_top = 390.0
 margin_right = 226.0
-margin_bottom = 185.0
+margin_bottom = 444.0
 focus_mode = 0
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 toggle_mode = true
-text = "borders"
+text = "borderless"
 script = ExtResource( 3 )
+__meta__ = {
+"_editor_description_": "removes the borders of the screen"
+}
 
-[node name="misc" type="VBoxContainer" parent="V/H/V/TabContainer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 40.0
-margin_top = 94.0
-margin_right = -40.0
-margin_bottom = -40.0
-
-[node name="rainbow" type="Button" parent="V/H/V/TabContainer/misc"]
-margin_left = 37.0
-margin_right = 283.0
-margin_bottom = 54.0
+[node name="rainbow" type="Button" parent="V/H/V/TabContainer/ view"]
+unique_name_in_owner = true
+margin_left = 400.0
+margin_top = -128.0
+margin_right = 646.0
+margin_bottom = 306.0
+hint_tooltip = "try it and see"
 focus_mode = 0
 size_flags_horizontal = 4
 toggle_mode = true
@@ -170,6 +194,7 @@ text = "Preview"
 align = 1
 
 [node name="Preview" type="GridContainer" parent="V/H/V2"]
+unique_name_in_owner = true
 margin_top = 34.0
 margin_right = 500.0
 margin_bottom = 434.0
@@ -184,12 +209,13 @@ __meta__ = {
 }
 
 [connection signal="pressed" from="V/resetbutton" to="." method="_on_resetbutton_pressed"]
-[connection signal="changed" from="V/H/V/TabContainer/ board/boardcolor1" to="." method="_on_boardcolor1_changed"]
-[connection signal="newcolor" from="V/H/V/TabContainer/ board/boardcolor1" to="." method="_on_boardcolor1_newcolor"]
-[connection signal="changed" from="V/H/V/TabContainer/ board/boardcolor2" to="." method="_on_boardcolor2_changed"]
-[connection signal="newcolor" from="V/H/V/TabContainer/ board/boardcolor2" to="." method="_on_boardcolor2_newcolor"]
-[connection signal="selected" from="V/H/V/TabContainer/ board/PieceSet" to="." method="_on_PieceSet_selected"]
-[connection signal="toggled" from="V/H/V/TabContainer/ win/FullscreenButton" to="." method="_on_FullscreenButton_toggled"]
-[connection signal="toggled" from="V/H/V/TabContainer/ win/VsyncButton" to="." method="_on_VsyncButton_toggled"]
-[connection signal="toggled" from="V/H/V/TabContainer/ win/Borderless" to="." method="_on_Borderless_toggled"]
-[connection signal="toggled" from="V/H/V/TabContainer/misc/rainbow" to="." method="_on_rainbow_toggled"]
+[connection signal="toggled" from="V/H/V/TabContainer/ gameplay/premoves" to="." method="set_premoves"]
+[connection signal="changed" from="V/H/V/TabContainer/ view/board/boardcolor1" to="." method="_on_boardcolor1_changed"]
+[connection signal="newcolor" from="V/H/V/TabContainer/ view/board/boardcolor1" to="." method="_on_boardcolor1_newcolor"]
+[connection signal="changed" from="V/H/V/TabContainer/ view/board/boardcolor2" to="." method="_on_boardcolor2_changed"]
+[connection signal="newcolor" from="V/H/V/TabContainer/ view/board/boardcolor2" to="." method="_on_boardcolor2_newcolor"]
+[connection signal="selected" from="V/H/V/TabContainer/ view/board/PieceSet" to="." method="_on_PieceSet_selected"]
+[connection signal="toggled" from="V/H/V/TabContainer/ view/screen/FullscreenButton" to="." method="_on_FullscreenButton_toggled"]
+[connection signal="toggled" from="V/H/V/TabContainer/ view/screen/VsyncButton" to="." method="_on_VsyncButton_toggled"]
+[connection signal="toggled" from="V/H/V/TabContainer/ view/screen/Borderless" to="." method="_on_Borderless_toggled"]
+[connection signal="toggled" from="V/H/V/TabContainer/ view/rainbow" to="." method="_on_rainbow_toggled"]

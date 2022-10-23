@@ -12,5 +12,5 @@ func _toggled(p: bool):
 
 
 func _ready():
-	assert(toggle_mode)
+	toggle_mode = true
 	_toggled(pressed)

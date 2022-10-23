@@ -210,6 +210,11 @@ _global_script_classes=[ {
 "path": "res://saveload.gd"
 }, {
 "base": "Control",
+"class": "Settings",
+"language": "GDScript",
+"path": "res://ui/menus/settings/Settings.gd"
+}, {
+"base": "Control",
 "class": "SliderButton",
 "language": "GDScript",
 "path": "res://ui/slider_button/SliderButton.gd"
@@ -300,6 +305,7 @@ _global_script_class_icons={
 "ResignButton": "",
 "Restrict": "",
 "SaveLoader": "",
+"Settings": "",
 "SliderButton": "",
 "StatusLabel": "",
 "Stockfish": "",

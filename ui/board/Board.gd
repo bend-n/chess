@@ -299,6 +299,8 @@ func square_clicked(clicked_square: BackgroundSquare) -> void:
 
 	if p and p.color == team:
 		if chess.turn != team:
+			if !Globals.premoves:
+				return
 			clicked_square.show_premove_indicators()
 		else:
 			clicked_square.show_move_indicators()
@@ -401,9 +403,9 @@ func auto_flip():
 
 
 func _on_turn_over():
-	if auto_change_team:
-		team = chess.turn
-		auto_flip()
+	# if auto_change_team:
+	# 	team = chess.turn
+	# 	auto_flip()
 
 	if is_my_turn():
 		set_take_move_circle_color()
@@ -422,7 +424,7 @@ func _on_turn_over():
 						Log.debug(["Executing premove:", san])
 						move(san, true, false)  # make the move, send it to the opponent, dont prompt for premoves
 					premove = {}
-	else:
+	elif Globals.premoves:
 		set_take_move_circle_color(premove_color)
 	SaveLoad.save("user://game.json", {pgn = chess.pgn(), fen = chess.fen()})
 	clear_last_clicked()

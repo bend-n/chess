@@ -156,7 +156,7 @@ func request() -> int:  # returns err
 	return error
 
 
-func walk_dir(path := "res://assets/pieces", only_dir := true, exclude := []) -> PoolStringArray:  # walk the directory, finding the asset packs
+func walk_dir(path, only_dir := true, exclude := []) -> PoolStringArray:  # walk the directory, finding the asset packs
 	var files := []  # init the files
 	var dir := Directory.new()  # init the directory
 	if dir.open(path) == OK:  # open the directory
