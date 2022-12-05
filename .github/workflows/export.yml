@@ -23,6 +23,6 @@ jobs:
       platforms: "windows linux web android mac"
       itch-path: bendn/chess
     secrets:
-      android-keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      android-keystore-password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      android-keystore-base64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+      android-keystore-password: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
       butler-api-key: ${{ secrets.BUTLER_CREDENTIALS }}
