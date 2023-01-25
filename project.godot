@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Arg",
 "language": "GDScript",
-"path": "res://addons/gdcli/Arg.gd"
+"path": "res://addons/@bendn/gdcli/Arg.gd"
 }, {
 "base": "ColorRect",
 "class": "BackgroundSquare",
@@ -37,7 +37,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Chess",
 "language": "GDScript",
-"path": "res://addons/stockfish.gd/chess.gd"
+"path": "res://addons/@bendn/stockfish.gd/chess.gd"
 }, {
 "base": "Control",
 "class": "ColorPickerBetter",
@@ -82,7 +82,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "FEN",
 "language": "GDScript",
-"path": "res://addons/stockfish.gd/fen.gd"
+"path": "res://addons/@bendn/stockfish.gd/fen.gd"
 }, {
 "base": "Button",
 "class": "FlipButton",
@@ -167,12 +167,12 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "PGN",
 "language": "GDScript",
-"path": "res://addons/stockfish.gd/pgn.gd"
+"path": "res://addons/@bendn/stockfish.gd/pgn.gd"
 }, {
 "base": "Reference",
 "class": "Parser",
 "language": "GDScript",
-"path": "res://addons/gdcli/Parser.gd"
+"path": "res://addons/@bendn/gdcli/Parser.gd"
 }, {
 "base": "Control",
 "class": "Piece",
@@ -227,12 +227,12 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Stockfish",
 "language": "GDScript",
-"path": "res://addons/stockfish.gd/stockfish_wrapper.gd"
+"path": "res://addons/@bendn/stockfish.gd/stockfish_wrapper.gd"
 }, {
 "base": "Reference",
 "class": "StockfishLoader",
 "language": "GDScript",
-"path": "res://addons/stockfish.gd/stockfish_loader.gd"
+"path": "res://addons/@bendn/stockfish.gd/stockfish_loader.gd"
 }, {
 "base": "Button",
 "class": "TestButton",
